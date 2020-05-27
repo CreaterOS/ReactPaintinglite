@@ -32,6 +32,13 @@ NS_ASSUME_NONNULL_BEGIN
 /* 写入日志文件 */
 - (void)writeLogFileOptions:(NSString *__nonnull)options status:(PaintingliteLogStatus)status completeHandler:(void(^)(NSString *logFilePath))completeHandler;
 
+/* 删除日志文件 */
+- (Boolean)removeLogFile:(NSString *)fileName;
+
+/* 读取日志文件 */
+- (NSString *)readLogFile:(NSString *__nonnull)fileName;
+
+- (NSString *)readLogFile:(NSString *)fileName dateTime:(NSDate *__nonnull)dateTime;
 @end
 
 NS_ASSUME_NONNULL_END

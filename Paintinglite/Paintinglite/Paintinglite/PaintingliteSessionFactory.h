@@ -26,6 +26,14 @@ NS_ASSUME_NONNULL_BEGIN
 /* 执行查询 */
 - (void)execQuery:(sqlite3 *)ppDb sql:(NSString *)sql;
 
+/* 删除日志文件 */
+- (void)removeLogFile:(NSString *)fileName;
+
+/* 读取日志文件 */
+- (NSString *)readLogFile:(NSString *__nonnull)fileName;
+
+- (NSString *)readLogFile:(NSString *)fileName dateTime:(NSDate *__nonnull)dateTime;
+
 @end
 
 NS_ASSUME_NONNULL_END

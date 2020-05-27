@@ -8,6 +8,8 @@
 
 #import "ViewController.h"
 #import "Paintinglite/PaintingliteSessionManager.h"
+#import "Paintinglite/PaintingliteSecurity.h"
+#import "Paintinglite/PaintingliteDataBaseOptions.h"
 
 @interface ViewController ()
 
@@ -45,6 +47,22 @@
 //    }];
 //
 //    NSLog(@"%hhu",[sessionManager releaseSqlite]);
+    
+//    [sessionManager removeLogFile:@"sqlite"];
+    NSLog(@"%@",[sessionManager readLogFile:@"sqlite.db"]);
+    NSLog(@"%@",[sessionManager readLogFile:@"sqlite" dateTime:[NSDate date]]);
+    NSLog(@"%@",[sessionManager readLogFile:@"sqlites.db"]);
+    
+    NSString *baseStr = [PaintingliteSecurity StringWithSecurityBase64:@"加密操作"];
+    NSLog(@"%@",baseStr);
+    NSLog(@"%@",[PaintingliteSecurity StringWithDecodeSecurityBase64:baseStr]);
+    
+    [sessionManager createTableForSQL:@"CREATE TABLE IF NOT EXISTS user(name TEXT,age INTEGER)"];
+    [sessionManager createTableForSQL:@"CREATE TABLE IF NOT EXISTS teacher(name TEXT,age INTEGER)" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
+        if (success) {
+            NSLog(@"创建表成功");
+        }
+    }];
 }
 
 

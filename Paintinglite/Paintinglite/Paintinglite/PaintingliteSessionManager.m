@@ -8,12 +8,15 @@
 
 #import "PaintingliteSessionManager.h"
 #import "PaintingliteSessionFactory.h"
+#import "PaintingliteDataBaseOptions.h"
 #import "PaintingliteConfiguration.h"
 
 @interface PaintingliteSessionManager()
 @property (nonatomic,readonly)PaintingliteSessionFactoryLite *ppDb; //数据库
 @property (nonatomic,strong)PaintingliteSessionFactory *factory; //工厂类
 @property (nonatomic,strong)PaintingliteSessionError *error; //错误
+@property (nonatomic,strong)PaintingliteConfiguration *configuration; //配置文件
+@property (nonatomic,strong)PaintingliteDataBaseOptions *dataBaseOptions; //数据库操作
 @property (nonatomic)Boolean closeFlag; //关闭标识符
 @end
 
@@ -34,6 +37,23 @@
     }
     
     return _factory;
+}
+
+- (PaintingliteDataBaseOptions *)dataBaseOptions{
+    if (!_dataBaseOptions) {
+        _dataBaseOptions = [PaintingliteDataBaseOptions sharePaintingliteDataBaseOptions];
+    }
+    
+    return _dataBaseOptions;
+}
+
+
+- (PaintingliteConfiguration *)configuration{
+    if (!_configuration) {
+        _configuration = [PaintingliteConfiguration sharePaintingliteConfiguration];
+    }
+    
+    return _configuration;
 }
 
 #pragma mark - 单例模式
@@ -64,7 +84,7 @@ static PaintingliteSessionManager *_instance = nil;
     NSAssert(fileName != NULL, @"Please set the Sqlite DataBase Name");
     Boolean success = false;
     
-    NSString *filePath = [PaintingliteConfiguration configurationFileName:fileName];
+    NSString *filePath = [self.configuration configurationFileName:fileName];
     @synchronized (self) {
         success = (sqlite3_open([filePath UTF8String], &_ppDb) == SQLITE_OK);
         if (completeHandler != nil) {
@@ -75,11 +95,33 @@ static PaintingliteSessionManager *_instance = nil;
     //保存表快照到JSON文件
     dispatch_async(PaintingliteSessionFactory_Sqlite_Queque, ^{
         //查看打开的数据库，进行快照区保存
-        [self.factory execQuery:self.ppDb sql:@"SELECT name FROM sqlite_master WHERE type='table' ORDER BY name"];
+        [self saveSnip];
     });
 
     
     return success;
+}
+
+#pragma mark - 快照区保存
+- (void)saveSnip{
+    [self.factory execQuery:self.ppDb sql:@"SELECT name FROM sqlite_master WHERE type='table' ORDER BY name"];
+}
+
+#pragma mark - SQL操作
+#pragma mark - 创建表
+- (Boolean)createTableForSQL:(NSString *)sql{
+    __block Boolean flag = false;
+    [self createTableForSQL:sql completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
+        if (success) {
+            flag = success;
+        }
+    }];
+            
+    return flag;
+}
+
+- (Boolean)createTableForSQL:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
+    return [self.dataBaseOptions createTableForSQL:self.ppDb sql:sql completeHandler:completeHandler];
 }
 
 #pragma mark - 释放数据库
@@ -112,4 +154,19 @@ static PaintingliteSessionManager *_instance = nil;
 
     return success;
 }
+
+#pragma mark - 删除日志文件
+- (void)removeLogFile:(NSString *)fileName{
+    [self.factory removeLogFile:fileName];
+}
+
+#pragma mark - 读取日志文件
+- (NSString *)readLogFile:(NSString *)fileName{
+    return [self.factory readLogFile:fileName];
+}
+
+- (NSString *)readLogFile:(NSString *)fileName dateTime:(NSDate *)dateTime{
+    return [[self.factory readLogFile:fileName dateTime:dateTime] length] != 0 ? [self.factory readLogFile:fileName dateTime:dateTime] : @"无操作日志";
+}
+
 @end

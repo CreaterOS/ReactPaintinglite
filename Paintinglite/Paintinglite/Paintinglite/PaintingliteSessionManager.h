@@ -42,6 +42,26 @@ NS_ASSUME_NONNULL_BEGIN
 - (Boolean)releaseSqlite;
 
 - (Boolean)releaseSqliteCompleteHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
+
+/**
+ * 删除日志文件
+ */
+- (void)removeLogFile:(NSString *)fileName;
+
+/**
+ * 读取日志文件
+ */
+- (NSString *)readLogFile:(NSString *__nonnull)fileName;
+
+- (NSString *)readLogFile:(NSString *)fileName dateTime:(NSDate *__nonnull)dateTime;
+
+/**
+ * 创建表
+ * SQL语句创建
+ */
+- (Boolean)createTableForSQL:(NSString *)sql;
+- (Boolean)createTableForSQL:(NSString *)sql completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
+
 @end
 
 NS_ASSUME_NONNULL_END

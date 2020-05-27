@@ -7,6 +7,7 @@
 //
 
 #import "PaintingliteSessionFactory.h"
+#import "PaintingliteSecurity.h"
 #import "PaintingliteLog.h"
 
 @interface PaintingliteSessionFactory()
@@ -54,13 +55,15 @@ static PaintingliteSessionFactory *_instance = nil;
         }];
     }
     
-    //写入JSON快照
-    [self writeTablesSnapJSON:tables];
-    
-    //写入日志文件
-    [self.log writeLogFileOptions:sql status:PaintingliteLogSuccess completeHandler:^(NSString * _Nonnull logFilePath) {
-        ;
-    }];
+    if (tables.count != 0) {
+        //写入JSON快照
+        [self writeTablesSnapJSON:tables];
+        
+        //写入日志文件
+        [self.log writeLogFileOptions:sql status:PaintingliteLogSuccess completeHandler:^(NSString * _Nonnull logFilePath) {
+            NSLog(@"%@",logFilePath);
+        }];
+    }
 }
 
 #pragma mark - 写入JSON快照
@@ -70,9 +73,10 @@ static PaintingliteSessionFactory *_instance = nil;
     @synchronized (self) {
         if ([NSJSONSerialization isValidJSONObject:tablesSnapDict]) {
             NSError *error = nil;
-            NSData *data = [NSJSONSerialization dataWithJSONObject:tablesSnapDict options:NSJSONWritingPrettyPrinted error:&error];
+           
+            NSData *data =  [PaintingliteSecurity SecurityBase64:[NSJSONSerialization dataWithJSONObject:tablesSnapDict options:NSJSONWritingPrettyPrinted error:&error]];
             
-            NSString *TablesSnapJsonPath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject] stringByAppendingPathComponent:@"Tables_Snap.json"];
+            NSString *TablesSnapJsonPath = [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) firstObject] stringByAppendingPathComponent:@"Tables_Snap.json"];
             NSFileManager *fileManager = [NSFileManager defaultManager];
             
             if ([fileManager fileExistsAtPath:TablesSnapJsonPath]) {
@@ -82,10 +86,25 @@ static PaintingliteSessionFactory *_instance = nil;
             //判断是否存则这个文件
             [data writeToFile:TablesSnapJsonPath atomically:YES];
         }
+        
         [tables removeAllObjects];
         tables = nil;
         tablesSnapDict = nil;
     }
+}
+
+#pragma mark - 删除日志文件
+- (void)removeLogFile:(NSString *)fileName{
+    [self.log removeLogFile:fileName];
+}
+
+#pragma mark - 读取日志文件
+- (NSString *)readLogFile:(NSString *)fileName{
+    return [self.log readLogFile:fileName];
+}
+
+- (NSString *)readLogFile:(NSString *)fileName dateTime:(NSDate *)dateTime{
+    return [self.log readLogFile:fileName dateTime:dateTime];
 }
 
 @end
