@@ -11,6 +11,7 @@
 #import "Paintinglite/PaintingliteSecurity.h"
 #import "Paintinglite/PaintingliteDataBaseOptions.h"
 #import "Dogs.h"
+#import "Person.h"
 
 @interface ViewController ()
 
@@ -101,10 +102,18 @@
     
 //    [sessionManager dropTableForTableName:@"dog"];
     
-    Dogs *dogs = [[Dogs alloc] init];
-    [sessionManager createTableForObj:dogs completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
+//    Dogs *dogs = [[Dogs alloc] init];
+//    [sessionManager createTableForObj:dogs completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
+//        if (success) {
+//            NSLog(@"dog表创建成功...");
+//        }
+//    }];
+    
+    Person *person = [[Person alloc] init];
+    
+    [sessionManager dropTableForObj:person completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
         if (success) {
-            NSLog(@"dog表创建成功...");
+            NSLog(@"dogs表删除成功...");
         }
     }];
 }

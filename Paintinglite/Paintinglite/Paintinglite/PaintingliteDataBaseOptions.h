@@ -40,6 +40,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (Boolean)dropTableForSQL:(sqlite3 *)ppDb sql:(NSString *)sql completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
 - (Boolean)dropTableForTableName:(sqlite3 *)ppDb tableName:(NSString *)tableName;
 - (Boolean)dropTableForTableName:(sqlite3 *)ppDb tableName:(NSString *)tableName completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
+- (Boolean)dropTableForObj:(sqlite3 *)ppDb obj:(id)obj;
+- (Boolean)dropTableForObj:(sqlite3 *)ppDb obj:(id)obj completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
 
 @end
 

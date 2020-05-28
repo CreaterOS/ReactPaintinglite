@@ -160,6 +160,16 @@ static PaintingliteSessionManager *_instance = nil;
     return [self.dataBaseOptions dropTableForTableName:self.ppDb tableName:tableName completeHandler:completeHandler];
 }
 
+- (Boolean)dropTableForObj:(id)obj{
+    return [self dropTableForObj:obj completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
+        ;
+    }];
+}
+
+- (Boolean)dropTableForObj:(id)obj completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
+    return [self.dataBaseOptions dropTableForObj:self.ppDb obj:obj completeHandler:completeHandler];
+}
+
 #pragma mark - 释放数据库
 - (Boolean)releaseSqlite{
     __block Boolean flag = false;

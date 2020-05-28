@@ -77,7 +77,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (Boolean)dropTableForSQL:(NSString *)sql completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
 - (Boolean)dropTableForTableName:(NSString *)tableName;
 - (Boolean)dropTableForTableName:(NSString *)tableName completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
-
+- (Boolean)dropTableForObj:(id)obj;
+- (Boolean)dropTableForObj:(id)obj completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
 @end
 
 NS_ASSUME_NONNULL_END

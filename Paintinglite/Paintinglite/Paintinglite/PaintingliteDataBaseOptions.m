@@ -134,7 +134,7 @@ static PaintingliteDataBaseOptions *_instance = nil;
 
 - (Boolean)createTableForObj:(sqlite3 *)ppDb obj:(id)obj completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
     
-    Boolean success = [self.exec sqlite3Exec:ppDb obj:obj];
+    Boolean success = [self.exec sqlite3Exec:ppDb obj:obj status:PaintingliteExecCreate];
     
     if (completeHandler != nil) {
         completeHandler(self.sessionError,success);
@@ -143,4 +143,21 @@ static PaintingliteDataBaseOptions *_instance = nil;
     return success;
 }
 
+#pragma mark - 删除表
+- (Boolean)dropTableForObj:(sqlite3 *)ppDb obj:(id)obj{
+    return [self dropTableForObj:ppDb obj:obj completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
+        ;
+    }];
+}
+
+- (Boolean)dropTableForObj:(sqlite3 *)ppDb obj:(id)obj completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
+    Boolean success = [self.exec sqlite3Exec:ppDb obj:obj status:PaintingliteExecDrop];
+
+    if (completeHandler != nil) {
+        completeHandler(self.sessionError,success);
+    }
+    
+
+    return success;
+}
 @end

@@ -115,26 +115,29 @@
     return flag;
 }
 
-- (Boolean)sqlite3Exec:(sqlite3 *)ppDb obj:(id)obj{
+- (Boolean)sqlite3Exec:(sqlite3 *)ppDb obj:(id)obj status:(PaintingliteExecStatus)status{
     Boolean flag = false;
     
     @synchronized (self) {
         //获得obj的名称作为表的名称
         NSString *objName = NSStringFromClass([obj class]);
-        //获得obj的成员变量作为表的字段
-        NSMutableDictionary *propertyDict = [PaintingliteObjRuntimeProperty getObjPropertyName:obj];
-        
-        NSMutableString *content = [NSMutableString string];
-        
-        for (NSString *ivarName in [propertyDict allKeys]) {
-            NSString *ivarType = propertyDict[ivarName];
-            [content appendFormat:@"%@ %@,",ivarName,ivarType];
+        if (status == PaintingliteExecCreate) {
+            //获得obj的成员变量作为表的字段
+            NSMutableDictionary *propertyDict = [PaintingliteObjRuntimeProperty getObjPropertyName:obj];
+            
+            NSMutableString *content = [NSMutableString string];
+            
+            for (NSString *ivarName in [propertyDict allKeys]) {
+                NSString *ivarType = propertyDict[ivarName];
+                [content appendFormat:@"%@ %@,",ivarName,ivarType];
+            }
+            
+            content = (NSMutableString *)[content substringWithRange:NSMakeRange(0, content.length-1)];
+            
+            [self sqlite3Exec:ppDb tableName:[objName lowercaseString] content:content];
+        }else if(status == PaintingliteExecDrop){
+            [self sqlite3Exec:ppDb tableName:[objName lowercaseString]];
         }
-        
-        content = (NSMutableString *)[content substringWithRange:NSMakeRange(0, content.length-1)];
-        
-        [self sqlite3Exec:ppDb tableName:[objName lowercaseString] content:content];
-        
     }
     
     return flag;
