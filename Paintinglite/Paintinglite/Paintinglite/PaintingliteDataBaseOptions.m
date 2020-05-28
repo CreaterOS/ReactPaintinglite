@@ -8,12 +8,12 @@
 
 #import "PaintingliteDataBaseOptions.h"
 #import "PaintingliteSessionFactory.h"
+#import "PaintingliteExec.h"
 #import "PaintingliteLog.h"
 
 @interface PaintingliteDataBaseOptions()
 @property (nonatomic,strong)PaintingliteSessionError *sessionError;
-@property (nonatomic,strong)PaintingliteSessionFactory *factory; //工厂
-@property (nonatomic,strong)PaintingliteLog *log; //日志
+@property (nonatomic,strong)PaintingliteExec *exec; //执行语句
 @end
 
 @implementation PaintingliteDataBaseOptions
@@ -27,20 +27,12 @@
     return _sessionError;
 }
 
-- (PaintingliteSessionFactory *)factory{
-    if (!_factory) {
-        _factory = [PaintingliteSessionFactory sharePaintingliteSessionFactory];
+- (PaintingliteExec *)exec{
+    if (!_exec) {
+        _exec = [[PaintingliteExec alloc] init];
     }
     
-    return _factory;
-}
-
-- (PaintingliteLog *)log{
-    if (!_log) {
-        _log = [PaintingliteLog sharePaintingliteLog];
-    }
-    
-    return _log;
+    return _exec;
 }
 
 #pragma mark - 单例模式
@@ -54,36 +46,18 @@ static PaintingliteDataBaseOptions *_instance = nil;
     return _instance;
 }
 
-#pragma mark - 利用SQL语句创建
+#pragma mark - 利用SQL操作
 #pragma mark - 创建表
 - (Boolean)createTableForSQL:(sqlite3 *)ppDb sql:(NSString *)sql{
-    __block Boolean flag = false;
     return [self createTableForSQL:ppDb sql:sql
-                   completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
-                       flag = success;
-                   }];
-    
-    return flag;
+        completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
+            ;
+    }];
 }
 
 - (Boolean)createTableForSQL:(sqlite3 *)ppDb sql:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
-    Boolean flag = [self sqlite3Exec:ppDb sql:sql];
+    Boolean flag = [self.exec sqlite3Exec:ppDb sql:sql];
 
-    @synchronized (self) {
-        if (flag) {
-            //保存快照
-            NSString *sql = @"SELECT name FROM sqlite_master WHERE type='table' ORDER BY name";
-            [self.factory execQuery:ppDb sql:sql];
-            //写入日志
-            [self.log writeLogFileOptions:sql status:PaintingliteLogSuccess completeHandler:^(NSString * _Nonnull logFilePath) {
-                ;
-            }];
-        }else{
-            [self.log writeLogFileOptions:sql status:PaintingliteLogError completeHandler:^(NSString * _Nonnull logFilePath) {
-                ;
-            }];
-        }
-    }
     if (completeHandler != nil) {
         completeHandler(self.sessionError,flag);
     }
@@ -91,11 +65,63 @@ static PaintingliteDataBaseOptions *_instance = nil;
     return flag;
 }
 
+#pragma mark - 删除表
+- (Boolean)dropTableForSQL:(sqlite3 *)ppDb sql:(NSString *)sql{
+    return [self dropTableForSQL:ppDb sql:sql completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
+        ;
+    }];
+}
 
-- (Boolean)sqlite3Exec:(sqlite3 *)ppDb sql:(NSString *)sql{
-    NSAssert(sql != NULL, @"SQL Not IS Empty");
+- (Boolean)dropTableForSQL:(sqlite3 *)ppDb sql:(NSString *)sql completeHandler:(nonnull void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
     
-    return sqlite3_exec(ppDb, [sql UTF8String], 0, 0, 0) == SQLITE_OK;
+    Boolean success = [self.exec sqlite3Exec:ppDb sql:sql];
+    
+    if (completeHandler != nil) {
+        completeHandler(self.sessionError,success);
+    }
+    
+    return success;
+}
+
+#pragma mark - 利用表名操作
+#pragma mark - 创建表
+- (Boolean)createTableForName:(sqlite3 *)ppDb tableName:(NSString *)tableName content:(NSString *)content{
+    return [self createTableForName:ppDb tableName:tableName content:content completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
+        ;
+    }];
+}
+
+- (Boolean)createTableForName:(sqlite3 *)ppDb tableName:(NSString *)tableName content:(NSString *)content completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
+    NSAssert(tableName != NULL, @"Table Name IS Not Empty");
+    
+    Boolean flag = [self.exec sqlite3Exec:ppDb tableName:tableName content:content];
+    
+    if (completeHandler != nil) {
+        completeHandler(self.sessionError,flag);
+    }
+    
+    return flag;
+    
+}
+
+
+#pragma mark - 删除表
+- (Boolean)dropTableForTableName:(sqlite3 *)ppDb tableName:(NSString *)tableName{
+    return [self dropTableForTableName:ppDb tableName:tableName completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
+        ;
+    }];
+}
+
+- (Boolean)dropTableForTableName:(sqlite3 *)ppDb tableName:(NSString *)tableName completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
+    NSAssert(tableName != NULL, @"Table Name IS Not Empty");
+
+    Boolean success = [self.exec sqlite3Exec:ppDb tableName:tableName];
+    
+    if (completeHandler != nil) {
+        completeHandler(self.sessionError,success);
+    }
+    
+    return success;
 }
 
 @end

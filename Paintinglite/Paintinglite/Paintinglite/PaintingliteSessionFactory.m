@@ -41,18 +41,20 @@ static PaintingliteSessionFactory *_instance = nil;
 - (void)execQuery:(sqlite3 *)ppDb sql:(NSString *)sql{
     NSMutableArray<NSString *> *tables = [NSMutableArray array];
     
-    if (sqlite3_prepare(ppDb, [sql UTF8String], -1, &_stmt, nil) == SQLITE_OK){
-        //查询成功
-        while (sqlite3_step(_stmt) == SQLITE_ROW) {
-            //获得数据库中含有的表名
-            char *name = (char *)sqlite3_column_text(_stmt, 0);
-            [tables addObject:[NSString stringWithFormat:@"%s",name]];
+    @synchronized (self) {
+        if (sqlite3_prepare(ppDb, [sql UTF8String], -1, &_stmt, nil) == SQLITE_OK){
+            //查询成功
+            while (sqlite3_step(_stmt) == SQLITE_ROW) {
+                //获得数据库中含有的表名
+                char *name = (char *)sqlite3_column_text(_stmt, 0);
+                [tables addObject:[NSString stringWithFormat:@"%s",name]];
+            }
+        }else{
+            //写入日志文件
+            [self.log writeLogFileOptions:@"Select The Database Have Tables " status:PaintingliteLogError completeHandler:^(NSString * _Nonnull logFilePath) {
+                ;
+            }];
         }
-    }else{
-        //写入日志文件
-        [self.log writeLogFileOptions:@"Select The Database Have Tables " status:PaintingliteLogError completeHandler:^(NSString * _Nonnull logFilePath) {
-            ;
-        }];
     }
     
     if (tables.count != 0) {
@@ -105,6 +107,10 @@ static PaintingliteSessionFactory *_instance = nil;
 
 - (NSString *)readLogFile:(NSString *)fileName dateTime:(NSDate *)dateTime{
     return [self.log readLogFile:fileName dateTime:dateTime];
+}
+
+- (NSString *)readLogFile:(NSString *)fileName logStatus:(PaintingliteLogStatus)logStatus{
+    return [self.log readLogFile:fileName logStatus:logStatus]; 
 }
 
 @end

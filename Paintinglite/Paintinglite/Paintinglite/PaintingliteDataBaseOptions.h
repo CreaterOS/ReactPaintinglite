@@ -27,11 +27,17 @@ NS_ASSUME_NONNULL_BEGIN
 
 /* 创建表 */
 - (Boolean)createTableForSQL:(sqlite3 *)ppDb sql:(NSString *)sql;
-
 - (Boolean)createTableForSQL:(sqlite3 *)ppDb sql:(NSString *)sql completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
+- (Boolean)createTableForName:(sqlite3 *)ppDb tableName:(NSString *)tableName content:(NSString *)content;
+- (Boolean)createTableForName:(sqlite3 *)ppDb tableName:(NSString *)tableName content:(NSString *)content completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
 
 /* 更新表 */
+
 /* 删除表 */
+- (Boolean)dropTableForSQL:(sqlite3 *)ppDb sql:(NSString *)sql;
+- (Boolean)dropTableForSQL:(sqlite3 *)ppDb sql:(NSString *)sql completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
+- (Boolean)dropTableForTableName:(sqlite3 *)ppDb tableName:(NSString *)tableName;
+- (Boolean)dropTableForTableName:(sqlite3 *)ppDb tableName:(NSString *)tableName completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
 
 @end
 

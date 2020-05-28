@@ -14,6 +14,7 @@
 
 #import <Foundation/Foundation.h>
 #import "PaintingliteSessionError.h"
+#import "PaintingliteLog.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -55,12 +56,29 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSString *)readLogFile:(NSString *)fileName dateTime:(NSDate *__nonnull)dateTime;
 
+- (NSString *)readLogFile:(NSString *)fileName logStatus:(PaintingliteLogStatus)logStatus;
+
 /**
  * 创建表
  * SQL语句创建
  */
 - (Boolean)createTableForSQL:(NSString *)sql;
 - (Boolean)createTableForSQL:(NSString *)sql completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
+- (Boolean)createTableForName:(NSString *)tableName content:(NSString *)content;
+- (Boolean)createTableForName:(NSString *)tableName content:(NSString *)content completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
+
+
+
+
+
+/**
+ * 删除表
+ * SQL语句删除
+ */
+- (Boolean)dropTableForSQL:(NSString *)sql;
+- (Boolean)dropTableForSQL:(NSString *)sql completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
+- (Boolean)dropTableForTableName:(NSString *)tableName;
+- (Boolean)dropTableForTableName:(NSString *)tableName completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
 
 @end
 

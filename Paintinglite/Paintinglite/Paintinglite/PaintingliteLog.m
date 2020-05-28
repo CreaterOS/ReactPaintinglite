@@ -121,6 +121,20 @@ static PaintingliteLog *_instance = nil;
     return resStr;
 }
 
+- (NSString *)readLogFile:(NSString *)fileName logStatus:(PaintingliteLogStatus)logStatus{
+    NSString *logStr = [[NSString alloc] initWithData:[self logData:fileName] encoding:NSUTF8StringEncoding];
+    
+    NSMutableString *resStr = [NSMutableString string];
+    
+    if ([[logStr componentsSeparatedByString:@" ---- "][2] containsString:[NSString stringWithFormat:@"[%@]",logStatus == PaintingliteLogSuccess ? @"success" : @"error"]]) {
+        //读取特定状态的日志
+        [resStr appendFormat:@"\n%@ LOG FILE %@\n%@\n%@\n",PaintingliteLeft_Rigth_Line,PaintingliteLeft_Rigth_Line,logStr,PaintingliteLine];
+    }
+    NSLog(@"%@",resStr);
+    
+    return resStr;
+}
+
 #pragma mark - 基本设置
 - (NSData *)logData:(NSString *__nonnull)fileName{
     return [NSData dataWithContentsOfFile:[self LogFilePath:fileName]];

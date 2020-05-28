@@ -86,7 +86,7 @@ static PaintingliteSessionManager *_instance = nil;
     
     NSString *filePath = [self.configuration configurationFileName:fileName];
     @synchronized (self) {
-        success = (sqlite3_open([filePath UTF8String], &_ppDb) == SQLITE_OK);
+        success = (sqlite3_open_v2([filePath UTF8String], &_ppDb, SQLITE_OPEN_READWRITE|SQLITE_OPEN_FULLMUTEX, NULL) == SQLITE_OK);
         if (completeHandler != nil) {
             completeHandler(filePath,self.error,success);
         }
@@ -110,18 +110,44 @@ static PaintingliteSessionManager *_instance = nil;
 #pragma mark - SQL操作
 #pragma mark - 创建表
 - (Boolean)createTableForSQL:(NSString *)sql{
-    __block Boolean flag = false;
-    [self createTableForSQL:sql completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
-        if (success) {
-            flag = success;
-        }
+    return [self createTableForSQL:sql completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
+        ;
     }];
-            
-    return flag;
 }
 
 - (Boolean)createTableForSQL:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
     return [self.dataBaseOptions createTableForSQL:self.ppDb sql:sql completeHandler:completeHandler];
+}
+
+- (Boolean)createTableForName:(NSString *)tableName content:(NSString *)content{
+    return [self createTableForName:tableName content:content completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
+        ;
+    }];
+}
+
+- (Boolean)createTableForName:(NSString *)tableName content:(NSString *)content completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
+    return [self.dataBaseOptions createTableForName:self.ppDb tableName:tableName content:content completeHandler:completeHandler];
+}
+
+#pragma mark - 删除表
+- (Boolean)dropTableForSQL:(NSString *)sql{
+    return [self dropTableForSQL:sql completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
+        ;
+    }];
+}
+
+- (Boolean)dropTableForSQL:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
+    return [self.dataBaseOptions createTableForSQL:self.ppDb sql:sql completeHandler:completeHandler];
+}
+
+- (Boolean)dropTableForTableName:(NSString *)tableName{
+    return [self dropTableForTableName:tableName completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
+        ;
+    }];
+}
+
+- (Boolean)dropTableForTableName:(NSString *)tableName completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
+    return [self.dataBaseOptions dropTableForTableName:self.ppDb tableName:tableName completeHandler:completeHandler];
 }
 
 #pragma mark - 释放数据库
@@ -169,4 +195,7 @@ static PaintingliteSessionManager *_instance = nil;
     return [[self.factory readLogFile:fileName dateTime:dateTime] length] != 0 ? [self.factory readLogFile:fileName dateTime:dateTime] : @"无操作日志";
 }
 
+- (NSString *)readLogFile:(NSString *)fileName logStatus:(PaintingliteLogStatus)logStatus{
+    return [[self.factory readLogFile:fileName logStatus:logStatus] length] != 0 ? [self.factory readLogFile:fileName logStatus:logStatus] : @"无对应日志";
+}
 @end

@@ -49,20 +49,56 @@
 //    NSLog(@"%hhu",[sessionManager releaseSqlite]);
     
 //    [sessionManager removeLogFile:@"sqlite"];
-    NSLog(@"%@",[sessionManager readLogFile:@"sqlite.db"]);
-    NSLog(@"%@",[sessionManager readLogFile:@"sqlite" dateTime:[NSDate date]]);
-    NSLog(@"%@",[sessionManager readLogFile:@"sqlites.db"]);
+//    NSLog(@"%@",[sessionManager readLogFile:@"sqlite.db"]);
+//    NSLog(@"%@",[sessionManager readLogFile:@"sqlite" dateTime:[NSDate date]]);
+//    NSLog(@"%@",[sessionManager readLogFile:@"sqlites.db"]);
     
-    NSString *baseStr = [PaintingliteSecurity StringWithSecurityBase64:@"加密操作"];
-    NSLog(@"%@",baseStr);
-    NSLog(@"%@",[PaintingliteSecurity StringWithDecodeSecurityBase64:baseStr]);
+//    NSString *baseStr = [PaintingliteSecurity StringWithSecurityBase64:@"加密操作"];
+//    NSLog(@"%@",baseStr);
+//    NSLog(@"%@",[PaintingliteSecurity StringWithDecodeSecurityBase64:baseStr]);
     
-    [sessionManager createTableForSQL:@"CREATE TABLE IF NOT EXISTS user(name TEXT,age INTEGER)"];
-    [sessionManager createTableForSQL:@"CREATE TABLE IF NOT EXISTS teacher(name TEXT,age INTEGER)" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
+//    [sessionManager createTableForSQL:@"CREATE TABLE IF NOT EXISTS user(name TEXT,age INTEGER)"];
+//    [sessionManager dropTableForSQL:@"DROP TABLE user"];
+    
+//    [sessionManager createTableForSQL:@"CREATE TABLE IF NOT EXISTS user(name TEXT,age INTEGER)" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
+//        if (success) {
+//            NSLog(@"创建表成功");
+//        }
+//    }];
+//
+//    [sessionManager dropTableForSQL:@"DROP TABLE teacher" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
+//        if (success) {
+//            NSLog(@"%@",@"删除表成功");
+//        }
+//    }];
+//
+//    [sessionManager createTableForSQL:@"CREATE TABLE IF NOT EXISTS user(name TEXT,age INTEGER)" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
+//        if (success) {
+//            NSLog(@"创建表成功");
+//        }
+//    }];
+//
+//
+//    NSLog(@"%@",[sessionManager readLogFile:@"sqlite" logStatus:PaintingliteLogSuccess]);
+//    NSLog(@"%@",[sessionManager readLogFile:@"sqlite" logStatus:PaintingliteLogError]);
+    
+    NSError *error = nil;
+    NSLog(@"%@",[NSJSONSerialization JSONObjectWithData:[PaintingliteSecurity SecurityDecodeBase64:[NSData dataWithContentsOfFile:[[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@"Tables_Snap.json"]]] options:NSJSONReadingAllowFragments error:&error][@"TablesSnap"]);
+
+    [sessionManager createTableForName:@"boss" content:@"name TEXT,age INTEGER" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
         if (success) {
-            NSLog(@"创建表成功");
+            NSLog(@"boss表创建成功...");
         }
     }];
+    
+//    [sessionManager dropTableForTableName:@"user" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
+//        if (success) {
+//            NSLog(@"user表删除成功...");
+//        }
+//    }];
+    
+//    [sessionManager dropTableForTableName:@"boss"];
+    
 }
 
 
