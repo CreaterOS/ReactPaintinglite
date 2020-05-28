@@ -129,6 +129,16 @@ static PaintingliteSessionManager *_instance = nil;
     return [self.dataBaseOptions createTableForName:self.ppDb tableName:tableName content:content completeHandler:completeHandler];
 }
 
+- (Boolean)createTableForObj:(id)obj{
+    return [self createTableForObj:obj completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
+        ;
+    }];
+}
+
+- (Boolean)createTableForObj:(id)obj completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
+    return [self.dataBaseOptions createTableForObj:self.ppDb obj:obj completeHandler:completeHandler];
+}
+
 #pragma mark - 删除表
 - (Boolean)dropTableForSQL:(NSString *)sql{
     return [self dropTableForSQL:sql completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {

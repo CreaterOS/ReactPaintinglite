@@ -124,4 +124,23 @@ static PaintingliteDataBaseOptions *_instance = nil;
     return success;
 }
 
+#pragma mark - 利用类操作
+#pragma mark - 创建表
+- (Boolean)createTableForObj:(sqlite3 *)ppDb obj:(id)obj{
+    return [self createTableForObj:ppDb obj:obj completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
+        ;
+    }];
+}
+
+- (Boolean)createTableForObj:(sqlite3 *)ppDb obj:(id)obj completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
+    
+    Boolean success = [self.exec sqlite3Exec:ppDb obj:obj];
+    
+    if (completeHandler != nil) {
+        completeHandler(self.sessionError,success);
+    }
+    
+    return success;
+}
+
 @end

@@ -10,6 +10,7 @@
 #import "Paintinglite/PaintingliteSessionManager.h"
 #import "Paintinglite/PaintingliteSecurity.h"
 #import "Paintinglite/PaintingliteDataBaseOptions.h"
+#import "Dogs.h"
 
 @interface ViewController ()
 
@@ -24,6 +25,7 @@
 //    NSString *fileName = [filePath stringByAppendingPathComponent:@"sqlite.db"];
     
     PaintingliteSessionManager *sessionManager = [PaintingliteSessionManager sharePaintingliteSessionManager];
+
 //    Boolean flag = [sessionManager openSqlite:@"sqlite.db"];
     
 //    NSLog(@"%hhu",flag);
@@ -85,20 +87,26 @@
     NSError *error = nil;
     NSLog(@"%@",[NSJSONSerialization JSONObjectWithData:[PaintingliteSecurity SecurityDecodeBase64:[NSData dataWithContentsOfFile:[[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@"Tables_Snap.json"]]] options:NSJSONReadingAllowFragments error:&error][@"TablesSnap"]);
 
-    [sessionManager createTableForName:@"boss" content:@"name TEXT,age INTEGER" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
-        if (success) {
-            NSLog(@"boss表创建成功...");
-        }
-    }];
-    
+//    [sessionManager createTableForName:@"boss" content:@"name TEXT,age INTEGER" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
+//        if (success) {
+//            NSLog(@"boss表创建成功...");
+//        }
+//    }];
+
 //    [sessionManager dropTableForTableName:@"user" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
 //        if (success) {
 //            NSLog(@"user表删除成功...");
 //        }
 //    }];
     
-//    [sessionManager dropTableForTableName:@"boss"];
+//    [sessionManager dropTableForTableName:@"dog"];
     
+    Dogs *dogs = [[Dogs alloc] init];
+    [sessionManager createTableForObj:dogs completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
+        if (success) {
+            NSLog(@"dog表创建成功...");
+        }
+    }];
 }
 
 

@@ -10,6 +10,8 @@
 		689E0677247EA79300D6DF95 /* PaintingliteSecurity.m in Sources */ = {isa = PBXBuildFile; fileRef = 689E0676247EA79300D6DF95 /* PaintingliteSecurity.m */; };
 		689E067A247EACD000D6DF95 /* PaintingliteDataBaseOptions.m in Sources */ = {isa = PBXBuildFile; fileRef = 689E0679247EACD000D6DF95 /* PaintingliteDataBaseOptions.m */; };
 		68A1F058247F9CBF0091EAFB /* PaintingliteExec.m in Sources */ = {isa = PBXBuildFile; fileRef = 68A1F057247F9CBF0091EAFB /* PaintingliteExec.m */; };
+		68D7BB60247FE56500AB994A /* PaintingliteObjRuntimeProperty.m in Sources */ = {isa = PBXBuildFile; fileRef = 68D7BB5F247FE56500AB994A /* PaintingliteObjRuntimeProperty.m */; };
+		68D7BB63247FEF5F00AB994A /* Dogs.m in Sources */ = {isa = PBXBuildFile; fileRef = 68D7BB62247FEF5F00AB994A /* Dogs.m */; };
 		68DE9926247C9B6A0078EDD5 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 68DE9925247C9B6A0078EDD5 /* AppDelegate.m */; };
 		68DE9929247C9B6A0078EDD5 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 68DE9928247C9B6A0078EDD5 /* ViewController.m */; };
 		68DE992C247C9B6A0078EDD5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 68DE992A247C9B6A0078EDD5 /* Main.storyboard */; };
@@ -50,6 +52,10 @@
 		689E0679247EACD000D6DF95 /* PaintingliteDataBaseOptions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaintingliteDataBaseOptions.m; sourceTree = "<group>"; };
 		68A1F056247F9CBF0091EAFB /* PaintingliteExec.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaintingliteExec.h; sourceTree = "<group>"; };
 		68A1F057247F9CBF0091EAFB /* PaintingliteExec.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaintingliteExec.m; sourceTree = "<group>"; };
+		68D7BB5E247FE56500AB994A /* PaintingliteObjRuntimeProperty.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaintingliteObjRuntimeProperty.h; sourceTree = "<group>"; };
+		68D7BB5F247FE56500AB994A /* PaintingliteObjRuntimeProperty.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaintingliteObjRuntimeProperty.m; sourceTree = "<group>"; };
+		68D7BB61247FEF5F00AB994A /* Dogs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Dogs.h; sourceTree = "<group>"; };
+		68D7BB62247FEF5F00AB994A /* Dogs.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Dogs.m; sourceTree = "<group>"; };
 		68DE9921247C9B6A0078EDD5 /* Paintinglite.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Paintinglite.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		68DE9924247C9B6A0078EDD5 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		68DE9925247C9B6A0078EDD5 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -135,6 +141,8 @@
 				68DE9925247C9B6A0078EDD5 /* AppDelegate.m */,
 				68DE9927247C9B6A0078EDD5 /* ViewController.h */,
 				68DE9928247C9B6A0078EDD5 /* ViewController.m */,
+				68D7BB61247FEF5F00AB994A /* Dogs.h */,
+				68D7BB62247FEF5F00AB994A /* Dogs.m */,
 				68DE992A247C9B6A0078EDD5 /* Main.storyboard */,
 				68DE992D247C9B6C0078EDD5 /* Assets.xcassets */,
 				68DE992F247C9B6C0078EDD5 /* LaunchScreen.storyboard */,
@@ -175,6 +183,8 @@
 				689E0679247EACD000D6DF95 /* PaintingliteDataBaseOptions.m */,
 				68A1F056247F9CBF0091EAFB /* PaintingliteExec.h */,
 				68A1F057247F9CBF0091EAFB /* PaintingliteExec.m */,
+				68D7BB5E247FE56500AB994A /* PaintingliteObjRuntimeProperty.h */,
+				68D7BB5F247FE56500AB994A /* PaintingliteObjRuntimeProperty.m */,
 				68DE9966247CA5870078EDD5 /* PaintingliteSessionError.h */,
 				68DE9967247CA5870078EDD5 /* PaintingliteSessionError.m */,
 				689E0675247EA79300D6DF95 /* PaintingliteSecurity.h */,
@@ -326,7 +336,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				68DE9929247C9B6A0078EDD5 /* ViewController.m in Sources */,
+				68D7BB63247FEF5F00AB994A /* Dogs.m in Sources */,
 				68DE9934247C9B6C0078EDD5 /* main.m in Sources */,
+				68D7BB60247FE56500AB994A /* PaintingliteObjRuntimeProperty.m in Sources */,
 				68DE9965247CA2490078EDD5 /* PaintingliteConfiguration.m in Sources */,
 				68DE9968247CA5870078EDD5 /* PaintingliteSessionError.m in Sources */,
 				68DE9959247C9C260078EDD5 /* PaintingliteSessionManager.m in Sources */,

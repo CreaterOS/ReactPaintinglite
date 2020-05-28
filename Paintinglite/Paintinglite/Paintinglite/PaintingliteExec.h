@@ -20,6 +20,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (Boolean)sqlite3Exec:(sqlite3 *)ppDb tableName:(NSString *)tableName;
 
+- (Boolean)sqlite3Exec:(sqlite3 *)ppDb obj:(id)obj;
+
 @end
 
 NS_ASSUME_NONNULL_END

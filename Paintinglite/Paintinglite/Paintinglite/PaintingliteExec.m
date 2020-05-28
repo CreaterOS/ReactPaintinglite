@@ -8,8 +8,10 @@
 
 #import "PaintingliteExec.h"
 #import "PaintingliteSessionFactory.h"
+#import "PaintingliteObjRuntimeProperty.h"
 #import "PaintingliteSecurity.h"
 #import "PaintingliteLog.h"
+#import <objc/runtime.h>
 
 @interface PaintingliteExec()
 @property (nonatomic,strong)PaintingliteSessionFactory *factory; //工厂
@@ -78,8 +80,8 @@
         }else{
             //创建数据库
             if (flag) {
-                NSString *createSQL = [NSString stringWithFormat:@"CREATE TABLE IF NOT EXISTS %@(%@)",tableName,content];
-                
+                NSString *createSQL = [NSString stringWithFormat:@"CREATE TABLE IF NOT EXISTS %@\n(\n\t%@\n)",tableName,content];
+                NSLog(@"%@",createSQL);
                 [self sqlite3Exec:ppDb sql:createSQL];
             }
         }
@@ -108,6 +110,31 @@
             NSException *exception = [NSException exceptionWithName:@"表名不存在" reason:@"数据库中未找到表名" userInfo:nil];
             [exception raise];
         }
+    }
+    
+    return flag;
+}
+
+- (Boolean)sqlite3Exec:(sqlite3 *)ppDb obj:(id)obj{
+    Boolean flag = false;
+    
+    @synchronized (self) {
+        //获得obj的名称作为表的名称
+        NSString *objName = NSStringFromClass([obj class]);
+        //获得obj的成员变量作为表的字段
+        NSMutableDictionary *propertyDict = [PaintingliteObjRuntimeProperty getObjPropertyName:obj];
+        
+        NSMutableString *content = [NSMutableString string];
+        
+        for (NSString *ivarName in [propertyDict allKeys]) {
+            NSString *ivarType = propertyDict[ivarName];
+            [content appendFormat:@"%@ %@,",ivarName,ivarType];
+        }
+        
+        content = (NSMutableString *)[content substringWithRange:NSMakeRange(0, content.length-1)];
+        
+        [self sqlite3Exec:ppDb tableName:[objName lowercaseString] content:content];
+        
     }
     
     return flag;

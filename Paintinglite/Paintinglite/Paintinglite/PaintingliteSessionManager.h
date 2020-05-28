@@ -66,10 +66,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (Boolean)createTableForSQL:(NSString *)sql completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
 - (Boolean)createTableForName:(NSString *)tableName content:(NSString *)content;
 - (Boolean)createTableForName:(NSString *)tableName content:(NSString *)content completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
-
-
-
-
+- (Boolean)createTableForObj:(id)obj;
+- (Boolean)createTableForObj:(id)obj completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
 
 /**
  * 删除表
