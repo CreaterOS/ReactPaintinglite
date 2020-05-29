@@ -7,11 +7,15 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "PaintingliteDataBaseOptions.h"
 #import <Sqlite3.h>
 
 typedef NS_ENUM(NSInteger,PaintingliteExecStatus){
     PaintingliteExecCreate,
-    PaintingliteExecDrop
+    PaintingliteExecDrop,
+    PaintingliteExecAlterRename,
+    PaintingliteExecAlterAddColumn,
+    PaintingliteExecAlterObj
 };
 
 NS_ASSUME_NONNULL_BEGIN
@@ -25,7 +29,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (Boolean)sqlite3Exec:(sqlite3 *)ppDb tableName:(NSString *)tableName;
 
-- (Boolean)sqlite3Exec:(sqlite3 *)ppDb obj:(id)obj status:(PaintingliteExecStatus)status;
+- (Boolean)sqlite3Exec:(sqlite3 *)ppDb obj:(id)obj status:(PaintingliteExecStatus)status createStyle:(PaintingliteDataBaseOptionsCreateStyle)createStyle;
+
+- (void)sqlite3Exec:(sqlite3 *)ppDb objName:(NSString *)objName;
 
 @end
 

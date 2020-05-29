@@ -1,8 +1,8 @@
 //
-//  Person.h
+//  Mouse.h
 //  Paintinglite
 //
-//  Created by Bryant Reyn on 2020/5/28.
+//  Created by Bryant Reyn on 2020/5/29.
 //  Copyright © 2020 Bryant Reyn. All rights reserved.
 //
 
@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface Person : NSObject
+@interface Mouse : NSObject
 
 @property (nonatomic,strong)NSString *name;
 @property (nonatomic)NSUInteger age;

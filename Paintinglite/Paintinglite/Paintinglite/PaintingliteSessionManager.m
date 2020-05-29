@@ -8,7 +8,6 @@
 
 #import "PaintingliteSessionManager.h"
 #import "PaintingliteSessionFactory.h"
-#import "PaintingliteDataBaseOptions.h"
 #import "PaintingliteConfiguration.h"
 
 @interface PaintingliteSessionManager()
@@ -93,18 +92,17 @@ static PaintingliteSessionManager *_instance = nil;
     }
     
     //保存表快照到JSON文件
-    dispatch_async(PaintingliteSessionFactory_Sqlite_Queque, ^{
+    @synchronized (self) {
         //查看打开的数据库，进行快照区保存
         [self saveSnip];
-    });
-
+    }
     
     return success;
 }
 
 #pragma mark - 快照区保存
 - (void)saveSnip{
-    [self.factory execQuery:self.ppDb sql:@"SELECT name FROM sqlite_master WHERE type='table' ORDER BY name"];
+    [self.factory execQuery:self.ppDb sql:@"SELECT name FROM sqlite_master WHERE type='table' ORDER BY name" status:PaintingliteSessionFactoryTableJSON];
 }
 
 #pragma mark - SQL操作
@@ -129,14 +127,56 @@ static PaintingliteSessionManager *_instance = nil;
     return [self.dataBaseOptions createTableForName:self.ppDb tableName:tableName content:content completeHandler:completeHandler];
 }
 
-- (Boolean)createTableForObj:(id)obj{
-    return [self createTableForObj:obj completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
+- (Boolean)createTableForObj:(id)obj createStyle:(PaintingliteDataBaseOptionsCreateStyle)createStyle{
+    return [self createTableForObj:obj createStyle:createStyle completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
         ;
     }];
 }
 
-- (Boolean)createTableForObj:(id)obj completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
-    return [self.dataBaseOptions createTableForObj:self.ppDb obj:obj completeHandler:completeHandler];
+- (Boolean)createTableForObj:(id)obj createStyle:(PaintingliteDataBaseOptionsCreateStyle)createStyle completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
+    return [self.dataBaseOptions createTableForObj:self.ppDb obj:obj createStyle:createStyle completeHandler:completeHandler];
+}
+
+#pragma mark - 更新表
+- (BOOL)alterTableForSQL:(NSString *)sql{
+    return [self alterTableForSQL:sql
+                  completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
+                      ;
+                  }];
+}
+
+- (BOOL)alterTableForSQL:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
+    return [self.dataBaseOptions alterTableForSQL:self.ppDb sql:sql completeHandler:completeHandler];
+}
+
+- (BOOL)alterTableForName:(NSString *)oldName newName:(NSString *)newName{
+    return [self alterTableForName:oldName newName:newName completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
+        ;
+    }];
+}
+
+- (BOOL)alterTableForName:(NSString *)oldName newName:(NSString *)newName completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
+    return [self.dataBaseOptions alterTableForName:self.ppDb oldName:oldName newName:newName completeHandler:completeHandler];
+}
+
+- (BOOL)alterTableAddColumn:(NSString *)tableName columnName:(NSString *)columnName columnType:(NSString *)columnType{
+    return [self alterTableAddColumn:tableName columnName:columnName columnType:columnType completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
+        ;
+    }];
+}
+
+- (BOOL)alterTableAddColumn:(NSString *)tableName columnName:(NSString *)columnName columnType:(NSString *)columnType completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
+    return [self.dataBaseOptions alterTableAddColumn:self.ppDb tableName:tableName columnName:columnName columnType:columnType completeHandler:completeHandler];
+}
+
+- (BOOL)alterTableForObj:(id)obj{
+    return [self alterTableForObj:obj completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
+        ;
+    }];
+}
+
+- (BOOL)alterTableForObj:(id)obj completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
+    return [self.dataBaseOptions alterTableForObj:self.ppDb obj:obj completeHandler:completeHandler];
 }
 
 #pragma mark - 删除表

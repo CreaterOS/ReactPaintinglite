@@ -18,6 +18,12 @@
 #import "PaintingliteSessionError.h"
 #import <Sqlite3.h>
 
+typedef NS_ENUM(NSUInteger, PaintingliteDataBaseOptionsCreateStyle) {
+    PaintingliteDataBaseOptionsDefault, //默认不带主键
+    PaintingliteDataBaseOptionsUUID, //用UUID做主键
+    PaintingliteDataBaseOptionsID //用ID做主键
+};
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface PaintingliteDataBaseOptions : NSObject
@@ -30,10 +36,18 @@ NS_ASSUME_NONNULL_BEGIN
 - (Boolean)createTableForSQL:(sqlite3 *)ppDb sql:(NSString *)sql completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
 - (Boolean)createTableForName:(sqlite3 *)ppDb tableName:(NSString *)tableName content:(NSString *)content;
 - (Boolean)createTableForName:(sqlite3 *)ppDb tableName:(NSString *)tableName content:(NSString *)content completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
-- (Boolean)createTableForObj:(sqlite3 *)ppDb obj:(id)obj;
-- (Boolean)createTableForObj:(sqlite3 *)ppDb obj:(id)obj completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
+- (Boolean)createTableForObj:(sqlite3 *)ppDb obj:(id)obj createStyle:(PaintingliteDataBaseOptionsCreateStyle)createStyle;
+- (Boolean)createTableForObj:(sqlite3 *)ppDb obj:(id)obj createStyle:(PaintingliteDataBaseOptionsCreateStyle)createStyle completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
 
 /* 更新表 */
+- (BOOL)alterTableForSQL:(sqlite3 *)ppDb sql:(NSString *)sql;
+- (BOOL)alterTableForSQL:(sqlite3 *)ppDb sql:(NSString *)sql completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
+- (BOOL)alterTableForName:(sqlite3 *)ppDb oldName:(NSString *__nonnull)oldName newName:(NSString *__nonnull)newName;
+- (BOOL)alterTableForName:(sqlite3 *)ppDb oldName:(NSString *__nonnull)oldName newName:(NSString *__nonnull)newName completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
+- (BOOL)alterTableAddColumn:(sqlite3 *)ppDb tableName:(NSString *)tableName columnName:(NSString *__nonnull)columnName columnType:(NSString *__nonnull)columnType;
+- (BOOL)alterTableAddColumn:(sqlite3 *)ppDb tableName:(NSString *)tableName columnName:(NSString *__nonnull)columnName columnType:(NSString *__nonnull)columnType completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
+- (BOOL)alterTableForObj:(sqlite3 *)ppDb obj:(id)obj;
+- (BOOL)alterTableForObj:(sqlite3 *)ppDb obj:(id)obj completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
 
 /* 删除表 */
 - (Boolean)dropTableForSQL:(sqlite3 *)ppDb sql:(NSString *)sql;

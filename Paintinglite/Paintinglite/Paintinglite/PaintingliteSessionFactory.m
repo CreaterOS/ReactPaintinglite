@@ -38,16 +38,23 @@ static PaintingliteSessionFactory *_instance = nil;
 }
 
 #pragma mark - 执行查询
-- (void)execQuery:(sqlite3 *)ppDb sql:(NSString *)sql{
+- (void)execQuery:(sqlite3 *)ppDb sql:(NSString *)sql status:(PaintingliteSessionFactoryStatus)status{
     NSMutableArray<NSString *> *tables = [NSMutableArray array];
-    
+
     @synchronized (self) {
-        if (sqlite3_prepare(ppDb, [sql UTF8String], -1, &_stmt, nil) == SQLITE_OK){
+        if (sqlite3_prepare_v2(ppDb, [sql UTF8String], -1, &_stmt, nil) == SQLITE_OK){
             //查询成功
             while (sqlite3_step(_stmt) == SQLITE_ROW) {
                 //获得数据库中含有的表名
-                char *name = (char *)sqlite3_column_text(_stmt, 0);
-                [tables addObject:[NSString stringWithFormat:@"%s",name]];
+                if (status == PaintingliteSessionFactoryTableJSON) {
+                    char *name = (char *)sqlite3_column_text(_stmt, 0);
+                    [tables addObject:[NSString stringWithFormat:@"%s",name]];
+                }else if (status == PaintingliteSessionFactoryTableINFOJSON){
+                    //保存数据库中的字段名
+                    char *name = (char *)sqlite3_column_text(_stmt, 1);
+                    NSLog(@"%s",name);
+                    [tables addObject:[NSString stringWithFormat:@"%s",name]];
+                }
             }
         }else{
             //写入日志文件
@@ -59,7 +66,7 @@ static PaintingliteSessionFactory *_instance = nil;
     
     if (tables.count != 0) {
         //写入JSON快照
-        [self writeTablesSnapJSON:tables];
+        (status == PaintingliteSessionFactoryTableJSON) ? [self writeTablesSnapJSON:tables status:PaintingliteSessionFactoryTableJSON] : [self writeTablesSnapJSON:tables status:PaintingliteSessionFactoryTableINFOJSON];
         
         //写入日志文件
         [self.log writeLogFileOptions:sql status:PaintingliteLogSuccess completeHandler:^(NSString * _Nonnull logFilePath) {
@@ -69,8 +76,9 @@ static PaintingliteSessionFactory *_instance = nil;
 }
 
 #pragma mark - 写入JSON快照
-- (void)writeTablesSnapJSON:(NSMutableArray *)tables{
-    NSDictionary *tablesSnapDict = @{@"TablesSnap":tables};
+- (void)writeTablesSnapJSON:(NSMutableArray *)tables status:(PaintingliteSessionFactoryStatus)status{
+    NSDictionary *tablesSnapDict = @{((status == PaintingliteSessionFactoryTableJSON) ? @"TablesSnap" : @"TablesInfoSnap"):tables};
+    
     //写入JSON文件
     @synchronized (self) {
         if ([NSJSONSerialization isValidJSONObject:tablesSnapDict]) {
@@ -78,7 +86,7 @@ static PaintingliteSessionFactory *_instance = nil;
            
             NSData *data =  [PaintingliteSecurity SecurityBase64:[NSJSONSerialization dataWithJSONObject:tablesSnapDict options:NSJSONWritingPrettyPrinted error:&error]];
             
-            NSString *TablesSnapJsonPath = [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) firstObject] stringByAppendingPathComponent:@"Tables_Snap.json"];
+            NSString *TablesSnapJsonPath = [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) firstObject] stringByAppendingPathComponent:(status == PaintingliteSessionFactoryTableJSON ? @"Tables_Snap.json" : @"TablesInfo_Snap.json")];
             NSFileManager *fileManager = [NSFileManager defaultManager];
             
             if ([fileManager fileExistsAtPath:TablesSnapJsonPath]) {

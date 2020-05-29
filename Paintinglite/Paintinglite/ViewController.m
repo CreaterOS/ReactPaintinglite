@@ -11,7 +11,9 @@
 #import "Paintinglite/PaintingliteSecurity.h"
 #import "Paintinglite/PaintingliteDataBaseOptions.h"
 #import "Dogs.h"
+#import "Mouse.h"
 #import "Person.h"
+#import "Elephant.h"
 
 @interface ViewController ()
 
@@ -60,7 +62,7 @@
 //    NSLog(@"%@",baseStr);
 //    NSLog(@"%@",[PaintingliteSecurity StringWithDecodeSecurityBase64:baseStr]);
     
-//    [sessionManager createTableForSQL:@"CREATE TABLE IF NOT EXISTS user(name TEXT,age INTEGER)"];
+//    [sessionManager createTableForSQL:@"CREATE TABLE IF NOT EXISTS person(name TEXT,age INTEGER)"];
 //    [sessionManager dropTableForSQL:@"DROP TABLE user"];
     
 //    [sessionManager createTableForSQL:@"CREATE TABLE IF NOT EXISTS user(name TEXT,age INTEGER)" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
@@ -75,7 +77,7 @@
 //        }
 //    }];
 //
-//    [sessionManager createTableForSQL:@"CREATE TABLE IF NOT EXISTS user(name TEXT,age INTEGER)" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
+//    [sessionManager createTableForSQL:@"CREATE TABLE IF NOT EXISTS person(phone TEXT)" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
 //        if (success) {
 //            NSLog(@"创建表成功");
 //        }
@@ -85,12 +87,12 @@
 //    NSLog(@"%@",[sessionManager readLogFile:@"sqlite" logStatus:PaintingliteLogSuccess]);
 //    NSLog(@"%@",[sessionManager readLogFile:@"sqlite" logStatus:PaintingliteLogError]);
     
-    NSError *error = nil;
-    NSLog(@"%@",[NSJSONSerialization JSONObjectWithData:[PaintingliteSecurity SecurityDecodeBase64:[NSData dataWithContentsOfFile:[[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@"Tables_Snap.json"]]] options:NSJSONReadingAllowFragments error:&error][@"TablesSnap"]);
+//    NSError *error = nil;
+//    NSLog(@"%@",[NSJSONSerialization JSONObjectWithData:[PaintingliteSecurity SecurityDecodeBase64:[NSData dataWithContentsOfFile:[[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@"Tables_Snap.json"]]] options:NSJSONReadingAllowFragments error:&error][@"TablesSnap"]);
 
-//    [sessionManager createTableForName:@"boss" content:@"name TEXT,age INTEGER" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
+//    [sessionManager createTableForName:@"person" content:@"id INTEGER" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
 //        if (success) {
-//            NSLog(@"boss表创建成功...");
+//            NSLog(@"person表创建成功...");
 //        }
 //    }];
 
@@ -109,13 +111,48 @@
 //        }
 //    }];
     
-    Person *person = [[Person alloc] init];
+//    Person *person = [[Person alloc] init];
+//
+//    [sessionManager dropTableForObj:person completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
+//        if (success) {
+//            NSLog(@"dogs表删除成功...");
+//        }
+//    }];
     
-    [sessionManager dropTableForObj:person completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
-        if (success) {
-            NSLog(@"dogs表删除成功...");
-        }
-    }];
+//    [sessionManager alterTableForSQL:@"ALTER TABLE teacher RENAME TO teachers" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
+//        if (success) {
+//            NSLog(@"teacher表重新命名成功...");
+//        }
+//    }];
+    
+//    [sessionManager alterTableForSQL:@"ALTER TABLE teachers ADD COLUMN year TEXT"];
+    
+//    [sessionManager alterTableForName:@"teachers" newName:@"teacher" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
+//        if (success) {
+//            NSLog(@"teachers表重新命名成功...");
+//        }
+//    }];
+    
+//    [sessionManager alterTableAddColumn:@"teachers" columnName:@"phone" columnType:@"TEXT"];
+//    
+//    Person *person = [[Person alloc] init];
+//    [sessionManager alterTableForObj:person completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
+//        if (success) {
+//            NSLog(@"person更新成功...");
+//        }
+//    }];
+    
+//    Elephant *ele = [[Elephant alloc] init];
+//    [sessionManager dropTableForObj:mouse];
+//    [sessionManager createTableForObj:ele createStyle:PaintingliteDataBaseOptionsUUID completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
+//        if (success) {
+//            NSLog(@"ele创建成功...");
+//        }
+//    }];
+    
+    
+    
+    
 }
 
 
