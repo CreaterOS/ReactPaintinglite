@@ -38,7 +38,7 @@ static PaintingliteSessionFactory *_instance = nil;
 }
 
 #pragma mark - 执行查询
-- (void)execQuery:(sqlite3 *)ppDb sql:(NSString *)sql status:(PaintingliteSessionFactoryStatus)status{
+- (NSMutableArray *)execQuery:(sqlite3 *)ppDb sql:(NSString *)sql status:(PaintingliteSessionFactoryStatus)status{
     NSMutableArray<NSString *> *tables = [NSMutableArray array];
 
     @synchronized (self) {
@@ -52,7 +52,6 @@ static PaintingliteSessionFactory *_instance = nil;
                 }else if (status == PaintingliteSessionFactoryTableINFOJSON){
                     //保存数据库中的字段名
                     char *name = (char *)sqlite3_column_text(_stmt, 1);
-                    NSLog(@"%s",name);
                     [tables addObject:[NSString stringWithFormat:@"%s",name]];
                 }
             }
@@ -73,6 +72,8 @@ static PaintingliteSessionFactory *_instance = nil;
             NSLog(@"%@",logFilePath);
         }];
     }
+    
+    return tables;
 }
 
 #pragma mark - 写入JSON快照
@@ -97,8 +98,6 @@ static PaintingliteSessionFactory *_instance = nil;
             [data writeToFile:TablesSnapJsonPath atomically:YES];
         }
         
-        [tables removeAllObjects];
-        tables = nil;
         tablesSnapDict = nil;
     }
 }

@@ -13,8 +13,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface PaintingliteObjRuntimeProperty : NSObject
 
+/* 获得类的名称 */
++ (NSString *)getObjName:(id)obj;
+
 /* 获得属性名称 */
 + (NSMutableDictionary *)getObjPropertyName:(id)obj;
+
+/* 属性方法动态赋值 */
++ (id)setObjPropertyValue:(id)obj value:(NSMutableDictionary *)value;
 
 @end
 

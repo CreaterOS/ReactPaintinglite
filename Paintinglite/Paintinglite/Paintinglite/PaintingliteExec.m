@@ -18,6 +18,7 @@
 @interface PaintingliteExec()
 @property (nonatomic,strong)PaintingliteSessionFactory *factory; //工厂
 @property (nonatomic,strong)PaintingliteLog *log; //日志
+@property (nonatomic)sqlite3_stmt *stmt;
 @end
 
 @implementation PaintingliteExec
@@ -68,16 +69,86 @@
     return flag;
 }
 
-- (void)sqlite3Exec:(sqlite3 *)ppDb objName:(NSString *)objName{
+/* 查询数据库 */
+- (NSMutableArray *)sqlite3ExecQuery:(sqlite3 *)ppDb sql:(NSString *)sql{
+    NSMutableArray<NSDictionary *> *tables = [NSMutableArray array];
+    //将结果返回,保存为字典
+    NSMutableArray *resArray = [self sqlite3Exec:ppDb objName:[[[sql uppercaseString] componentsSeparatedByString:@"FROM "][1] lowercaseString]];
+    
+    @synchronized (self) {
+        if (sqlite3_prepare_v2(ppDb, [sql UTF8String], -1, &_stmt, nil) == SQLITE_OK){
+            //查询成功
+            while (sqlite3_step(_stmt) == SQLITE_ROW) {
+                NSMutableDictionary<id,id> *queryDict = [NSMutableDictionary dictionary];
+                //resArray是一个含有表字段的数据，根据resArray获得值加入
+                for (unsigned int i = 0; i < resArray.count; i++) {
+                    //取出来的值，然后判断类型，进行类型分类
+                    /**
+                     SQLITE_INTEGER  1
+                     SQLITE_FLOAT    2
+                     SQLITE3_TEXT    3
+                     SQLITE_BLOB     4
+                     SQLITE_NULL     5
+                     */
+                    id value = nil;
+                    value = [self caseTheType:sqlite3_column_type(_stmt, i) index:i value:value];
+                    [queryDict setValue:value forKey:resArray[i]];
+                }
+                [tables addObject:queryDict];
+            }
+        }else{
+            //写入日志文件
+            [self.log writeLogFileOptions:sql status:PaintingliteLogError completeHandler:^(NSString * _Nonnull logFilePath) {
+                ;
+            }];
+        }
+    }
+    
+    
+    if (tables.count != 0) {
+        //写入日志文件
+        [self.log writeLogFileOptions:sql status:PaintingliteLogSuccess completeHandler:^(NSString * _Nonnull logFilePath) {
+            NSLog(@"%@",logFilePath);
+        }];
+    }
+    
+    return tables;
+}
+
+#pragma mark - 类型转换
+- (id)caseTheType:(int)type index:(int)i value:(id)value{
+    switch (type) {
+        case SQLITE_INTEGER:
+            value = @(sqlite3_column_int(_stmt, i));
+            break;
+        case SQLITE_FLOAT:
+            value = @(sqlite3_column_double(_stmt, i));
+            break;
+        case SQLITE3_TEXT:
+            value = [NSString stringWithUTF8String:(const char *)sqlite3_column_text(_stmt, i)];
+            break;
+        case SQLITE_BLOB:
+            value = CFBridgingRelease(sqlite3_column_blob(_stmt, i));
+            break;
+        case SQLITE_NULL:
+            value = @"";
+            break;
+        default:
+            break;
+    }
+    
+    return value;
+}
+
+- (NSMutableArray *)sqlite3Exec:(sqlite3 *)ppDb objName:(NSString *)objName{
+    NSMutableArray<NSString *> *resArray = [NSMutableArray array];
     @synchronized (self) {
         //保存快照
         NSString *masterSQL = [NSString stringWithFormat:@"PRAGMA table_info(%@)",objName];
-        [self.factory execQuery:ppDb sql:masterSQL status:PaintingliteSessionFactoryTableINFOJSON];
-        //写入日志
-        [self.log writeLogFileOptions:masterSQL status:PaintingliteLogSuccess completeHandler:^(NSString * _Nonnull logFilePath) {
-            ;
-        }];
+        resArray = [self.factory execQuery:ppDb sql:masterSQL status:PaintingliteSessionFactoryTableINFOJSON];
     }
+    
+    return resArray;
 }
 
 - (Boolean)sqlite3Exec:(sqlite3 *)ppDb tableName:(NSString *)tableName content:(NSString *)content{
@@ -135,7 +206,8 @@
     
     @synchronized (self) {
         //获得obj的名称作为表的名称
-        NSString *objName = NSStringFromClass([obj class]);
+        NSString *objName = [PaintingliteObjRuntimeProperty getObjName:obj];
+        
         if (status == PaintingliteExecCreate) {
             [self getPaintingliteExecCreate:ppDb objName:objName obj:obj createSytle:createStyle];
         }else if(status == PaintingliteExecDrop){

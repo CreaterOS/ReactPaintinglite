@@ -14,6 +14,7 @@
 #import "Mouse.h"
 #import "Person.h"
 #import "Elephant.h"
+#import "User.h"
 
 @interface ViewController ()
 
@@ -143,7 +144,7 @@
 //    }];
     
 //    Elephant *ele = [[Elephant alloc] init];
-//    [sessionManager dropTableForObj:mouse];
+//    [sessionManager dropTableForObj:ele];
 //    [sessionManager createTableForObj:ele createStyle:PaintingliteDataBaseOptionsUUID completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
 //        if (success) {
 //            NSLog(@"ele创建成功...");
@@ -151,8 +152,50 @@
 //    }];
     
     
+//    [sessionManager execQuerySQL:@"SELECT * FROM user" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray) {
+//        if (success) {
+//            for (NSDictionary *dict in resArray) {
+//                NSLog(@"name = %@ age = %@ --- %@",dict[@"name"],dict[@"age"],[dict[@"age"] class]);
+//            }
+//        }
+//    }];
     
-    
+//    NSMutableArray *arr = [NSMutableArray array];
+//    User *user1 = [[User alloc] init];
+//    user1.name = @"CreaterOS";
+//    [arr addObject:user1];
+//    User *user2 = [[User alloc] init];
+//    user2.name = @"adsf";
+//    [arr addObject:user2];
+//    User *user3 = [[User alloc] init];
+//    user3.name = @"ddd";
+//    [arr addObject:user3];
+//
+//    for (User *user in arr) {
+//        NSLog(@"%@ %p",user.name,user);
+//    }
+
+//    NSMutableArray *arr = [NSMutableArray array];
+//    User *user = [[User alloc] init];
+//    user.name = @"CreaterOS";
+//    [arr addObject:user];
+//    user.name = @"adsf";
+//    [arr addObject:user];
+//    user.name = @"ddd";
+//    [arr addObject:user];
+//
+//    for (User *user in arr) {
+//        NSLog(@"%@ %p",user.name,user);
+//    }
+
+//    User *user = [[User alloc] init];
+//    [sessionManager execQuerySQL:@"SELECT * FROM user" obj:user completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> *  _Nonnull resObjList) {
+//        if (success) {
+//            for (User *user in resObjList) {
+//                NSLog(@"user.name = %@ user.age = %zd",user.name,user.age);
+//            }
+//        }
+//    }];
 }
 
 

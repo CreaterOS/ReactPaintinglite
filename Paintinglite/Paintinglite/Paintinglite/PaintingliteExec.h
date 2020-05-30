@@ -25,13 +25,15 @@ NS_ASSUME_NONNULL_BEGIN
 /* 执行SQL语句 */
 - (Boolean)sqlite3Exec:(sqlite3 *)ppDb sql:(NSString *)sql;
 
+- (NSMutableArray *)sqlite3ExecQuery:(sqlite3 *)ppDb sql:(NSString *)sql;
+
 - (Boolean)sqlite3Exec:(sqlite3 *)ppDb tableName:(NSString *)tableName content:(NSString *)content;
 
 - (Boolean)sqlite3Exec:(sqlite3 *)ppDb tableName:(NSString *)tableName;
 
 - (Boolean)sqlite3Exec:(sqlite3 *)ppDb obj:(id)obj status:(PaintingliteExecStatus)status createStyle:(PaintingliteDataBaseOptionsCreateStyle)createStyle;
 
-- (void)sqlite3Exec:(sqlite3 *)ppDb objName:(NSString *)objName;
+- (NSMutableArray *)sqlite3Exec:(sqlite3 *)ppDb objName:(NSString *)objName;
 
 @end
 

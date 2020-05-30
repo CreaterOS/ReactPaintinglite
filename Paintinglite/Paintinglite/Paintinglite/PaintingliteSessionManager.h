@@ -15,6 +15,7 @@
 #import <Foundation/Foundation.h>
 #import "PaintingliteSessionError.h"
 #import "PaintingliteDataBaseOptions.h"
+#import "PaintingliteTableOptions.h"
 #import "PaintingliteLog.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -90,6 +91,15 @@ NS_ASSUME_NONNULL_BEGIN
 - (Boolean)dropTableForTableName:(NSString *)tableName completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
 - (Boolean)dropTableForObj:(id)obj;
 - (Boolean)dropTableForObj:(id)obj completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
+
+/**
+ * 查看数据
+ */
+- (NSMutableArray *)execQuerySQL:(NSString *__nonnull)sql;
+- (Boolean)execQuerySQL:(NSString *__nonnull)sql completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray))completeHandler;
+- (id)execQuerySQL:(NSString *__nonnull)sql obj:(id)obj;
+- (Boolean)execQuerySQL:(NSString *__nonnull)sql obj:(id)obj completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray,NSMutableArray<id> *resObjList))completeHandler;
+
 @end
 
 NS_ASSUME_NONNULL_END

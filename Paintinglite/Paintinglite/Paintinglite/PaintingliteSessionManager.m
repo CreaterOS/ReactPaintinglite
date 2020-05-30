@@ -16,6 +16,7 @@
 @property (nonatomic,strong)PaintingliteSessionError *error; //错误
 @property (nonatomic,strong)PaintingliteConfiguration *configuration; //配置文件
 @property (nonatomic,strong)PaintingliteDataBaseOptions *dataBaseOptions; //数据库操作
+@property (nonatomic,strong)PaintingliteTableOptions *tableOptions; //表操作
 @property (nonatomic)Boolean closeFlag; //关闭标识符
 @end
 
@@ -46,6 +47,13 @@
     return _dataBaseOptions;
 }
 
+- (PaintingliteTableOptions *)tableOptions{
+    if (!_tableOptions) {
+        _tableOptions = [PaintingliteTableOptions sharePaintingliteTableOptions];
+    }
+    
+    return _tableOptions;
+}
 
 - (PaintingliteConfiguration *)configuration{
     if (!_configuration) {
@@ -258,4 +266,36 @@ static PaintingliteSessionManager *_instance = nil;
 - (NSString *)readLogFile:(NSString *)fileName logStatus:(PaintingliteLogStatus)logStatus{
     return [[self.factory readLogFile:fileName logStatus:logStatus] length] != 0 ? [self.factory readLogFile:fileName logStatus:logStatus] : @"无对应日志";
 }
+
+#pragma mark - 查询数据
+- (NSMutableArray *)execQuerySQL:(NSString *)sql{
+    __block NSMutableArray *execQueryArray = [NSMutableArray array];
+    
+    [self execQuerySQL:sql completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray) {
+        execQueryArray = resArray;
+    }];
+    
+    return execQueryArray;
+}
+
+- (Boolean)execQuerySQL:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull))completeHandler{
+    return [self.tableOptions execQuerySQL:self.ppDb sql:sql completeHandler:completeHandler];
+}
+
+- (id)execQuerySQL:(NSString *)sql obj:(id)obj{
+    __block id execQueryObj = NULL;
+    
+    [self execQuerySQL:sql obj:obj completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> *  _Nonnull resObjList) {
+        if (success) {
+            execQueryObj = resObjList;
+        }
+    }];
+    
+    return execQueryObj;
+}
+
+- (Boolean)execQuerySQL:(NSString *)sql obj:(id)obj completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull, NSMutableArray<id> * _Nonnull))completeHandler{
+        return [self.tableOptions execQuerySQL:self.ppDb sql:sql obj:obj completeHandler:completeHandler];
+}
+
 @end
