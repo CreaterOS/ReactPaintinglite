@@ -73,7 +73,17 @@
 - (NSMutableArray *)sqlite3ExecQuery:(sqlite3 *)ppDb sql:(NSString *)sql{
     NSMutableArray<NSDictionary *> *tables = [NSMutableArray array];
     //将结果返回,保存为字典
-    NSMutableArray *resArray = [self sqlite3Exec:ppDb objName:[[[sql uppercaseString] componentsSeparatedByString:@"FROM "][1] lowercaseString]];
+    
+    NSMutableArray *resArray = [NSMutableArray array];
+
+    if (![[sql uppercaseString] containsString:@"WHERE"]) {
+        //没有WHERE条件
+        resArray = [self sqlite3Exec:ppDb objName:[[[sql uppercaseString] componentsSeparatedByString:@"FROM "][1] lowercaseString]];
+    }else{
+         //用WHREE条件
+        //取出FROM 和 WHERE之间的表名
+        resArray = [self sqlite3Exec:ppDb objName:[[[[sql uppercaseString] componentsSeparatedByString:@"FROM "][1] componentsSeparatedByString:@" WHERE"][0] lowercaseString]];
+    }
     
     @synchronized (self) {
         if (sqlite3_prepare_v2(ppDb, [sql UTF8String], -1, &_stmt, nil) == SQLITE_OK){
@@ -119,10 +129,10 @@
 - (id)caseTheType:(int)type index:(int)i value:(id)value{
     switch (type) {
         case SQLITE_INTEGER:
-            value = @(sqlite3_column_int(_stmt, i));
+            value = [NSNumber numberWithInt:sqlite3_column_int(_stmt, i)];
             break;
         case SQLITE_FLOAT:
-            value = @(sqlite3_column_double(_stmt, i));
+            value = [NSNumber numberWithDouble:sqlite3_column_double(_stmt, i)];
             break;
         case SQLITE3_TEXT:
             value = [NSString stringWithUTF8String:(const char *)sqlite3_column_text(_stmt, i)];

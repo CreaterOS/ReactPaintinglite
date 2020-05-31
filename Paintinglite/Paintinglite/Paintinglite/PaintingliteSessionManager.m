@@ -298,4 +298,32 @@ static PaintingliteSessionManager *_instance = nil;
         return [self.tableOptions execQuerySQL:self.ppDb sql:sql obj:obj completeHandler:completeHandler];
 }
 
+- (void)execQuerySQLPrepareStatementSql:(NSString *)prepareStatementSql{
+    [self.tableOptions execQuerySQLPrepareStatementSql:prepareStatementSql];
+}
+
+- (void)setPrepareStatementSqlParameter:(NSUInteger)index paramter:(NSString *)paramter{
+    [self.tableOptions setPrepareStatementSqlParameter:index paramter:paramter];
+}
+
+- (void)setPrepareStatementSqlParameter:(NSArray *)paramter{
+    NSMutableArray *paramterMutableArray = [NSMutableArray arrayWithArray:paramter];
+    [self.tableOptions setPrepareStatementSqlParameter:paramterMutableArray];
+}
+
+- (NSMutableArray *)execPrepareStatementSql{
+    return [self.tableOptions execPrepareStatementSql:self.ppDb];
+}
+
+- (Boolean)execPrepareStatementSqlCompleteHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull))completeHandler{
+    return [self.tableOptions execPrepareStatementSql:self.ppDb completeHandler:completeHandler];
+}
+
+- (id)execPrepareStatementSqlWithObj:(id)obj{
+    return [self.tableOptions execPrepareStatementSql:self.ppDb obj:obj];
+}
+
+- (Boolean)execPrepareStatementSqlWithObj:(id)obj completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull, NSMutableArray<id> * _Nonnull))completeHandler{
+    return [self.tableOptions execPrepareStatementSql:self.ppDb obj:obj completeHandler:completeHandler];
+}
 @end

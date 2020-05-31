@@ -192,10 +192,46 @@
 //    [sessionManager execQuerySQL:@"SELECT * FROM user" obj:user completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> *  _Nonnull resObjList) {
 //        if (success) {
 //            for (User *user in resObjList) {
-//                NSLog(@"user.name = %@ user.age = %zd",user.name,user.age);
+//                NSLog(@"user.name = %@ user.age = %zd",user.name,[user.age integerValue]);
 //            }
 //        }
 //    }];
+    
+//    NSLog(@"%@",[sessionManager execQuerySQL:@"SELECT * FROM user WHERE name = 'asdf'"]);
+//    [sessionManager execQuerySQLPrepareStatementSql:@"SELECT * FROM user WHERE name = ? and age = ?"];
+//    [sessionManager setPrepareStatementSqlParameter:0 paramter:@"asdf"];
+//    [sessionManager setPrepareStatementSqlParameter:1 paramter:@"21"];
+//    [sessionManager execPrepareStatementSqlCompleteHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray) {
+//        if (success) {
+//            NSLog(@"%@",resArray);
+//        }
+//    }];
+    
+//    User *user = [[User alloc] init];
+//    [sessionManager execQuerySQLPrepareStatementSql:@"SELECT * FROM user WHERE name = ? and age = ?"];
+//    [sessionManager setPrepareStatementSqlParameter:0 paramter:@"asdf"];
+//    [sessionManager setPrepareStatementSqlParameter:1 paramter:@"21"];
+//
+//    [sessionManager execPrepareStatementSqlWithObj:user completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
+//        if (success) {
+//            for (User *user in resObjList) {
+//                NSLog(@"user.name = %@ user.age = %@",user.name,user.age);
+//            }
+//        }
+//    }];
+    
+//    User *user = [[User alloc] init];
+//    [sessionManager execQuerySQLPrepareStatementSql:@"SELECT * FROM user WHERE name = ? and age = ?"];
+//    [sessionManager setPrepareStatementSqlParameter:@[@"asdf",@"21"]];
+//    
+//    [sessionManager execPrepareStatementSqlWithObj:user completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
+//        if (success) {
+//            for (User *user in resObjList) {
+//                NSLog(@"user.name = %@ user.age = %@",user.name,user.age);
+//            }
+//        }
+//    }];
+    
 }
 
 
