@@ -333,4 +333,53 @@ static PaintingliteSessionManager *_instance = nil;
 - (Boolean)execPrepareStatementSqlWithObj:(id)obj completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull, NSMutableArray<id> * _Nonnull))completeHandler{
     return [self.tableOptions execPrepareStatementSql:self.ppDb obj:obj completeHandler:completeHandler];
 }
+
+- (NSMutableArray *)execLikeQuerySQLWithTableName:(NSString *)tableName field:(NSString *)field like:(NSString *)like{
+    return [self.tableOptions execLikeQuerySQL:self.ppDb tableName:tableName field:field like:like];
+}
+
+- (Boolean)execLikeQuerySQLWithTableName:(NSString *)tableName field:(NSString *)field like:(NSString *)like completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull))completeHandler{
+    return [self.tableOptions execLikeQuerySQL:self.ppDb tableName:tableName field:field like:like completeHandler:completeHandler];
+}
+
+- (id)execLikeQuerySQLWithField:(NSString *)field like:(NSString *)like obj:(id)obj{
+    return [self.tableOptions execLikeQuerySQL:self.ppDb field:field like:like obj:obj];
+}
+
+- (Boolean)execLikeQuerySQLWithField:(NSString *)field like:(NSString *)like obj:(id)obj completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull, NSMutableArray<id> * _Nonnull))completeHandler{
+    return [self.tableOptions execLikeQuerySQL:self.ppDb field:field like:like obj:obj completeHandler:completeHandler];
+}
+
+- (NSMutableArray *)execLimitQuerySQLWithTableName:(NSString *)tableName limitStart:(NSUInteger)start limitEnd:(NSUInteger)end{
+    return [self.tableOptions execLimitQuerySQL:self.ppDb tableName:tableName limitStart:start limitEnd:end];
+}
+
+- (Boolean)execLimitQuerySQLWithTableName:(NSString *)tableName limitStart:(NSUInteger)start limitEnd:(NSUInteger)end completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull))completeHandler{
+    return [self.tableOptions execLimitQuerySQL:self.ppDb tableName:tableName limitStart:start limitEnd:end completeHandler:completeHandler];
+}
+
+- (id)execLimitQuerySQLWithLimitStart:(NSUInteger)start limitEnd:(NSUInteger)end obj:(id)obj{
+    return [self.tableOptions execLimitQuerySQL:self.ppDb limitStart:start limitEnd:end obj:obj];
+}
+
+- (Boolean)execLimitQuerySQLWithLimitStart:(NSUInteger)start limitEnd:(NSUInteger)end obj:(id)obj completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull, NSMutableArray<id> * _Nonnull))completeHandler{
+    return [self.tableOptions execLimitQuerySQL:self.ppDb limitStart:start limitEnd:end obj:obj completeHandler:completeHandler];
+}
+
+- (NSMutableArray *)execOrderByQuerySQLWithTableName:(NSString *)tableName orderbyContext:(NSString *)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle{
+    return [self.tableOptions execOrderByQuerySQL:self.ppDb tableName:tableName orderbyContext:orderbyContext orderStyle:orderStyle];
+}
+
+- (Boolean)execOrderByQuerySQLWithTableName:(NSString *)tableName orderbyContext:(NSString *)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull))completeHandler{
+    return [self.tableOptions execOrderByQuerySQL:self.ppDb tableName:tableName orderbyContext:orderbyContext orderStyle:orderStyle completeHandler:completeHandler];
+}
+
+- (id)execOrderByQuerySQLWithOrderbyContext:(NSString *)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle obj:(id)obj{
+    return [self.tableOptions execOrderByQuerySQL:self.ppDb orderbyContext:orderbyContext orderStyle:orderStyle obj:obj];
+}
+
+- (Boolean)execOrderByQuerySQLWithOrderbyContext:(NSString *)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle obj:(id)obj completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull, NSMutableArray<id> * _Nonnull))completeHandler{
+    return [self.tableOptions execOrderByQuerySQL:self.ppDb orderbyContext:orderbyContext orderStyle:orderStyle obj:obj completeHandler:completeHandler];
+}
+
 @end

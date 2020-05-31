@@ -266,4 +266,157 @@ static PaintingliteTableOptions *_instance = nil;
     }];
 }
 
+/**
+ * sql查询 -- 模态查询
+ */
+- (NSMutableArray *)execLikeQuerySQL:(sqlite3 *)ppDb tableName:(NSString * _Nonnull)tableName field:(NSString * _Nonnull)field like:(NSString * _Nonnull)like{
+    __block NSMutableArray *likeQuerySqlArray = [NSMutableArray array];
+    
+    [self execLikeQuerySQL:ppDb tableName:tableName field:field like:like  completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray) {
+        if (success) {
+            likeQuerySqlArray = resArray;
+        }
+    }];
+    
+    return likeQuerySqlArray;
+}
+
+- (Boolean)execLikeQuerySQL:(sqlite3 *)ppDb tableName:(NSString * _Nonnull)tableName field:(NSString * _Nonnull)field like:(NSString * _Nonnull)like completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull))completeHandler{
+    
+    NSString *likeSql = [NSString stringWithFormat:@"SELECT * FROM %@ WHERE %@ like '%@'",tableName,field,like];
+    //执行模态查询
+    return [self execQuerySQL:ppDb sql:likeSql completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray) {
+        if (success) {
+            if (completeHandler != nil) {
+                completeHandler(error,success,resArray);
+            }
+        }
+    }];
+}
+
+- (id)execLikeQuerySQL:(sqlite3 *)ppDb field:(NSString *)field like:(NSString *)like obj:(id)obj{
+    __block NSMutableArray<id> *likeQuerySQLArray = [NSMutableArray array];
+    
+    [self execLikeQuerySQL:ppDb field:field like:like obj:obj completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
+        if (success) {
+            likeQuerySQLArray = resObjList;
+        }
+    }];
+     
+    return likeQuerySQLArray;
+}
+
+- (Boolean)execLikeQuerySQL:(sqlite3 *)ppDb field:(NSString *)field like:(NSString *)like obj:(id)obj completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull, NSMutableArray<id> * _Nonnull))completeHandler{
+    
+    NSString *likeSql = [NSString stringWithFormat:@"SELECT * FROM %@ WHERE %@ like '%@'",[[PaintingliteObjRuntimeProperty getObjName:obj] lowercaseString],field,like];
+    
+    return [self execQuerySQL:ppDb sql:likeSql obj:obj completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
+        completeHandler(error,success,resArray,resObjList);
+    }];
+}
+
+/**
+ * sql查询 -- 分页查询
+ * 例: select * from user limit 0,2
+ */
+- (NSMutableArray *)execLimitQuerySQL:(sqlite3 *)ppDb tableName:(NSString *)tableName limitStart:(NSUInteger)start limitEnd:(NSUInteger)end{
+    __block NSMutableArray *limitQuerySQLArray = [NSMutableArray array];
+    
+    [self execLimitQuerySQL:ppDb tableName:tableName limitStart:start limitEnd:end completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray) {
+        if (success) {
+            limitQuerySQLArray = resArray;
+        }
+    }];
+    
+    return limitQuerySQLArray;
+}
+
+- (Boolean)execLimitQuerySQL:(sqlite3 *)ppDb tableName:(NSString *)tableName limitStart:(NSUInteger)start limitEnd:(NSUInteger)end completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull))completeHandler{
+    
+    //判断传入的end的长度
+    start = (start > 0) ? start : 0;
+    
+    NSString *limitSql = [NSString stringWithFormat:@"SELECT * FROM %@ LIMIT %zd,%zd",tableName,start,end];
+    NSLog(@"%@",limitSql);
+    return [self execQuerySQL:ppDb sql:limitSql completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray) {
+        if (success) {
+            if (completeHandler != nil) {
+                completeHandler(error,success,resArray);
+            }
+        }
+    }];
+}
+
+- (NSMutableArray *)execLimitQuerySQL:(sqlite3 *)ppDb limitStart:(NSUInteger)start limitEnd:(NSUInteger)end obj:(nonnull id)obj{
+    __block NSMutableArray<id> *limitQuerySQLArray = [NSMutableArray array];
+    
+    [self execLimitQuerySQL:ppDb limitStart:start limitEnd:end obj:obj completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
+        limitQuerySQLArray = resObjList;
+    }];
+    
+    return limitQuerySQLArray;
+}
+
+- (Boolean)execLimitQuerySQL:(sqlite3 *)ppDb limitStart:(NSUInteger)start limitEnd:(NSUInteger)end obj:(id)obj completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull, NSMutableArray<id> * _Nonnull))completeHandler{
+    //判断传入的end的长度
+    start = (start > 0) ? start : 0;
+    
+    NSString *limitSql = [NSString stringWithFormat:@"SELECT * FROM %@ LIMIT %zd,%zd",[[PaintingliteObjRuntimeProperty getObjName:obj] lowercaseString],start,end];
+    
+    return [self execQuerySQL:ppDb sql:limitSql obj:obj completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
+        completeHandler(error,success,resArray,resObjList);
+    }];
+}
+
+/**
+ * sql查询 -- 排序
+ * 例: select * from user order by name ASC
+ */
+- (NSMutableArray *)execOrderByQuerySQL:(sqlite3 *)ppDb tableName:(NSString *)tableName orderbyContext:(NSString *)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle{
+    __block NSMutableArray *orderByQueryArray = [NSMutableArray array];
+    
+    [self execOrderByQuerySQL:ppDb tableName:tableName orderbyContext:orderbyContext orderStyle:orderStyle completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray) {
+        if (success) {
+            orderByQueryArray = resArray;
+        }
+    }];
+    
+    return orderByQueryArray;
+}
+
+- (Boolean)execOrderByQuerySQL:(sqlite3 *)ppDb tableName:(NSString *)tableName orderbyContext:(NSString *)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull))completeHandler{
+    
+    
+    NSString *orderBySql = [NSString stringWithFormat:@"SELECT * FROM %@ ORDER BY %@ %@",tableName,orderbyContext,(orderStyle == PaintingliteOrderByASC) ? @"ASC" : @"DESC"];
+    NSLog(@"%@",orderBySql);
+    return [self execQuerySQL:ppDb sql:orderBySql completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray) {
+        if (success) {
+            if (completeHandler != nil) {
+                completeHandler(error,success,resArray);
+            }
+        }
+    }];
+    
+}
+
+- (id)execOrderByQuerySQL:(sqlite3 *)ppDb orderbyContext:(NSString *)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle obj:(id)obj{
+    __block NSMutableArray<id> *orderByQuerySQLArray = [NSMutableArray array];
+    
+    [self execOrderByQuerySQL:ppDb orderbyContext:orderbyContext orderStyle:orderStyle obj:obj completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
+        orderByQuerySQLArray = resObjList;
+    }];
+    
+    return orderByQuerySQLArray;
+}
+
+- (Boolean)execOrderByQuerySQL:(sqlite3 *)ppDb orderbyContext:(NSString *)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle obj:(id)obj completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull, NSMutableArray<id> * _Nonnull))completeHandler{
+    
+    NSString *orderBySql = [NSString stringWithFormat:@"SELECT * FROM %@ ORDER BY %@ %@",[[PaintingliteObjRuntimeProperty getObjName:obj] lowercaseString],orderbyContext,(orderStyle == PaintingliteOrderByASC) ? @"ASC" : @"DESC"];
+    NSLog(@"%@",orderBySql);
+    
+    return [self execQuerySQL:ppDb sql:orderBySql obj:obj completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
+        completeHandler(error,success,resArray,resObjList);
+    }];
+}
+
 @end

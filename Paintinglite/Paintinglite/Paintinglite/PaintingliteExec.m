@@ -78,7 +78,16 @@
 
     if (![[sql uppercaseString] containsString:@"WHERE"]) {
         //没有WHERE条件
-        resArray = [self sqlite3Exec:ppDb objName:[[[sql uppercaseString] componentsSeparatedByString:@"FROM "][1] lowercaseString]];
+        if ([[sql uppercaseString] containsString:@"LIMIT"]) {
+            //有Limit
+            resArray = [self sqlite3Exec:ppDb objName:[[[[sql uppercaseString] componentsSeparatedByString:@"FROM "][1] componentsSeparatedByString:@" LIMIT"][0] lowercaseString]];
+        }else if ([[sql uppercaseString] containsString:@"ORDER"]){
+            //有ORDER
+            resArray = [self sqlite3Exec:ppDb objName:[[[[sql uppercaseString] componentsSeparatedByString:@"FROM "][1] componentsSeparatedByString:@" ORDER"][0] lowercaseString]];
+        }else{
+            //没有Limit
+            resArray = [self sqlite3Exec:ppDb objName:[[[sql uppercaseString] componentsSeparatedByString:@"FROM "][1] lowercaseString]];
+        }
     }else{
          //用WHREE条件
         //取出FROM 和 WHERE之间的表名
