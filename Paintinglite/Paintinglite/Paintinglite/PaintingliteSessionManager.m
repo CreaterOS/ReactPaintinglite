@@ -93,7 +93,14 @@ static PaintingliteSessionManager *_instance = nil;
     
     NSString *filePath = [self.configuration configurationFileName:fileName];
     @synchronized (self) {
-        success = (sqlite3_open_v2([filePath UTF8String], &_ppDb, SQLITE_OPEN_READWRITE|SQLITE_OPEN_FULLMUTEX, NULL) == SQLITE_OK);
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        
+        if([fileManager fileExistsAtPath:filePath]){
+            success = (sqlite3_open_v2([filePath UTF8String], &_ppDb, SQLITE_OPEN_READWRITE|SQLITE_OPEN_FULLMUTEX, NULL) == SQLITE_OK);
+        }else{
+            success = (sqlite3_open([filePath UTF8String], &_ppDb) == SQLITE_OK);
+        }
+        
         if (completeHandler != nil) {
             completeHandler(filePath,self.error,success);
         }

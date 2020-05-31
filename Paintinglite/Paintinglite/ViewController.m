@@ -34,7 +34,7 @@
     
 //    NSLog(@"%hhu",flag);
     
-    [sessionManager openSqlite:@"sqlite.db" completeHandler:^(NSString * _Nonnull filePath, PaintingliteSessionError * _Nonnull error, Boolean success) {
+    [sessionManager openSqlite:@"sqlite2.db" completeHandler:^(NSString * _Nonnull filePath, PaintingliteSessionError * _Nonnull error, Boolean success) {
         if (success) {
             NSLog(@"%@",filePath);
             NSLog(@"连接数据库成功...");
