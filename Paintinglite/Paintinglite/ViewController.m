@@ -206,7 +206,7 @@
 //            NSLog(@"%@",resArray);
 //        }
 //    }];
-    
+//
 //    User *user = [[User alloc] init];
 //    [sessionManager execQuerySQLPrepareStatementSql:@"SELECT * FROM user WHERE name = ? and age = ?"];
 //    [sessionManager setPrepareStatementSqlParameter:0 paramter:@"asdf"];
@@ -231,9 +231,9 @@
 //            }
 //        }
 //    }];
-    
+//    
 //    NSLog(@"%@",[sessionManager execLikeQuerySQLWithTableName:@"user" field:@"name" like:@"%a%"]);
-    
+//
 //    [sessionManager execLikeQuerySQLWithTableName:@"user" field:@"name" like:@"%a%" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray) {
 //        if (success) {
 //            NSLog(@"%@",resArray);
@@ -248,7 +248,7 @@
 //            }
 //        }
 //    }];
-    
+//
 //    [sessionManager execLimitQuerySQLWithTableName:@"user" limitStart:0 limitEnd:2 completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray) {
 //        if (success) {
 //            NSLog(@"%@",resArray);
