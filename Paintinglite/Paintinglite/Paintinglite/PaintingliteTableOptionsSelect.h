@@ -16,6 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 /* 单例模式 */
 + (instancetype)sharePaintingliteTableSelectOptions;
 
+
 @end
 
 NS_ASSUME_NONNULL_END

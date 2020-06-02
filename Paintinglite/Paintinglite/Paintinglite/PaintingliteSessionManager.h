@@ -130,6 +130,29 @@ NS_ASSUME_NONNULL_BEGIN
 - (id)execOrderByQuerySQLWithOrderbyContext:(NSString *__nonnull)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle obj:(id)obj;
 - (Boolean)execOrderByQuerySQLWithOrderbyContext:(NSString *__nonnull)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle obj:(id)obj completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray,NSMutableArray<id>* resObjList))completeHandler;
 
+#pragma mark - PQL查询
+- (id)execQueryPQL:(NSString *__nonnull)pql;
+- (Boolean)execQueryPQL:(NSString *__nonnull)pql completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray,NSMutableArray<id>* resObjList))completeHandler;
+
+- (id)execPrepareStatementPQL;
+- (Boolean)execPrepareStatementPQLWithCompleteHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray,NSMutableArray<id>* resObjList))completeHandler;
+
+- (void)execQueryPQLPrepareStatementPQL:(NSString *__nonnull)prepareStatementPQL;
+- (void)setPrepareStatementPQLParameter:(NSUInteger)index paramter:(NSString *__nonnull)paramter;
+- (void)setPrepareStatementPQLParameter:(NSArray *__nonnull)paramter;
+
+- (id)execLikeQueryPQL:(NSString *__nonnull)pql;
+- (Boolean)execLikeQueryPQL:(NSString *__nonnull)pql completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray,NSMutableArray<id>* resObjList))completeHandler;
+
+- (id)execLimitQueryPQL:(NSString *__nonnull)pql;
+- (Boolean)execLimitQueryPQL:(NSString *__nonnull)pql completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray,NSMutableArray<id>* resObjList))completeHandler;
+
+- (id)execOrderQueryPQL:(NSString *__nonnull)pql;
+- (Boolean)execOrderQueryPQL:(NSString *__nonnull)pql completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray,NSMutableArray<id>* resObjList))completeHandler;
+
+- (id)execPQL:(NSString *__nonnull)pql;
+- (Boolean)execPQL:(NSString *__nonnull)pql completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray,NSMutableArray<id>* resObjList))completeHandler;
+
 @end
 
 NS_ASSUME_NONNULL_END

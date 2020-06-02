@@ -59,14 +59,31 @@
     Ivar *propertyIvar = class_copyIvarList([obj class], &count);
 
     for (unsigned int i = 0; i < count; i++) {
-        Ivar ivar = propertyIvar[i];
         //给ivar赋值value
-        NSLog(@"%@",[[value allValues][i] class]);
+        Ivar ivar = propertyIvar[i];
         
-        object_setIvar(obj, ivar, [value allValues][i]);
+        if (count != [value allKeys].count) {
+            if (i == [value allKeys].count) {
+                break;
+            }
+            
+            Ivar ivar = propertyIvar[i];
+            //说明数据库返回的个数和ivar的个数不相同
+            //寻找匹配的字段，进行赋值，没有的字段采用默认值
+            if([[[NSString stringWithUTF8String:ivar_getName(ivar)] substringFromIndex:1] isEqualToString:[value allKeys][i]]){
+                object_setIvar(obj, ivar, [value allValues][i]);
+            }
+        }else{
+            object_setIvar(obj, ivar, [value allValues][i]);
+        }
     }
-
+    
     return obj;
+}
+
+#pragma mark - 判断是否存在类
++ (Boolean)ObjNameExists:(NSString *)objName{
+    return NSClassFromString(objName) != nil;
 }
 
 @end

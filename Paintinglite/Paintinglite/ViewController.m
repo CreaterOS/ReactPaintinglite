@@ -159,7 +159,7 @@
 //            }
 //        }
 //    }];
-    
+
 //    NSMutableArray *arr = [NSMutableArray array];
 //    User *user1 = [[User alloc] init];
 //    user1.name = @"CreaterOS";
@@ -192,7 +192,7 @@
 //    [sessionManager execQuerySQL:@"SELECT * FROM user" obj:user completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> *  _Nonnull resObjList) {
 //        if (success) {
 //            for (User *user in resObjList) {
-//                NSLog(@"user.name = %@ user.age = %zd",user.name,[user.age integerValue]);
+//                NSLog(@"user.name = %@ user.age = %zd user.tempStr = %@ user.tempStr1 = %@ user.tempStr2 = %@ user.tempStr3 = %@",user.name,[user.age integerValue],user.tempStr,user.tempStr1,user.tempStr2,user.tempStr3);
 //            }
 //        }
 //    }];
@@ -231,7 +231,7 @@
 //            }
 //        }
 //    }];
-//    
+//
 //    NSLog(@"%@",[sessionManager execLikeQuerySQLWithTableName:@"user" field:@"name" like:@"%a%"]);
 //
 //    [sessionManager execLikeQuerySQLWithTableName:@"user" field:@"name" like:@"%a%" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray) {
@@ -263,7 +263,7 @@
 //            }
 //        }
 //    }];
-    
+//
 //    [sessionManager execOrderByQuerySQLWithTableName:@"user" orderbyContext:@"age" orderStyle:PaintingliteOrderByASC completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray) {
 //        if (success) {
 //            NSLog(@"%@",resArray);
@@ -275,9 +275,58 @@
 //            NSLog(@"%@",resArray);
 //        }
 //    }];
+//
+//    User *user = [[User alloc] init];
+//    [sessionManager execOrderByQuerySQLWithOrderbyContext:@"name" orderStyle:PaintingliteOrderByDESC obj:user completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
+//        if (success) {
+//            for (User *user in resObjList) {
+//                NSLog(@"user.name = %@ user.age = %@",user.name,user.age);
+//            }
+//        }
+//    }];
     
-    User *user = [[User alloc] init];
-    [sessionManager execOrderByQuerySQLWithOrderbyContext:@"name" orderStyle:PaintingliteOrderByDESC obj:user completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
+//    [sessionManager execQueryPQL:@"FROM user" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
+//        if (success) {
+//            for (User *user in resObjList) {
+//                NSLog(@"user.name = %@ user.age = %@",user.name,user.age);
+//            }
+//        }
+//    }];
+
+//    [sessionManager execQueryPQLPrepareStatementPQL:@"FROM user WHERE name = ? AND age = ?"];
+////    [sessionManager setPrepareStatementPQLParameter:0 paramter:@"asdf"];
+////    [sessionManager setPrepareStatementPQLParameter:1 paramter:@"21"];
+//    [sessionManager setPrepareStatementPQLParameter:@[@"asdf",@"21"]];
+//    for (User *user in [sessionManager execPrepareStatementPQL]) {
+//        NSLog(@"user.name = %@ user.age = %@",user.name,user.age);
+//    }
+
+    
+//    [sessionManager execLikeQueryPQL:@"FROM user WHERE name LIKE '%a%'" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
+//        if (success) {
+//            for (User *user in resObjList) {
+//                NSLog(@"user.name = %@ user.age = %@",user.name,user.age);
+//            }
+//        }
+//    }];
+    
+//    [sessionManager execLimitQueryPQL:@"FROM user LIMIT 1,1" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
+//        if (success) {
+//            for (User *user in resObjList) {
+//                NSLog(@"user.name = %@ user.age = %@",user.name,user.age);
+//            }
+//        }
+//    }];
+    
+//    [sessionManager execOrderQueryPQL:@"FROM user ORDER BY name DESC" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
+//        if (success) {
+//            for (User *user in resObjList) {
+//                NSLog(@"user.name = %@ user.age = %@",user.name,user.age);
+//            }
+//        }
+//    }];
+   
+    [sessionManager execPQL:@"FROM user" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
         if (success) {
             for (User *user in resObjList) {
                 NSLog(@"user.name = %@ user.age = %@",user.name,user.age);

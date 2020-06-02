@@ -93,7 +93,7 @@ static PaintingliteTableOptionsSelect *_instance = nil;
     
     //执行普通查询，然后进行封装
     __block NSMutableArray *execQueryArray = [NSMutableArray array];
-    
+
     return [PaintingliteTransaction begainPaintingliteTransaction:ppDb exec:^Boolean{
         Boolean success = [self execQuerySQL:ppDb sql:sql completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray) {
             if (success) {
@@ -153,12 +153,14 @@ static PaintingliteTableOptionsSelect *_instance = nil;
 
 - (Boolean)execPrepareStatementSql:(sqlite3 *)ppDb obj:(id)obj completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull, NSMutableArray<id> * _Nonnull))completeHandler{
     
-    return [self execQuerySQL:ppDb sql:self.prepareStatementSql obj:obj completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
-        if (success) {
-            if (completeHandler != nil) {
-                completeHandler(error,success,resArray,resObjList);
+    return [PaintingliteTransaction begainPaintingliteTransaction:ppDb exec:^Boolean{
+        return [self execQuerySQL:ppDb sql:self.prepareStatementSql obj:obj completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
+            if (success) {
+                if (completeHandler != nil) {
+                    completeHandler(error,success,resArray,resObjList);
+                }
             }
-        }
+        }];
     }];
 }
 
@@ -255,14 +257,15 @@ static PaintingliteTableOptionsSelect *_instance = nil;
 
 - (Boolean)execPrepareStatementSql:(sqlite3 *)ppDb completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull))completeHandler{
     
-    return [self execQuerySQL:ppDb sql:self.prepareStatementSql completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray) {
-        if (success) {
-            if (completeHandler != nil) {
-                completeHandler(error,success,resArray);
+    return [PaintingliteTransaction begainPaintingliteTransaction:ppDb exec:^Boolean{
+        return [self execQuerySQL:ppDb sql:self.prepareStatementSql completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray) {
+            if (success) {
+                if (completeHandler != nil) {
+                    completeHandler(error,success,resArray);
+                }
             }
-        }
+        }];
     }];
-    
 }
 
 /**
@@ -334,10 +337,9 @@ static PaintingliteTableOptionsSelect *_instance = nil;
 }
 
 - (Boolean)execLimitQuerySQL:(sqlite3 *)ppDb tableName:(NSString *)tableName limitStart:(NSUInteger)start limitEnd:(NSUInteger)end completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull))completeHandler{
-    
-    //判断传入的end的长度
     start = (start > 0) ? start : 0;
     
+    //判断传入的end的长度
     NSString *limitSql = [NSString stringWithFormat:@"SELECT * FROM %@ LIMIT %zd,%zd",tableName,start,end];
     NSLog(@"%@",limitSql);
     return [self execQuerySQL:ppDb sql:limitSql completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray) {

@@ -31,6 +31,7 @@ NS_ASSUME_NONNULL_BEGIN
 /* 单例模式 */
 + (instancetype)sharePaintingliteTableOptions;
 
+#pragma mark - SQL查询
 - (NSMutableArray *)execQuerySQL:(sqlite3 *)ppDb sql:(NSString *__nonnull)sql;
 - (Boolean)execQuerySQL:(sqlite3 *)ppDb sql:(NSString *__nonnull)sql completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray))completeHandler;
 
@@ -70,6 +71,31 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (id)execOrderByQuerySQL:(sqlite3 *)ppDb orderbyContext:(NSString *__nonnull)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle obj:(id)obj;
 - (Boolean)execOrderByQuerySQL:(sqlite3 *)ppDb orderbyContext:(NSString *__nonnull)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle obj:(id)obj completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray,NSMutableArray<id>* resObjList))completeHandler;
+
+
+#pragma mark - PQL查询
+- (id)execQueryPQL:(sqlite3 *)ppDb pql:(NSString *__nonnull)pql;
+- (Boolean)execQueryPQL:(sqlite3 *)ppDb pql:(NSString *__nonnull)pql completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray,NSMutableArray<id>* resObjList))completeHandler;
+
+- (id)execPrepareStatementPQL:(sqlite3 *)ppDb;
+- (Boolean)execPrepareStatementPQL:(sqlite3 *)ppDb completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray,NSMutableArray<id>* resObjList))completeHandler;
+
+- (void)execQueryPQLPrepareStatementPQL:(NSString *__nonnull)prepareStatementPQL;
+- (void)setPrepareStatementPQLParameter:(NSUInteger)index paramter:(NSString *__nonnull)paramter;
+- (void)setPrepareStatementPQLParameter:(NSMutableArray *__nonnull)paramter;
+
+- (id)execLikeQueryPQL:(sqlite3 *)ppDb pql:(NSString *__nonnull)pql;
+- (Boolean)execLikeQueryPQL:(sqlite3 *)ppDb pql:(NSString *__nonnull)pql completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray,NSMutableArray<id>* resObjList))completeHandler;
+
+- (id)execLimitQueryPQL:(sqlite3 *)ppDb pql:(NSString *__nonnull)pql;
+- (Boolean)execLimitQueryPQL:(sqlite3 *)ppDb pql:(NSString *__nonnull)pql completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray,NSMutableArray<id>* resObjList))completeHandler;
+
+- (id)execOrderQueryPQL:(sqlite3 *)ppDb pql:(NSString *__nonnull)pql;
+- (Boolean)execOrderQueryPQL:(sqlite3 *)ppDb pql:(NSString *__nonnull)pql completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray,NSMutableArray<id>* resObjList))completeHandler;
+
+/* 万能PQL查询 */
+- (id)execPQL:(sqlite3 *)ppDb pql:(NSString *__nonnull)pql;
+- (Boolean)execPQL:(sqlite3 *)ppDb pql:(NSString *__nonnull)pql completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray,NSMutableArray<id>* resObjList))completeHandler;
 
 @end
 

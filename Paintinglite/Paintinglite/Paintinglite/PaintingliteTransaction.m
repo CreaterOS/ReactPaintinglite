@@ -13,7 +13,7 @@
 #pragma mark - 开起事务
 + (Boolean)begainPaintingliteTransaction:(sqlite3 *)ppDb exec:(Boolean (^)(void))exec{
     //开起事务
-    sqlite3_exec(ppDb, [@"BEGAIN TRANSACTION" UTF8String], 0, 0, NULL);
+    sqlite3_exec(ppDb, [@"BEGIN TRANSACTION" UTF8String], 0, 0, NULL);
     
     @try {
         Boolean flag = false;

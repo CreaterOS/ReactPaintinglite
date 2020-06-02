@@ -8,6 +8,7 @@
 
 #import "PaintingliteTableOptions.h"
 #import "PaintingliteTableOptionsSelect.h"
+#import "PaintingliteTableOptionsSelectPQL.h"
 #import "PaintingliteObjRuntimeProperty.h"
 #import "PaintingliteExec.h"
 #import "PaintingliteTransaction.h"
@@ -17,7 +18,8 @@
 @property (nonatomic,strong)PaintingliteExec *exec; //执行语句
 @property (nonatomic,strong,readwrite,nonnull)NSString *prepareStatementSql;
 @property (nonatomic,assign)NSUInteger paramterIndex; //下标
-@property (nonatomic,strong)PaintingliteTableOptionsSelect *select; //查询
+@property (nonatomic,strong)PaintingliteTableOptionsSelect *select; //SQL查询
+@property (nonatomic,strong)PaintingliteTableOptionsSelectPQL *selectPQL; //PQL查询
 @end
 
 @implementation PaintingliteTableOptions
@@ -45,6 +47,14 @@
     }
     
     return _select;
+}
+
+- (PaintingliteTableOptionsSelectPQL *)selectPQL{
+    if (!_selectPQL) {
+        _selectPQL = [PaintingliteTableOptionsSelectPQL sharePaintingliteTableOptionsSelectPQL];
+    }
+    
+    return _selectPQL;
 }
 
 #pragma mark - 单例模式
@@ -170,4 +180,72 @@ static PaintingliteTableOptions *_instance = nil;
     return [self.select execOrderByQuerySQL:ppDb orderbyContext:orderbyContext orderStyle:orderStyle obj:obj completeHandler:completeHandler];
 }
 
+#pragma mark - PQL查询
+#pragma mark - 基本查询
+- (NSMutableArray *)execQueryPQL:(sqlite3 *)ppDb pql:(NSString *)pql{
+    return [self.selectPQL execQueryPQL:ppDb pql:pql];
+}
+
+- (Boolean)execQueryPQL:(sqlite3 *)ppDb pql:(NSString *)pql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull, NSMutableArray<id> * _Nonnull))completeHandler{
+        return [self.selectPQL execQueryPQL:ppDb pql:pql completeHandler:completeHandler];
+}
+
+#pragma mark - 条件查询
+- (id)execPrepareStatementPQL:(sqlite3 *)ppDb{
+    return [self.selectPQL execPrepareStatementPQL:ppDb];
+}
+
+- (Boolean)execPrepareStatementPQL:(sqlite3 *)ppDb completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull, NSMutableArray<id> * _Nonnull))completeHandler{
+    return [self.selectPQL execPrepareStatementPQL:ppDb completeHandler:completeHandler];
+}
+
+- (void)execQueryPQLPrepareStatementPQL:(NSString *)prepareStatementPQL{
+    [self.selectPQL execQueryPQLPrepareStatementPQL:prepareStatementPQL];
+}
+
+- (void)setPrepareStatementPQLParameter:(NSUInteger)index paramter:(NSString *)paramter{
+    [self.selectPQL setPrepareStatementPQLParameter:index paramter:paramter];
+}
+
+- (void)setPrepareStatementPQLParameter:(NSMutableArray *)paramter{
+    [self.selectPQL setPrepareStatementPQLParameter:paramter];
+}
+
+#pragma mark - 模糊查询
+- (id)execLikeQueryPQL:(sqlite3 *)ppDb pql:(NSString *)pql{
+    return [self.selectPQL execLikeQueryPQL:ppDb pql:pql];
+}
+
+- (Boolean)execLikeQueryPQL:(sqlite3 *)ppDb pql:(NSString *)pql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull, NSMutableArray<id> * _Nonnull))completeHandler{
+    return [self.selectPQL execLikeQueryPQL:ppDb pql:pql completeHandler:completeHandler];
+}
+
+#pragma mark - 分页查询
+- (id)execLimitQueryPQL:(sqlite3 *)ppDb pql:(NSString *)pql{
+    return [self.selectPQL execLimitQueryPQL:ppDb pql:pql];
+}
+
+- (Boolean)execLimitQueryPQL:(sqlite3 *)ppDb pql:(NSString *)pql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull, NSMutableArray<id> * _Nonnull))completeHandler{
+    return [self.selectPQL execLimitQueryPQL:ppDb pql:pql completeHandler:completeHandler];
+}
+
+#pragma mark - 排序查询
+- (id)execOrderQueryPQL:(sqlite3 *)ppDb pql:(NSString *)pql{
+    return [self.selectPQL execOrderQueryPQL:ppDb pql:pql];
+}
+
+- (Boolean)execOrderQueryPQL:(sqlite3 *)ppDb pql:(NSString *)pql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull, NSMutableArray<id> * _Nonnull))completeHandler{
+    return [self.selectPQL execOrderQueryPQL:ppDb pql:pql completeHandler:completeHandler];
+}
+
+#pragma mark - 万能查询
+- (id)execPQL:(sqlite3 *)ppDb pql:(NSString *)pql{
+    return [self.selectPQL execPQL:ppDb pql:pql];
+}
+
+- (Boolean)execPQL:(sqlite3 *)ppDb pql:(NSString *)pql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull, NSMutableArray<id> * _Nonnull))completeHandler{
+    return [self.selectPQL execPQL:ppDb pql:pql completeHandler:completeHandler];
+}
+
 @end
+

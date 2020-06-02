@@ -44,6 +44,7 @@
 - (Boolean)sqlite3Exec:(sqlite3 *)ppDb sql:(NSString *)sql{
     NSAssert(sql != NULL, @"SQL Not IS Empty");
     
+    
     Boolean flag = false;
     
     @synchronized (self) {
@@ -74,25 +75,7 @@
     NSMutableArray<NSDictionary *> *tables = [NSMutableArray array];
     //将结果返回,保存为字典
     
-    NSMutableArray *resArray = [NSMutableArray array];
-
-    if (![[sql uppercaseString] containsString:@"WHERE"]) {
-        //没有WHERE条件
-        if ([[sql uppercaseString] containsString:@"LIMIT"]) {
-            //有Limit
-            resArray = [self sqlite3Exec:ppDb objName:[[[[sql uppercaseString] componentsSeparatedByString:@"FROM "][1] componentsSeparatedByString:@" LIMIT"][0] lowercaseString]];
-        }else if ([[sql uppercaseString] containsString:@"ORDER"]){
-            //有ORDER
-            resArray = [self sqlite3Exec:ppDb objName:[[[[sql uppercaseString] componentsSeparatedByString:@"FROM "][1] componentsSeparatedByString:@" ORDER"][0] lowercaseString]];
-        }else{
-            //没有Limit
-            resArray = [self sqlite3Exec:ppDb objName:[[[sql uppercaseString] componentsSeparatedByString:@"FROM "][1] lowercaseString]];
-        }
-    }else{
-         //用WHREE条件
-        //取出FROM 和 WHERE之间的表名
-        resArray = [self sqlite3Exec:ppDb objName:[[[[sql uppercaseString] componentsSeparatedByString:@"FROM "][1] componentsSeparatedByString:@" WHERE"][0] lowercaseString]];
-    }
+    NSMutableArray *resArray = [self getObjName:sql ppDb:ppDb];
     
     @synchronized (self) {
         if (sqlite3_prepare_v2(ppDb, [sql UTF8String], -1, &_stmt, nil) == SQLITE_OK){
@@ -123,7 +106,6 @@
         }
     }
     
-    
     if (tables.count != 0) {
         //写入日志文件
         [self.log writeLogFileOptions:sql status:PaintingliteLogSuccess completeHandler:^(NSString * _Nonnull logFilePath) {
@@ -132,6 +114,27 @@
     }
     
     return tables;
+}
+
+#pragma mark - 截取类名称
+- (NSMutableArray *)getObjName:(NSString *__nonnull)sql ppDb:(sqlite3 *)ppDb{
+    if (![[sql uppercaseString] containsString:@"WHERE"]) {
+        //没有WHERE条件
+        if ([[sql uppercaseString] containsString:@"LIMIT"]) {
+            //有Limit
+            return [self sqlite3Exec:ppDb objName:[[[[sql uppercaseString] componentsSeparatedByString:@"FROM "][1] componentsSeparatedByString:@" LIMIT"][0] lowercaseString]];
+        }else if ([[sql uppercaseString] containsString:@"ORDER"]){
+            //有ORDER
+            return [self sqlite3Exec:ppDb objName:[[[[sql uppercaseString] componentsSeparatedByString:@"FROM "][1] componentsSeparatedByString:@" ORDER"][0] lowercaseString]];
+        }else{
+            //没有Limit
+            return [self sqlite3Exec:ppDb objName:[[[sql uppercaseString] componentsSeparatedByString:@"FROM "][1] lowercaseString]];
+        }
+    }else{
+        //用WHREE条件
+        //取出FROM 和 WHERE之间的表名
+        return [self sqlite3Exec:ppDb objName:[[[[sql uppercaseString] componentsSeparatedByString:@"FROM "][1] componentsSeparatedByString:@" WHERE"][0] lowercaseString]];
+    }
 }
 
 #pragma mark - 类型转换
@@ -162,6 +165,11 @@
 - (NSMutableArray *)sqlite3Exec:(sqlite3 *)ppDb objName:(NSString *)objName{
     NSMutableArray<NSString *> *resArray = [NSMutableArray array];
     @synchronized (self) {
+        //判断是否有这个表存在，存在则查询，否则报错
+        if (![[self getCurrentTableNameWithJSON] containsObject:objName]) {
+            [PaintingliteException PaintingliteException:@"无法执行操作" reason:@"表名不存在"];
+        }
+        
         //保存快照
         NSString *masterSQL = [NSString stringWithFormat:@"PRAGMA table_info(%@)",objName];
         resArray = [self.factory execQuery:ppDb sql:masterSQL status:PaintingliteSessionFactoryTableINFOJSON];
@@ -245,6 +253,12 @@
 
 #pragma mark - 基本操作
 - (void)getPaintingliteExecCreate:(sqlite3 *)ppDb objName:(NSString *__nonnull)objName obj:(id)obj createSytle:(PaintingliteDataBaseOptionsCreateStyle)createStyle{
+    
+    //如果存在表则不能创建
+    if ([[self getCurrentTableNameWithJSON] containsObject:[NSStringFromClass(obj) lowercaseString]]) {
+        [PaintingliteException PaintingliteException:@"表名存在" reason:@"数据库中已经存在表名"];
+    }
+    
     //默认选择UUID作为主键
     //获得obj的成员变量作为表的字段
     NSMutableDictionary *propertyDict = [PaintingliteObjRuntimeProperty getObjPropertyName:obj];
