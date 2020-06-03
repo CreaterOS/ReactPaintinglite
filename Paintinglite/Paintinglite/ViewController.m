@@ -336,9 +336,9 @@
 //            }
 //        }
 //    }];
-    Person *person = [[Person alloc] init];
-    User *user = [[User alloc] init];
-    PaintingliteIntellegenceSelect *select = [PaintingliteIntellegenceSelect sharePaintingliteIntellegenceSelect];
+//    Person *person = [[Person alloc] init];
+//    User *user = [[User alloc] init];
+//    PaintingliteIntellegenceSelect *select = [PaintingliteIntellegenceSelect sharePaintingliteIntellegenceSelect];
     
 //    [select load:[sessionManager getSqlite3] completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull loadArray) {
 //        if (success) {
@@ -381,14 +381,30 @@
 //        }
 //    } objects:person,user, nil];
     
-    [select query:[sessionManager getSqlite3] sql:@[@"SELECT * FROM person",@"SELECT * FROM user"] completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull orderArray) {
-        if (success) {
-            for (User *user in orderArray[0]) {
-                NSLog(@"user.name = %@ user.age = %@",user.name,user.age);
-            }
-        }
-    } objects:person,user, nil];
+//    [select query:[sessionManager getSqlite3] sql:@[@"SELECT * FROM person",@"SELECT * FROM user"] completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull orderArray) {
+//        if (success) {
+//            for (User *user in orderArray[0]) {
+//                NSLog(@"user.name = %@ user.age = %@",user.name,user.age);
+//            }
+//        }
+//    } objects:person,user, nil];
     
+//    for (User *user in [sessionManager execQueryPQL:@"From user"]){
+//        NSLog(@"user.name = %@ user.age = %@",user.name,user.age);
+//    }
+    
+//    for (User *user in [sessionManager execLikeQueryPQL:@"FROM user WHERE name LIKE '%a%'"]){
+//        NSLog(@"user.name = %@ user.age = %@",user.name,user.age);
+//    }
+
+//    for (User *user in [sessionManager execLimitQueryPQL:@"FROM user LIMIT 0,2"]){
+//        NSLog(@"user.name = %@ user.age = %@",user.name,user.age);
+//    }
+
+    for (User *user in [sessionManager execOrderQueryPQL:@"FROM user ORDER BY name DESC"]){
+        NSLog(@"user.name = %@ user.age = %@",user.name,user.age);
+    }
+
 }
 
 

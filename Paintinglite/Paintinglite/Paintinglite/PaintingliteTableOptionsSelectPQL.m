@@ -9,6 +9,7 @@
 #import "PaintingliteTableOptionsSelectPQL.h"
 #import "PaintingliteObjRuntimeProperty.h"
 #import "PaintingliteTransaction.h"
+#import "PaintingliteExecHeader.h"
 #import "PaintingliteExec.h"
 
 @interface PaintingliteTableOptionsSelectPQL()
@@ -81,16 +82,7 @@ static PaintingliteTableOptionsSelectPQL *_instance = nil;
 #pragma mark - 利用PQL语句操作
 #pragma mark - 基本查询
 - (id)execQueryPQL:(sqlite3 *)ppDb pql:(NSString *)pql{
-
-    __block NSMutableArray *PQLResArray = [NSMutableArray array];
-
-    [self execQueryPQL:ppDb pql:pql completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
-        if (success) {
-            PQLResArray = resObjList;
-        }
-    }];
-    
-    return PQLResArray;
+   PaintingliteFun(ppDb, pql,@"execQueryPQL");
 }
 
 - (Boolean)execQueryPQL:(sqlite3 *)ppDb pql:(NSString *)pql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull, NSMutableArray<id> * _Nonnull))completeHandler{
@@ -122,9 +114,8 @@ static PaintingliteTableOptionsSelectPQL *_instance = nil;
 
 #pragma mark - 条件查询
 - (id)execPrepareStatementPQL:(sqlite3 *)ppDb{
-    
     __block NSMutableArray *PQLPrepareStatementArray = [NSMutableArray array];
-    
+
     [self execPrepareStatementPQL:ppDb
                   completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
                       if (success) {
@@ -170,15 +161,7 @@ static PaintingliteTableOptionsSelectPQL *_instance = nil;
 
 #pragma mark - 模糊查询
 - (id)execLikeQueryPQL:(sqlite3 *)ppDb pql:(NSString *)pql{
-    __block NSMutableArray *PQLLikeQueryArray = [NSMutableArray array];
-    
-    [self execLikeQueryPQL:ppDb pql:pql completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
-        if (success) {
-            PQLLikeQueryArray = resObjList;
-        }
-    }];
-    
-    return PQLLikeQueryArray;
+    PaintingliteFun(ppDb, pql, @"execLikeQueryPQL");
 }
 
 - (Boolean)execLikeQueryPQL:(sqlite3 *)ppDb pql:(NSString *)pql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull, NSMutableArray<id> * _Nonnull))completeHandler{
@@ -196,15 +179,7 @@ static PaintingliteTableOptionsSelectPQL *_instance = nil;
 
 #pragma mark - 分页查询
 - (id)execLimitQueryPQL:(sqlite3 *)ppDb pql:(NSString *)pql{
-    __block NSMutableArray *PQLLimitQueryArray = [NSMutableArray array];
-    
-    [self execLikeQueryPQL:ppDb pql:pql completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
-        if (success) {
-            PQLLimitQueryArray = resObjList;
-        }
-    }];
-    
-    return PQLLimitQueryArray;
+    PaintingliteFun(ppDb, pql, @"execLimitQueryPQL");
 }
 
 - (Boolean)execLimitQueryPQL:(sqlite3 *)ppDb pql:(NSString *)pql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull, NSMutableArray<id> * _Nonnull))completeHandler{
@@ -221,15 +196,7 @@ static PaintingliteTableOptionsSelectPQL *_instance = nil;
 
 #pragma mark - 排序查询
 - (id)execOrderQueryPQL:(sqlite3 *)ppDb pql:(NSString *)pql{
-    __block NSMutableArray *PQLOrderQueryArray = [NSMutableArray array];
-    
-    [self execLikeQueryPQL:ppDb pql:pql completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
-        if (success) {
-            PQLOrderQueryArray = resObjList;
-        }
-    }];
-    
-    return PQLOrderQueryArray;
+    PaintingliteFun(ppDb, pql, @"execOrderQueryPQL");
 }
 
 - (Boolean)execOrderQueryPQL:(sqlite3 *)ppDb pql:(NSString *)pql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull, NSMutableArray<id> * _Nonnull))completeHandler{
@@ -246,15 +213,7 @@ static PaintingliteTableOptionsSelectPQL *_instance = nil;
 
 #pragma mark - 万能查询语句
 - (id)execPQL:(sqlite3 *)ppDb pql:(NSString *)pql{
-    __block NSMutableArray *PQLArray = [NSMutableArray array];
-    
-    [self execLikeQueryPQL:ppDb pql:pql completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
-        if (success) {
-            PQLArray = resObjList;
-        }
-    }];
-    
-    return PQLArray;
+    PaintingliteFun(ppDb, pql, @"execPQL");
 }
 
 - (Boolean)execPQL:(sqlite3 *)ppDb pql:(NSString *)pql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull, NSMutableArray<id> * _Nonnull))completeHandler{
