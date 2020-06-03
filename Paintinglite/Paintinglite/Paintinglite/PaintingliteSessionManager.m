@@ -115,6 +115,11 @@ static PaintingliteSessionManager *_instance = nil;
     return success;
 }
 
+#pragma mark - 获得数据库
+- (sqlite3 *)getSqlite3{
+    return self.ppDb;
+}
+
 #pragma mark - 快照区保存
 - (void)saveSnip{
     [self.factory execQuery:self.ppDb sql:@"SELECT name FROM sqlite_master WHERE type='table' ORDER BY name" status:PaintingliteSessionFactoryTableJSON];
@@ -443,5 +448,8 @@ static PaintingliteSessionManager *_instance = nil;
 - (Boolean)execPQL:(NSString *)pql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull, NSMutableArray<id> * _Nonnull))completeHandler{
     return [self.tableOptions execPQL:self.ppDb pql:pql completeHandler:completeHandler];
 }
+
+
+
 
 @end

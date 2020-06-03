@@ -328,6 +328,7 @@
 }
 
 #pragma mark - 读取JSON文件
+#pragma mark - 获得数据库含有表名称
 - (NSArray *)getCurrentTableNameWithJSON{
     NSError *error = nil;
     

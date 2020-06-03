@@ -40,6 +40,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (Boolean)openSqlite:(NSString *)fileName completeHandler:(void(^)(NSString *filePath,PaintingliteSessionError *error,Boolean success))completeHandler;
 
 /**
+ * 获得数据库
+ */
+- (sqlite3 *)getSqlite3;
+
+/**
  * 释放数据库
  */
 - (Boolean)releaseSqlite;

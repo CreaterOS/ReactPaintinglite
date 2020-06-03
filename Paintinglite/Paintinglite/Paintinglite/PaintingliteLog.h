@@ -41,6 +41,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSString *)readLogFile:(NSString *)fileName dateTime:(NSDate *__nonnull)dateTime;
 
 - (NSString *)readLogFile:(NSString *)fileName logStatus:(PaintingliteLogStatus)logStatus;
+
 @end
 
 NS_ASSUME_NONNULL_END

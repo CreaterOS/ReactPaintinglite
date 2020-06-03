@@ -10,6 +10,7 @@
 #import "Paintinglite/PaintingliteSessionManager.h"
 #import "Paintinglite/PaintingliteSecurity.h"
 #import "Paintinglite/PaintingliteDataBaseOptions.h"
+#import "Paintinglite/PaintingliteIntellegenceSelect.h"
 #import "Dogs.h"
 #import "Mouse.h"
 #import "Person.h"
@@ -91,7 +92,7 @@
 //    NSError *error = nil;
 //    NSLog(@"%@",[NSJSONSerialization JSONObjectWithData:[PaintingliteSecurity SecurityDecodeBase64:[NSData dataWithContentsOfFile:[[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@"Tables_Snap.json"]]] options:NSJSONReadingAllowFragments error:&error][@"TablesSnap"]);
 
-//    [sessionManager createTableForName:@"person" content:@"id INTEGER" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
+//    [sessionManager createTableForName:@"dogs" content:@"id INTEGER" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
 //        if (success) {
 //            NSLog(@"person表创建成功...");
 //        }
@@ -105,13 +106,15 @@
     
 //    [sessionManager dropTableForTableName:@"dog"];
     
-//    Dogs *dogs = [[Dogs alloc] init];
-//    [sessionManager createTableForObj:dogs completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
+//    Person *person = [[Person alloc] init];
+//
+//    [sessionManager createTableForObj:person
+//                      createStyle:PaintingliteDataBaseOptionsUUID completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
 //        if (success) {
 //            NSLog(@"dog表创建成功...");
 //        }
 //    }];
-    
+//
 //    Person *person = [[Person alloc] init];
 //
 //    [sessionManager dropTableForObj:person completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
@@ -326,13 +329,66 @@
 //        }
 //    }];
    
-    [sessionManager execPQL:@"FROM user" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
+//    [sessionManager execPQL:@"FROM user" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
+//        if (success) {
+//            for (User *user in resObjList) {
+//                NSLog(@"user.name = %@ user.age = %@",user.name,user.age);
+//            }
+//        }
+//    }];
+    Person *person = [[Person alloc] init];
+    User *user = [[User alloc] init];
+    PaintingliteIntellegenceSelect *select = [PaintingliteIntellegenceSelect sharePaintingliteIntellegenceSelect];
+    
+//    [select load:[sessionManager getSqlite3] completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull loadArray) {
+//        if (success) {
+//            NSLog(@"%@",loadArray);
+//            for (User *user in loadArray[0]) {
+//                NSLog(@"user.name = %@ user.age = %@",user.name,user.age);
+//            }
+//        }
+//    } objects:user,user, nil];
+    
+//    [select limit:[sessionManager getSqlite3] start:0 end:2 completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull limitArray) {
+//        if (success) {
+//            for (User *user in limitArray[0]) {
+//                NSLog(@"user.name = %@ user.age = %@",user.name,user.age);
+//            }
+//        }
+//    } objects:person,user, nil];
+//    [select limit:[sessionManager getSqlite3] startAndEnd:@[@[[NSNumber numberWithInteger:0],[NSNumber numberWithInteger:1]],@[[NSNumber numberWithInteger:0],[NSNumber numberWithInteger:2]],@[[NSNumber numberWithInteger:0],[NSNumber numberWithInteger:1]]] completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull limitArray) {
+//        if (success) {
+//            for (User *user in limitArray[0]) {
+//                NSLog(@"user.name = %@ user.age = %@",user.name,user.age);
+//            }
+//        }
+//    } objects:person,user, nil];
+    
+//    [select orderBy:[sessionManager getSqlite3] orderStyle:PaintingliteOrderByDESC condation:@[@"name",@"age",@"name"] completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull orderArray) {
+//        if (success) {
+//            for (User *user in orderArray[0]) {
+//                NSLog(@"user.name = %@ user.age = %@",user.name,user.age);
+//            }
+//        }
+//    } objects:person,user, nil];
+    
+    
+//    [select orderBy:[sessionManager getSqlite3] orderStyleArray:@[@"ASC",@"DESC"] condation:@[@"name",@"age",@"name"] completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull orderArray) {
+//        if (success) {
+//            for (User *user in orderArray[0]) {
+//                NSLog(@"user.name = %@ user.age = %@",user.name,user.age);
+//            }
+//        }
+//    } objects:person,user, nil];
+    
+    [select query:[sessionManager getSqlite3] sql:@[@"SELECT * FROM person",@"SELECT * FROM user"] completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull orderArray) {
         if (success) {
-            for (User *user in resObjList) {
+            for (User *user in orderArray[0]) {
                 NSLog(@"user.name = %@ user.age = %@",user.name,user.age);
             }
         }
-    }];
+    } objects:person,user, nil];
+    
 }
 
 

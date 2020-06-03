@@ -231,4 +231,5 @@ static PaintingliteDataBaseOptions *_instance = nil;
 
     return success;
 }
+
 @end

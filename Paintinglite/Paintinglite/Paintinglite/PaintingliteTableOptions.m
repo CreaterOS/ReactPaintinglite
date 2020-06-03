@@ -9,6 +9,7 @@
 #import "PaintingliteTableOptions.h"
 #import "PaintingliteTableOptionsSelect.h"
 #import "PaintingliteTableOptionsSelectPQL.h"
+#import "PaintingliteIntellegenceSelect.h"
 #import "PaintingliteObjRuntimeProperty.h"
 #import "PaintingliteExec.h"
 #import "PaintingliteTransaction.h"
@@ -20,6 +21,7 @@
 @property (nonatomic,assign)NSUInteger paramterIndex; //下标
 @property (nonatomic,strong)PaintingliteTableOptionsSelect *select; //SQL查询
 @property (nonatomic,strong)PaintingliteTableOptionsSelectPQL *selectPQL; //PQL查询
+@property (nonatomic,strong)PaintingliteIntellegenceSelect *intellegenceSelect; //智能查询
 @end
 
 @implementation PaintingliteTableOptions
@@ -55,6 +57,14 @@
     }
     
     return _selectPQL;
+}
+
+- (PaintingliteIntellegenceSelect *)intellegenceSelect{
+    if(!_intellegenceSelect){
+        _intellegenceSelect = [PaintingliteIntellegenceSelect sharePaintingliteIntellegenceSelect];
+    }
+    
+    return _intellegenceSelect;
 }
 
 #pragma mark - 单例模式
