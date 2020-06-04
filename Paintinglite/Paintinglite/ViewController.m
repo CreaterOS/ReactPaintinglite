@@ -401,10 +401,51 @@
 //        NSLog(@"user.name = %@ user.age = %@",user.name,user.age);
 //    }
 
-    for (User *user in [sessionManager execOrderQueryPQL:@"FROM user ORDER BY name DESC"]){
-        NSLog(@"user.name = %@ user.age = %@",user.name,user.age);
-    }
+//    for (User *user in [sessionManager execOrderQueryPQL:@"FROM user ORDER BY name DESC"]){
+//        NSLog(@"user.name = %@ user.age = %@",user.name,user.age);
+//    }
+    
+//    [sessionManager insert:@"INSERT INTO user(name,age) VALUES('hongyan',22),('haodong',22),('createros',21)" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<id> * _Nonnull newList) {
+//        if (success) {
+//            NSLog(@"%@",newList);
+//        }
+//    }];
+    
+    User *user = [[User alloc] init];
+    user.name = @"sadf";
+//    user.age = [NSNumber numberWithInteger:21];
+//    user.name = @"ReynBryant";
+//    user.age = [NSNumber numberWithInteger:21];
 
+//    [sessionManager createTableForSQL:@"CREATE TABLE user(name TEXT,age INTEGER)"];
+//    NSLog(@"%d",[sessionManager insertWithObj:user completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<id> * _Nonnull newList) {
+//        if (success) {
+//            NSLog(@"%@",newList);
+//        }
+//    }] == true);
+//    [sessionManager insertWithObj:user completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<id> * _Nonnull newList) {
+//        if (success) {
+//            NSLog(@"%@",newList);
+//        }
+//    }];
+    
+//    [sessionManager update:@"UPDATE user SET age = 21 where age=20 " completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<id> * _Nonnull newList) {
+//        if (success) {
+//            NSLog(@"%@",newList);
+//        }
+//    }];
+    
+//    [sessionManager updateWithObj:user condition:@"age = 21" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<id> * _Nonnull newList) {
+//        if (success) {
+//            NSLog(@"%@",newList);
+//        }
+//    }];
+    
+    [sessionManager del:@"DELETE FROM user WHERE age = 21" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<id> * _Nonnull newList) {
+        if (success) {
+            NSLog(@"%@",newList);
+        }
+    }];
 }
 
 

@@ -449,7 +449,40 @@ static PaintingliteSessionManager *_instance = nil;
     return [self.tableOptions execPQL:self.ppDb pql:pql completeHandler:completeHandler];
 }
 
+#pragma mark - CUD
+#pragma mark - 增加数据
+- (Boolean)insert:(NSString *)sql{
+    return [self.tableOptions insert:self.ppDb sql:sql];
+}
 
+- (Boolean)insert:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<id> * _Nonnull))completeHandler{
+    return [self.tableOptions insert:self.ppDb sql:sql completeHandler:completeHandler];
+}
 
+- (Boolean)insertWithObj:(id)obj completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<id> * _Nonnull))completeHandler{
+    return [self.tableOptions insert:self.ppDb obj:obj completeHandler:completeHandler];
+}
+
+#pragma mark - 更新数据
+- (Boolean)update:(NSString *)sql{
+    return [self.tableOptions update:self.ppDb sql:sql];
+}
+
+- (Boolean)update:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<id> * _Nonnull))completeHandler{
+    return [self.tableOptions update:self.ppDb sql:sql completeHandler:completeHandler];
+}
+
+- (Boolean)updateWithObj:(id)obj condition:(NSString * _Nonnull)condition completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<id> * _Nonnull))completeHandler{
+    return [self.tableOptions update:self.ppDb obj:obj condition:condition completeHandler:completeHandler];
+}
+
+#pragma mark - 删除数据
+- (Boolean)del:(NSString *)sql{
+    return [self.tableOptions del:self.ppDb sql:sql];
+}
+
+- (Boolean)del:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<id> * _Nonnull))completeHandler{
+    return [self.tableOptions del:self.ppDb sql:sql completeHandler:completeHandler];
+}
 
 @end

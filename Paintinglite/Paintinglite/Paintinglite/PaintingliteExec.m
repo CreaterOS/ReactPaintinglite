@@ -171,8 +171,7 @@
         }
         
         //保存快照
-        NSString *masterSQL = [NSString stringWithFormat:@"PRAGMA table_info(%@)",objName];
-        resArray = [self.factory execQuery:ppDb sql:masterSQL status:PaintingliteSessionFactoryTableINFOJSON];
+        resArray = [self getTableInfo:ppDb objName:objName];
     }
     
     return resArray;
@@ -334,5 +333,12 @@
     
     return [NSJSONSerialization JSONObjectWithData:[PaintingliteSecurity SecurityDecodeBase64:[NSData dataWithContentsOfFile:[[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@"Tables_Snap.json"]]] options:NSJSONReadingAllowFragments error:&error][@"TablesSnap"];
 }
+
+/* 获得表字段 */
+- (NSMutableArray *)getTableInfo:(sqlite3 *)ppDb objName:(NSString *__nonnull)objName{
+    NSString *masterSQL = [NSString stringWithFormat:@"PRAGMA table_info(%@)",objName];
+    return [self.factory execQuery:ppDb sql:masterSQL status:PaintingliteSessionFactoryTableINFOJSON];
+}
+
 
 @end

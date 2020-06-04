@@ -97,6 +97,21 @@ NS_ASSUME_NONNULL_BEGIN
 - (id)execPQL:(sqlite3 *)ppDb pql:(NSString *__nonnull)pql;
 - (Boolean)execPQL:(sqlite3 *)ppDb pql:(NSString *__nonnull)pql completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray,NSMutableArray<id>* resObjList))completeHandler;
 
+#pragma mark - CUD
+/* 增加数据 */
+- (Boolean)insert:(sqlite3 *)ppDb sql:(NSString *__nonnull)sql;
+- (Boolean)insert:(sqlite3 *)ppDb sql:(NSString *__nonnull)sql completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray<id> *newList))completeHandler;
+- (Boolean)insert:(sqlite3 *)ppDb obj:(id)obj completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray<id> *newList))completeHandler;
+
+/* 更新数据 */
+- (Boolean)update:(sqlite3 *)ppDb sql:(NSString *__nonnull)sql;
+- (Boolean)update:(sqlite3 *)ppDb sql:(NSString *__nonnull)sql completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray<id> *newList))completeHandler;
+- (Boolean)update:(sqlite3 *)ppDb obj:(id)obj condition:(NSString *__nonnull)condition completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray<id> *newList))completeHandler;
+
+/* 删除数据 */
+- (Boolean)del:(sqlite3 *)ppDb sql:(NSString *__nonnull)sql;
+- (Boolean)del:(sqlite3 *)ppDb sql:(NSString *__nonnull)sql completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray<id> *newList))completeHandler;
+
 @end
 
 NS_ASSUME_NONNULL_END

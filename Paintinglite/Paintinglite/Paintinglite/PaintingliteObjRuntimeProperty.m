@@ -81,6 +81,28 @@
     return obj;
 }
 
+#pragma mark - 获得属性值
++ (NSMutableDictionary *)getObjPropertyValue:(id)obj{
+    NSMutableDictionary<NSString *,id> *propertyValueDict = [NSMutableDictionary dictionary];
+    
+    unsigned int count = 0;
+    
+    Ivar *propertyIvar = class_copyIvarList([obj class], &count);
+    
+    for (unsigned int i = 0; i < count; i++) {
+        Ivar ivar = propertyIvar[i];
+        
+        const char *propertyName = ivar_getName(ivar);
+
+        NSString *ivarName = [NSString stringWithFormat:@"%s", propertyName];
+        [propertyValueDict setValue:object_getIvar(obj, ivar) forKey:[ivarName substringFromIndex:1]];
+    }
+    
+    free(propertyIvar);
+    
+    return propertyValueDict;
+}
+
 #pragma mark - 判断是否存在类
 + (Boolean)ObjNameExists:(NSString *)objName{
     return NSClassFromString(objName) != nil;

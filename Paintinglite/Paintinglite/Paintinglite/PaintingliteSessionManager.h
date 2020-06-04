@@ -158,6 +158,21 @@ NS_ASSUME_NONNULL_BEGIN
 - (id)execPQL:(NSString *__nonnull)pql;
 - (Boolean)execPQL:(NSString *__nonnull)pql completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray,NSMutableArray<id>* resObjList))completeHandler;
 
+#pragma mark - CUD
+/* 增加数据 */
+- (Boolean)insert:(NSString *__nonnull)sql;
+- (Boolean)insert:(NSString *__nonnull)sql completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray<id> *newList))completeHandler;
+- (Boolean)insertWithObj:(id)obj completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray<id> *newList))completeHandler;
+
+/* 更新数据 */
+- (Boolean)update:(NSString *__nonnull)sql;
+- (Boolean)update:(NSString *__nonnull)sql completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray<id> *newList))completeHandler;
+- (Boolean)updateWithObj:(id)obj condition:(NSString *__nonnull)condition completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray<id> *newList))completeHandler;
+
+/* 删除数据 */
+- (Boolean)del:(NSString *__nonnull)sql;
+- (Boolean)del:(NSString *__nonnull)sql completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray<id> *newList))completeHandler;
+
 @end
 
 NS_ASSUME_NONNULL_END

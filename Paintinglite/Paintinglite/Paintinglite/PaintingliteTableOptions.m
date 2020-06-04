@@ -9,7 +9,7 @@
 #import "PaintingliteTableOptions.h"
 #import "PaintingliteTableOptionsSelect.h"
 #import "PaintingliteTableOptionsSelectPQL.h"
-#import "PaintingliteIntellegenceSelect.h"
+#import "PaintingliteCUDOptions.h"
 #import "PaintingliteObjRuntimeProperty.h"
 #import "PaintingliteExec.h"
 #import "PaintingliteTransaction.h"
@@ -21,7 +21,7 @@
 @property (nonatomic,assign)NSUInteger paramterIndex; //下标
 @property (nonatomic,strong)PaintingliteTableOptionsSelect *select; //SQL查询
 @property (nonatomic,strong)PaintingliteTableOptionsSelectPQL *selectPQL; //PQL查询
-@property (nonatomic,strong)PaintingliteIntellegenceSelect *intellegenceSelect; //智能查询
+@property (nonatomic,strong)PaintingliteCUDOptions *cudOpt; //增删改
 @end
 
 @implementation PaintingliteTableOptions
@@ -59,12 +59,12 @@
     return _selectPQL;
 }
 
-- (PaintingliteIntellegenceSelect *)intellegenceSelect{
-    if(!_intellegenceSelect){
-        _intellegenceSelect = [PaintingliteIntellegenceSelect sharePaintingliteIntellegenceSelect];
+- (PaintingliteCUDOptions *)cudOpt{
+    if (!_cudOpt) {
+        _cudOpt = [PaintingliteCUDOptions sharePaintingliteCUDOptions];
     }
     
-    return _intellegenceSelect;
+    return _cudOpt;
 }
 
 #pragma mark - 单例模式
@@ -255,6 +255,43 @@ static PaintingliteTableOptions *_instance = nil;
 
 - (Boolean)execPQL:(sqlite3 *)ppDb pql:(NSString *)pql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull, NSMutableArray<id> * _Nonnull))completeHandler{
     return [self.selectPQL execPQL:ppDb pql:pql completeHandler:completeHandler];
+}
+
+#pragma mark - CUD
+/* 增加数据 */
+- (Boolean)insert:(sqlite3 *)ppDb sql:(NSString *)sql{
+    return [self.cudOpt insert:ppDb sql:sql];
+}
+
+- (Boolean)insert:(sqlite3 *)ppDb sql:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<id> * _Nonnull))completeHandler{
+    return [self.cudOpt insert:ppDb sql:sql completeHandler:completeHandler];
+}
+
+- (Boolean)insert:(sqlite3 *)ppDb obj:(id)obj completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<id> * _Nonnull))completeHandler{
+    return [self.cudOpt insert:ppDb obj:obj completeHandler:completeHandler];
+}
+
+/* 更新数据 */
+- (Boolean)update:(sqlite3 *)ppDb sql:(NSString *)sql{
+    return [self.cudOpt update:ppDb sql:sql];
+}
+
+- (Boolean)update:(sqlite3 *)ppDb sql:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<id> * _Nonnull))completeHandler{
+    return [self.cudOpt update:ppDb sql:sql
+               completeHandler:completeHandler];
+}
+
+- (Boolean)update:(sqlite3 *)ppDb obj:(id)obj condition:(NSString *__nonnull)condition completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<id> * _Nonnull))completeHandler{
+    return [self.cudOpt update:ppDb obj:obj condition:condition completeHandler:completeHandler];
+}
+
+/* 删除数据 */
+- (Boolean)del:(sqlite3 *)ppDb sql:(NSString *)sql{
+    return [self.cudOpt del:ppDb sql:sql];
+}
+
+- (Boolean)del:(sqlite3 *)ppDb sql:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<id> * _Nonnull))completeHandler{
+    return [self.cudOpt del:ppDb sql:sql completeHandler:completeHandler];
 }
 
 @end

@@ -35,6 +35,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSMutableArray *)sqlite3Exec:(sqlite3 *)ppDb objName:(NSString *)objName;
 
+/* 获得表字段 */
+- (NSMutableArray *)getTableInfo:(sqlite3 *)ppDb objName:(NSString *__nonnull)objName;
+
+- (NSArray *)getCurrentTableNameWithJSON;
+
 @end
 
 NS_ASSUME_NONNULL_END
