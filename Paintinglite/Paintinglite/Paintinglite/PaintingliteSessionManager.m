@@ -424,7 +424,7 @@ static PaintingliteSessionManager *_instance = nil;
 #pragma mark - CUD
 #pragma mark - 增加数据
 - (Boolean)insert:(NSString *)sql{
-    return [self.tableOptions insert:self.ppDb sql:sql];
+    return [self insert:sql completeHandler:nil];
 }
 
 - (Boolean)insert:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<id> * _Nonnull))completeHandler{

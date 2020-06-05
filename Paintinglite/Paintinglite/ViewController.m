@@ -56,10 +56,188 @@
     //更新数据库
 //    [self alterTableNameSQL];
 //    [self alterTableNameForName];
-    [self dropTableForName];
+//    [self dropTableForName];
+//    [self insertValueForObj];
+    
+//    [self execQuery];
+    [self execQuerySQLLimitObjComp];
     
     //释放数据库
     //[self releaseDB];
+}
+
+#pragma mark - 查询
+- (void)execQuery{
+    NSLog(@"%@",[self.sessionManager execQuerySQL:@"SELECT * FROM user"]);
+}
+
+- (void)execQueryObj{
+    User *user = [[User alloc] init];
+    for (User *tempUser in [self.sessionManager execQuerySQL:@"SELECT * FROM user WHERE age = 21" obj:user]) {
+        NSLog(@"user.name = %@ user.age = %@",tempUser.name,tempUser.age);
+    }
+}
+
+- (void)execQuerySQLComp{
+    [self.sessionManager execQuerySQL:@"SELECT name,age FROM user WHERE age = 21" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray) {
+        if (success) {
+            NSLog(@"%@",resArray);
+        }
+    }];
+}
+
+- (void)execQuerySQLPrepare{
+    [self.sessionManager execQuerySQLPrepareStatementSql:@"SELECT * FROM user WHERE age = ?"];
+    [self.sessionManager setPrepareStatementPQLParameter:0 paramter:@"40"];
+    [self.sessionManager execPrepareStatementSqlCompleteHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray) {
+        if (success) {
+            NSLog(@"%@",resArray);
+        }
+    }];
+}
+
+- (void)execQuerySQLPrepareArray{
+    [self.sessionManager execQuerySQLPrepareStatementSql:@"SELECT * FROM user WHERE age = ?"];
+    [self.sessionManager setPrepareStatementSqlParameter:@[@19]];
+    [self.sessionManager execPrepareStatementSqlCompleteHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray) {
+        if (success) {
+            NSLog(@"%@",resArray);
+        }
+    }];
+}
+
+- (void)execQuerySQLPrepareArrayObjComp{
+    User *user = [[User alloc] init];
+    [self.sessionManager execQuerySQLPrepareStatementSql:@"SELECT * FROM user WHERE age = ?"];
+    [self.sessionManager setPrepareStatementSqlParameter:@[@19]];
+    [self.sessionManager execPrepareStatementSqlWithObj:user completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
+        if (success) {
+            for (User *user in resObjList) {
+                NSLog(@"user.name = %@ user.age = %@",user.name,user.age);
+            }
+        }
+    }];
+}
+
+- (void)execQuerySQLPrepareArrayObj{
+    User *user = [[User alloc] init];
+    [self.sessionManager execQuerySQLPrepareStatementSql:@"SELECT * FROM user WHERE age = ?"];
+    [self.sessionManager setPrepareStatementSqlParameter:@[@21]];
+    for (User *tempUser in [self.sessionManager execPrepareStatementSqlWithObj:user]) {
+        NSLog(@"user.name = %@ user.age = %@",tempUser.name,tempUser.age);
+    }
+}
+
+- (void)execQuerySQLObjComp{
+    User *user = [[User alloc] init];
+    [self.sessionManager execQuerySQL:@"SELECT * from user" obj:user completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
+        if (success) {
+            for (User *user in resObjList) {
+                NSLog(@"user.name = %@ user.age = %@",user.name,user.age);
+            }
+        }
+    }];
+}
+
+#pragma mark - 模态查询
+- (void)execQuerySQLLikeTable{
+    NSLog(@"%@",[self.sessionManager execLikeQuerySQLWithTableName:@"user" field:@"name" like:@"%C%"]);
+}
+
+- (void)execQuerySQLLikeTableComp{
+    [self.sessionManager execLikeQuerySQLWithTableName:@"user" field:@"name" like:@"%J%" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray) {
+        if (success) {
+            NSLog(@"%@",resArray);
+        }
+    }];
+}
+
+- (void)execQuerySQLLike{
+    User *user = [[User alloc] init];
+    for (User *tempUser in [self.sessionManager execLikeQuerySQLWithField:@"name" like:@"%J%" obj:user]) {
+        NSLog(@"user.name = %@ user.age = %@",tempUser.name,tempUser.age);
+    }
+}
+
+- (void)execQuerySQLLikeComp{
+    User *user = [[User alloc] init];
+    [self.sessionManager execLikeQuerySQLWithField:@"name" like:@"%R%" obj:user completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
+        if (success) {
+            for (User *user in resObjList) {
+                NSLog(@"user.name = %@ user.age = %@",user.name,user.age);
+            }
+        }
+    }];
+}
+
+#pragma mark - 排序查询
+- (void)execQuerySQLORDER{
+    NSLog(@"%@",[self.sessionManager execOrderByQuerySQLWithTableName:@"user" orderbyContext:@"name" orderStyle:PaintingliteOrderByDESC]);
+}
+
+- (void)execQuerySQLORDERComp{
+    [self.sessionManager execOrderByQuerySQLWithTableName:@"user" orderbyContext:@"name" orderStyle:PaintingliteOrderByASC completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray) {
+        if (success) {
+            NSLog(@"%@",resArray);
+        }
+    }];
+}
+
+- (void)execQuerySQLORDERObjComp{
+    User *user = [[User alloc] init];
+    [self.sessionManager execOrderByQuerySQLWithOrderbyContext:@"name" orderStyle:PaintingliteOrderByASC obj:user completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
+        if (success) {
+            for (User *user in resObjList) {
+                NSLog(@"user.name = %@ user.age = %@",user.name,user.age);
+            }
+        }
+    }];
+}
+
+#pragma mark - 分页查询
+- (void)execQuerySQLLimit{
+   NSLog(@"%@",[self.sessionManager execLimitQuerySQLWithTableName:@"user" limitStart:1 limitEnd:3]);
+}
+
+- (void)execQuerySQLLimitComp{
+    [self.sessionManager execLimitQuerySQLWithTableName:@"user" limitStart:1 limitEnd:3 completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray) {
+        if (success) {
+            NSLog(@"%@",resArray);
+        }
+    }];
+}
+
+- (void)execQuerySQLLimitObjComp{
+    User *user = [[User alloc] init];
+    [self.sessionManager execLimitQuerySQLWithLimitStart:1 limitEnd:4 obj:user completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
+        if (success) {
+            for (User *user in resObjList) {
+                NSLog(@"user.name = %@ user.age = %@",user.name,user.age);
+            }
+        }
+    }];
+}
+
+#pragma mark - 插入数据
+- (void)insertValue{
+//    [self.sessionManager insert:@"INSERT INTO user(name,age) VALUES('Jay',40)"];
+    [self.sessionManager insert:@"INSERT INTO user(name,age) VALUES('CreaterOS',21),('ReynBryant',21),('Reyn',19)" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<id> * _Nonnull newList) {
+        if (success) {
+            NSLog(@"%@",newList);
+        }
+    }];
+}
+
+- (void)insertValueForObj{
+    User *user = [[User alloc] init];
+    user.name = @"Hony";
+    user.age = [NSNumber numberWithInteger:21];
+    
+    [self.sessionManager insertWithObj:user completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<id> * _Nonnull newList) {
+        if (success) {
+            NSLog(@"%@",newList);
+        }
+    }];
 }
 
 #pragma mark - 打开数据库

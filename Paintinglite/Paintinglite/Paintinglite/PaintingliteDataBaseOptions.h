@@ -31,7 +31,7 @@ NS_ASSUME_NONNULL_BEGIN
 /* 单例模式 */
 + (instancetype)sharePaintingliteDataBaseOptions;
 
-
+/* 创建 删除 更新操作 */
 - (Boolean)execTableOptForSQL:(sqlite3 *)ppDb sql:(NSString *)sql;
 - (Boolean)execTableOptForSQL:(sqlite3 *)ppDb sql:(NSString *)sql completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success))completeHandler;
 

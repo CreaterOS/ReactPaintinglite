@@ -64,11 +64,12 @@ static PaintingliteTableOptionsSelect *_instance = nil;
 - (Boolean)execQuerySQL:(sqlite3 *)ppDb sql:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull))completeHandler{
     
     return [PaintingliteTransaction begainPaintingliteTransaction:ppDb exec:^Boolean{
-        Boolean success = ([self.exec sqlite3ExecQuery:ppDb sql:sql].count != 0);
+        NSMutableArray *array = [self.exec sqlite3ExecQuery:ppDb sql:sql];
+        Boolean success = (array.count != 0);
         NSMutableArray *resArray = [NSMutableArray array];
         
         if (success) {
-            resArray = [self.exec sqlite3ExecQuery:ppDb sql:sql];
+            resArray = array;
         }
         
         if (completeHandler != nil) {

@@ -48,9 +48,7 @@ static PaintingliteCUDOptions *_instance = nil;
 
 #pragma mark - 增加数据
 - (Boolean)insert:(sqlite3 *)ppDb sql:(NSString *)sql{
-    return [self insert:ppDb sql:sql completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<id> * _Nonnull newList) {
-        ;
-    }];
+    return [self insert:ppDb sql:sql completeHandler:nil];
 }
 
 - (Boolean)insert:(sqlite3 *)ppDb sql:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<id> * _Nonnull))completeHandler{
@@ -63,10 +61,7 @@ static PaintingliteCUDOptions *_instance = nil;
     NSString *tableName = [[[sql componentsSeparatedByString:@"("][0] componentsSeparatedByString:@" "]lastObject];
     
     //判断表是否存在，判断表的字段
-    if (![[self.exec getCurrentTableNameWithJSON] containsObject:tableName]) {
-        //说明表不存在
-        [PaintingliteException PaintingliteException:@"表名不存在" reason:@"表名不存在,无法增加数据项"];
-    }
+    [self.exec isNotExistsTable:tableName];
     
     //增加数据
     if ([self.exec sqlite3Exec:ppDb sql:sql]) {
@@ -97,10 +92,7 @@ static PaintingliteCUDOptions *_instance = nil;
     NSLog(@"%@",tableName);
     
     //判断表是否存在，判断表的字段
-    if (![[self.exec getCurrentTableNameWithJSON] containsObject:tableName]) {
-        //说明表不存在
-        [PaintingliteException PaintingliteException:@"表名不存在" reason:@"表名不存在,无法增加数据项"];
-    }
+    [self.exec isNotExistsTable:tableName];
     
     //获取表的字段，寻找对应的对象字段
     NSMutableArray *tableInfoArray = [self.exec getTableInfo:ppDb objName:tableName];
@@ -145,9 +137,7 @@ static PaintingliteCUDOptions *_instance = nil;
 
 #pragma mark - 更新数据
 - (Boolean)update:(sqlite3 *)ppDb sql:(NSString *)sql{
-    return [self update:ppDb sql:sql completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<id> * _Nonnull newList) {
-        ;
-    }];
+    return [self update:ppDb sql:sql completeHandler:nil];
 }
 
 - (Boolean)update:(sqlite3 *)ppDb sql:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<id> * _Nonnull))completeHandler{
@@ -160,10 +150,7 @@ static PaintingliteCUDOptions *_instance = nil;
     NSString *tableName = [[[[[sql uppercaseString] componentsSeparatedByString:@" SET"][0] componentsSeparatedByString:@" "]lastObject] lowercaseString];
     
     //判断表是否存在，判断表的字段
-    if (![[self.exec getCurrentTableNameWithJSON] containsObject:tableName]) {
-        //说明表不存在
-        [PaintingliteException PaintingliteException:@"表名不存在" reason:@"表名不存在,无法增加数据项"];
-    }
+    [self.exec isNotExistsTable:tableName];
     
     //增加数据
     if ([self.exec sqlite3Exec:ppDb sql:sql]) {
@@ -193,10 +180,7 @@ static PaintingliteCUDOptions *_instance = nil;
     NSString *tableName = [[PaintingliteObjRuntimeProperty getObjName:obj] lowercaseString];
     
     //判断表是否存在，判断表的字段
-    if (![[self.exec getCurrentTableNameWithJSON] containsObject:tableName]) {
-        //说明表不存在
-        [PaintingliteException PaintingliteException:@"表名不存在" reason:@"表名不存在,无法增加数据项"];
-    }
+    [self.exec isNotExistsTable:tableName];
     
     //先查看表中已经有的数据然后和obj传入的进行对比,然后判断是否更改
     __block NSMutableArray *tempArray = [NSMutableArray array];
@@ -246,9 +230,7 @@ static PaintingliteCUDOptions *_instance = nil;
 
 #pragma mark - 删除数据
 - (Boolean)del:(sqlite3 *)ppDb sql:(NSString *)sql{
-    return [self del:ppDb sql:sql completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<id> * _Nonnull newList) {
-        ;
-    }];
+    return [self del:ppDb sql:sql completeHandler:nil];
 }
 
 - (Boolean)del:(sqlite3 *)ppDb sql:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<id> * _Nonnull))completeHandler{
@@ -261,10 +243,7 @@ static PaintingliteCUDOptions *_instance = nil;
     NSString *tableName = [[[[[sql uppercaseString] componentsSeparatedByString:@" WHERE"][0] componentsSeparatedByString:@"FROM "]lastObject] lowercaseString];
     
     //判断表是否存在，判断表的字段
-    if (![[self.exec getCurrentTableNameWithJSON] containsObject:tableName]) {
-        //说明表不存在
-        [PaintingliteException PaintingliteException:@"表名不存在" reason:@"表名不存在,无法增加数据项"];
-    }
+    [self.exec isNotExistsTable:tableName];
     
     //增加数据
     if ([self.exec sqlite3Exec:ppDb sql:sql]) {

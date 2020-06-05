@@ -69,6 +69,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (Boolean)execTableOptForSQL:(NSString *)sql;
 - (Boolean)execTableOptForSQL:(NSString *)sql completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success))completeHandler;
 
+/* =====================================数据库操作======================================== */
+
 /**
  * 创建表
  */
@@ -95,13 +97,15 @@ NS_ASSUME_NONNULL_BEGIN
 - (Boolean)dropTableForObj:(id)obj;
 - (Boolean)dropTableForObj:(id)obj completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
 
+/* =====================================表的操作SQL======================================== */
+
 /**
  * 查看数据
  */
 - (NSMutableArray *)execQuerySQL:(NSString *__nonnull)sql;
-- (Boolean)execQuerySQL:(NSString *__nonnull)sql completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray))completeHandler;
+- (Boolean)execQuerySQL:(NSString *__nonnull)sql completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray))completeHandler;
 - (id)execQuerySQL:(NSString *__nonnull)sql obj:(id)obj;
-- (Boolean)execQuerySQL:(NSString *__nonnull)sql obj:(id)obj completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray,NSMutableArray<id> *resObjList))completeHandler;
+- (Boolean)execQuerySQL:(NSString *__nonnull)sql obj:(id)obj completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray,NSMutableArray<id> *resObjList))completeHandler;
 
 - (void)execQuerySQLPrepareStatementSql:(NSString *__nonnull)prepareStatementSql;
 
@@ -110,10 +114,10 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)setPrepareStatementSqlParameter:(NSArray *__nonnull)paramter;
 
 - (NSMutableArray *)execPrepareStatementSql;
-- (Boolean)execPrepareStatementSqlCompleteHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray))completeHandler;
+- (Boolean)execPrepareStatementSqlCompleteHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray))completeHandler;
 
 - (id)execPrepareStatementSqlWithObj:(id)obj;
-- (Boolean)execPrepareStatementSqlWithObj:(id)obj completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray,NSMutableArray<id>* resObjList))completeHandler;
+- (Boolean)execPrepareStatementSqlWithObj:(id)obj completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray,NSMutableArray<id>* resObjList))completeHandler;
 
 - (NSMutableArray *)execLikeQuerySQLWithTableName:(NSString *__nonnull)tableName field:(NSString *__nonnull)field like:(NSString *__nonnull)like;
 - (Boolean)execLikeQuerySQLWithTableName:(NSString *__nonnull)tableName field:(NSString *__nonnull)field like:(NSString *__nonnull)like completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray))completeHandler;
@@ -132,6 +136,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (id)execOrderByQuerySQLWithOrderbyContext:(NSString *__nonnull)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle obj:(id)obj;
 - (Boolean)execOrderByQuerySQLWithOrderbyContext:(NSString *__nonnull)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle obj:(id)obj completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray,NSMutableArray<id>* resObjList))completeHandler;
+
+/* =====================================表的操作PQL======================================== */
 
 #pragma mark - PQL查询
 - (id)execQueryPQL:(NSString *__nonnull)pql;
@@ -156,11 +162,13 @@ NS_ASSUME_NONNULL_BEGIN
 - (id)execPQL:(NSString *__nonnull)pql;
 - (Boolean)execPQL:(NSString *__nonnull)pql completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray,NSMutableArray<id>* resObjList))completeHandler;
 
+/* =====================================表的操作CUD======================================== */
+
 #pragma mark - CUD
 /* 增加数据 */
 - (Boolean)insert:(NSString *__nonnull)sql;
-- (Boolean)insert:(NSString *__nonnull)sql completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray<id> *newList))completeHandler;
-- (Boolean)insertWithObj:(id)obj completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray<id> *newList))completeHandler;
+- (Boolean)insert:(NSString *__nonnull)sql completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success,NSMutableArray<id> *newList))completeHandler;
+- (Boolean)insertWithObj:(id)obj completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success,NSMutableArray<id> *newList))completeHandler;
 
 /* 更新数据 */
 - (Boolean)update:(NSString *__nonnull)sql;

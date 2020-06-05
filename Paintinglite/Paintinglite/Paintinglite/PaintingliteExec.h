@@ -40,6 +40,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSArray *)getCurrentTableNameWithJSON;
 
+/* 判断表名是否存在 */
+- (void)isNotExistsTable:(NSString *__nonnull)tableName;
+
 @end
 
 NS_ASSUME_NONNULL_END

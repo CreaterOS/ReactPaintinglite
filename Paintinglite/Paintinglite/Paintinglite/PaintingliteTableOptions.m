@@ -78,7 +78,6 @@ static PaintingliteTableOptions *_instance = nil;
     return _instance;
 }
 
-
 #pragma mark - 利用SQL语句操作
 #pragma mark - 基本查询
 - (NSMutableArray *)execQuerySQL:(sqlite3 *)ppDb sql:(NSString *)sql{
@@ -260,10 +259,10 @@ static PaintingliteTableOptions *_instance = nil;
 #pragma mark - CUD
 /* 增加数据 */
 - (Boolean)insert:(sqlite3 *)ppDb sql:(NSString *)sql{
-    return [self.cudOpt insert:ppDb sql:sql];
+    return [self insert:ppDb sql:sql completeHandler:nil];
 }
 
-- (Boolean)insert:(sqlite3 *)ppDb sql:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<id> * _Nonnull))completeHandler{
+- (Boolean)insert:(sqlite3 *)ppDb sql:(NSString *)sql completeHandler:(void (^ __nullable)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<id> * _Nonnull))completeHandler{
     return [self.cudOpt insert:ppDb sql:sql completeHandler:completeHandler];
 }
 

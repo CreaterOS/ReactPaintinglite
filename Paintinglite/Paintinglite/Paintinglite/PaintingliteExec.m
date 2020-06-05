@@ -141,6 +141,31 @@
     
     NSMutableArray *resArray = [self getObjName:sql ppDb:ppDb];
     
+    //替换SELECT * FROM user 中星号
+    //SELECT * FROM user WHERE name = '...'
+    NSString *tableInfoStr = [NSString string];
+    
+    if ([sql containsString:@"*"]) {
+        if ([[sql uppercaseString] containsString:@"WHERE"]) {
+            tableInfoStr = [NSString stringWithFormat:@"%@",[self getTableInfo:ppDb objName:[[[sql componentsSeparatedByString:@" WHERE"][0] componentsSeparatedByString:@" "]lastObject]]];
+        }else if([[sql uppercaseString] containsString:@"ORDER"]){
+            tableInfoStr = [NSString stringWithFormat:@"%@",[self getTableInfo:ppDb objName:[[[sql componentsSeparatedByString:@" ORDER"][0] componentsSeparatedByString:@" "]lastObject]]];
+        }else if([[sql uppercaseString] containsString:@"LIMIT"]){
+            tableInfoStr = [NSString stringWithFormat:@"%@",[self getTableInfo:ppDb objName:[[[sql componentsSeparatedByString:@" LIMIT"][0] componentsSeparatedByString:@" "]lastObject]]];
+        }else{
+            tableInfoStr = [NSString stringWithFormat:@"%@",[self getTableInfo:ppDb objName:[[sql componentsSeparatedByString:@" "]lastObject]]];
+        }
+        
+        //去除换行和空格
+        tableInfoStr = [[tableInfoStr stringByReplacingOccurrencesOfString:@"\n" withString:@""] stringByReplacingOccurrencesOfString:@" " withString:@""];
+        tableInfoStr = [tableInfoStr substringWithRange:NSMakeRange(1, tableInfoStr.length - 2)];
+        
+        sql = [sql stringByReplacingOccurrencesOfString:@"*" withString:tableInfoStr];
+    }
+
+    NSLog(@"%@",sql);
+    
+    
     @synchronized (self) {
         if (sqlite3_prepare_v2(ppDb, [sql UTF8String], -1, &_stmt, nil) == SQLITE_OK){
             //查询成功
