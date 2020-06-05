@@ -57,7 +57,7 @@ static PaintingliteSessionFactory *_instance = nil;
             }
         }else{
             //写入日志文件
-            [self.log writeLogFileOptions:@"Select The Database Have Tables " status:PaintingliteLogError completeHandler:^(NSString * _Nonnull logFilePath) {
+            [self.log writeLogFileOptions:sql status:PaintingliteLogError completeHandler:^(NSString * _Nonnull logFilePath) {
                 ;
             }];
         }
@@ -86,7 +86,7 @@ static PaintingliteSessionFactory *_instance = nil;
             NSError *error = nil;
            
             NSData *data =  [PaintingliteSecurity SecurityBase64:[NSJSONSerialization dataWithJSONObject:tablesSnapDict options:NSJSONWritingPrettyPrinted error:&error]];
-            
+      
             NSString *TablesSnapJsonPath = [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) firstObject] stringByAppendingPathComponent:(status == PaintingliteSessionFactoryTableJSON ? @"Tables_Snap.json" : @"TablesInfo_Snap.json")];
             NSFileManager *fileManager = [NSFileManager defaultManager];
             

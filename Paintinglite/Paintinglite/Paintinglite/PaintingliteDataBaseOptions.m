@@ -48,14 +48,12 @@ static PaintingliteDataBaseOptions *_instance = nil;
 
 #pragma mark - 利用SQL操作
 #pragma mark - 创建表
-- (Boolean)createTableForSQL:(sqlite3 *)ppDb sql:(NSString *)sql{
-    return [self createTableForSQL:ppDb sql:sql
-        completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
-            ;
-    }];
+/* SQL创建 */
+- (Boolean)execTableOptForSQL:(sqlite3 *)ppDb sql:(NSString *)sql{
+    return [self execTableOptForSQL:ppDb sql:sql completeHandler:nil];
 }
 
-- (Boolean)createTableForSQL:(sqlite3 *)ppDb sql:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
+- (Boolean)execTableOptForSQL:(sqlite3 *)ppDb sql:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
     Boolean flag = [self.exec sqlite3Exec:ppDb sql:sql];
 
     if (completeHandler != nil) {
@@ -65,15 +63,32 @@ static PaintingliteDataBaseOptions *_instance = nil;
     return flag;
 }
 
-#pragma mark - 更新表
-- (BOOL)alterTableForSQL:(sqlite3 *)ppDb sql:(NSString *)sql{
-    return [self alterTableForSQL:ppDb sql:sql completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
-        ;
-    }];
+/* 表名创建 */
+- (Boolean)createTableForName:(sqlite3 *)ppDb tableName:(NSString *)tableName content:(NSString *)content{
+    return [self createTableForName:ppDb tableName:tableName content:content completeHandler:nil];
 }
 
-- (BOOL)alterTableForSQL:(sqlite3 *)ppDb sql:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
-    Boolean success = [self.exec sqlite3Exec:ppDb sql:sql];
+- (Boolean)createTableForName:(sqlite3 *)ppDb tableName:(NSString *)tableName content:(NSString *)content completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
+    NSAssert(tableName != NULL, @"Table Name IS Not Empty");
+    
+    Boolean flag = [self.exec sqlite3Exec:ppDb tableName:tableName content:content];
+    
+    if (completeHandler != nil) {
+        completeHandler(self.sessionError,flag);
+    }
+    
+    return flag;
+    
+}
+
+/* Obj创建 */
+- (Boolean)createTableForObj:(sqlite3 *)ppDb obj:(id)obj createStyle:(PaintingliteDataBaseOptionsCreateStyle)createStyle{
+    return [self createTableForObj:ppDb obj:obj createStyle:createStyle completeHandler:nil];
+}
+
+- (Boolean)createTableForObj:(sqlite3 *)ppDb obj:(id)obj createStyle:(PaintingliteDataBaseOptionsCreateStyle)createStyle completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
+    
+    Boolean success = [self.exec sqlite3Exec:ppDb obj:obj status:PaintingliteExecCreate createStyle:createStyle];
     
     if (completeHandler != nil) {
         completeHandler(self.sessionError,success);
@@ -82,6 +97,7 @@ static PaintingliteDataBaseOptions *_instance = nil;
     return success;
 }
 
+#pragma mark - 更新表
 - (BOOL)alterTableForName:(sqlite3 *)ppDb oldName:(NSString *__nonnull)oldName newName:(NSString *__nonnull)newName{
     return [self alterTableForName:ppDb oldName:oldName newName:newName completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
         ;
@@ -137,50 +153,8 @@ static PaintingliteDataBaseOptions *_instance = nil;
 }
 
 #pragma mark - 删除表
-- (Boolean)dropTableForSQL:(sqlite3 *)ppDb sql:(NSString *)sql{
-    return [self dropTableForSQL:ppDb sql:sql completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
-        ;
-    }];
-}
-
-- (Boolean)dropTableForSQL:(sqlite3 *)ppDb sql:(NSString *)sql completeHandler:(nonnull void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
-    
-    Boolean success = [self.exec sqlite3Exec:ppDb sql:sql];
-    
-    if (completeHandler != nil) {
-        completeHandler(self.sessionError,success);
-    }
-    
-    return success;
-}
-
-#pragma mark - 利用表名操作
-#pragma mark - 创建表
-- (Boolean)createTableForName:(sqlite3 *)ppDb tableName:(NSString *)tableName content:(NSString *)content{
-    return [self createTableForName:ppDb tableName:tableName content:content completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
-        ;
-    }];
-}
-
-- (Boolean)createTableForName:(sqlite3 *)ppDb tableName:(NSString *)tableName content:(NSString *)content completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
-    NSAssert(tableName != NULL, @"Table Name IS Not Empty");
-    
-    Boolean flag = [self.exec sqlite3Exec:ppDb tableName:tableName content:content];
-    
-    if (completeHandler != nil) {
-        completeHandler(self.sessionError,flag);
-    }
-    
-    return flag;
-    
-}
-
-
-#pragma mark - 删除表
 - (Boolean)dropTableForTableName:(sqlite3 *)ppDb tableName:(NSString *)tableName{
-    return [self dropTableForTableName:ppDb tableName:tableName completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
-        ;
-    }];
+    return [self dropTableForTableName:ppDb tableName:tableName completeHandler:nil];
 }
 
 - (Boolean)dropTableForTableName:(sqlite3 *)ppDb tableName:(NSString *)tableName completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
@@ -195,30 +169,9 @@ static PaintingliteDataBaseOptions *_instance = nil;
     return success;
 }
 
-#pragma mark - 利用类操作
-#pragma mark - 创建表
-- (Boolean)createTableForObj:(sqlite3 *)ppDb obj:(id)obj createStyle:(PaintingliteDataBaseOptionsCreateStyle)createStyle{
-    return [self createTableForObj:ppDb obj:obj createStyle:createStyle completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
-        ;
-    }];
-}
-
-- (Boolean)createTableForObj:(sqlite3 *)ppDb obj:(id)obj createStyle:(PaintingliteDataBaseOptionsCreateStyle)createStyle completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
-    
-    Boolean success = [self.exec sqlite3Exec:ppDb obj:obj status:PaintingliteExecCreate createStyle:createStyle];
-    
-    if (completeHandler != nil) {
-        completeHandler(self.sessionError,success);
-    }
-    
-    return success;
-}
-
 #pragma mark - 删除表
 - (Boolean)dropTableForObj:(sqlite3 *)ppDb obj:(id)obj{
-    return [self dropTableForObj:ppDb obj:obj completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
-        ;
-    }];
+    return [self dropTableForObj:ppDb obj:obj completeHandler:nil];
 }
 
 - (Boolean)dropTableForObj:(sqlite3 *)ppDb obj:(id)obj completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{

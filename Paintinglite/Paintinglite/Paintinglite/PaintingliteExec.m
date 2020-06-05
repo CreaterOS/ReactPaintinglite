@@ -13,12 +13,21 @@
 #import "PaintingliteSecurity.h"
 #import "PaintingliteLog.h"
 #import "PaintingliteException.h"
+#import "PaintingliteSnapManager.h"
 #import <objc/runtime.h>
+
+#define Paintinglite_Sqlite3_CREATE @"CREATE"
+#define Paintinglite_Sqlite3_DROP @"DROP"
+#define Paintinglite_Sqlite3_ALTER @"ALTER"
+#define Paintinglite_Sqlite3_ALTER_RENAME @"RENAME"
+#define Paintinglite_Sqlite3_ALTER_ADD @"ADD"
 
 @interface PaintingliteExec()
 @property (nonatomic,strong)PaintingliteSessionFactory *factory; //工厂
 @property (nonatomic,strong)PaintingliteLog *log; //日志
 @property (nonatomic)sqlite3_stmt *stmt;
+@property (nonatomic,strong)PaintingliteSnapManager *snapManager; //快照管理者
+@property (nonatomic)Boolean isCreateTable; //是否调用创建数据库
 @end
 
 @implementation PaintingliteExec
@@ -40,27 +49,41 @@
     return _log;
 }
 
+- (PaintingliteSnapManager *)snapManager{
+    if (!_snapManager) {
+        _snapManager = [PaintingliteSnapManager sharePaintingliteSnapManager];
+    }
+    
+    return _snapManager;
+}
+
 #pragma mark - 执行SQL语句
+#pragma mark - 创建 更新 删除数据库
 - (Boolean)sqlite3Exec:(sqlite3 *)ppDb sql:(NSString *)sql{
     NSAssert(sql != NULL, @"SQL Not IS Empty");
     
-    
     Boolean flag = false;
+    
+    //判断是否有表,有表则不创建
+    //更新数据库时候会出问题
+    NSString *tableName = [self getOptTableName:ppDb sql:sql];
     
     @synchronized (self) {
         flag = sqlite3_exec(ppDb, [sql UTF8String], 0, 0, 0) == SQLITE_OK;
         if (flag) {
             //保存快照
-            NSString *masterSQL = @"SELECT name FROM sqlite_master WHERE type='table' ORDER BY name";
-            [self.factory execQuery:ppDb sql:masterSQL status:PaintingliteSessionFactoryTableJSON];
+            if ([[sql uppercaseString] containsString:Paintinglite_Sqlite3_CREATE] || [[sql uppercaseString] containsString:Paintinglite_Sqlite3_DROP] || ([[sql uppercaseString] containsString:Paintinglite_Sqlite3_ALTER] && [[sql uppercaseString] containsString:Paintinglite_Sqlite3_ALTER_RENAME])) {
+                //增加对表的快照的保存
+                [self.snapManager saveSnap:ppDb];
+            }else{
+                //剩下的对表结构改变保存
+                [self.snapManager saveTableInfoSnap:ppDb objName:tableName];
+            }
+            
             //写入日志
-            [self.log writeLogFileOptions:sql status:PaintingliteLogSuccess completeHandler:^(NSString * _Nonnull logFilePath) {
-                ;
-            }];
+            [self writeLogFileOptions:sql status:PaintingliteLogSuccess];
         }else{
-            [self.log writeLogFileOptions:sql status:PaintingliteLogError completeHandler:^(NSString * _Nonnull logFilePath) {
-                ;
-            }];
+            [self writeLogFileOptions:sql status:PaintingliteLogError];
         }
     }
     
@@ -70,7 +93,48 @@
     return flag;
 }
 
-/* 查询数据库 */
+#pragma mark - 获取执行的表名
+- (NSString *__nonnull)getOptTableName:(sqlite3 *)ppDb sql:(NSString *__nonnull)sql{
+    NSString *tableName = [NSString string];
+    if ([[sql uppercaseString] containsString:Paintinglite_Sqlite3_CREATE]) {
+        tableName = [[[sql componentsSeparatedByString:@"("][0] componentsSeparatedByString:@" "]lastObject];
+        
+        if (self.isCreateTable) {
+            if ([[self getCurrentTableNameWithJSON] containsObject:tableName]) {
+                [PaintingliteException PaintingliteException:@"表名存在" reason:@"数据库中已经存在表名，无法建立新表"];
+            }
+        }else{
+            self.isCreateTable = YES;
+        }
+    }else if ([[sql uppercaseString] containsString:Paintinglite_Sqlite3_ALTER] && [sql containsString:Paintinglite_Sqlite3_ALTER_RENAME]){
+        tableName = [[[sql componentsSeparatedByString:@" RENAME"][0] componentsSeparatedByString:@" "]lastObject];
+        [self isNotExistsTable:tableName];
+    }else if ([[sql uppercaseString] containsString:Paintinglite_Sqlite3_ALTER] && [sql containsString:Paintinglite_Sqlite3_ALTER_ADD]){
+        tableName = [[[sql componentsSeparatedByString:@" ADD"][0] componentsSeparatedByString:@" "]lastObject];
+        
+        //ALTER TABLE user ADD COLUMN IDCards TEXT
+        NSString *column = [[[sql componentsSeparatedByString:@"COLUMN "][1] componentsSeparatedByString:@" "]firstObject];
+        
+        //执行时候，添加列的时候，已经有了列则不能添加
+        for (NSString *info in [self getTableInfo:ppDb objName:tableName]) {
+            if ([info isEqualToString:column]) {
+                //相同的时候，则不更新
+                [PaintingliteException PaintingliteException:@"列表存在" reason:[NSString stringWithFormat:@"列表存在无法修改[%@]",column]];
+            }
+        }
+        [self isNotExistsTable:tableName];
+    }else if ([[sql uppercaseString] containsString:Paintinglite_Sqlite3_DROP]){
+        tableName = [[sql componentsSeparatedByString:@" "]lastObject];
+       
+        if (![[self getCurrentTableNameWithJSON] containsObject:tableName]) {
+            [PaintingliteException PaintingliteException:@"表名不存在" reason:[NSString stringWithFormat:@"数据库中查找不到表名[%@]",tableName]];
+        }
+    }
+
+    return tableName;
+}
+
+#pragma mark - 查询数据库 获得字段名称集合
 - (NSMutableArray *)sqlite3ExecQuery:(sqlite3 *)ppDb sql:(NSString *)sql{
     NSMutableArray<NSDictionary *> *tables = [NSMutableArray array];
     //将结果返回,保存为字典
@@ -100,77 +164,28 @@
             }
         }else{
             //写入日志文件
-            [self.log writeLogFileOptions:sql status:PaintingliteLogError completeHandler:^(NSString * _Nonnull logFilePath) {
-                ;
-            }];
+            [self writeLogFileOptions:sql status:PaintingliteLogError];
         }
     }
     
     if (tables.count != 0) {
         //写入日志文件
-        [self.log writeLogFileOptions:sql status:PaintingliteLogSuccess completeHandler:^(NSString * _Nonnull logFilePath) {
-            NSLog(@"%@",logFilePath);
-        }];
+        [self writeLogFileOptions:sql status:PaintingliteLogSuccess];
     }
     
     return tables;
 }
 
-#pragma mark - 截取类名称
-- (NSMutableArray *)getObjName:(NSString *__nonnull)sql ppDb:(sqlite3 *)ppDb{
-    if (![[sql uppercaseString] containsString:@"WHERE"]) {
-        //没有WHERE条件
-        if ([[sql uppercaseString] containsString:@"LIMIT"]) {
-            //有Limit
-            return [self sqlite3Exec:ppDb objName:[[[[sql uppercaseString] componentsSeparatedByString:@"FROM "][1] componentsSeparatedByString:@" LIMIT"][0] lowercaseString]];
-        }else if ([[sql uppercaseString] containsString:@"ORDER"]){
-            //有ORDER
-            return [self sqlite3Exec:ppDb objName:[[[[sql uppercaseString] componentsSeparatedByString:@"FROM "][1] componentsSeparatedByString:@" ORDER"][0] lowercaseString]];
-        }else{
-            //没有Limit
-            return [self sqlite3Exec:ppDb objName:[[[sql uppercaseString] componentsSeparatedByString:@"FROM "][1] lowercaseString]];
-        }
-    }else{
-        //用WHREE条件
-        //取出FROM 和 WHERE之间的表名
-        return [self sqlite3Exec:ppDb objName:[[[[sql uppercaseString] componentsSeparatedByString:@"FROM "][1] componentsSeparatedByString:@" WHERE"][0] lowercaseString]];
-    }
-}
-
-#pragma mark - 类型转换
-- (id)caseTheType:(int)type index:(int)i value:(id)value{
-    switch (type) {
-        case SQLITE_INTEGER:
-            value = [NSNumber numberWithInt:sqlite3_column_int(_stmt, i)];
-            break;
-        case SQLITE_FLOAT:
-            value = [NSNumber numberWithDouble:sqlite3_column_double(_stmt, i)];
-            break;
-        case SQLITE3_TEXT:
-            value = [NSString stringWithUTF8String:(const char *)sqlite3_column_text(_stmt, i)];
-            break;
-        case SQLITE_BLOB:
-            value = CFBridgingRelease(sqlite3_column_blob(_stmt, i));
-            break;
-        case SQLITE_NULL:
-            value = @"";
-            break;
-        default:
-            break;
-    }
-    
-    return value;
-}
-
 - (NSMutableArray *)sqlite3Exec:(sqlite3 *)ppDb objName:(NSString *)objName{
     NSMutableArray<NSString *> *resArray = [NSMutableArray array];
     @synchronized (self) {
+        objName = [objName lowercaseString];
         //判断是否有这个表存在，存在则查询，否则报错
         if (![[self getCurrentTableNameWithJSON] containsObject:objName]) {
             [PaintingliteException PaintingliteException:@"无法执行操作" reason:@"表名不存在"];
         }
         
-        //保存快照
+        //保存表结构快照
         resArray = [self getTableInfo:ppDb objName:objName];
     }
     
@@ -189,12 +204,11 @@
             //包含了就不能创建了
             flag = false;
             
-            [PaintingliteException PaintingliteException:@"表名重复" reason:@"数据库中已经含有此表,请重新设置表的名称"];
+            [PaintingliteException PaintingliteException:@"表名存在" reason:@"数据库中已经存在表名，无法建立新表"];
         }else{
             //创建数据库
             if (flag) {
                 NSString *createSQL = [NSString stringWithFormat:@"CREATE TABLE IF NOT EXISTS %@(\n\t%@\n)",tableName,content];
-                NSLog(@"%@",createSQL);
                 [self sqlite3Exec:ppDb sql:createSQL];
             }
         }
@@ -207,7 +221,7 @@
     NSAssert(tableName != NULL, @"TableName Not IS Empty");
     
     Boolean flag = true;
-    
+
     @synchronized (self) {
         if ([[self getCurrentTableNameWithJSON] containsObject:tableName]) {
             //有表，则删除
@@ -227,6 +241,7 @@
     return flag;
 }
 
+#pragma mark - 对象执行方法
 - (Boolean)sqlite3Exec:(sqlite3 *)ppDb obj:(id)obj status:(PaintingliteExecStatus)status createStyle:(PaintingliteDataBaseOptionsCreateStyle)createStyle{
     Boolean flag = true;
     
@@ -254,8 +269,8 @@
 - (void)getPaintingliteExecCreate:(sqlite3 *)ppDb objName:(NSString *__nonnull)objName obj:(id)obj createSytle:(PaintingliteDataBaseOptionsCreateStyle)createStyle{
     
     //如果存在表则不能创建
-    if ([[self getCurrentTableNameWithJSON] containsObject:[NSStringFromClass(obj) lowercaseString]]) {
-        [PaintingliteException PaintingliteException:@"表名存在" reason:@"数据库中已经存在表名"];
+    if ([[self getCurrentTableNameWithJSON] containsObject:[[PaintingliteObjRuntimeProperty getObjName:obj] lowercaseString]]) {
+        [PaintingliteException PaintingliteException:@"表名存在" reason:@"数据库中已经存在表名，无法建立新表"];
     }
     
     //默认选择UUID作为主键
@@ -337,8 +352,68 @@
 /* 获得表字段 */
 - (NSMutableArray *)getTableInfo:(sqlite3 *)ppDb objName:(NSString *__nonnull)objName{
     NSString *masterSQL = [NSString stringWithFormat:@"PRAGMA table_info(%@)",objName];
+
     return [self.factory execQuery:ppDb sql:masterSQL status:PaintingliteSessionFactoryTableINFOJSON];
 }
 
+#pragma mark - 查询截取类名称
+- (NSMutableArray *)getObjName:(NSString *__nonnull)sql ppDb:(sqlite3 *)ppDb{
+    if (![[sql uppercaseString] containsString:@"WHERE"]) {
+        //没有WHERE条件
+        if ([[sql uppercaseString] containsString:@"LIMIT"]) {
+            //有Limit
+            return [self sqlite3Exec:ppDb objName:[[[[sql uppercaseString] componentsSeparatedByString:@"FROM "][1] componentsSeparatedByString:@" LIMIT"][0] lowercaseString]];
+        }else if ([[sql uppercaseString] containsString:@"ORDER"]){
+            //有ORDER
+            return [self sqlite3Exec:ppDb objName:[[[[sql uppercaseString] componentsSeparatedByString:@"FROM "][1] componentsSeparatedByString:@" ORDER"][0] lowercaseString]];
+        }else{
+            //没有Limit
+            return [self sqlite3Exec:ppDb objName:[[[sql uppercaseString] componentsSeparatedByString:@"FROM "][1] lowercaseString]];
+        }
+    }else{
+        //用WHREE条件
+        //取出FROM 和 WHERE之间的表名
+        return [self sqlite3Exec:ppDb objName:[[[[sql uppercaseString] componentsSeparatedByString:@"FROM "][1] componentsSeparatedByString:@" WHERE"][0] lowercaseString]];
+    }
+}
+
+#pragma mark - 类型转换
+- (id)caseTheType:(int)type index:(int)i value:(id)value{
+    switch (type) {
+        case SQLITE_INTEGER:
+            value = [NSNumber numberWithInt:sqlite3_column_int(_stmt, i)];
+            break;
+        case SQLITE_FLOAT:
+            value = [NSNumber numberWithDouble:sqlite3_column_double(_stmt, i)];
+            break;
+        case SQLITE3_TEXT:
+            value = [NSString stringWithUTF8String:(const char *)sqlite3_column_text(_stmt, i)];
+            break;
+        case SQLITE_BLOB:
+            value = CFBridgingRelease(sqlite3_column_blob(_stmt, i));
+            break;
+        case SQLITE_NULL:
+            value = @"";
+            break;
+        default:
+            break;
+    }
+    
+    return value;
+}
+
+#pragma mark - 写日志
+- (void)writeLogFileOptions:(NSString *__nonnull)sql status:(PaintingliteLogStatus)status{
+    [self.log writeLogFileOptions:sql status:status completeHandler:nil];
+}
+
+#pragma mark - 判断表是否存在
+- (void)isNotExistsTable:(NSString *__nonnull)tableName{
+    if (self.isCreateTable) {
+        if (![[self getCurrentTableNameWithJSON] containsObject:tableName]) {
+            [PaintingliteException PaintingliteException:@"表名不存在" reason:[NSString stringWithFormat:@"数据库中查找不到表名[%@]",tableName]];
+        }
+    }
+}
 
 @end

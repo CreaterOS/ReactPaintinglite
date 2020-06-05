@@ -30,7 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)sharePaintingliteLog;
 
 /* 写入日志文件 */
-- (void)writeLogFileOptions:(NSString *__nonnull)options status:(PaintingliteLogStatus)status completeHandler:(void(^)(NSString *logFilePath))completeHandler;
+- (void)writeLogFileOptions:(NSString *__nonnull)options status:(PaintingliteLogStatus)status completeHandler:(void(^ __nullable)(NSString *logFilePath))completeHandler;
 
 /* 删除日志文件 */
 - (Boolean)removeLogFile:(NSString *)fileName;

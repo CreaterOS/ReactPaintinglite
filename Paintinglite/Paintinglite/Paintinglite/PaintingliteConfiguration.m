@@ -26,6 +26,13 @@ static PaintingliteConfiguration *_instance = nil;
 - (NSString *)configurationFileName:(NSString *)fileName{
     //传入fileName只有文件名称没有路径时候，自动拼接路径
     //传入fileName如果是绝对路径，直接返回，不做处理
+    
+    if (![fileName containsString:@"."]) {
+        fileName = [fileName stringByAppendingString:@".db"];
+    }else{
+        //判断.后边是不是sqlite3后缀，不是则替换成db
+        fileName = [[fileName componentsSeparatedByString:@"."][1] isEqualToString:@"db"] ? fileName : [[fileName componentsSeparatedByString:@"."][0] stringByAppendingString:@".db"]  ;
+    }
    
     if (!fileName.isAbsolutePath) {
         //当前路径下生成fileName

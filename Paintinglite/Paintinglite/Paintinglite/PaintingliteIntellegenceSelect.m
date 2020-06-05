@@ -66,7 +66,6 @@ static PaintingliteIntellegenceSelect *_instance = nil;
             [PaintingliteException PaintingliteException:@"重复对象" reason:@"传入对象重复"];
         }
         
-        
         //获得每一个id对象
         //调用对象封装基本SQL查询
         success = [self execPQL:ppDb pql:[NSString stringWithFormat:@"FROM %@",NSStringFromClass([obj class])] completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
@@ -255,7 +254,6 @@ static PaintingliteIntellegenceSelect *_instance = nil;
             //报出异常
             [PaintingliteException PaintingliteException:@"重复对象" reason:@"传入对象重复"];
         }
-        
         
         //获得每一个id对象
         //调用对象封装基本SQL查询

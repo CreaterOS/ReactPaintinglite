@@ -9,6 +9,7 @@
 #import "PaintingliteSessionManager.h"
 #import "PaintingliteSessionFactory.h"
 #import "PaintingliteConfiguration.h"
+#import "PaintingliteSnapManager.h"
 
 @interface PaintingliteSessionManager()
 @property (nonatomic,readonly)PaintingliteSessionFactoryLite *ppDb; //数据库
@@ -18,6 +19,7 @@
 @property (nonatomic,strong)PaintingliteDataBaseOptions *dataBaseOptions; //数据库操作
 @property (nonatomic,strong)PaintingliteTableOptions *tableOptions; //表操作
 @property (nonatomic)Boolean closeFlag; //关闭标识符
+@property (nonatomic,strong)PaintingliteSnapManager *snapManager; //快照管理者
 @end
 
 @implementation PaintingliteSessionManager
@@ -63,6 +65,14 @@
     return _configuration;
 }
 
+- (PaintingliteSnapManager *)snapManager{
+    if (!_snapManager) {
+        _snapManager = [PaintingliteSnapManager sharePaintingliteSnapManager];
+    }
+    
+    return _snapManager;
+}
+
 #pragma mark - 单例模式
 static PaintingliteSessionManager *_instance = nil;
 + (instancetype)sharePaintingliteSessionManager{
@@ -89,8 +99,10 @@ static PaintingliteSessionManager *_instance = nil;
 
 - (Boolean)openSqlite:(NSString *)fileName completeHandler:(void (^)(NSString * _Nonnull, PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
     NSAssert(fileName != NULL, @"Please set the Sqlite DataBase Name");
+    
     Boolean success = false;
     
+    //数据库名称名称
     NSString *filePath = [self.configuration configurationFileName:fileName];
     @synchronized (self) {
         NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -106,11 +118,9 @@ static PaintingliteSessionManager *_instance = nil;
         }
     }
     
-    //保存表快照到JSON文件
-    @synchronized (self) {
-        //查看打开的数据库，进行快照区保存
-        [self saveSnip];
-    }
+    //保存表快照到JSON文件 -- 当数据库中含有的表的时候保存到快照
+    //查看打开的数据库，进行快照区保存
+    [self.snapManager saveSnap:self.ppDb];
     
     return success;
 }
@@ -120,27 +130,18 @@ static PaintingliteSessionManager *_instance = nil;
     return self.ppDb;
 }
 
-#pragma mark - 快照区保存
-- (void)saveSnip{
-    [self.factory execQuery:self.ppDb sql:@"SELECT name FROM sqlite_master WHERE type='table' ORDER BY name" status:PaintingliteSessionFactoryTableJSON];
-}
-
 #pragma mark - SQL操作
 #pragma mark - 创建表
-- (Boolean)createTableForSQL:(NSString *)sql{
-    return [self createTableForSQL:sql completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
-        ;
-    }];
+- (Boolean)execTableOptForSQL:(NSString *)sql{
+    return [self execTableOptForSQL:sql completeHandler:nil];
 }
 
-- (Boolean)createTableForSQL:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
-    return [self.dataBaseOptions createTableForSQL:self.ppDb sql:sql completeHandler:completeHandler];
+- (Boolean)execTableOptForSQL:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
+    return [self.dataBaseOptions execTableOptForSQL:self.ppDb sql:sql completeHandler:completeHandler];
 }
 
 - (Boolean)createTableForName:(NSString *)tableName content:(NSString *)content{
-    return [self createTableForName:tableName content:content completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
-        ;
-    }];
+    return [self createTableForName:tableName content:content completeHandler:nil];
 }
 
 - (Boolean)createTableForName:(NSString *)tableName content:(NSString *)content completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
@@ -148,9 +149,7 @@ static PaintingliteSessionManager *_instance = nil;
 }
 
 - (Boolean)createTableForObj:(id)obj createStyle:(PaintingliteDataBaseOptionsCreateStyle)createStyle{
-    return [self createTableForObj:obj createStyle:createStyle completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
-        ;
-    }];
+    return [self createTableForObj:obj createStyle:createStyle completeHandler:nil];
 }
 
 - (Boolean)createTableForObj:(id)obj createStyle:(PaintingliteDataBaseOptionsCreateStyle)createStyle completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
@@ -158,21 +157,8 @@ static PaintingliteSessionManager *_instance = nil;
 }
 
 #pragma mark - 更新表
-- (BOOL)alterTableForSQL:(NSString *)sql{
-    return [self alterTableForSQL:sql
-                  completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
-                      ;
-                  }];
-}
-
-- (BOOL)alterTableForSQL:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
-    return [self.dataBaseOptions alterTableForSQL:self.ppDb sql:sql completeHandler:completeHandler];
-}
-
 - (BOOL)alterTableForName:(NSString *)oldName newName:(NSString *)newName{
-    return [self alterTableForName:oldName newName:newName completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
-        ;
-    }];
+    return [self alterTableForName:oldName newName:newName completeHandler:nil];
 }
 
 - (BOOL)alterTableForName:(NSString *)oldName newName:(NSString *)newName completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
@@ -180,9 +166,7 @@ static PaintingliteSessionManager *_instance = nil;
 }
 
 - (BOOL)alterTableAddColumn:(NSString *)tableName columnName:(NSString *)columnName columnType:(NSString *)columnType{
-    return [self alterTableAddColumn:tableName columnName:columnName columnType:columnType completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
-        ;
-    }];
+    return [self alterTableAddColumn:tableName columnName:columnName columnType:columnType completeHandler:nil];
 }
 
 - (BOOL)alterTableAddColumn:(NSString *)tableName columnName:(NSString *)columnName columnType:(NSString *)columnType completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
@@ -190,9 +174,7 @@ static PaintingliteSessionManager *_instance = nil;
 }
 
 - (BOOL)alterTableForObj:(id)obj{
-    return [self alterTableForObj:obj completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
-        ;
-    }];
+    return [self alterTableForObj:obj completeHandler:nil];
 }
 
 - (BOOL)alterTableForObj:(id)obj completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
@@ -200,16 +182,6 @@ static PaintingliteSessionManager *_instance = nil;
 }
 
 #pragma mark - 删除表
-- (Boolean)dropTableForSQL:(NSString *)sql{
-    return [self dropTableForSQL:sql completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
-        ;
-    }];
-}
-
-- (Boolean)dropTableForSQL:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
-    return [self.dataBaseOptions createTableForSQL:self.ppDb sql:sql completeHandler:completeHandler];
-}
-
 - (Boolean)dropTableForTableName:(NSString *)tableName{
     return [self dropTableForTableName:tableName completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
         ;
