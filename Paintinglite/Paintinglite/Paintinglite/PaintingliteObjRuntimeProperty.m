@@ -35,7 +35,7 @@
         //属性名称需要处理_
         ivarName = [ivarName substringFromIndex:1];
 
-        if ([ivarType isEqualToString:@"^q"] || [ivarType isEqualToString:@"^Q"]) {
+        if ([ivarType isEqualToString:@"q"] || [ivarType isEqualToString:@"Q"]) {
             ivarType = @"INTEGER";
         }else if ([ivarType isEqualToString:[NSString stringWithFormat:@"@\"NSString\""]] || [ivarType isEqualToString:[NSString stringWithFormat:@"@"]]) {
             ivarType = @"TEXT";

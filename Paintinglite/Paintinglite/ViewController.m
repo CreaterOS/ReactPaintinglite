@@ -8,12 +8,15 @@
 
 #import "ViewController.h"
 #import "Paintinglite/PaintingliteSessionManager.h"
+#import "Paintinglite/PaintingliteIntellegenceSelect.h"
+#import "Elephant.h"
 #import "Mouse.h"
 #import "Person.h"
 #import "User.h"
 
 @interface ViewController ()
 @property (nonatomic,strong)PaintingliteSessionManager *sessionManager;
+@property (nonatomic,strong)PaintingliteIntellegenceSelect *select;
 @end
 
 @implementation ViewController
@@ -25,6 +28,14 @@
     }
     
     return _sessionManager;
+}
+
+- (PaintingliteIntellegenceSelect *)select{
+    if (!_select) {
+        _select = [PaintingliteIntellegenceSelect sharePaintingliteIntellegenceSelect];
+    }
+    
+    return _select;
 }
 
 - (void)viewDidLoad {
@@ -60,13 +71,111 @@
 //    [self insertValueForObj];
     
 //    [self execQuery];
-    [self execQuerySQLLimitObjComp];
+//    [self execQuerySQLLimitObjComp];
+    
+    [self execIntellegenceQuerySQL];
     
     //释放数据库
     //[self releaseDB];
 }
 
-#pragma mark - 查询
+#pragma mark - 高级查询
+- (void)execIntellegenceQuery{
+    Mouse *m = [[Mouse alloc] init];
+    User *user = [[User alloc] init];
+    [self.select load:[self ppDb] completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull loadArray) {
+        if (success) {
+            NSLog(@"%@",loadArray);
+        }
+    } objects:m,user, nil];
+}
+
+- (void)execIntellegenceLimit{
+    Mouse *m = [[Mouse alloc] init];
+    User *user = [[User alloc] init];
+    [self.select limit:[self ppDb] start:1 end:3 completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull limitArray) {
+        if (success) {
+            NSLog(@"%@",limitArray);
+        }
+    } objects:m,user, nil];
+}
+
+- (void)execIntellegenceLimitStartEnd{
+    Mouse *m = [[Mouse alloc] init];
+    User *user = [[User alloc] init];
+    [self.select limit:[self ppDb] startAndEnd:@[@[[NSNumber numberWithInteger:1],[NSNumber numberWithInteger:1]],@[[NSNumber numberWithInteger:0],[NSNumber numberWithInteger:3]]] completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull limitArray) {
+        if (success) {
+            NSLog(@"%@",limitArray);
+        }
+    } objects:m,user, nil];
+}
+
+- (void)execIntellegenceORDER{
+    Mouse *m = [[Mouse alloc] init];
+    User *user = [[User alloc] init];
+    [self.select orderBy:[self ppDb] orderStyle:PaintingliteOrderByDESC condation:@[@"name",@"name"] completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull orderArray) {
+        if (success) {
+            NSLog(@"%@",orderArray);
+        }
+    } objects:m,user, nil];
+}
+
+- (void)execIntellegenceQuerySQL{
+    Mouse *m = [[Mouse alloc] init];
+    User *user = [[User alloc] init];
+    [self.select query:[self ppDb] sql:@[@"SELECT * FROM user where name = 'CreaterOS'",@"SELECT * FROM mouse WHERE name like '%m%'"] completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull orderArray) {
+        if (success) {
+            NSLog(@"%@",orderArray);
+        }
+    } objects:user,m, nil];
+}
+
+- (sqlite3 *)ppDb{
+    return [self.sessionManager getSqlite3];
+}
+
+
+#pragma mark - PQL查询
+- (void)execQueryPQL{
+//    for (User *user in [self.sessionManager execQueryPQL:@"From user"]) {
+//        NSLog(@"user.name = %@ user.age = %@",user.name,user.age);
+//    }
+}
+
+- (void)execQueryPQLComp{
+//    [self.sessionManager execQueryPQL:@"FROM user ORDER BY name ASC" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
+//        if (success) {
+//            for (User *user in resObjList) {
+//                NSLog(@"user.name = %@ user.age = %@",user.name,user.age);
+//            }
+//        }
+//    }];
+}
+
+- (void)execQueryPQLPrepareComp{
+    [self.sessionManager execQueryPQLPrepareStatementPQL:@"FROM user where name = ?"];
+    [self.sessionManager setPrepareStatementPQLParameter:0 paramter:@"Hony"];
+    [self.sessionManager execPrepareStatementPQLWithCompleteHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
+        if (success) {
+            for (User *user in resObjList) {
+                NSLog(@"user.name = %@ user.age = %@",user.name,user.age);
+            }
+        }
+    }];
+}
+
+- (void)execPQL{
+    [self.sessionManager execPQL:@"From user LIMIT 1,3" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
+        if (success) {
+            for (User *user in resObjList) {
+                NSLog(@"user.name = %@ user.age = %@",user.name,user.age);
+            }
+        }
+    }];
+}
+
+
+#pragma mark - SQL查询
 - (void)execQuery{
     NSLog(@"%@",[self.sessionManager execQuerySQL:@"SELECT * FROM user"]);
 }
@@ -221,7 +330,7 @@
 #pragma mark - 插入数据
 - (void)insertValue{
 //    [self.sessionManager insert:@"INSERT INTO user(name,age) VALUES('Jay',40)"];
-    [self.sessionManager insert:@"INSERT INTO user(name,age) VALUES('CreaterOS',21),('ReynBryant',21),('Reyn',19)" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<id> * _Nonnull newList) {
+    [self.sessionManager insert:@"INSERT INTO mouse(UUID,name,phone) VALUES('mouse1','mouse1','mouse1'),('mouse2','mouse2','mouse2'),('mouse3','mouse3','mouse3')" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<id> * _Nonnull newList) {
         if (success) {
             NSLog(@"%@",newList);
         }
@@ -274,8 +383,8 @@
 
 #pragma mark - 根据类来创建
 - (void)createTableObj{
-    Person *person = [[Person alloc] init];
-    if ([self.sessionManager createTableForObj:person createStyle:PaintingliteDataBaseOptionsUUID]) {
+    Elephant *ele = [[Elephant alloc] init];
+    if ([self.sessionManager createTableForObj:ele createStyle:PaintingliteDataBaseOptionsUUID]) {
         NSLog(@"创建数据库成功...");
     }
 }
@@ -313,8 +422,8 @@
 
 #pragma mark - 对象创建
 - (void)alterTableForObj{
-    Mouse *mouse = [[Mouse alloc] init];
-    [self.sessionManager alterTableForObj:mouse completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
+    Elephant *ele = [[Elephant alloc] init];
+    [self.sessionManager alterTableForObj:ele completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
         if (success) {
             NSLog(@"更改数据库成功...");
         }

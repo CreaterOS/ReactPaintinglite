@@ -50,8 +50,8 @@ static PaintingliteIntellegenceSelect *_instance = nil;
     //取出第一个参数
     obj = objects;
     self.objs = obj;
-    
-    success = [self execPQL:ppDb pql:[NSString stringWithFormat:@"FROM %@",NSStringFromClass([obj class])] completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
+
+    success = [self execPQL:ppDb pql:[NSString stringWithFormat:@"FROM %@",[NSStringFromClass([obj class]) lowercaseString]] completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
         if (success) {
             [loadArray addObject:resObjList];
         }
@@ -68,7 +68,7 @@ static PaintingliteIntellegenceSelect *_instance = nil;
         
         //获得每一个id对象
         //调用对象封装基本SQL查询
-        success = [self execPQL:ppDb pql:[NSString stringWithFormat:@"FROM %@",NSStringFromClass([obj class])] completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
+        success = [self execPQL:ppDb pql:[NSString stringWithFormat:@"FROM %@",[NSStringFromClass([obj class]) lowercaseString]] completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
             if (success) {
                 [loadArray addObject:resObjList];
             }

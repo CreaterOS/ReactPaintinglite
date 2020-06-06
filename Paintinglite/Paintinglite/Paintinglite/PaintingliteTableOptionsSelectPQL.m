@@ -94,8 +94,16 @@ static PaintingliteTableOptionsSelectPQL *_instance = nil;
     
     Boolean success = false;
     
+    //带有条件的查询需要追加条件
+    //SELECT * FROM user WHERE name = '...'
+    //SELECT * FROM user ORDER BY name DESC
+    //SELECT * FROM user LIMIT 1,2
+    //SELECT * FROM user ...
+    
+    NSString *condatition = ([pql componentsSeparatedByString:objName][1].length != 0) ? [pql componentsSeparatedByString:objName][1] : @"" ;
+    
     if (objName != nil) {
-        success = [self execQuerySQL:ppDb sql:[NSString stringWithFormat:@"SELECT * FROM %@",objName] obj:obj completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
+        success = [self execQuerySQL:ppDb sql:[NSString stringWithFormat:@"SELECT * FROM %@%@",objName,condatition] obj:obj completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
             if (success) {
                 if (completeHandler != nil) {
                     completeHandler(self.sessionError,success,resArray,resObjList);

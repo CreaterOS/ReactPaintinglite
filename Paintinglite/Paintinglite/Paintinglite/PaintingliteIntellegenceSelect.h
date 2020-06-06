@@ -24,22 +24,22 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - 智能查询操作
 /* 基本查询 */
-- (Boolean)load:(sqlite3 *)ppDb completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *loadArray))completeHandler objects:(id)objects,... NS_REQUIRES_NIL_TERMINATION;
+- (Boolean)load:(sqlite3 *)ppDb completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success,NSMutableArray *loadArray))completeHandler objects:(id)objects,... NS_REQUIRES_NIL_TERMINATION;
 
 /* 分页查询 */
-- (Boolean)limit:(sqlite3 *)ppDb start:(NSUInteger)start end:(NSUInteger)end completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *limitArray))completeHandler objects:(id)objects,... NS_REQUIRES_NIL_TERMINATION;
+- (Boolean)limit:(sqlite3 *)ppDb start:(NSUInteger)start end:(NSUInteger)end completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success,NSMutableArray *limitArray))completeHandler objects:(id)objects,... NS_REQUIRES_NIL_TERMINATION;
 
 /* 分页查询高级 */
-- (Boolean)limit:(sqlite3 *)ppDb startAndEnd:(NSArray<NSArray<NSNumber *> *> *)startAndEnd completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *limitArray))completeHandler objects:(id)objects,... NS_REQUIRES_NIL_TERMINATION;
+- (Boolean)limit:(sqlite3 *)ppDb startAndEnd:(NSArray<NSArray<NSNumber *> *> *)startAndEnd completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success,NSMutableArray *limitArray))completeHandler objects:(id)objects,... NS_REQUIRES_NIL_TERMINATION;
 
 /* 排序查询 */
-- (Boolean)orderBy:(sqlite3 *)ppDb orderStyle:(PaintingliteOrderByStyle)orderStyle condation:(NSArray<NSString *> *)condation completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *orderArray))completeHandler objects:(id)objects,... NS_REQUIRES_NIL_TERMINATION;
+- (Boolean)orderBy:(sqlite3 *)ppDb orderStyle:(PaintingliteOrderByStyle)orderStyle condation:(NSArray<NSString *> *)condation completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success,NSMutableArray *orderArray))completeHandler objects:(id)objects,... NS_REQUIRES_NIL_TERMINATION;
 
 /* 排序查询高级 */
-- (Boolean)orderBy:(sqlite3 *)ppDb orderStyleArray:(NSArray<NSString *> *)orderStyleArray condation:(NSArray<NSString *> *)condation completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *orderArray))completeHandler objects:(id)objects,... NS_REQUIRES_NIL_TERMINATION;
+- (Boolean)orderBy:(sqlite3 *)ppDb orderStyleArray:(NSArray<NSString *> *)orderStyleArray condation:(NSArray<NSString *> *)condation completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success,NSMutableArray *orderArray))completeHandler objects:(id)objects,... NS_REQUIRES_NIL_TERMINATION;
 
 /* 万能查询 */
-- (Boolean)query:(sqlite3 *)ppDb sql:(NSArray<NSString *> *__nonnull)sql completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *orderArray))completeHandler objects:(id)objects,... NS_REQUIRES_NIL_TERMINATION;
+- (Boolean)query:(sqlite3 *)ppDb sql:(NSArray<NSString *> *__nonnull)sql completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success,NSMutableArray *orderArray))completeHandler objects:(id)objects,... NS_REQUIRES_NIL_TERMINATION;
 
 @end
 

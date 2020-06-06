@@ -15,7 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,strong)NSString *name;
 @property (nonatomic)NSUInteger age;
 @property (nonatomic,strong)NSString *phone;
-@property (nonatomic)NSUInteger year;
+@property (nonatomic)NSInteger year;
 @property (nonatomic)id sss;
 @end
 

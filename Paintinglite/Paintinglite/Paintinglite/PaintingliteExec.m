@@ -20,8 +20,10 @@
 #define Paintinglite_Sqlite3_DROP @"DROP"
 #define Paintinglite_Sqlite3_ALTER @"ALTER"
 #define Paintinglite_Sqlite3_ALTER_RENAME @"RENAME"
+#define Paintinglite_Sqlite3_ALTER_SPACE_RENAME @" RENAME"
 #define Paintinglite_Sqlite3_ALTER_ADD @"ADD"
-
+#define Paintinglite_Sqlite3_ALTER_SPACE_ADD @" ADD"
+#define Paintinglite_Sqlite3_ALTER_COLUMN @"COLUMN "
 @interface PaintingliteExec()
 @property (nonatomic,strong)PaintingliteSessionFactory *factory; //工厂
 @property (nonatomic,strong)PaintingliteLog *log; //日志
@@ -68,6 +70,15 @@
     //更新数据库时候会出问题
     NSString *tableName = [self getOptTableName:ppDb sql:sql];
     
+    //WHERE LIMIT ORDER BY
+    if ([sql containsString:@"where"]) {
+        [sql stringByReplacingOccurrencesOfString:@"where" withString:@"WHERE"];
+    }else if ([sql containsString:@"limit"]){
+        [sql stringByReplacingOccurrencesOfString:@"limit" withString:@"LIMIT"];
+    }else if ([sql containsString:@"order by"]){
+        [sql stringByReplacingOccurrencesOfString:@"order by" withString:@"ORDER BY"];
+    }
+    
     @synchronized (self) {
         flag = sqlite3_exec(ppDb, [sql UTF8String], 0, 0, 0) == SQLITE_OK;
         if (flag) {
@@ -107,13 +118,13 @@
             self.isCreateTable = YES;
         }
     }else if ([[sql uppercaseString] containsString:Paintinglite_Sqlite3_ALTER] && [sql containsString:Paintinglite_Sqlite3_ALTER_RENAME]){
-        tableName = [[[sql componentsSeparatedByString:@" RENAME"][0] componentsSeparatedByString:@" "]lastObject];
+        tableName = [[[sql componentsSeparatedByString:Paintinglite_Sqlite3_ALTER_SPACE_RENAME][0] componentsSeparatedByString:@" "]lastObject];
         [self isNotExistsTable:tableName];
     }else if ([[sql uppercaseString] containsString:Paintinglite_Sqlite3_ALTER] && [sql containsString:Paintinglite_Sqlite3_ALTER_ADD]){
-        tableName = [[[sql componentsSeparatedByString:@" ADD"][0] componentsSeparatedByString:@" "]lastObject];
+        tableName = [[[sql componentsSeparatedByString:Paintinglite_Sqlite3_ALTER_SPACE_ADD][0] componentsSeparatedByString:@" "]lastObject];
         
         //ALTER TABLE user ADD COLUMN IDCards TEXT
-        NSString *column = [[[sql componentsSeparatedByString:@"COLUMN "][1] componentsSeparatedByString:@" "]firstObject];
+        NSString *column = [[[sql componentsSeparatedByString:Paintinglite_Sqlite3_ALTER_COLUMN][1] componentsSeparatedByString:@" "]firstObject];
         
         //执行时候，添加列的时候，已经有了列则不能添加
         for (NSString *info in [self getTableInfo:ppDb objName:tableName]) {

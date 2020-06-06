@@ -360,14 +360,6 @@ static PaintingliteSessionManager *_instance = nil;
 }
 
 #pragma mark - PQL查询
-- (NSMutableArray *)execQueryPQL:(NSString *)pql{
-    return [self.tableOptions execQueryPQL:self.ppDb pql:pql];
-}
-
-- (Boolean)execQueryPQL:(NSString *)pql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull, NSMutableArray<id> * _Nonnull))completeHandler{
-    return [self.tableOptions execQueryPQL:self.ppDb pql:pql completeHandler:completeHandler];
-}
-
 - (id)execPrepareStatementPQL{
     return [self.tableOptions execPrepareStatementPQL:self.ppDb];
 }
@@ -387,30 +379,6 @@ static PaintingliteSessionManager *_instance = nil;
 - (void)setPrepareStatementPQLParameter:(NSArray *)paramter{
     NSMutableArray *tempParamterArray = [[NSMutableArray alloc] initWithArray:paramter];
     [self.tableOptions setPrepareStatementPQLParameter:tempParamterArray];
-}
-
-- (id)execLikeQueryPQL:(NSString *)pql{
-    return [self.tableOptions execLikeQueryPQL:self.ppDb pql:pql];
-}
-
-- (Boolean)execLikeQueryPQL:(NSString *)pql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull, NSMutableArray<id> * _Nonnull))completeHandler{
-    return [self.tableOptions execLikeQueryPQL:self.ppDb pql:pql completeHandler:completeHandler];
-}
-
-- (id)execLimitQueryPQL:(NSString *)pql{
-    return [self.tableOptions execLimitQueryPQL:self.ppDb pql:pql];
-}
-
-- (Boolean)execLimitQueryPQL:(NSString *)pql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull, NSMutableArray<id> * _Nonnull))completeHandler{
-    return [self.tableOptions execLimitQueryPQL:self.ppDb pql:pql completeHandler:completeHandler];
-}
-
-- (id)execOrderQueryPQL:(NSString *)pql{
-    return [self.tableOptions execOrderQueryPQL:self.ppDb pql:pql];
-}
-
-- (Boolean)execOrderQueryPQL:(NSString *)pql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull, NSMutableArray<id> * _Nonnull))completeHandler{
-    return [self.tableOptions execOrderQueryPQL:self.ppDb pql:pql completeHandler:completeHandler];
 }
 
 - (id)execPQL:(NSString *)pql{
