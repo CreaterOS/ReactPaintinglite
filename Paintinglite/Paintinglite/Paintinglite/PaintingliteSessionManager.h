@@ -37,7 +37,15 @@ NS_ASSUME_NONNULL_BEGIN
  * 连接完成的Block操作
  */
 
-- (Boolean)openSqlite:(NSString *)fileName completeHandler:(void(^)(NSString *filePath,PaintingliteSessionError *error,Boolean success))completeHandler;
+- (Boolean)openSqlite:(NSString *)fileName completeHandler:(void(^ __nullable)(NSString *filePath,PaintingliteSessionError *error,Boolean success))completeHandler;
+
+/**
+ * 打开数据库
+ * 将db文件切分成四份
+ * 每一份加密
+ * 四份合起来形成数据库
+ */
+- (Boolean)openSqliteWithSecurity:(NSString *)fileName completeHandler:(void (^)(NSString * _Nonnull, PaintingliteSessionError * _Nonnull, Boolean))completeHandler;
 
 /**
  * 获得数据库

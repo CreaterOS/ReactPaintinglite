@@ -8,8 +8,10 @@
 
 #import "PaintingliteSessionManager.h"
 #import "PaintingliteSessionFactory.h"
+#import "PaintingliteSecurity.h"
 #import "PaintingliteConfiguration.h"
 #import "PaintingliteSnapManager.h"
+#import "SSZipArchive.h"
 
 @interface PaintingliteSessionManager()
 @property (nonatomic,readonly)PaintingliteSessionFactoryLite *ppDb; //数据库
@@ -124,6 +126,55 @@ static PaintingliteSessionManager *_instance = nil;
     
     return success;
 }
+
+#pragma mark - 打开数据库
+- (Boolean)openSqliteWithSecurity:(NSString *)fileName completeHandler:(void (^)(NSString * _Nonnull, PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
+
+    Boolean success = false;
+
+    //根据fileName生成一个bd文件
+    if (![fileName containsString:@".db"]) {
+        if ([fileName containsString:@"."]){
+            fileName = [fileName componentsSeparatedByString:@"."][0];
+        }
+    }
+
+    NSString *filePath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:([fileName containsString:@".db"]) ? fileName : [NSString stringWithFormat:@"%@.db",fileName]];
+    
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        [self openSqlite:fileName];
+        //转化NSData
+        [PaintingliteSecurity dataSplite:filePath];
+    });
+
+
+    //将两个压缩包转换成NSData
+    NSString *zipRootPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+    NSMutableData *data_Split_Start = [NSMutableData dataWithData:[PaintingliteSecurity SecurityDecodeBase64:[NSData dataWithContentsOfFile:[zipRootPath stringByAppendingPathComponent:@"DataBase1.zip"]]]];
+    NSMutableData *data_Split_End = [NSMutableData dataWithData:[PaintingliteSecurity SecurityDecodeBase64:[NSData dataWithContentsOfFile:[zipRootPath stringByAppendingPathComponent:@"DataBase2.zip"]]]];
+    
+    [data_Split_Start appendData:data_Split_End];
+    
+    //根据二进制转换为zip文件，然后解压获得数据库文件
+    [data_Split_Start writeToFile:[zipRootPath stringByAppendingPathComponent:@"DB.zip"] atomically:YES];
+    
+    //解压文件
+    NSError *error = nil;
+    if ([SSZipArchive unzipFileAtPath:[zipRootPath stringByAppendingPathComponent:@"serurityDB.db"] toDestination:@"serurityDB" overwrite:YES password:@"1012" error:&error]){
+        //解压成功
+        success = sqlite3_open_v2([filePath UTF8String], &_ppDb, SQLITE_OPEN_READWRITE|SQLITE_OPEN_FULLMUTEX, NULL) == SQLITE_OK;
+    }
+    
+    @synchronized (self) {
+        if (completeHandler != nil) {
+            completeHandler([NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject],self.error,success);
+        }
+    }
+
+    return success;
+}
+
 
 #pragma mark - 获得数据库
 - (sqlite3 *)getSqlite3{

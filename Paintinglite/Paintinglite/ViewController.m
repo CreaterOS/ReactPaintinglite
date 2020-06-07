@@ -68,11 +68,14 @@
        select * from user 中 * 的问题解决
        为多表操作抽取公共方法
      */
-
+    
     //打开数据库
     [self openDB];
-    sqlite3 *ppDb = [self.sessionManager getSqlite3];
-    [self.backUp backupDataBaseWithName:ppDb sqliteName:@"sqlite" type:PaintingliteBackUpMySql completeHandler:nil];
+    
+    [self.sessionManager openSqliteWithSecurity:@"serurityDB.db" completeHandler:nil];
+    
+//    sqlite3 *ppDb = [self.sessionManager getSqlite3];
+//    [self.backUp backupDataBaseWithName:ppDb sqliteName:@"sqlite" type:PaintingliteBackUpMySql completeHandler:nil];
     
     
     //创建数据表
