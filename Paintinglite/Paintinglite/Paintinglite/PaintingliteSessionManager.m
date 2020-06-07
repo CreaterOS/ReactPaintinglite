@@ -130,6 +130,11 @@ static PaintingliteSessionManager *_instance = nil;
     return self.ppDb;
 }
 
+#pragma mark - 获得数据库版本
+- (NSString *)getSqlite3Version{
+    return [@"Paintinglite use sqlite3 version:" stringByAppendingString:[NSString stringWithUTF8String:sqlite3_version]];
+}
+
 #pragma mark - SQL操作
 #pragma mark - 创建表
 - (Boolean)execTableOptForSQL:(NSString *)sql{

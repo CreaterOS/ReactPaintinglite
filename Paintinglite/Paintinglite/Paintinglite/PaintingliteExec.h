@@ -10,6 +10,13 @@
 #import "PaintingliteDataBaseOptions.h"
 #import <Sqlite3.h>
 
+#define TABLEINFO_CID @"cid"
+#define TABLEINFO_NAME @"name"
+#define TABLEINFO_TYPE @"type"
+#define TABLEINFO_NOTNULL @"notnull"
+#define TABLEINFO_DEFAULT_VALUE @"dflt_value"
+#define TABLEINFO_PK @"pk"
+
 typedef NS_ENUM(NSInteger,PaintingliteExecStatus){
     PaintingliteExecCreate,
     PaintingliteExecDrop,
@@ -34,6 +41,12 @@ NS_ASSUME_NONNULL_BEGIN
 - (Boolean)sqlite3Exec:(sqlite3 *)ppDb obj:(id)obj status:(PaintingliteExecStatus)status createStyle:(PaintingliteDataBaseOptionsCreateStyle)createStyle;
 
 - (NSMutableArray *)sqlite3Exec:(sqlite3 *)ppDb objName:(NSString *)objName;
+
+/* 获得表所有的名称 */
+- (NSMutableArray<NSString *> *)execQueryTable:(sqlite3 *)ppDb;
+
+/* 获得表结构字典数组 */
+- (NSMutableArray *)execQueryTableInfo:(sqlite3 *)ppDb tableName:(NSString *__nonnull)tableName;
 
 /* 获得表字段 */
 - (NSMutableArray *)getTableInfo:(sqlite3 *)ppDb objName:(NSString *__nonnull)objName;

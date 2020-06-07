@@ -45,6 +45,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (sqlite3 *)getSqlite3;
 
 /**
+ * 获得数据库版本
+ */
+- (NSString *)getSqlite3Version;
+
+/**
  * 释放数据库
  */
 - (Boolean)releaseSqlite;

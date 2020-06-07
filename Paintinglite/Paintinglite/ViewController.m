@@ -9,6 +9,7 @@
 #import "ViewController.h"
 #import "Paintinglite/PaintingliteSessionManager.h"
 #import "Paintinglite/PaintingliteIntellegenceSelect.h"
+#import "Paintinglite/PaintingliteBackUpManager.h"
 #import "Elephant.h"
 #import "Mouse.h"
 #import "Person.h"
@@ -17,6 +18,7 @@
 @interface ViewController ()
 @property (nonatomic,strong)PaintingliteSessionManager *sessionManager;
 @property (nonatomic,strong)PaintingliteIntellegenceSelect *select;
+@property (nonatomic,strong)PaintingliteBackUpManager *backUp;
 @end
 
 @implementation ViewController
@@ -37,6 +39,15 @@
     
     return _select;
 }
+
+- (PaintingliteBackUpManager *)backUp{
+    if (!_backUp) {
+        _backUp = [PaintingliteBackUpManager sharePaintingliteBackUpManager];
+    }
+    
+    return _backUp;
+}
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -60,6 +71,9 @@
 
     //打开数据库
     [self openDB];
+    sqlite3 *ppDb = [self.sessionManager getSqlite3];
+    [self.backUp backupDataBaseWithName:ppDb sqliteName:@"sqlite" type:PaintingliteBackUpMySql completeHandler:nil];
+    
     
     //创建数据表
 //    [self createTableSQL];
@@ -73,7 +87,8 @@
 //    [self execQuery];
 //    [self execQuerySQLLimitObjComp];
     
-    [self execIntellegenceQuerySQL];
+//    [self execIntellegenceQuerySQL];
+    
     
     //释放数据库
     //[self releaseDB];

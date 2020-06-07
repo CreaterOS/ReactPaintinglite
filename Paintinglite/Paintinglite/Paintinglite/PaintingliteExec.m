@@ -16,6 +16,11 @@
 #import "PaintingliteSnapManager.h"
 #import <objc/runtime.h>
 
+#define Paintinglite_Sqlite3_WHERE @"WHERE"
+#define Paintinglite_Sqlite3_LIMIT @"LIMIT"
+#define Paintinglite_Sqlite3_ORDER_BY @"ORDER BY"
+#define Paintinglite_Sqlite3_ORDER @"ORDER"
+
 #define Paintinglite_Sqlite3_CREATE @"CREATE"
 #define Paintinglite_Sqlite3_DROP @"DROP"
 #define Paintinglite_Sqlite3_ALTER @"ALTER"
@@ -24,6 +29,7 @@
 #define Paintinglite_Sqlite3_ALTER_ADD @"ADD"
 #define Paintinglite_Sqlite3_ALTER_SPACE_ADD @" ADD"
 #define Paintinglite_Sqlite3_ALTER_COLUMN @"COLUMN "
+
 @interface PaintingliteExec()
 @property (nonatomic,strong)PaintingliteSessionFactory *factory; //工厂
 @property (nonatomic,strong)PaintingliteLog *log; //日志
@@ -72,11 +78,11 @@
     
     //WHERE LIMIT ORDER BY
     if ([sql containsString:@"where"]) {
-        [sql stringByReplacingOccurrencesOfString:@"where" withString:@"WHERE"];
+        [sql stringByReplacingOccurrencesOfString:@"where" withString:Paintinglite_Sqlite3_WHERE];
     }else if ([sql containsString:@"limit"]){
-        [sql stringByReplacingOccurrencesOfString:@"limit" withString:@"LIMIT"];
+        [sql stringByReplacingOccurrencesOfString:@"limit" withString:Paintinglite_Sqlite3_LIMIT];
     }else if ([sql containsString:@"order by"]){
-        [sql stringByReplacingOccurrencesOfString:@"order by" withString:@"ORDER BY"];
+        [sql stringByReplacingOccurrencesOfString:@"order by" withString:Paintinglite_Sqlite3_ORDER_BY];
     }
     
     @synchronized (self) {
@@ -157,11 +163,11 @@
     NSString *tableInfoStr = [NSString string];
     
     if ([sql containsString:@"*"]) {
-        if ([[sql uppercaseString] containsString:@"WHERE"]) {
+        if ([[sql uppercaseString] containsString:Paintinglite_Sqlite3_WHERE]) {
             tableInfoStr = [NSString stringWithFormat:@"%@",[self getTableInfo:ppDb objName:[[[sql componentsSeparatedByString:@" WHERE"][0] componentsSeparatedByString:@" "]lastObject]]];
-        }else if([[sql uppercaseString] containsString:@"ORDER"]){
+        }else if([[sql uppercaseString] containsString:Paintinglite_Sqlite3_ORDER]){
             tableInfoStr = [NSString stringWithFormat:@"%@",[self getTableInfo:ppDb objName:[[[sql componentsSeparatedByString:@" ORDER"][0] componentsSeparatedByString:@" "]lastObject]]];
-        }else if([[sql uppercaseString] containsString:@"LIMIT"]){
+        }else if([[sql uppercaseString] containsString:Paintinglite_Sqlite3_LIMIT]){
             tableInfoStr = [NSString stringWithFormat:@"%@",[self getTableInfo:ppDb objName:[[[sql componentsSeparatedByString:@" LIMIT"][0] componentsSeparatedByString:@" "]lastObject]]];
         }else{
             tableInfoStr = [NSString stringWithFormat:@"%@",[self getTableInfo:ppDb objName:[[sql componentsSeparatedByString:@" "]lastObject]]];
@@ -316,9 +322,9 @@
     NSMutableString *content = [NSMutableString string];
     
     if (createStyle == PaintingliteDataBaseOptionsUUID) {
-        content = [NSMutableString stringWithFormat:@"%@ NOT NULL PRIMARY KEY,",@"UUID"];
+        content = [NSMutableString stringWithFormat:@"%@ TEXT NOT NULL PRIMARY KEY,",@"UUID"];
     }else if(createStyle == PaintingliteDataBaseOptionsID){
-        content = [NSMutableString stringWithFormat:@"%@ NOT NULL PRIMARY KEY,",@"ID"];
+        content = [NSMutableString stringWithFormat:@"%@ TEXT NOT NULL PRIMARY KEY,",@"ID"];
     }
     
     for (NSString *ivarName in [propertyDict allKeys]) {
@@ -391,6 +397,60 @@
 
     return [self.factory execQuery:ppDb sql:masterSQL status:PaintingliteSessionFactoryTableINFOJSON];
 }
+
+#pragma mark - 获得表的名称
+- (NSMutableArray<NSString *> *)execQueryTable:(sqlite3 *)ppDb{
+    NSMutableArray<NSString *> *tables = [NSMutableArray array];
+    
+    @synchronized (self) {
+        if (sqlite3_prepare_v2(ppDb, [@"SELECT name FROM sqlite_master WHERE type='table' ORDER BY name" UTF8String], -1, &_stmt, nil) == SQLITE_OK){
+            //查询成功
+            while (sqlite3_step(_stmt) == SQLITE_ROW) {
+                //获得数据库中含有的表名
+                char *name = (char *)sqlite3_column_text(_stmt, 0);
+                [tables addObject:[NSString stringWithFormat:@"%s",name]];
+            }
+        }
+    }
+    
+    return tables;
+}
+
+#pragma mark - 获得表的结构字典数组
+- (NSMutableArray *)execQueryTableInfo:(sqlite3 *)ppDb tableName:(NSString *__nonnull)tableName{
+    NSMutableArray<NSMutableDictionary *> *tables = [NSMutableArray array];
+    
+    NSString *tableInfoSql = [NSString stringWithFormat:@"PRAGMA table_info(%@)",tableName];
+    @synchronized (self) {
+        if (sqlite3_prepare_v2(ppDb, [tableInfoSql UTF8String], -1, &_stmt, nil) == SQLITE_OK){
+            //查询成功
+            while (sqlite3_step(_stmt) == SQLITE_ROW) {
+                NSMutableDictionary<NSString *,NSString *> *tablesInfoDict = [NSMutableDictionary dictionary];
+                
+                //保存数据库中的字段名
+                char *cid  = (char *)sqlite3_column_text(_stmt, 0);
+                char *name = (char *)sqlite3_column_text(_stmt, 1);
+                char *type = (char *)sqlite3_column_text(_stmt, 2);
+                char *notnull = (char *)sqlite3_column_text(_stmt, 3);
+                char *dflt_value = (char *)sqlite3_column_text(_stmt, 4);
+                char *pk = (char *)sqlite3_column_text(_stmt, 5);
+                
+                [tablesInfoDict setValue:[NSString stringWithFormat:@"%s",cid] forKey:TABLEINFO_CID];
+                [tablesInfoDict setValue:[NSString stringWithFormat:@"%s",name] forKey:TABLEINFO_NAME];
+                [tablesInfoDict setValue:[NSString stringWithFormat:@"%s",type] forKey:TABLEINFO_TYPE];
+                [tablesInfoDict setValue:[NSString stringWithFormat:@"%s",notnull] forKey:TABLEINFO_NOTNULL];
+                [tablesInfoDict setValue:[NSString stringWithFormat:@"%s",dflt_value] forKey:TABLEINFO_DEFAULT_VALUE];
+                [tablesInfoDict setValue:[NSString stringWithFormat:@"%s",pk] forKey:TABLEINFO_PK];
+                
+                [tables addObject:tablesInfoDict];
+            }
+        }
+    }
+    
+    return tables;
+}
+
+
 
 #pragma mark - 查询截取类名称
 - (NSMutableArray *)getObjName:(NSString *__nonnull)sql ppDb:(sqlite3 *)ppDb{
