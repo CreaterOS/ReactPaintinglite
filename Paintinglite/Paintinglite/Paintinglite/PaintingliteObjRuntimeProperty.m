@@ -52,6 +52,34 @@
     return propertyNameDict;
 }
 
+#pragma mark - 获得属性类型
++ (NSMutableDictionary *)getObjPropertyType:(id)obj{
+    NSMutableDictionary *propertyTypeDict = [NSMutableDictionary dictionary];
+    
+    unsigned int count = 0;
+    
+    Ivar *propertyIvar = class_copyIvarList([obj class], &count);
+    
+    for (unsigned int i = 0; i < count; i++) {
+        Ivar ivar = propertyIvar[i];
+        
+        const char *propertyType = ivar_getTypeEncoding(ivar);
+        const char *propertyName = ivar_getName(ivar);
+        
+        NSString *ivarType = [NSString stringWithFormat:@"%s",propertyType];
+        NSString *ivarName = [NSString stringWithFormat:@"%s", propertyName];
+        
+        //属性名称需要处理_
+        ivarName = [ivarName substringFromIndex:1];
+        
+        [propertyTypeDict setObject:ivarType forKey:ivarName];
+    }
+    
+    free(propertyIvar);
+    
+    return propertyTypeDict;
+}
+
 #pragma mark - 属性方法动态赋值
 + (id)setObjPropertyValue:(id)obj value:(NSMutableDictionary *)value{
     unsigned int count = 0;

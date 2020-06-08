@@ -19,6 +19,9 @@ NS_ASSUME_NONNULL_BEGIN
 /* 获得属性名称 */
 + (NSMutableDictionary *)getObjPropertyName:(id)obj;
 
+/* 获得属性类型 */
++ (NSMutableDictionary *)getObjPropertyType:(id)obj;
+
 /* 获得属性值 */
 + (NSMutableDictionary *)getObjPropertyValue:(id)obj;
 

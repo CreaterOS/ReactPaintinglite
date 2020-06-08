@@ -13,7 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface Person : NSObject
 
 @property (nonatomic,strong)NSString *name;
-@property (nonatomic)NSUInteger age;
+@property (nonatomic,strong)NSNumber *age;
 @property (nonatomic,strong)NSString *phone;
 @property (nonatomic)NSUInteger year;
 

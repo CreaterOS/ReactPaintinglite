@@ -11,6 +11,7 @@
 #import "Paintinglite/PaintingliteIntellegenceSelect.h"
 #import "Paintinglite/PaintingliteBackUpManager.h"
 #import "Paintinglite/PaintingliteAggregateFunc.h"
+#import "Paintinglite/PaintingliteCascadeShowerIUD.h"
 #import "Elephant.h"
 #import "Mouse.h"
 #import "Person.h"
@@ -21,6 +22,7 @@
 @property (nonatomic,strong)PaintingliteIntellegenceSelect *select;
 @property (nonatomic,strong)PaintingliteBackUpManager *backUp;
 @property (nonatomic,strong)PaintingliteAggregateFunc *aggregateF;
+@property (nonatomic,strong)PaintingliteCascadeShowerIUD *cascadeShower;
 @end
 
 @implementation ViewController
@@ -56,6 +58,14 @@
     }
     
     return _aggregateF;
+}
+
+- (PaintingliteCascadeShowerIUD *)cascadeShower{
+    if (!_cascadeShower) {
+        _cascadeShower = [PaintingliteCascadeShowerIUD sharePaintingliteCascadeShowerIUD];
+    }
+    
+    return _cascadeShower;
 }
 
 - (void)viewDidLoad {
@@ -142,6 +152,30 @@
 //            NSLog(@"%f",min);
 //        }
 //    }];
+    
+    User *user = [[User alloc] init];
+    Person *per = [[Person alloc] init];
+
+    user.mutableArray = [NSMutableArray arrayWithObjects:per, nil];
+
+
+//    [self.cascadeShower cascadeInsert:[self.sessionManager getSqlite3] obj:user completeHandler:^(PaintingliteSessionError * _Nonnull sessionError, Boolean success, NSMutableArray * _Nonnull resArray) {
+//        if (success) {
+//            NSLog(@"%@",resArray);
+//        }
+//    }];
+    
+//    [self.cascadeShower cascadeUpdate:[self.sessionManager getSqlite3] obj:user condatation:@[@"WHERE name = 'CreaterOS'",@"WHERE name = 'OS...'"] completeHandler:^(PaintingliteSessionError * _Nonnull sessionError, Boolean success, NSMutableArray * _Nonnull resArray) {
+//        if (success) {
+//            NSLog(@"%@",resArray);
+//        }
+//    }];
+    
+    [self.cascadeShower cascadeDelete:[self.sessionManager getSqlite3] obj:user condatation:@[@"name = 'WHY'",@"name = 'YHD...'"] completeHandler:^(PaintingliteSessionError * _Nonnull sessionError, Boolean success, NSMutableArray * _Nonnull resArray) {
+        if (success) {
+            NSLog(@"%@",resArray);
+        }
+    }];
     
     //释放数据库
     //[self releaseDB];
@@ -245,6 +279,7 @@
 
 #pragma mark - SQL查询
 - (void)execQuery{
+//    NSLog(@"%@",[self.sessionManager execQuerySQL:@"SELECT * FROM person"]);
     NSLog(@"%@",[self.sessionManager execQuerySQL:@"SELECT * FROM user ORDER BY age < (SELECT MAX(age) FROM user) ORDER BY name DESC"]);
 }
 

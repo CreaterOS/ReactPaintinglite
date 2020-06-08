@@ -209,7 +209,7 @@ static PaintingliteCUDOptions *_instance = nil;
     
     sql = ([sql componentsSeparatedByString:@","][1].length == 0) ? [sql substringWithRange:NSMakeRange(0, sql.length-1)] : sql;
     
-    sql = [sql stringByAppendingString:[NSString stringWithFormat:@" WHERE %@",condition]];
+    sql = [sql stringByAppendingString:[NSString stringWithFormat:@" WHERE %@",[condition containsString:@"WHERE"] ? [[condition componentsSeparatedByString:@"WHERE "] lastObject] : condition]];
     
     //增加数据
     if ([self.exec sqlite3Exec:ppDb sql:sql]) {
