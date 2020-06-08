@@ -21,7 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSString *)StringWithDecodeSecurityBase64:(NSString *)baseStr;
 
 /* 拆分NSData */
-+ (void)dataSplite:(NSString *__nonnull)filePath;
+//+ (void)dataSplite:(NSString *__nonnull)filePath;
 
 @end
 

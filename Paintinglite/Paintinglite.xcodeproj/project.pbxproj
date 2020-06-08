@@ -35,6 +35,8 @@
 		68CF869D24809DC000755126 /* PaintingliteException.m in Sources */ = {isa = PBXBuildFile; fileRef = 68CF869C24809DC000755126 /* PaintingliteException.m */; };
 		68D4E3792480E57200053E57 /* Mouse.m in Sources */ = {isa = PBXBuildFile; fileRef = 68D4E3782480E57200053E57 /* Mouse.m */; };
 		68D4E37C2480F55300053E57 /* Elephant.m in Sources */ = {isa = PBXBuildFile; fileRef = 68D4E37B2480F55300053E57 /* Elephant.m */; };
+		68D6B431248DF72E008A2CD6 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 68DE995B247C9C4D0078EDD5 /* libsqlite3.tbd */; };
+		68D6B434248DFB32008A2CD6 /* PaintingliteAggregateFunc.m in Sources */ = {isa = PBXBuildFile; fileRef = 68D6B433248DFB32008A2CD6 /* PaintingliteAggregateFunc.m */; };
 		68D7BB60247FE56500AB994A /* PaintingliteObjRuntimeProperty.m in Sources */ = {isa = PBXBuildFile; fileRef = 68D7BB5F247FE56500AB994A /* PaintingliteObjRuntimeProperty.m */; };
 		68D7BB63247FEF5F00AB994A /* Dogs.m in Sources */ = {isa = PBXBuildFile; fileRef = 68D7BB62247FEF5F00AB994A /* Dogs.m */; };
 		68D7BB66247FF84300AB994A /* Person.m in Sources */ = {isa = PBXBuildFile; fileRef = 68D7BB65247FF84300AB994A /* Person.m */; };
@@ -47,7 +49,6 @@
 		68DE993E247C9B6C0078EDD5 /* PaintingliteTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 68DE993D247C9B6C0078EDD5 /* PaintingliteTests.m */; };
 		68DE9949247C9B6C0078EDD5 /* PaintingliteUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 68DE9948247C9B6C0078EDD5 /* PaintingliteUITests.m */; };
 		68DE9959247C9C260078EDD5 /* PaintingliteSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 68DE9958247C9C260078EDD5 /* PaintingliteSessionManager.m */; };
-		68DE995F247C9E7A0078EDD5 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 68DE995B247C9C4D0078EDD5 /* libsqlite3.tbd */; };
 		68DE9962247CA1140078EDD5 /* PaintingliteSessionFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 68DE9961247CA1140078EDD5 /* PaintingliteSessionFactory.m */; };
 		68DE9965247CA2490078EDD5 /* PaintingliteConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 68DE9964247CA2490078EDD5 /* PaintingliteConfiguration.m */; };
 		68DE9968247CA5870078EDD5 /* PaintingliteSessionError.m in Sources */ = {isa = PBXBuildFile; fileRef = 68DE9967247CA5870078EDD5 /* PaintingliteSessionError.m */; };
@@ -135,6 +136,8 @@
 		68D4E3782480E57200053E57 /* Mouse.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Mouse.m; sourceTree = "<group>"; };
 		68D4E37A2480F55300053E57 /* Elephant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Elephant.h; sourceTree = "<group>"; };
 		68D4E37B2480F55300053E57 /* Elephant.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Elephant.m; sourceTree = "<group>"; };
+		68D6B432248DFB32008A2CD6 /* PaintingliteAggregateFunc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaintingliteAggregateFunc.h; sourceTree = "<group>"; };
+		68D6B433248DFB32008A2CD6 /* PaintingliteAggregateFunc.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaintingliteAggregateFunc.m; sourceTree = "<group>"; };
 		68D7BB5E247FE56500AB994A /* PaintingliteObjRuntimeProperty.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaintingliteObjRuntimeProperty.h; sourceTree = "<group>"; };
 		68D7BB5F247FE56500AB994A /* PaintingliteObjRuntimeProperty.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaintingliteObjRuntimeProperty.m; sourceTree = "<group>"; };
 		68D7BB61247FEF5F00AB994A /* Dogs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Dogs.h; sourceTree = "<group>"; };
@@ -179,7 +182,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				68DE995F247C9E7A0078EDD5 /* libsqlite3.tbd in Frameworks */,
+				68D6B431248DF72E008A2CD6 /* libsqlite3.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -343,6 +346,8 @@
 				6846BC0F2484DD5E00887A5C /* PaintingliteTableOptionsSelectPQL.m */,
 				68EDCA82248747E200031B41 /* PaintingliteIntellegenceSelect.h */,
 				68EDCA83248747E200031B41 /* PaintingliteIntellegenceSelect.m */,
+				68D6B432248DFB32008A2CD6 /* PaintingliteAggregateFunc.h */,
+				68D6B433248DFB32008A2CD6 /* PaintingliteAggregateFunc.m */,
 				6800074C2488D19000FF75DE /* PaintingliteCUDOptions.h */,
 				6800074D2488D19000FF75DE /* PaintingliteCUDOptions.m */,
 				68CE9DBD2483505E00B96DC3 /* PaintingliteTransaction.h */,
@@ -517,6 +522,7 @@
 				68DE9934247C9B6C0078EDD5 /* main.m in Sources */,
 				68D7BB60247FE56500AB994A /* PaintingliteObjRuntimeProperty.m in Sources */,
 				68CF58A42484D36C0035F188 /* PaintingliteTableOptionsSelect.m in Sources */,
+				68D6B434248DFB32008A2CD6 /* PaintingliteAggregateFunc.m in Sources */,
 				68DE9965247CA2490078EDD5 /* PaintingliteConfiguration.m in Sources */,
 				689F24BB248CD1B100A9DC3B /* sha1.m in Sources */,
 				68DE9968247CA5870078EDD5 /* PaintingliteSessionError.m in Sources */,

@@ -45,7 +45,7 @@ NS_ASSUME_NONNULL_BEGIN
  * 每一份加密
  * 四份合起来形成数据库
  */
-- (Boolean)openSqliteWithSecurity:(NSString *)fileName completeHandler:(void (^)(NSString * _Nonnull, PaintingliteSessionError * _Nonnull, Boolean))completeHandler;
+//- (Boolean)openSqliteWithSecurity:(NSString *)fileName completeHandler:(void (^ __nullable)(NSString * _Nonnull, PaintingliteSessionError * _Nonnull, Boolean))completeHandler;
 
 /**
  * 获得数据库

@@ -10,6 +10,7 @@
 #import "Paintinglite/PaintingliteSessionManager.h"
 #import "Paintinglite/PaintingliteIntellegenceSelect.h"
 #import "Paintinglite/PaintingliteBackUpManager.h"
+#import "Paintinglite/PaintingliteAggregateFunc.h"
 #import "Elephant.h"
 #import "Mouse.h"
 #import "Person.h"
@@ -19,6 +20,7 @@
 @property (nonatomic,strong)PaintingliteSessionManager *sessionManager;
 @property (nonatomic,strong)PaintingliteIntellegenceSelect *select;
 @property (nonatomic,strong)PaintingliteBackUpManager *backUp;
+@property (nonatomic,strong)PaintingliteAggregateFunc *aggregateF;
 @end
 
 @implementation ViewController
@@ -48,6 +50,13 @@
     return _backUp;
 }
 
+- (PaintingliteAggregateFunc *)aggregateF{
+    if (!_aggregateF) {
+        _aggregateF = [PaintingliteAggregateFunc sharePaintingliteAggregateFunc];
+    }
+    
+    return _aggregateF;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -72,7 +81,7 @@
     //打开数据库
     [self openDB];
     
-    [self.sessionManager openSqliteWithSecurity:@"serurityDB.db" completeHandler:nil];
+//    [self.sessionManager openSqliteWithSecurity:@"sqlite.db" completeHandler:nil];
     
 //    sqlite3 *ppDb = [self.sessionManager getSqlite3];
 //    [self.backUp backupDataBaseWithName:ppDb sqliteName:@"sqlite" type:PaintingliteBackUpMySql completeHandler:nil];
@@ -85,13 +94,54 @@
 //    [self alterTableNameSQL];
 //    [self alterTableNameForName];
 //    [self dropTableForName];
-//    [self insertValueForObj];
+//    [self insertValue];
     
-//    [self execQuery];
+    [self execQuery];
 //    [self execQuerySQLLimitObjComp];
     
 //    [self execIntellegenceQuerySQL];
     
+//    [self.aggregateF count:[self.sessionManager getSqlite3] tableName:@"user" completeHandler:^(PaintingliteSessionError * _Nonnull sessionerror, Boolean success, NSUInteger count) {
+//        if (success) {
+//            NSLog(@"%zd",count);
+//        }
+//    }];
+    
+//    [self.aggregateF count:[self.sessionManager getSqlite3] tableName:@"user" condatation:@"WHERE age < 40" completeHandler:^(PaintingliteSessionError * _Nonnull sessionerror, Boolean success, NSUInteger count) {
+//        if (success) {
+//            NSLog(@"%zd",count);
+//        }
+//    }];
+
+//    [self.aggregateF sum:[self.sessionManager getSqlite3] field:@"age" tableName:@"user" completeHandler:^(PaintingliteSessionError * _Nonnull sessionerror, Boolean success, double sum) {
+//        if (success) {
+//            NSLog(@"%f",sum);
+//        }
+//    }];
+    
+//    [self.aggregateF sum:[self.sessionManager getSqlite3] field:@"age" tableName:@"user" condatation:@"WHERE age < 40" completeHandler:^(PaintingliteSessionError * _Nonnull sessionerror, Boolean success, double sum) {
+//        if (success) {
+//            NSLog(@"%f",sum);
+//        }
+//    }];
+
+//    [self.aggregateF max:[self.sessionManager getSqlite3] field:@"age" tableName:@"user" condatation:@"WHERE age < 40" completeHandler:^(PaintingliteSessionError * _Nonnull sessionerror, Boolean success, double max) {
+//        if (success) {
+//            NSLog(@"%f",max);
+//        }
+//    }];
+    
+//    [self.aggregateF min:[self.sessionManager getSqlite3] field:@"age" tableName:@"user" completeHandler:^(PaintingliteSessionError * _Nonnull sessionerror, Boolean success, double min) {
+//        if (success) {
+//            NSLog(@"%f",min);
+//        }
+//    }];
+    
+//    [self.aggregateF avg:[self.sessionManager getSqlite3] field:@"age" tableName:@"user" completeHandler:^(PaintingliteSessionError * _Nonnull sessionerror, Boolean success, double min) {
+//        if (success) {
+//            NSLog(@"%f",min);
+//        }
+//    }];
     
     //释放数据库
     //[self releaseDB];
@@ -195,7 +245,7 @@
 
 #pragma mark - SQL查询
 - (void)execQuery{
-    NSLog(@"%@",[self.sessionManager execQuerySQL:@"SELECT * FROM user"]);
+    NSLog(@"%@",[self.sessionManager execQuerySQL:@"SELECT * FROM user ORDER BY age < (SELECT MAX(age) FROM user) ORDER BY name DESC"]);
 }
 
 - (void)execQueryObj{
@@ -348,7 +398,7 @@
 #pragma mark - 插入数据
 - (void)insertValue{
 //    [self.sessionManager insert:@"INSERT INTO user(name,age) VALUES('Jay',40)"];
-    [self.sessionManager insert:@"INSERT INTO mouse(UUID,name,phone) VALUES('mouse1','mouse1','mouse1'),('mouse2','mouse2','mouse2'),('mouse3','mouse3','mouse3')" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<id> * _Nonnull newList) {
+    [self.sessionManager insert:@"INSERT INTO user(name,age) VALUES('asdf','21'),('dddd','21'),('CreaterOS','21'),('ReynBryant','21'),('Hony','19'),('Jay','40')" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<id> * _Nonnull newList) {
         if (success) {
             NSLog(@"%@",newList);
         }
@@ -381,7 +431,7 @@
 #pragma mark - 创建表
 #pragma mark - SQL语句
 - (void)createTableSQL{
-    if([self.sessionManager execTableOptForSQL:@"CREATE TABLE IF NOT EXISTS person(name TEXT,age INTEGER)"]){
+    if([self.sessionManager execTableOptForSQL:@"CREATE TABLE IF NOT EXISTS user(name TEXT,age INTEGER)"]){
         NSLog(@"创建数据库成功...");
     }
 }
