@@ -32,14 +32,17 @@ NS_ASSUME_NONNULL_BEGIN
 /* 执行SQL语句 */
 - (Boolean)sqlite3Exec:(sqlite3 *)ppDb sql:(NSString *)sql;
 
+/* 执行SQL查询语句 */
 - (NSMutableArray *)sqlite3ExecQuery:(sqlite3 *)ppDb sql:(NSString *)sql;
 
+/* 根据表名执行SQL */
 - (Boolean)sqlite3Exec:(sqlite3 *)ppDb tableName:(NSString *)tableName content:(NSString *)content;
 
 - (Boolean)sqlite3Exec:(sqlite3 *)ppDb tableName:(NSString *)tableName;
 
 - (Boolean)sqlite3Exec:(sqlite3 *)ppDb obj:(id)obj status:(PaintingliteExecStatus)status createStyle:(PaintingliteDataBaseOptionsCreateStyle)createStyle;
 
+/* 根据类名执行SQL */
 - (NSMutableArray *)sqlite3Exec:(sqlite3 *)ppDb objName:(NSString *)objName;
 
 /* 获得表所有的名称 */
@@ -51,6 +54,7 @@ NS_ASSUME_NONNULL_BEGIN
 /* 获得表字段 */
 - (NSMutableArray *)getTableInfo:(sqlite3 *)ppDb objName:(NSString *__nonnull)objName;
 
+/* 获得表名当前JSON文件 */
 - (NSArray *)getCurrentTableNameWithJSON;
 
 /* 判断表名是否存在 */

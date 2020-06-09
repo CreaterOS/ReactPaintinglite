@@ -65,7 +65,7 @@ static PaintingliteTableOptionsSelect *_instance = nil;
     
     return [PaintingliteTransaction begainPaintingliteTransaction:ppDb exec:^Boolean{
         NSMutableArray *array = [self.exec sqlite3ExecQuery:ppDb sql:sql];
-        Boolean success = (array.count != 0);
+        Boolean success = (array.count != -1);
         NSMutableArray *resArray = [NSMutableArray array];
         
         if (success) {

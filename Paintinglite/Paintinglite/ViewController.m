@@ -12,6 +12,7 @@
 #import "Paintinglite/PaintingliteBackUpManager.h"
 #import "Paintinglite/PaintingliteAggregateFunc.h"
 #import "Paintinglite/PaintingliteCascadeShowerIUD.h"
+#import "Paintinglite/PaintingliteExec.h"
 #import "Elephant.h"
 #import "Mouse.h"
 #import "Person.h"
@@ -23,6 +24,7 @@
 @property (nonatomic,strong)PaintingliteBackUpManager *backUp;
 @property (nonatomic,strong)PaintingliteAggregateFunc *aggregateF;
 @property (nonatomic,strong)PaintingliteCascadeShowerIUD *cascadeShower;
+@property (nonatomic,strong)PaintingliteExec *exec;
 @end
 
 @implementation ViewController
@@ -68,6 +70,14 @@
     return _cascadeShower;
 }
 
+- (PaintingliteExec *)exec{
+    if (!_exec) {
+        _exec = [[PaintingliteExec alloc] init];
+    }
+    
+    return _exec;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
@@ -91,11 +101,28 @@
     //打开数据库
     [self openDB];
     
+//    [self insertValue];
+    [self.backUp backupTableValueForBeforeOpt:[self.sessionManager getSqlite3] tableName:@"user" completeHandler:^(PaintingliteSessionError * _Nonnull sessionerror, Boolean success, NSMutableArray<id> * _Nonnull newList) {
+        if (success) {
+            NSLog(@"%@",newList);
+        }
+    }];
+    
+//    [self execQuery];
+//    //检查JSON文件
+//    NSLog(@"%@",[self.exec getCurrentTableNameWithJSON]);
+//    NSLog(@"%@",[self.exec getTableInfo:[self.sessionManager getSqlite3] objName:@"user"]);
+    
 //    [self.sessionManager openSqliteWithSecurity:@"sqlite.db" completeHandler:nil];
     
 //    sqlite3 *ppDb = [self.sessionManager getSqlite3];
 //    [self.backUp backupDataBaseWithName:ppDb sqliteName:@"sqlite" type:PaintingliteBackUpMySql completeHandler:nil];
-    
+
+//    [self.sessionManager update:@"UPDATE user SET name = 'okok' WHERE age = 21" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<id> * _Nonnull newList) {
+//        if (success) {
+//            NSLog(@"%@",newList);
+//        }
+//    }];
     
     //创建数据表
 //    [self createTableSQL];
@@ -104,9 +131,12 @@
 //    [self alterTableNameSQL];
 //    [self alterTableNameForName];
 //    [self dropTableForName];
-//    [self insertValue];
     
-    [self execQuery];
+//    for (NSUInteger i = 0; i < 100; i++) {
+//        [self insertValue];
+//    }
+    
+//    [self execQuery];
 //    [self execQuerySQLLimitObjComp];
     
 //    [self execIntellegenceQuerySQL];
@@ -153,10 +183,10 @@
 //        }
 //    }];
     
-    User *user = [[User alloc] init];
-    Person *per = [[Person alloc] init];
-
-    user.mutableArray = [NSMutableArray arrayWithObjects:per, nil];
+//    User *user = [[User alloc] init];
+//    Person *per = [[Person alloc] init];
+//
+//    user.mutableArray = [NSMutableArray arrayWithObjects:per, nil];
 
 
 //    [self.cascadeShower cascadeInsert:[self.sessionManager getSqlite3] obj:user completeHandler:^(PaintingliteSessionError * _Nonnull sessionError, Boolean success, NSMutableArray * _Nonnull resArray) {
@@ -171,11 +201,11 @@
 //        }
 //    }];
     
-    [self.cascadeShower cascadeDelete:[self.sessionManager getSqlite3] obj:user condatation:@[@"name = 'WHY'",@"name = 'YHD...'"] completeHandler:^(PaintingliteSessionError * _Nonnull sessionError, Boolean success, NSMutableArray * _Nonnull resArray) {
-        if (success) {
-            NSLog(@"%@",resArray);
-        }
-    }];
+//    [self.cascadeShower cascadeDelete:[self.sessionManager getSqlite3] obj:user condatation:@[@"name = 'WHY'",@"name = 'YHD...'"] completeHandler:^(PaintingliteSessionError * _Nonnull sessionError, Boolean success, NSMutableArray * _Nonnull resArray) {
+//        if (success) {
+//            NSLog(@"%@",resArray);
+//        }
+//    }];
     
     //释放数据库
     //[self releaseDB];
@@ -280,7 +310,7 @@
 #pragma mark - SQL查询
 - (void)execQuery{
 //    NSLog(@"%@",[self.sessionManager execQuerySQL:@"SELECT * FROM person"]);
-    NSLog(@"%@",[self.sessionManager execQuerySQL:@"SELECT * FROM user ORDER BY age < (SELECT MAX(age) FROM user) ORDER BY name DESC"]);
+    NSLog(@"%@",[self.sessionManager execQuerySQL:@"SELECT * FROM user"]);
 }
 
 - (void)execQueryObj{

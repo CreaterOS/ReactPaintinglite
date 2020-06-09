@@ -286,10 +286,10 @@ static PaintingliteTableOptions *_instance = nil;
 
 /* 删除数据 */
 - (Boolean)del:(sqlite3 *)ppDb sql:(NSString *)sql{
-    return [self.cudOpt del:ppDb sql:sql];
+    return [self del:ppDb sql:sql completeHandler:nil];
 }
 
-- (Boolean)del:(sqlite3 *)ppDb sql:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<id> * _Nonnull))completeHandler{
+- (Boolean)del:(sqlite3 *)ppDb sql:(NSString *)sql completeHandler:(void (^ __nullable)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<id> * _Nonnull))completeHandler{
     return [self.cudOpt del:ppDb sql:sql completeHandler:completeHandler];
 }
 

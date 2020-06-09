@@ -209,4 +209,5 @@ static PaintingliteAggregateFunc *_instance = nil;
     
     return success;
 }
+
 @end

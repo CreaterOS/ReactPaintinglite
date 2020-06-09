@@ -51,6 +51,11 @@ static PaintingliteLog *_instance = nil;
 
 
 #pragma mark - 写入日志文件
+/**
+ * 写入日志文件
+ * 专门开辟一个线程进行写入操作，但是写入操作和读取操作必须单独执行
+ * 防止出现线程安全问题,因此需要使用多线程栅栏进行读写操作
+ */
 - (void)writeLogFileOptions:(NSString *__nonnull)options status:(PaintingliteLogStatus)status completeHandler:(void (^)(NSString * _Nonnull))completeHandler{
     self.options = options;
     self.status = status;

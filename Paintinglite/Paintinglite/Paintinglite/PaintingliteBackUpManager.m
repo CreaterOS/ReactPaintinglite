@@ -7,6 +7,7 @@
 //
 
 #import "PaintingliteBackUpManager.h"
+#import "PaintingliteSessionManager.h"
 #import "PaintingliteExec.h"
 
 #define Paintinglite_MAX_TEXT @"1012"
@@ -17,6 +18,7 @@
 @property (nonatomic,strong)NSFileManager *fileManager; //文件管理者
 @property (nonatomic,weak)NSString *tableName; //表名
 @property (nonatomic,strong)NSMutableArray *tableInfoArray; //表结构字典数组
+@property (nonatomic,strong)PaintingliteSessionManager *sessionManager; //会话管理
 @end
 
 @implementation PaintingliteBackUpManager
@@ -44,6 +46,14 @@
     }
     
     return _fileManager;
+}
+
+- (PaintingliteSessionManager *)sessionManager{
+    if (!_sessionManager) {
+        _sessionManager = [PaintingliteSessionManager sharePaintingliteSessionManager];
+    }
+    
+    return _sessionManager;
 }
 
 #pragma mark - 单例模式
@@ -236,5 +246,47 @@ static PaintingliteBackUpManager *_instance = nil;
     return [[sqlContent dataUsingEncoding:NSUTF8StringEncoding] writeToFile:saveFilePath atomically:YES];
 }
 
+#pragma mark - 回退一次表数据
+- (Boolean)backupTableValueForBeforeOpt:(sqlite3 *)ppDb tableName:(NSString *)tableName completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<id> * _Nonnull))completeHandler{
+    Boolean success = false;
+    
+    //读取保存的上一次版本的数据文件
+    NSMutableArray *oldValueArray = [[NSMutableArray alloc] initWithContentsOfFile:[[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:[NSString stringWithFormat:@"%@_VALUE.json",tableName]]];
+    NSString *oldValueArrayStr = [NSString stringWithFormat:@"%@",oldValueArray];
+    oldValueArrayStr = [[[[[[oldValueArrayStr stringByReplacingOccurrencesOfString:@"\n" withString:@""] stringByReplacingOccurrencesOfString:@" " withString:@""] stringByReplacingOccurrencesOfString:@";" withString:@","]  stringByReplacingOccurrencesOfString:@"{" withString:@"("] stringByReplacingOccurrencesOfString:@"}" withString:@")"] stringByReplacingOccurrencesOfString:@",)" withString:@")"];
+    
+    oldValueArrayStr = [[[oldValueArrayStr stringByReplacingOccurrencesOfString:@"=" withString:@"='"] stringByReplacingOccurrencesOfString:@"," withString:@"',"]stringByReplacingOccurrencesOfString:@")'," withString:@"),"];
+    oldValueArrayStr = [oldValueArrayStr stringByReplacingOccurrencesOfString:@")" withString:@"')"];
+    oldValueArrayStr = [oldValueArrayStr substringWithRange:NSMakeRange(1, oldValueArrayStr.length - 3)];
+    
+    NSLog(@"%@",oldValueArrayStr);
+    
+    //获得原来表的字段
+    NSMutableDictionary *dict = [oldValueArray firstObject];
+    NSString *tableFieldsArrayStr = [NSString stringWithFormat:@"%@",dict.allKeys];
+    tableFieldsArrayStr = [[tableFieldsArrayStr stringByReplacingOccurrencesOfString:@"\n" withString:@""] stringByReplacingOccurrencesOfString:@" " withString:@""];
+    
+    
+    for (NSString *str in dict.allKeys) {
+        if ([oldValueArrayStr containsString:str]) {
+            oldValueArrayStr = [oldValueArrayStr stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"%@=",str] withString:@""];
+        }
+    }
+    
+    //删除表数据然后写入数据
+    if ([self.sessionManager del:[NSString stringWithFormat:@"DELETE FROM %@",tableName]]){
+        //重写写入数据
+        NSString *insertSQL = [NSString stringWithFormat:@"INSERT INTO %@%@ VALUES %@",tableName,tableFieldsArrayStr,oldValueArrayStr];
+
+        success = [self.sessionManager insert:insertSQL completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<id> * _Nonnull newList) {
+            if (success) {
+                if (completeHandler != nil) {
+                    completeHandler(error,success,newList);
+                }
+            }
+        }];
+    }
+    return success;
+}
 
 @end

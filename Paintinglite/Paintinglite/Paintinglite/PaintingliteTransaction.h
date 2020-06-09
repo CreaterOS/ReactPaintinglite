@@ -21,6 +21,13 @@ NS_ASSUME_NONNULL_BEGIN
 /* 开起事务 */
 + (Boolean)begainPaintingliteTransaction:(sqlite3 *)ppDb exec:(Boolean (^)(void))exec;
 
+/* 事务 */
+- (void)begainPaintingliteTransaction:(sqlite3 *)ppDb;
+/* 提交 */
+- (void)commit:(sqlite3 *)ppDb;
+/* 回滚*/
+- (void)rollback:(sqlite3 *)ppDb;
+
 @end
 
 NS_ASSUME_NONNULL_END
