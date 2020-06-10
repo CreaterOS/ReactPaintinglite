@@ -72,11 +72,11 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * 读取日志文件
  */
-- (NSString *)readLogFile:(NSString *__nonnull)fileName;
+- (void)readLogFile:(NSString *__nonnull)fileName;
 
-- (NSString *)readLogFile:(NSString *)fileName dateTime:(NSDate *__nonnull)dateTime;
+- (void)readLogFile:(NSString *)fileName dateTime:(NSDate *__nonnull)dateTime;
 
-- (NSString *)readLogFile:(NSString *)fileName logStatus:(PaintingliteLogStatus)logStatus;
+- (void)readLogFile:(NSString *)fileName logStatus:(PaintingliteLogStatus)logStatus;
 
 #pragma mark - SQL语句执行
 - (Boolean)execTableOptForSQL:(NSString *)sql;

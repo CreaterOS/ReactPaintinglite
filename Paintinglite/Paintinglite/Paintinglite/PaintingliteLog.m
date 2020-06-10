@@ -8,6 +8,7 @@
 
 #import "PaintingliteLog.h"
 #import "PaintingliteConfiguration.h"
+#import "PaintingliteSessionFactory.h"
 
 #define PaintingliteLeft_Rigth_Line @"--------------------------"
 #define PaintingliteLine @"------------------------------------------------------------------"
@@ -89,7 +90,6 @@ static PaintingliteLog *_instance = nil;
     if (completeHandler != nil) {
         completeHandler(logFilePath);
     }
-    
 }
 
 #pragma mark - 删除日志文件
@@ -100,42 +100,36 @@ static PaintingliteLog *_instance = nil;
 
 - (Boolean)removeLogFile:(NSString *)fileName{
     NSError *error = nil;
-    
     return [self.fileManager removeItemAtPath:[self LogFilePath:fileName] error:&error];
 }
 
 #pragma mark - 读取日志文件
 - (NSString *)readLogFile:(NSString *__nonnull)fileName{
     if ([self.fileManager fileExistsAtPath:[self LogFilePath:fileName]]) {
-       return [NSString stringWithFormat:@"\n%@ LOG FILE %@\n%@\n%@\n",PaintingliteLeft_Rigth_Line,PaintingliteLeft_Rigth_Line,[[NSString alloc] initWithData:[self logData:fileName] encoding:NSUTF8StringEncoding],PaintingliteLine];
+        return [NSString stringWithFormat:@"\n%@ LOG FILE %@\n%@\n%@\n",PaintingliteLeft_Rigth_Line,PaintingliteLeft_Rigth_Line,[[NSString alloc] initWithData:[self logData:fileName] encoding:NSUTF8StringEncoding],PaintingliteLine];
     }
-    
     return @"不存在数据库,无法输出日志文件";
 }
 
 - (NSString *)readLogFile:(NSString *)fileName dateTime:(NSDate *__nonnull)dateTime{
+    __block NSMutableString *resStr = [NSMutableString string];
     NSString *logStr = [[NSString alloc] initWithData:[self logData:fileName] encoding:NSUTF8StringEncoding];
-    
-    NSMutableString *resStr = [NSMutableString string];
     
     if ([[logStr componentsSeparatedByString:@" ---- "][1] isEqualToString:[NSString stringWithFormat:@"[%@]",[NSDateFormatter localizedStringFromDate:dateTime dateStyle:NSDateFormatterFullStyle timeStyle:NSDateFormatterFullStyle]]]) {
         //读取特定时间节点以后的日志
         [resStr appendFormat:@"\n%@ LOG FILE %@\n%@\n%@\n",PaintingliteLeft_Rigth_Line,PaintingliteLeft_Rigth_Line,logStr,PaintingliteLine];
     }
-    
     return resStr;
 }
 
 - (NSString *)readLogFile:(NSString *)fileName logStatus:(PaintingliteLogStatus)logStatus{
-    NSString *logStr = [[NSString alloc] initWithData:[self logData:fileName] encoding:NSUTF8StringEncoding];
-    
     NSMutableString *resStr = [NSMutableString string];
-    
+    NSString *logStr = [[NSString alloc] initWithData:[self logData:fileName] encoding:NSUTF8StringEncoding];
+        
     if ([[logStr componentsSeparatedByString:@" ---- "][2] containsString:[NSString stringWithFormat:@"[%@]",logStatus == PaintingliteLogSuccess ? @"success" : @"error"]]) {
         //读取特定状态的日志
         [resStr appendFormat:@"\n%@ LOG FILE %@\n%@\n%@\n",PaintingliteLeft_Rigth_Line,PaintingliteLeft_Rigth_Line,logStr,PaintingliteLine];
     }
-    NSLog(@"%@",resStr);
     
     return resStr;
 }

@@ -16,7 +16,10 @@
 @end
 
 #define HAVE_TABLE_SQL @"SELECT name FROM sqlite_master WHERE type='table' ORDER BY name"
-
+#define TABLE_INFO(objName) [NSString stringWithFormat:@"PRAGMA table_info(%@)",objName]
+#define SELECT_QUERY_SQL(tableName) [NSString stringWithFormat:@"SELECT * FROM %@",[tableName lowercaseString]]
+#define Paintinglite_SNAP_ROOT_PATH [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject]
+ 
 @implementation PaintingliteSnapManager
 
 #pragma mark - 懒加载
@@ -54,14 +57,37 @@ static PaintingliteSnapManager *_instance = nil;
 
 #pragma mark - 表结构的快照
 - (void)saveTableInfoSnap:(sqlite3 *)ppDb objName:(NSString *)objName{
-    [self.factory execQuery:ppDb sql:[NSString stringWithFormat:@"PRAGMA table_info(%@)",objName] status:PaintingliteSessionFactoryTableINFOJSON];
+    [self.factory execQuery:ppDb sql:TABLE_INFO(objName) status:PaintingliteSessionFactoryTableINFOJSON];
 }
 
 #pragma mark - 表的数据快照
 - (Boolean)saveTableValue:(sqlite3 *)ppDb tableName:(NSString *)tableName{
-    NSMutableArray *queryArray = [self.exec sqlite3ExecQuery:ppDb sql:[NSString stringWithFormat:@"SELECT * FROM %@",[tableName lowercaseString]]];
+    NSMutableArray *queryArray = [self.exec sqlite3ExecQuery:ppDb sql:SELECT_QUERY_SQL(tableName)];
     //写入JSON文件
-    Boolean success = [queryArray writeToFile:[[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:[NSString stringWithFormat:@"%@_VALUE.json",tableName]]  atomically:YES];
+    return [queryArray writeToFile:[Paintinglite_SNAP_ROOT_PATH stringByAppendingPathComponent:[NSString stringWithFormat:@"%@_VALUE.json",tableName]] atomically:YES];
+}
+
+#pragma mark - 删除所有快照
+- (Boolean)removeSnap:(NSString *__nonnull)tableName{
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSString *fileValuePath = [Paintinglite_SNAP_ROOT_PATH stringByAppendingPathComponent:[NSString stringWithFormat:@"%@_VALUE.json",tableName]];
+    NSString *fileInfoSnapPath = [Paintinglite_SNAP_ROOT_PATH stringByAppendingPathComponent:[NSString stringWithFormat:@"TablesInfo_Snap.json"]];
+    NSString *fileSnapPath = [Paintinglite_SNAP_ROOT_PATH stringByAppendingPathComponent:[NSString stringWithFormat:@"Tables_Snap.json"]];
+    
+    Boolean success = false;
+    NSError *error = nil;
+    
+    if ([fileManager fileExistsAtPath:fileValuePath]) {
+        success = [fileManager removeItemAtPath:fileValuePath error:&error];
+    }
+    
+    if ([fileManager fileExistsAtPath:fileInfoSnapPath]) {
+        success = [fileManager removeItemAtPath:fileInfoSnapPath error:&error];
+    }
+    
+    if ([fileManager fileExistsAtPath:fileSnapPath]) {
+        success = [fileManager removeItemAtPath:fileSnapPath error:&error];
+    }
     
     return success;
 }

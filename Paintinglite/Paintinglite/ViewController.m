@@ -17,6 +17,7 @@
 #import "Mouse.h"
 #import "Person.h"
 #import "User.h"
+#import "Dogs.h"
 
 @interface ViewController ()
 @property (nonatomic,strong)PaintingliteSessionManager *sessionManager;
@@ -101,12 +102,19 @@
     //打开数据库
     [self openDB];
     
+    
+//    [self execQuery];
 //    [self insertValue];
-    [self.backUp backupTableValueForBeforeOpt:[self.sessionManager getSqlite3] tableName:@"user" completeHandler:^(PaintingliteSessionError * _Nonnull sessionerror, Boolean success, NSMutableArray<id> * _Nonnull newList) {
-        if (success) {
-            NSLog(@"%@",newList);
-        }
-    }];
+    [self insertValueForObj];
+//    [self.sessionManager readLogFile:@"sqlite"];
+//    [self.sessionManager readLogFile:@"sqlite" logStatus:PaintingliteLogSuccess];
+//    [self createTableObj];
+//    [self insertValue];
+//    [self.backUp backupTableValueForBeforeOpt:[self.sessionManager getSqlite3] tableName:@"user" completeHandler:^(PaintingliteSessionError * _Nonnull sessionerror, Boolean success, NSMutableArray<id> * _Nonnull newList) {
+//        if (success) {
+//            NSLog(@"%@",newList);
+//        }
+//    }];
     
 //    [self execQuery];
 //    //检查JSON文件
@@ -471,15 +479,29 @@
 }
 
 - (void)insertValueForObj{
-    User *user = [[User alloc] init];
-    user.name = @"Hony";
-    user.age = [NSNumber numberWithInteger:21];
+
+//    Elephant *ele = [[Elephant alloc] init];
+//    [self.sessionManager createTableForObj:ele createStyle:PaintingliteDataBaseOptionsID];
     
-    [self.sessionManager insertWithObj:user completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<id> * _Nonnull newList) {
+    Elephant *ele = [[Elephant alloc] init];
+    ele.name = @"adsf";
+    ele.age = [NSNumber numberWithInteger:21];
+
+    [self.sessionManager insertWithObj:ele completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<id> * _Nonnull newList) {
         if (success) {
             NSLog(@"%@",newList);
         }
     }];
+    
+//    Mouse *mouse = [[Mouse alloc] init];
+//    mouse.name = @"adsf";
+//    mouse.age = [NSNumber numberWithInteger:21];
+//
+//    [self.sessionManager insertWithObj:mouse completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<id> * _Nonnull newList) {
+//        if (success) {
+//            NSLog(@"%@",newList);
+//        }
+//    }];
 }
 
 #pragma mark - 打开数据库
@@ -516,10 +538,14 @@
 
 #pragma mark - 根据类来创建
 - (void)createTableObj{
-    Elephant *ele = [[Elephant alloc] init];
-    if ([self.sessionManager createTableForObj:ele createStyle:PaintingliteDataBaseOptionsUUID]) {
+    Dogs *dogs = [[Dogs alloc] init];
+    if ([self.sessionManager createTableForObj:dogs createStyle:PaintingliteDataBaseOptionsID]) {
         NSLog(@"创建数据库成功...");
     }
+//    Mouse *mouse = [[Mouse alloc] init];
+//    if ([self.sessionManager createTableForObj:mouse createStyle:PaintingliteDataBaseOptionsUUID]) {
+//        NSLog(@"创建数据库成功...");
+//    }
 }
 
 #pragma mark - 更新表

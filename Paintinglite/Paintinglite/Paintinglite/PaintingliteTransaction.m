@@ -18,7 +18,6 @@
 + (Boolean)begainPaintingliteTransaction:(sqlite3 *)ppDb exec:(Boolean (^)(void))exec{
     //开起事务
     sqlite3_exec(ppDb, [Paintinglite_BEGIN_TRANSACTION UTF8String], 0, 0, NULL);
-    
     @try {
         Boolean flag = false;
         

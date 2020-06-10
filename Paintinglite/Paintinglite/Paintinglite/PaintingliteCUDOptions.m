@@ -8,13 +8,16 @@
 
 #import "PaintingliteCUDOptions.h"
 #import "PaintingliteObjRuntimeProperty.h"
+#import "PaintingliteSessionManager.h"
 #import "PaintingliteTransaction.h"
 #import "PaintingliteExec.h"
 #import "PaintingliteException.h"
+#import "PaintingliteUUID.h"
 
 @interface PaintingliteCUDOptions()
 @property (nonatomic,strong)PaintingliteSessionError *sessionError;
 @property (nonatomic,strong)PaintingliteExec *exec; //执行语句
+@property (nonatomic,strong)PaintingliteSessionManager *sessionManager; //会话管理者
 @end
 
 @implementation PaintingliteCUDOptions
@@ -34,6 +37,14 @@
     }
     
     return _exec;
+}
+
+- (PaintingliteSessionManager *)sessionManager{
+    if (!_sessionManager) {
+        _sessionManager = [PaintingliteSessionManager sharePaintingliteSessionManager];
+    }
+    
+    return _sessionManager;
 }
 
 #pragma mark - 单例模式
@@ -111,26 +122,39 @@ static PaintingliteCUDOptions *_instance = nil;
         //获取表的字段，寻找对应的对象字段
         NSMutableArray *tableInfoArray = [self.exec getTableInfo:ppDb objName:tableName];
 
-
         NSString *sql = [NSString stringWithFormat:@"INSERT INTO %@(",tableName];
-
+        NSLog(@"%@",tableInfoArray);
         //判断字段相同部分进行赋值
         for(NSUInteger i = 0; i < tableInfoArray.count; i++){
             NSString *tableInfoName = tableInfoArray[i];
             sql = (i == tableInfoArray.count - 1) ? [sql stringByAppendingString:[NSString stringWithFormat:@"%@",tableInfoName]] : [sql stringByAppendingString:[NSString stringWithFormat:@"%@,",tableInfoName]];
         }
-
+        
         sql = [sql stringByAppendingString:@") VALUES("];
-
+   
         //获得对应字段的对象的值
         NSMutableDictionary *propertyValue = [PaintingliteObjRuntimeProperty getObjPropertyValue:obj];
-        for(NSUInteger i = 0; i < tableInfoArray.count; i++){
+        NSLog(@"%@",propertyValue);
+        NSUInteger i = 0;
+        
+        if (![[propertyValue allKeys] containsObject:@"UUID"]) {
+            //不包含就自动生成
+            if ([tableInfoArray containsObject:@"UUID"]) {
+                sql = [sql stringByAppendingString:[NSString stringWithFormat:@"'%@',",[PaintingliteUUID getPaintingliteUUID]]];
+                i = 1;
+            }else if([tableInfoArray containsObject:@"ID"]){
+                sql = [sql stringByAppendingString:[NSString stringWithFormat:@"'%d',",[[[self.sessionManager execQuerySQL:[NSString stringWithFormat:@"SELECT * FROM %@",tableName]] lastObject][@"ID"] intValue] + 1]];
+                i = 1;
+            }
+        }
+        
+        for(; i < tableInfoArray.count; i++){
             NSString *tableInfoName = tableInfoArray[i];
             sql = (i == tableInfoArray.count - 1) ? [sql stringByAppendingString:[NSString stringWithFormat:@"'%@'",propertyValue[tableInfoName]]] : [sql stringByAppendingString:[NSString stringWithFormat:@"'%@',",propertyValue[tableInfoName]]];
         }
 
         sql = [sql stringByAppendingString:@");"];
-
+    
         NSLog(@"%@",sql);
         //增加数据
         if ([self.exec sqlite3Exec:ppDb sql:sql]) {

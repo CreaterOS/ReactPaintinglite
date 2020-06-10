@@ -286,20 +286,28 @@ static PaintingliteSessionManager *_instance = nil;
 
 #pragma mark - 删除日志文件
 - (void)removeLogFile:(NSString *)fileName{
-    [self.factory removeLogFile:fileName];
+    dispatch_async(PaintingliteSessionFactory_Sqlite_Queque, ^{
+         [self.factory removeLogFile:fileName];
+    });
 }
 
 #pragma mark - 读取日志文件
-- (NSString *)readLogFile:(NSString *)fileName{
-    return [self.factory readLogFile:fileName];
+- (void)readLogFile:(NSString *)fileName{
+    dispatch_barrier_async(PaintingliteSessionFactory_Sqlite_Queque, ^{
+        NSLog(@"%@",[self.factory readLogFile:fileName]);
+    });
 }
 
-- (NSString *)readLogFile:(NSString *)fileName dateTime:(NSDate *)dateTime{
-    return [[self.factory readLogFile:fileName dateTime:dateTime] length] != 0 ? [self.factory readLogFile:fileName dateTime:dateTime] : @"无操作日志";
+- (void)readLogFile:(NSString *)fileName dateTime:(NSDate *)dateTime{
+    dispatch_barrier_async(PaintingliteSessionFactory_Sqlite_Queque, ^{
+        NSLog(@"%@",[[self.factory readLogFile:fileName dateTime:dateTime] length] != 0 ? [self.factory readLogFile:fileName dateTime:dateTime] : @"无操作日志");
+    });
 }
 
-- (NSString *)readLogFile:(NSString *)fileName logStatus:(PaintingliteLogStatus)logStatus{
-    return [[self.factory readLogFile:fileName logStatus:logStatus] length] != 0 ? [self.factory readLogFile:fileName logStatus:logStatus] : @"无对应日志";
+- (void)readLogFile:(NSString *)fileName logStatus:(PaintingliteLogStatus)logStatus{
+    dispatch_barrier_async(PaintingliteSessionFactory_Sqlite_Queque, ^{
+        NSLog(@"%@",[[self.factory readLogFile:fileName logStatus:logStatus] length] != 0 ? [self.factory readLogFile:fileName logStatus:logStatus] : @"无对应日志");
+    });
 }
 
 #pragma mark - 查询数据
