@@ -24,7 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)sharePaintingliteCUDOptions;
 
 /* 基本CUD操作 */
-- (Boolean)baseCUD:(sqlite3 *)ppDb sql:(NSString *)sql CUDHandler:(NSString *(^)(void))CUDHandler completeHandler:(void (^)(PaintingliteSessionError *sessionerror, Boolean success, NSMutableArray<id> *newList))completeHandler;
+- (Boolean)baseCUD:(sqlite3 *)ppDb sql:(NSString *)sql CUDHandler:(NSString *(^)(void))CUDHandler completeHandler:(void (^)(PaintingliteSessionError *sessionerror, Boolean success))completeHandler;
 
 @end
 

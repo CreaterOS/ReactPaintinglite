@@ -12,12 +12,17 @@
 #import "PaintingliteTransaction.h"
 #import "PaintingliteExec.h"
 #import "PaintingliteException.h"
+#import "PaintingliteLog.h"
+#import "PaintingliteSnapManager.h"
 #import "PaintingliteUUID.h"
 
 @interface PaintingliteCUDOptions()
 @property (nonatomic,strong)PaintingliteSessionError *sessionError;
 @property (nonatomic,strong)PaintingliteExec *exec; //执行语句
 @property (nonatomic,strong)PaintingliteSessionManager *sessionManager; //会话管理者
+@property (nonatomic,strong)PaintingliteLog *log; //日志
+@property (nonatomic,strong)NSArray *tables; //含有的表名称
+@property (nonatomic,strong)PaintingliteSnapManager *snapManager; //快照管理者
 @end
 
 @implementation PaintingliteCUDOptions
@@ -47,6 +52,30 @@
     return _sessionManager;
 }
 
+- (PaintingliteLog *)log{
+    if (!_log) {
+        _log = [PaintingliteLog sharePaintingliteLog];
+    }
+    
+    return _log;
+}
+
+- (PaintingliteSnapManager *)snapManager{
+    if (!_snapManager) {
+        _snapManager = [PaintingliteSnapManager sharePaintingliteSnapManager];
+    }
+    
+    return _snapManager;
+}
+
+- (NSArray *)tables{
+    if (!_tables) {
+        _tables = [self.exec getCurrentTableNameWithJSON];
+    }
+    
+    return _tables;
+}
+
 #pragma mark - 单例模式
 static PaintingliteCUDOptions *_instance = nil;
 + (instancetype)sharePaintingliteCUDOptions{
@@ -64,39 +93,40 @@ static PaintingliteCUDOptions *_instance = nil;
 }
 
 #pragma mark - 基本操作
-- (Boolean)baseCUD:(sqlite3 *)ppDb sql:(NSString *)sql CUDHandler:(NSString * (^)(void))CUDHandler completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<id> * _Nonnull))completeHandler{
-    return [PaintingliteTransaction begainPaintingliteTransaction:ppDb exec:^Boolean{
-        Boolean success = false;
-        
-        __block NSMutableArray *newList = [NSMutableArray array];
-        
-        //执行的CUD_Block操作
-        NSString *tableName = [NSString string];
+- (Boolean)baseCUD:(sqlite3 *)ppDb sql:(NSString *)sql CUDHandler:(NSString * (^)(void))CUDHandler completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
+    __block Boolean success = false;
+
+    //执行的CUD_Block操作
+    __block NSString *tableName = [NSString string];
+
+    dispatch_queue_t queue = dispatch_queue_create([@"com.Paintinglite.Queue" UTF8String], DISPATCH_QUEUE_CONCURRENT);
+    
+    dispatch_barrier_async(queue, ^{
         if (CUDHandler != nil) tableName = CUDHandler();
-        
-        //判断表是否存在，判断表的字段
-        if (![[self.exec getCurrentTableNameWithJSON] containsObject:[tableName lowercaseString]]){
+    });
+    
+    //判断表是否存在，判断表的字段
+    dispatch_barrier_async(queue, ^{
+        if (![self.tables containsObject:[tableName lowercaseString]]){
             [PaintingliteException PaintingliteException:@"表名不存在" reason:@"数据库找不到表名,无法执行操作"];
         }
-        
-        if ([self.exec sqlite3Exec:ppDb sql:sql]) {
-            //查询数据
-            success = [self execQuerySQL:ppDb sql:[NSString stringWithFormat:@"SELECT * FROM %@",tableName] completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray) {
-                if (success) {
-                    newList = resArray;
-                }
-            }];
+    });
+
+    dispatch_barrier_async(queue, ^{
+        //执行语句
+        @autoreleasepool {
+            success = [self.exec sqlite3Exec:ppDb sql:sql];
         }
-        
+ 
         if (completeHandler != nil) {
-            completeHandler(self.sessionError,success,newList);
+            completeHandler(self.sessionError,success);
         }
-        
-        return success;
-    }];
+    });
+    
+    return success;
 }
 
-- (Boolean)insert:(sqlite3 *)ppDb sql:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<id> * _Nonnull))completeHandler{
+- (Boolean)insert:(sqlite3 *)ppDb sql:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
     return [self baseCUD:ppDb sql:sql CUDHandler:^NSString * _Nonnull{
         //获得增加数据sql中的表名称
         //INSERT INTO user(...) VALUES()
@@ -104,17 +134,13 @@ static PaintingliteCUDOptions *_instance = nil;
     } completeHandler:completeHandler];
 }
 
-- (Boolean)insert:(sqlite3 *)ppDb obj:(id)obj completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<id> * _Nonnull))completeHandler{
+- (Boolean)insert:(sqlite3 *)ppDb obj:(id)obj completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
     return [PaintingliteTransaction begainPaintingliteTransaction:ppDb exec:^Boolean{
         Boolean success = false;
 
-        //增加完成重新查询封装成一个新的集合
-        __block NSMutableArray *newList = [NSMutableArray array];
         //获得增加数据sql中的表名称
         //INSERT INTO user(...) VALUES()
         NSString *tableName = [[PaintingliteObjRuntimeProperty getObjName:obj] lowercaseString];
-
-        NSLog(@"%@",tableName);
 
         //判断表是否存在，判断表的字段
         [self.exec isNotExistsTable:tableName];
@@ -123,7 +149,7 @@ static PaintingliteCUDOptions *_instance = nil;
         NSMutableArray *tableInfoArray = [self.exec getTableInfo:ppDb objName:tableName];
 
         NSString *sql = [NSString stringWithFormat:@"INSERT INTO %@(",tableName];
-        NSLog(@"%@",tableInfoArray);
+
         //判断字段相同部分进行赋值
         for(NSUInteger i = 0; i < tableInfoArray.count; i++){
             NSString *tableInfoName = tableInfoArray[i];
@@ -134,7 +160,6 @@ static PaintingliteCUDOptions *_instance = nil;
    
         //获得对应字段的对象的值
         NSMutableDictionary *propertyValue = [PaintingliteObjRuntimeProperty getObjPropertyValue:obj];
-        NSLog(@"%@",propertyValue);
         NSUInteger i = 0;
         
         if (![[propertyValue allKeys] containsObject:@"UUID"]) {
@@ -157,17 +182,11 @@ static PaintingliteCUDOptions *_instance = nil;
     
         NSLog(@"%@",sql);
         //增加数据
-        if ([self.exec sqlite3Exec:ppDb sql:sql]) {
-            //增加数据成功,查询数据
-            success = [self execQuerySQL:ppDb sql:[NSString stringWithFormat:@"SELECT * FROM %@",tableName] completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray) {
-                if (success) {
-                    newList = resArray;
-                }
-            }];
-        }
+        success = [self.exec sqlite3Exec:ppDb sql:sql];
+
 
         if (completeHandler != nil) {
-            completeHandler(self.sessionError,success,newList);
+            completeHandler(self.sessionError,success);
         }
 
         return success;
@@ -179,7 +198,7 @@ static PaintingliteCUDOptions *_instance = nil;
     return [self update:ppDb sql:sql completeHandler:nil];
 }
 
-- (Boolean)update:(sqlite3 *)ppDb sql:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<id> * _Nonnull))completeHandler{
+- (Boolean)update:(sqlite3 *)ppDb sql:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
     return [self baseCUD:ppDb sql:sql CUDHandler:^NSString * _Nonnull{
         //获得增加数据sql中的表名称
         //UPDATE user SET name = '...' WHERE age = '...'
@@ -187,13 +206,10 @@ static PaintingliteCUDOptions *_instance = nil;
     } completeHandler:completeHandler];
 }
 
-- (Boolean)update:(sqlite3 *)ppDb obj:(id)obj condition:(NSString * _Nonnull)condition completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<id> * _Nonnull))completeHandler{
+- (Boolean)update:(sqlite3 *)ppDb obj:(id)obj condition:(NSString * _Nonnull)condition completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
     return [PaintingliteTransaction begainPaintingliteTransaction:ppDb exec:^Boolean{
         Boolean success = false;
-        
-        //增加完成重新查询封装成一个新的集合
-        __block NSMutableArray *newList = [NSMutableArray array];
-        
+    
         //获得增加数据sql中的表名称
         //UPDATE user SET name = '...' WHERE age = '...'
         NSString *tableName = [[PaintingliteObjRuntimeProperty getObjName:obj] lowercaseString];
@@ -231,17 +247,9 @@ static PaintingliteCUDOptions *_instance = nil;
         sql = [sql stringByAppendingString:[NSString stringWithFormat:@" WHERE %@",[condition containsString:@"WHERE"] ? [[condition componentsSeparatedByString:@"WHERE "] lastObject] : condition]];
         
         //增加数据
-        if ([self.exec sqlite3Exec:ppDb sql:sql]) {
-            //增加数据成功,查询数据
-            success = [self execQuerySQL:ppDb sql:[NSString stringWithFormat:@"SELECT * FROM %@",tableName] completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray) {
-                if (success) {
-                    newList = resArray;
-                }
-            }];
-        }
-        
+        success = [self.exec sqlite3Exec:ppDb sql:sql];
         if (completeHandler != nil) {
-            completeHandler(self.sessionError,success,newList);
+            completeHandler(self.sessionError,success);
         }
         
         return success;
@@ -253,7 +261,7 @@ static PaintingliteCUDOptions *_instance = nil;
     return [self del:ppDb sql:sql completeHandler:nil];
 }
 
-- (Boolean)del:(sqlite3 *)ppDb sql:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<id> * _Nonnull))completeHandler{
+- (Boolean)del:(sqlite3 *)ppDb sql:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
     return [self baseCUD:ppDb sql:sql CUDHandler:^NSString * _Nonnull{
         //获得增加数据sql中的表名称
         //DELET FROM user WHERE name = '...'

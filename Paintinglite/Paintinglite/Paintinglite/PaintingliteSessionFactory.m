@@ -61,16 +61,13 @@ static PaintingliteSessionFactory *_instance = nil;
                 ;
             }];
         }
+        
+        sqlite3_finalize(_stmt);
     }
     
     if (tables.count != 0) {
         //写入JSON快照
         (status == PaintingliteSessionFactoryTableJSON) ? [self writeTablesSnapJSON:tables status:PaintingliteSessionFactoryTableJSON] : [self writeTablesSnapJSON:tables status:PaintingliteSessionFactoryTableINFOJSON];
-        
-        //写入日志文件
-        [self.log writeLogFileOptions:sql status:PaintingliteLogSuccess completeHandler:^(NSString * _Nonnull logFilePath) {
-            NSLog(@"%@",logFilePath);
-        }];
     }
     
     return tables;
@@ -96,6 +93,8 @@ static PaintingliteSessionFactory *_instance = nil;
             
             //判断是否存则这个文件
             [data writeToFile:TablesSnapJsonPath atomically:YES];
+            
+            data = nil;
         }
         
         tablesSnapDict = nil;

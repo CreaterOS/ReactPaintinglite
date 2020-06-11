@@ -58,16 +58,19 @@ static PaintingliteCascadeShowerIUD *_instance = nil;
         
         //遍历对象
         for (id obj in [propertyValueDict valueForKey:propertyNameForMutableArray]) {
-            success = [self insert:ppDb obj:obj completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<id> * _Nonnull newList) {
+            success = [self insert:ppDb obj:obj completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
                 if (success) {
+                    //查询数据,添加
+                    NSMutableArray *newList = [self execQuerySQL:ppDb sql:[NSString stringWithFormat:@"SELECT * FROM %@",[[PaintingliteObjRuntimeProperty getObjName:obj]lowercaseString]]];
                     [resArray addObject:newList];
                 }
             }];
         }
     }
 
-    success = [self insert:ppDb obj:obj completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<id> * _Nonnull newList) {
+    success = [self insert:ppDb obj:obj completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
         if (success) {
+            NSMutableArray *newList = [self execQuerySQL:ppDb sql:[NSString stringWithFormat:@"SELECT * FROM %@",[[PaintingliteObjRuntimeProperty getObjName:obj]lowercaseString]]];
             [resArray addObject:newList];
         }
     }];
@@ -101,16 +104,18 @@ static PaintingliteCascadeShowerIUD *_instance = nil;
         
         //遍历对象
         for (id obj in [propertyValueDict valueForKey:propertyNameForMutableArray]) {
-            success = [self update:ppDb obj:obj condition:[condatation lastObject] completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<id> * _Nonnull newList) {
+            success = [self update:ppDb obj:obj condition:[condatation lastObject] completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
                 if(success){
+                    NSMutableArray *newList = [self execQuerySQL:ppDb sql:[NSString stringWithFormat:@"SELECT * FROM %@",[[PaintingliteObjRuntimeProperty getObjName:obj]lowercaseString]]];
                     [resArray addObject:newList];
                 }
             }];
         }
     }
     
-    success = [self update:ppDb obj:obj condition:[condatation firstObject] completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<id> * _Nonnull newList) {
+    success = [self update:ppDb obj:obj condition:[condatation firstObject] completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
         if(success){
+            NSMutableArray *newList = [self execQuerySQL:ppDb sql:[NSString stringWithFormat:@"SELECT * FROM %@",[[PaintingliteObjRuntimeProperty getObjName:obj]lowercaseString]]];
             [resArray addObject:newList];
         }
     }];
@@ -144,16 +149,18 @@ static PaintingliteCascadeShowerIUD *_instance = nil;
         
         //遍历对象
         for (id obj in [propertyValueDict valueForKey:propertyNameForMutableArray]) {
-            success = [self del:ppDb sql:[NSString stringWithFormat:@"DELETE FROM %@ WHERE %@",[PaintingliteObjRuntimeProperty getObjName:obj],[condatation lastObject]] completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<id> * _Nonnull newList) {
+            success = [self del:ppDb sql:[NSString stringWithFormat:@"DELETE FROM %@ WHERE %@",[PaintingliteObjRuntimeProperty getObjName:obj],[condatation lastObject]] completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
                 if(success){
+                    NSMutableArray *newList = [self execQuerySQL:ppDb sql:[NSString stringWithFormat:@"SELECT * FROM %@",[[PaintingliteObjRuntimeProperty getObjName:obj]lowercaseString]]];
                     [resArray addObject:newList];
                 }
             }];
         }
     }
     
-    success = [self del:ppDb sql:[NSString stringWithFormat:@"DELETE FROM %@ WHERE %@",[PaintingliteObjRuntimeProperty getObjName:obj],[condatation firstObject]] completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<id> * _Nonnull newList) {
+    success = [self del:ppDb sql:[NSString stringWithFormat:@"DELETE FROM %@ WHERE %@",[PaintingliteObjRuntimeProperty getObjName:obj],[condatation firstObject]] completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
         if(success){
+            NSMutableArray *newList = [self execQuerySQL:ppDb sql:[NSString stringWithFormat:@"SELECT * FROM %@",[[PaintingliteObjRuntimeProperty getObjName:obj]lowercaseString]]];
             [resArray addObject:newList];
         }
     }];

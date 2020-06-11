@@ -278,9 +278,10 @@ static PaintingliteBackUpManager *_instance = nil;
         //重写写入数据
         NSString *insertSQL = [NSString stringWithFormat:@"INSERT INTO %@%@ VALUES %@",tableName,tableFieldsArrayStr,oldValueArrayStr];
 
-        success = [self.sessionManager insert:insertSQL completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<id> * _Nonnull newList) {
+        success = [self.sessionManager insert:insertSQL completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
             if (success) {
                 if (completeHandler != nil) {
+                    NSMutableArray *newList = [self.sessionManager execQuerySQL:[NSString stringWithFormat:@"SELECT * FROM %@",tableName]];
                     completeHandler(error,success,newList);
                 }
             }

@@ -100,17 +100,17 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - CUD
 /* 增加数据 */
 - (Boolean)insert:(sqlite3 *)ppDb sql:(NSString *__nonnull)sql;
-- (Boolean)insert:(sqlite3 *)ppDb sql:(NSString *__nonnull)sql completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success,NSMutableArray<id> *newList))completeHandler;
-- (Boolean)insert:(sqlite3 *)ppDb obj:(id)obj completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success,NSMutableArray<id> *newList))completeHandler;
+- (Boolean)insert:(sqlite3 *)ppDb sql:(NSString *__nonnull)sql completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success))completeHandler;
+- (Boolean)insert:(sqlite3 *)ppDb obj:(id)obj completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success))completeHandler;
 
 /* 更新数据 */
 - (Boolean)update:(sqlite3 *)ppDb sql:(NSString *__nonnull)sql;
-- (Boolean)update:(sqlite3 *)ppDb sql:(NSString *__nonnull)sql completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success,NSMutableArray<id> *newList))completeHandler;
-- (Boolean)update:(sqlite3 *)ppDb obj:(id)obj condition:(NSString *__nonnull)condition completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success,NSMutableArray<id> *newList))completeHandler;
+- (Boolean)update:(sqlite3 *)ppDb sql:(NSString *__nonnull)sql completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success))completeHandler;
+- (Boolean)update:(sqlite3 *)ppDb obj:(id)obj condition:(NSString *__nonnull)condition completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success))completeHandler;
 
 /* 删除数据 */
 - (Boolean)del:(sqlite3 *)ppDb sql:(NSString *__nonnull)sql;
-- (Boolean)del:(sqlite3 *)ppDb sql:(NSString *__nonnull)sql completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success,NSMutableArray<id> *newList))completeHandler;
+- (Boolean)del:(sqlite3 *)ppDb sql:(NSString *__nonnull)sql completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success))completeHandler;
 
 @end
 

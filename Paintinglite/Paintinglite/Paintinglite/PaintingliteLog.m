@@ -90,6 +90,9 @@ static PaintingliteLog *_instance = nil;
     if (completeHandler != nil) {
         completeHandler(logFilePath);
     }
+    
+    self.fileManager = nil;
+    logData = nil;
 }
 
 #pragma mark - 删除日志文件

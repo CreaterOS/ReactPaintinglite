@@ -57,14 +57,24 @@ static PaintingliteSnapManager *_instance = nil;
 
 #pragma mark - 表结构的快照
 - (void)saveTableInfoSnap:(sqlite3 *)ppDb objName:(NSString *)objName{
-    [self.factory execQuery:ppDb sql:TABLE_INFO(objName) status:PaintingliteSessionFactoryTableINFOJSON];
+    @autoreleasepool {
+        [self.factory execQuery:ppDb sql:TABLE_INFO(objName) status:PaintingliteSessionFactoryTableINFOJSON];
+    }
 }
 
 #pragma mark - 表的数据快照
 - (Boolean)saveTableValue:(sqlite3 *)ppDb tableName:(NSString *)tableName{
     NSMutableArray *queryArray = [self.exec sqlite3ExecQuery:ppDb sql:SELECT_QUERY_SQL(tableName)];
     //写入JSON文件
-    return [queryArray writeToFile:[Paintinglite_SNAP_ROOT_PATH stringByAppendingPathComponent:[NSString stringWithFormat:@"%@_VALUE.json",tableName]] atomically:YES];
+    Boolean success = false;
+    @autoreleasepool {
+        success = [queryArray writeToFile:[Paintinglite_SNAP_ROOT_PATH stringByAppendingPathComponent:[NSString stringWithFormat:@"%@_VALUE.json",tableName]] atomically:YES];
+    }
+
+    
+    [queryArray removeAllObjects];
+    
+    return success;
 }
 
 #pragma mark - 删除所有快照

@@ -262,11 +262,11 @@ static PaintingliteTableOptions *_instance = nil;
     return [self insert:ppDb sql:sql completeHandler:nil];
 }
 
-- (Boolean)insert:(sqlite3 *)ppDb sql:(NSString *)sql completeHandler:(void (^ __nullable)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<id> * _Nonnull))completeHandler{
+- (Boolean)insert:(sqlite3 *)ppDb sql:(NSString *)sql completeHandler:(void (^ __nullable)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
     return [self.cudOpt insert:ppDb sql:sql completeHandler:completeHandler];
 }
 
-- (Boolean)insert:(sqlite3 *)ppDb obj:(id)obj completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<id> * _Nonnull))completeHandler{
+- (Boolean)insert:(sqlite3 *)ppDb obj:(id)obj completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
     return [self.cudOpt insert:ppDb obj:obj completeHandler:completeHandler];
 }
 
@@ -275,12 +275,12 @@ static PaintingliteTableOptions *_instance = nil;
     return [self.cudOpt update:ppDb sql:sql];
 }
 
-- (Boolean)update:(sqlite3 *)ppDb sql:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<id> * _Nonnull))completeHandler{
+- (Boolean)update:(sqlite3 *)ppDb sql:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
     return [self.cudOpt update:ppDb sql:sql
                completeHandler:completeHandler];
 }
 
-- (Boolean)update:(sqlite3 *)ppDb obj:(id)obj condition:(NSString *__nonnull)condition completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<id> * _Nonnull))completeHandler{
+- (Boolean)update:(sqlite3 *)ppDb obj:(id)obj condition:(NSString *__nonnull)condition completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
     return [self.cudOpt update:ppDb obj:obj condition:condition completeHandler:completeHandler];
 }
 
@@ -289,7 +289,7 @@ static PaintingliteTableOptions *_instance = nil;
     return [self del:ppDb sql:sql completeHandler:nil];
 }
 
-- (Boolean)del:(sqlite3 *)ppDb sql:(NSString *)sql completeHandler:(void (^ __nullable)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<id> * _Nonnull))completeHandler{
+- (Boolean)del:(sqlite3 *)ppDb sql:(NSString *)sql completeHandler:(void (^ __nullable)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
     return [self.cudOpt del:ppDb sql:sql completeHandler:completeHandler];
 }
 

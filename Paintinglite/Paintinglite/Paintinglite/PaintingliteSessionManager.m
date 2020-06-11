@@ -216,11 +216,11 @@ static PaintingliteSessionManager *_instance = nil;
     return [self.dataBaseOptions alterTableForName:self.ppDb oldName:oldName newName:newName completeHandler:completeHandler];
 }
 
-- (BOOL)alterTableAddColumn:(NSString *)tableName columnName:(NSString *)columnName columnType:(NSString *)columnType{
-    return [self alterTableAddColumn:tableName columnName:columnName columnType:columnType completeHandler:nil];
+- (BOOL)alterTableAddColumnWithTableName:(NSString *)tableName columnName:(NSString *)columnName columnType:(NSString *)columnType{
+    return [self alterTableAddColumnWithTableName:tableName columnName:columnName columnType:columnType completeHandler:nil];
 }
 
-- (BOOL)alterTableAddColumn:(NSString *)tableName columnName:(NSString *)columnName columnType:(NSString *)columnType completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
+- (BOOL)alterTableAddColumnWithTableName:(NSString *)tableName columnName:(NSString *)columnName columnType:(NSString *)columnType completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
     return [self.dataBaseOptions alterTableAddColumn:self.ppDb tableName:tableName columnName:columnName columnType:columnType completeHandler:completeHandler];
 }
 
@@ -454,11 +454,11 @@ static PaintingliteSessionManager *_instance = nil;
     return [self insert:sql completeHandler:nil];
 }
 
-- (Boolean)insert:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<id> * _Nonnull))completeHandler{
+- (Boolean)insert:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
     return [self.tableOptions insert:self.ppDb sql:sql completeHandler:completeHandler];
 }
 
-- (Boolean)insertWithObj:(id)obj completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<id> * _Nonnull))completeHandler{
+- (Boolean)insertWithObj:(id)obj completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
     return [self.tableOptions insert:self.ppDb obj:obj completeHandler:completeHandler];
 }
 
@@ -467,11 +467,11 @@ static PaintingliteSessionManager *_instance = nil;
     return [self.tableOptions update:self.ppDb sql:sql];
 }
 
-- (Boolean)update:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<id> * _Nonnull))completeHandler{
+- (Boolean)update:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
     return [self.tableOptions update:self.ppDb sql:sql completeHandler:completeHandler];
 }
 
-- (Boolean)updateWithObj:(id)obj condition:(NSString * _Nonnull)condition completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<id> * _Nonnull))completeHandler{
+- (Boolean)updateWithObj:(id)obj condition:(NSString * _Nonnull)condition completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
     return [self.tableOptions update:self.ppDb obj:obj condition:condition completeHandler:completeHandler];
 }
 
@@ -480,7 +480,7 @@ static PaintingliteSessionManager *_instance = nil;
     return [self.tableOptions del:self.ppDb sql:sql];
 }
 
-- (Boolean)del:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<id> * _Nonnull))completeHandler{
+- (Boolean)del:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
     return [self.tableOptions del:self.ppDb sql:sql completeHandler:completeHandler];
 }
 

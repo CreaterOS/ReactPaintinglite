@@ -62,22 +62,19 @@ static PaintingliteTableOptionsSelect *_instance = nil;
 }
 
 - (Boolean)execQuerySQL:(sqlite3 *)ppDb sql:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull))completeHandler{
+    NSMutableArray *array = [self.exec sqlite3ExecQuery:ppDb sql:sql];
+    Boolean success = (array.count != -1);
+    NSMutableArray *resArray = [NSMutableArray array];
     
-    return [PaintingliteTransaction begainPaintingliteTransaction:ppDb exec:^Boolean{
-        NSMutableArray *array = [self.exec sqlite3ExecQuery:ppDb sql:sql];
-        Boolean success = (array.count != -1);
-        NSMutableArray *resArray = [NSMutableArray array];
-        
-        if (success) {
-            resArray = array;
-        }
-        
-        if (completeHandler != nil) {
-            completeHandler(self.sessionError,success,resArray);
-        }
-        
-        return success;
-    }];
+    if (success) {
+        resArray = array;
+    }
+    
+    if (completeHandler != nil) {
+        completeHandler(self.sessionError,success,resArray);
+    }
+    
+    return success;
 }
 
 #pragma mark - 基本查询封装对象查询
