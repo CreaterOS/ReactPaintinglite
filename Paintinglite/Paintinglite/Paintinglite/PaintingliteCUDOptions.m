@@ -107,7 +107,7 @@ static PaintingliteCUDOptions *_instance = nil;
     
     //判断表是否存在，判断表的字段
     dispatch_barrier_async(queue, ^{
-        if (![self.tables containsObject:[tableName lowercaseString]]){
+        if (![self.tables containsObject:tableName]){
             [PaintingliteException PaintingliteException:@"表名不存在" reason:@"数据库找不到表名,无法执行操作"];
         }
     });
@@ -147,7 +147,7 @@ static PaintingliteCUDOptions *_instance = nil;
 
         //获取表的字段，寻找对应的对象字段
         NSMutableArray *tableInfoArray = [self.exec getTableInfo:ppDb objName:tableName];
-
+        
         NSString *sql = [NSString stringWithFormat:@"INSERT INTO %@(",tableName];
 
         //判断字段相同部分进行赋值
@@ -157,7 +157,7 @@ static PaintingliteCUDOptions *_instance = nil;
         }
         
         sql = [sql stringByAppendingString:@") VALUES("];
-   
+        NSLog(@"%@",sql);
         //获得对应字段的对象的值
         NSMutableDictionary *propertyValue = [PaintingliteObjRuntimeProperty getObjPropertyValue:obj];
         NSUInteger i = 0;

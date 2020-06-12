@@ -35,7 +35,7 @@
 		68CF58A42484D36C0035F188 /* PaintingliteTableOptionsSelect.m in Sources */ = {isa = PBXBuildFile; fileRef = 68CF58A32484D36C0035F188 /* PaintingliteTableOptionsSelect.m */; };
 		68CF869D24809DC000755126 /* PaintingliteException.m in Sources */ = {isa = PBXBuildFile; fileRef = 68CF869C24809DC000755126 /* PaintingliteException.m */; };
 		68D4E3792480E57200053E57 /* Mouse.m in Sources */ = {isa = PBXBuildFile; fileRef = 68D4E3782480E57200053E57 /* Mouse.m */; };
-		68D4E37C2480F55300053E57 /* Elephant.m in Sources */ = {isa = PBXBuildFile; fileRef = 68D4E37B2480F55300053E57 /* Elephant.m */; };
+		68D4E37C2480F55300053E57 /* EleTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 68D4E37B2480F55300053E57 /* EleTest.m */; };
 		68D6B431248DF72E008A2CD6 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 68DE995B247C9C4D0078EDD5 /* libsqlite3.tbd */; };
 		68D6B434248DFB32008A2CD6 /* PaintingliteAggregateFunc.m in Sources */ = {isa = PBXBuildFile; fileRef = 68D6B433248DFB32008A2CD6 /* PaintingliteAggregateFunc.m */; };
 		68D7BB60247FE56500AB994A /* PaintingliteObjRuntimeProperty.m in Sources */ = {isa = PBXBuildFile; fileRef = 68D7BB5F247FE56500AB994A /* PaintingliteObjRuntimeProperty.m */; };
@@ -138,8 +138,8 @@
 		68CF869C24809DC000755126 /* PaintingliteException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaintingliteException.m; sourceTree = "<group>"; };
 		68D4E3772480E57200053E57 /* Mouse.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Mouse.h; sourceTree = "<group>"; };
 		68D4E3782480E57200053E57 /* Mouse.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Mouse.m; sourceTree = "<group>"; };
-		68D4E37A2480F55300053E57 /* Elephant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Elephant.h; sourceTree = "<group>"; };
-		68D4E37B2480F55300053E57 /* Elephant.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Elephant.m; sourceTree = "<group>"; };
+		68D4E37A2480F55300053E57 /* EleTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EleTest.h; sourceTree = "<group>"; };
+		68D4E37B2480F55300053E57 /* EleTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EleTest.m; sourceTree = "<group>"; };
 		68D6B432248DFB32008A2CD6 /* PaintingliteAggregateFunc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaintingliteAggregateFunc.h; sourceTree = "<group>"; };
 		68D6B433248DFB32008A2CD6 /* PaintingliteAggregateFunc.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaintingliteAggregateFunc.m; sourceTree = "<group>"; };
 		68D7BB5E247FE56500AB994A /* PaintingliteObjRuntimeProperty.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaintingliteObjRuntimeProperty.h; sourceTree = "<group>"; };
@@ -297,8 +297,8 @@
 				68DE9928247C9B6A0078EDD5 /* ViewController.m */,
 				68D4E3772480E57200053E57 /* Mouse.h */,
 				68D4E3782480E57200053E57 /* Mouse.m */,
-				68D4E37A2480F55300053E57 /* Elephant.h */,
-				68D4E37B2480F55300053E57 /* Elephant.m */,
+				68D4E37A2480F55300053E57 /* EleTest.h */,
+				68D4E37B2480F55300053E57 /* EleTest.m */,
 				680969472481F47B00048369 /* User.h */,
 				680969482481F47B00048369 /* User.m */,
 				68D7BB64247FF84300AB994A /* Person.h */,
@@ -547,7 +547,7 @@
 				68D4E3792480E57200053E57 /* Mouse.m in Sources */,
 				689F24BC248CD1B100A9DC3B /* prng.m in Sources */,
 				689E067A247EACD000D6DF95 /* PaintingliteDataBaseOptions.m in Sources */,
-				68D4E37C2480F55300053E57 /* Elephant.m in Sources */,
+				68D4E37C2480F55300053E57 /* EleTest.m in Sources */,
 				689F24BE248CD1B100A9DC3B /* aestab.m in Sources */,
 				689F24B4248CD1B100A9DC3B /* zip.m in Sources */,
 				68DE9962247CA1140078EDD5 /* PaintingliteSessionFactory.m in Sources */,

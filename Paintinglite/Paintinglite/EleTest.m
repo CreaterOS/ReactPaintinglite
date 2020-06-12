@@ -6,8 +6,8 @@
 //  Copyright © 2020 Bryant Reyn. All rights reserved.
 //
 
-#import "Elephant.h"
+#import "EleTest.h"
 
-@implementation Elephant
+@implementation EleTest
 
 @end

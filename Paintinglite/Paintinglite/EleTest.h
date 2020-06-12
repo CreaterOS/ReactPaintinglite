@@ -10,13 +10,14 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface Elephant : NSObject
+@interface EleTest : NSObject
 
 @property (nonatomic,strong)NSString *name;
 @property (nonatomic,strong)NSNumber *age;
-@property (nonatomic,strong)NSString *phone;
-@property (nonatomic)NSInteger year;
-@property (nonatomic)id sss;
+@property (nonatomic,strong)NSString *teacher;
+@property (nonatomic,strong)NSNumber *tage;
+@property (nonatomic,strong)NSString *desc;
+
 @end
 
 NS_ASSUME_NONNULL_END

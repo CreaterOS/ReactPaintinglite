@@ -107,7 +107,7 @@
     NSString *tableName = [self getOptTableName:ppDb sql:sql];
   
     sql = [self lowerToUpper:sql];
-    
+
     /*
       执行sqlite3_exec(),成功在保存快照
       成功失败都会进行日志记录
