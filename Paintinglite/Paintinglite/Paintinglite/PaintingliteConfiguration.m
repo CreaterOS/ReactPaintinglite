@@ -12,6 +12,9 @@
 #define SYNCHRONOUSMODE(MODE) [NSString stringWithFormat:@"PRAGMA synchronous = %@;",MODE]
 #define DATABASEENCODING(ENCODING) [NSString stringWithFormat:@"PRAGMA encoding = \"%@\";",ENCODING]
 #define AutoVacuum(MODE) [NSString stringWithFormat:@"PRAGMA auto_vacuum = %@;",MODE]
+#define CACGESIZE(SIZE) [NSString stringWithFormat:@"PRAGMA cache_size = %zd;",SIZE]
+#define WALCHECKPOINT(MODE) [NSString stringWithFormat:@"PRAGMA wal_checkpoint(%@);",MODE]
+#define THREADNUM(NUM) [NSString stringWithFormat:@"PRAGMA threads = %zd;",NUM]
 
 @interface PaintingliteConfiguration()
 @property (nonatomic)sqlite3_stmt *stmt;
@@ -149,6 +152,71 @@ static PaintingliteConfiguration *_instance = nil;
     return @"NONE";
 }
 
+#pragma mark - 修改数据库CacheSize模式
++ (Boolean)setCacheSize:(sqlite3 *)ppDb size:(NSUInteger)size{
+    return sqlite3_exec(ppDb, [CACGESIZE(size) UTF8String], 0, 0, NULL) == SQLITE_OK;
+}
+
+#pragma mark - 查看数据库CacheSize模式
++ (NSString *)getCacheSize:(sqlite3 *)ppDb{
+    sqlite3_stmt *stmt;
+    if (sqlite3_prepare_v2(ppDb, [@"PRAGMA cache_size" UTF8String], -1, &stmt, nil) == SQLITE_OK){
+        //查询成功
+        while (sqlite3_step(stmt) == SQLITE_ROW) {
+            //获得数据库中含有的表名
+            char *CacheSize = (char *)sqlite3_column_text(stmt, 0);
+            return [NSString stringWithCString:CacheSize encoding:NSUTF8StringEncoding];
+        }
+    }
+    
+    return @"2000";
+}
+
+#pragma mark - 修改数据库wal_checkpoint模式
++ (Boolean)setWalCheckpoint:(sqlite3 *)ppDb mode:(PaintingliteWalCheckpointMode)mode{
+    NSString *WalCheckpoint = [NSString string];
+    switch (mode) {
+        case 0:
+            WalCheckpoint = @"PASSIVE";
+            break;
+        case 1:
+            WalCheckpoint = @"FULL";
+            break;
+        case 2:
+            WalCheckpoint = @"RESTART";
+            break;
+        case 3:
+            WalCheckpoint = @"TRUNCATE";
+            break;
+    }
+    
+    return sqlite3_exec(ppDb, [WALCHECKPOINT(WalCheckpoint) UTF8String], 0, 0, NULL) == SQLITE_OK;
+}
+
+#pragma mark - 修改数据库Thread模式
++ (Boolean)setThreadNum:(sqlite3 *)ppDb number:(NSUInteger)number{
+    return sqlite3_exec(ppDb, [THREADNUM(number) UTF8String], 0, 0, NULL) == SQLITE_OK;
+}
+
+#pragma mark - 查看数据库CacheSize模式
++ (NSString *)getThread:(sqlite3 *)ppDb{
+    sqlite3_stmt *stmt;
+    if (sqlite3_prepare_v2(ppDb, [@"PRAGMA threads" UTF8String], -1, &stmt, nil) == SQLITE_OK){
+        //查询成功
+        while (sqlite3_step(stmt) == SQLITE_ROW) {
+            //获得数据库中含有的表名
+            char *CacheSize = (char *)sqlite3_column_text(stmt, 0);
+            return [NSString stringWithCString:CacheSize encoding:NSUTF8StringEncoding];
+        }
+    }
+    
+    return @"0";
+}
+
+#pragma mark - 修改数据库trusted_schema
++ (Boolean)setTrustedSchema:(sqlite3 *)ppDb boolean:(Boolean)boolean{
+    return boolean ? sqlite3_exec(ppDb, [@"PRAGMA trusted_schema = TRUE;" UTF8String], 0, 0, NULL) == SQLITE_OK : sqlite3_exec(ppDb, [@"PRAGMA trusted_schema = FALSE;" UTF8String], 0, 0, NULL) == SQLITE_OK;
+}
 
 #pragma mark - 配置数据库名称
 - (NSString *)configurationFileName:(NSString *)fileName{

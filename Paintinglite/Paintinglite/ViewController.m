@@ -70,11 +70,15 @@
   
 //    [self createTable];
 //     NSLog(@"%@",[self.exec getCurrentTableNameWithJSON]);
-//    [self insertValueObj];
+//    [self insertValue];
 //    [self deleteValue];
 //    [self updateValue];
 //    [self updateValueObj];
-    NSLog(@"%@",[PaintingliteConfiguration getAutoVacuum:[self.sessionM getSqlite3]]);
+//    NSLog(@"%@",[PaintingliteConfiguration getAutoVacuum:[self.sessionM getSqlite3]]);
+//    [PaintingliteConfiguration setCacheSize:[self.sessionM getSqlite3] size:8000];
+//    NSLog(@"%@",[PaintingliteConfiguration getCacheSize:[self.sessionM getSqlite3]]);
+//    [PaintingliteConfiguration setThreadNum:[self.sessionM getSqlite3] number:10];
+//    NSLog(@"%@",[PaintingliteConfiguration getThread:[self.sessionM getSqlite3]]);
 }
 
 #pragma mark - 打开数据库 (运行正常)

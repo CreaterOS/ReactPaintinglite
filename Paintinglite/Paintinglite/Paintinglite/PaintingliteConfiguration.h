@@ -31,6 +31,14 @@ typedef NS_ENUM(NSUInteger, PaintingliteAutoVacuumMode) {
     PaintingliteAutoVacuumINCREMENTAL,
 };
 
+/* wal_checkpoint */
+typedef NS_ENUM(NSUInteger, PaintingliteWalCheckpointMode) {
+    PaintingliteWalCheckpointPASSIVE,
+    PaintingliteWalCheckpointFULL,
+    PaintingliteWalCheckpointRESTART,
+    PaintingliteWalCheckpointTRUNCATE
+};
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface PaintingliteConfiguration : NSObject
@@ -59,6 +67,24 @@ NS_ASSUME_NONNULL_BEGIN
 
 /* 查看数据库Auto_Vacuum模式 */
 + (NSString *)getAutoVacuum:(sqlite3 *)ppDb;
+
+/* 修改数据库wal_checkpoint模式 */
++ (Boolean)setWalCheckpoint:(sqlite3 *)ppDb mode:(PaintingliteWalCheckpointMode)mode;
+
+/* 修改数据库CacheSize数值 */
++ (Boolean)setCacheSize:(sqlite3 *)ppDb size:(NSUInteger)size;
+
+/* 查看数据库CacheSize数值 */
++ (NSString *)getCacheSize:(sqlite3 *)ppDb;
+
+/* 修改数据库Thread数值 */
++ (Boolean)setThreadNum:(sqlite3 *)ppDb number:(NSUInteger)number;
+
+/* 查看数据库Thread数值 */
++ (NSString *)getThread:(sqlite3 *)ppDb;
+
+/* 修改数据库trusted_schema */
++ (Boolean)setTrustedSchema:(sqlite3 *)ppDb boolean:(Boolean)boolean;
 
 @end
 
