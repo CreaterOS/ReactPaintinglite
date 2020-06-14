@@ -66,14 +66,16 @@ static PaintingliteTableOptionsSelect *_instance = nil;
     Boolean success = (array.count != -1);
     NSMutableArray *resArray = [NSMutableArray array];
     
-    if (success) {
-        resArray = array;
+    @autoreleasepool {
+        if (success) {
+            resArray = array;
+        }
+        
+        if (completeHandler != nil) {
+            completeHandler(self.sessionError,success,resArray);
+        }
     }
-    
-    if (completeHandler != nil) {
-        completeHandler(self.sessionError,success,resArray);
-    }
-    
+
     return success;
 }
 

@@ -112,6 +112,8 @@ static PaintingliteSessionManager *_instance = nil;
         
         if([fileManager fileExistsAtPath:filePath]){
             success = (sqlite3_open_v2([filePath UTF8String], &_ppDb, SQLITE_OPEN_READWRITE|SQLITE_OPEN_FULLMUTEX, NULL) == SQLITE_OK);
+            //先记录一次快照,防止非框架创建的表
+            [self.snapManager saveSnap:self.ppDb];
         }else{
             success = (sqlite3_open([filePath UTF8String], &_ppDb) == SQLITE_OK);
         }
@@ -321,7 +323,7 @@ static PaintingliteSessionManager *_instance = nil;
     return execQueryArray;
 }
 
-- (Boolean)execQuerySQL:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull))completeHandler{
+- (Boolean)execQuerySQL:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<NSDictionary *> * _Nonnull))completeHandler{
     return [self.tableOptions execQuerySQL:self.ppDb sql:sql completeHandler:completeHandler];
 }
 

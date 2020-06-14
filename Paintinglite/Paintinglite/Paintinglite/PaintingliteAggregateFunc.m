@@ -68,6 +68,8 @@ static PaintingliteAggregateFunc *_instance = nil;
         }
     }
     
+    sqlite3_finalize(_stmt);
+    
     return number;
 }
 

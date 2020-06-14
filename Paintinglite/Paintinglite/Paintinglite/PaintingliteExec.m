@@ -228,28 +228,34 @@
         if (sqlite3_prepare_v2(ppDb, [sql UTF8String], -1, &_stmt, nil) == SQLITE_OK){
             //查询成功
             while (sqlite3_step(_stmt) == SQLITE_ROW) {
-                NSMutableDictionary<id,id> *queryDict = [NSMutableDictionary dictionary];
-                //resArray是一个含有表字段的数据，根据resArray获得值加入
-                for (unsigned int i = 0; i < resArray.count; i++) {
-                    //取出来的值，然后判断类型，进行类型分类
-                    /**
-                     SQLITE_INTEGER  1
-                     SQLITE_FLOAT    2
-                     SQLITE3_TEXT    3
-                     SQLITE_BLOB     4
-                     SQLITE_NULL     5
-                     */
-                    id value = nil;
-                    value = [self caseTheType:sqlite3_column_type(_stmt, i) index:i value:value];
-                    [queryDict setValue:value forKey:resArray[i]];
+                @autoreleasepool {
+                    NSMutableDictionary<id,id> *queryDict = [NSMutableDictionary dictionary];
+                    //resArray是一个含有表字段的数据，根据resArray获得值加入
+                    for (unsigned int i = 0; i < resArray.count; i++) {
+                        //取出来的值，然后判断类型，进行类型分类
+                        /**
+                         SQLITE_INTEGER  1
+                         SQLITE_FLOAT    2
+                         SQLITE3_TEXT    3
+                         SQLITE_BLOB     4
+                         SQLITE_NULL     5
+                         */
+                        @autoreleasepool {
+                            id value = nil;
+                            value = [self caseTheType:sqlite3_column_type(_stmt, i) index:i value:value];
+                            [queryDict setValue:value forKey:resArray[i]];
+                        }
+                    }
+                    [tables addObject:queryDict];
                 }
-                [tables addObject:queryDict];
             }
         }else{
             //写入日志文件
             [self writeLogFileOptions:sql status:PaintingliteLogError];
         }
     }
+    
+    sqlite3_finalize(_stmt);
         
     return tables;
 }
