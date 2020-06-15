@@ -39,6 +39,14 @@ typedef NS_ENUM(NSUInteger, PaintingliteWalCheckpointMode) {
     PaintingliteWalCheckpointTRUNCATE
 };
 
+typedef NS_ENUM(NSUInteger, PaintingliteJournalMode) {
+    PaintingliteJournalDELETE,
+    PaintingliteJournalTRUNCATE,
+    PaintingliteJournalPERSIST,
+    PaintingliteJournalMEMORY,
+    PaintingliteJournalOFF
+};
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface PaintingliteConfiguration : NSObject
@@ -85,6 +93,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 /* 修改数据库trusted_schema */
 + (Boolean)setTrustedSchema:(sqlite3 *)ppDb boolean:(Boolean)boolean;
+
+/* 修改数据库case_sensitive_like */
++ (Boolean)setCaseSensitiveLike:(sqlite3 *)ppDb boolean:(Boolean)boolean;
+
+/* 修改数据库count_changes */
++ (Boolean)setCountChanges:(sqlite3 *)ppDb boolean:(Boolean)boolean;
+
+/* 修改数据库journal_mode */
++ (Boolean)setJournalMode:(sqlite3 *)ppDb mode:(PaintingliteJournalMode)mode;
 
 @end
 

@@ -19,6 +19,7 @@
 #import "Paintinglite/PaintingliteTransaction.h"
 #import "Paintinglite/PaintingliteExec.h"
 #import "EleTest.h"
+#import "User.h"
 
 @interface ViewController ()
 @property (nonatomic,strong)PaintingliteSessionManager *sessionM; //会语管理者
@@ -105,6 +106,11 @@
 //        [self execQueryLike];
 //        [self execQueryOrderBy];
     }
+    
+//    [self execQueryPQL];
+//    [self.sessionM insert:@"INSERT INTO user(name,age) VALUES('sadf','22'),('sadf','23')"];
+//    [self execQueryPQLLimit];
+    [self execPQLPrepare];
 }
 
 #pragma mark - 打开数据库 (运行正常)
@@ -405,7 +411,7 @@
 #pragma mark - 查询SQL
 #pragma mark - 普通查询
 - (void)execQuery{
-    [self.sessionM execQuerySQL:@"SELECT * FROM eletest LIMIT 0,179167079" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<NSDictionary *> * _Nonnull resArray) {
+    [self.sessionM execQuerySQL:@"SELECT * FROM eletest WHERE name = 'CreaterOS' LIMIT 0,1000" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<NSDictionary *> * _Nonnull resArray) {
             if (success) {
                 NSUInteger i = 1;
                 for (NSDictionary *dict in resArray) {
@@ -438,6 +444,38 @@
 
 - (void)execQueryOrderBy{
    NSLog(@"%@",[self.sessionM execOrderByQuerySQLWithTableName:@"user" orderbyContext:@"name" orderStyle:PaintingliteOrderByDESC]);
+}
+
+#pragma mark - 查询PQL
+- (void)execQueryPQL{
+    for (User *user in [self.sessionM execPQL:@"from user"]) {
+        NSLog(@"user.name = %@ user.age = %@",user.name,user.age);
+    }
+}
+
+- (void)execQueryPQLLimit{
+//    NSLog(@"%@",[self.sessionM execPQL:@"FROM EleTest limit 0,1000"]);
+//    for (EleTest *eleTest in [self.sessionM execPQL:@"FROM EleTest LIMIT 0,1000"]) {
+//        NSLog(@"eleTest.name = %@ eleTest.age = %@",eleTest.name,eleTest.age);
+//    }
+    
+//    for (EleTest *eleTest in [self.sessionM execPQL:@"FROM EleTest WHERE name = 'CreaterOS' LIMIT 0,1000"]) {
+//        NSLog(@"eleTest.name = %@ eleTest.age = %@",eleTest.name,eleTest.age);
+//    }
+    
+//    for (User *user in [self.sessionM execPQL:@"FROM User order BY name ASC"]) {
+//        NSLog(@"user.name = %@ user.age = %@",user.name,user.age);
+//    }
+    
+    for (User *user in [self.sessionM execPQL:@"FROM User WHERE name like '%s%' LIMIT 0,2"]) {
+        NSLog(@"user.name = %@ user.age = %@",user.name,user.age);
+    }
+}
+
+- (void)execPQLPrepare{
+    [self.sessionM execQueryPQLPrepareStatementPQL:@"FROM User WHERE name like ? LIMIT ?,?"];
+    [self.sessionM setPrepareStatementPQLParameter:@[@"%s%",[NSNumber numberWithInteger:0],[NSNumber numberWithInteger:3]]];
+    NSLog(@"%@",[self.sessionM execPrepareStatementPQL]);
 }
 
 @end

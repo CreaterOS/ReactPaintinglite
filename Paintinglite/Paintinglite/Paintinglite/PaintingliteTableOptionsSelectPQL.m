@@ -52,28 +52,19 @@ static PaintingliteTableOptionsSelectPQL *_instance = nil;
 
 #pragma mark - 截取操作
 - (NSString *)subStringISExistsTable:(NSString *__nonnull)PQL{
-
     NSString *objName = [NSString string];
-    PQL = [PQL uppercaseString];
+    
     //判断表明是否存在，如果存在，则返回表名
-    if ([PQL containsString:@"WHERE"]) {
-        //含有WHERE
-        objName = [[[PQL componentsSeparatedByString:@"FROM "][1] componentsSeparatedByString:@" WHERE"][0]  lowercaseString];
+
+    if ([[PQL uppercaseString] containsString:@"WHERE"] || [[PQL uppercaseString] containsString:@"LIMIT"] || [[PQL uppercaseString] containsString:@"ORDER"]) {
+        objName = [[[PQL uppercaseString] componentsSeparatedByString:@"FROM "][1] componentsSeparatedByString:@" "][0];
     }else{
-        if ([PQL containsString:@"LIMIT"]) {
-            //含有Limit
-            objName = [[[PQL componentsSeparatedByString:@"FROM "][1] componentsSeparatedByString:@" LIMIT"][0] lowercaseString];
-        }else if([PQL containsString:@"ORDER"]){
-            //含有ORDER
-            objName = [[[PQL componentsSeparatedByString:@"FROM "][1] componentsSeparatedByString:@" ORDER"][0] lowercaseString];
-        }else{
-            objName = [[PQL componentsSeparatedByString:@"FROM "][1] lowercaseString];
-        }
-        
+        objName = [[PQL uppercaseString] componentsSeparatedByString:@"FROM "][1];
     }
 
     //首字母大写，其余小写
-    objName = [[[objName substringWithRange:NSMakeRange(0, 1)] uppercaseString] stringByAppendingString:[objName substringFromIndex:1]];
+    objName = [PQL substringWithRange:[[PQL uppercaseString] rangeOfString:objName]];
+
     //判断是否有这个类
     
     return ([PaintingliteObjRuntimeProperty ObjNameExists:objName]) ? objName : NULL;
@@ -117,7 +108,7 @@ static PaintingliteTableOptionsSelectPQL *_instance = nil;
 
 #pragma mark - 获得对象
 - (id)getObj:(NSString *)objName{
-    return [[NSClassFromString([[[objName substringWithRange:NSMakeRange(0, 1)] uppercaseString] stringByAppendingString:[objName substringFromIndex:1]]) alloc] init];
+    return [[NSClassFromString(objName) alloc] init];
 }
 
 #pragma mark - 条件查询
@@ -154,8 +145,11 @@ static PaintingliteTableOptionsSelectPQL *_instance = nil;
 - (void)execQueryPQLPrepareStatementPQL:(NSString *)prepareStatementPQL{
     NSAssert(prepareStatementPQL != NULL, @"PrepareStatementPQL Not Is Empty");
     //PQL转换成为SQL语句
-    NSString *prepareStatementSQL = [NSString stringWithFormat:@"SELECT * FROM %@ WHERE %@", [[self subStringISExistsTable:prepareStatementPQL] lowercaseString],[prepareStatementPQL componentsSeparatedByString:@" WHERE "][1]];
-    self.obj = [self getObj:[[self subStringISExistsTable:prepareStatementPQL] lowercaseString]];
+    NSString *objName = [self subStringISExistsTable:prepareStatementPQL];
+    NSString *tableName = [objName lowercaseString];
+    
+    NSString *prepareStatementSQL = [NSString stringWithFormat:@"SELECT * FROM %@ WHERE %@",tableName,[[prepareStatementPQL uppercaseString] componentsSeparatedByString:@" WHERE "][1]];
+    self.obj = [self getObj:objName];
     [self execQuerySQLPrepareStatementSql:prepareStatementSQL];
 }
 
@@ -174,8 +168,10 @@ static PaintingliteTableOptionsSelectPQL *_instance = nil;
 
 - (Boolean)execLikeQueryPQL:(sqlite3 *)ppDb pql:(NSString *)pql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull, NSMutableArray<id> * _Nonnull))completeHandler{
     //PQL转换成为SQL语句
-    NSString *likeSQL = [NSString stringWithFormat:@"SELECT * FROM %@ WHERE %@", [[self subStringISExistsTable:pql] lowercaseString],[pql componentsSeparatedByString:@" WHERE "][1]];
-    id obj = [self getObj:[[self subStringISExistsTable:pql] lowercaseString]];
+    NSString *objName = [self subStringISExistsTable:pql];
+    NSString *tableName = [objName lowercaseString];
+    NSString *likeSQL = [NSString stringWithFormat:@"SELECT * FROM %@ WHERE %@", tableName,[[pql uppercaseString] componentsSeparatedByString:@" WHERE "][1]];
+    id obj = [self getObj:objName];
     return [self execQuerySQL:ppDb sql:likeSQL obj:obj completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
         if (success) {
             if (completeHandler != nil) {
@@ -191,8 +187,12 @@ static PaintingliteTableOptionsSelectPQL *_instance = nil;
 }
 
 - (Boolean)execLimitQueryPQL:(sqlite3 *)ppDb pql:(NSString *)pql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull, NSMutableArray<id> * _Nonnull))completeHandler{
-    NSString *limitSQL = [NSString stringWithFormat:@"SELECT * FROM %@ LIMIT %@", [[self subStringISExistsTable:pql] lowercaseString],[pql componentsSeparatedByString:@" LIMIT "][1]];
-    id obj = [self getObj:[[self subStringISExistsTable:pql] lowercaseString]];
+    NSString *objName = [self subStringISExistsTable:pql];
+    NSString *tableName = [objName lowercaseString];
+    NSString *limitSQL = [NSString stringWithFormat:@"SELECT * FROM %@ LIMIT %@", tableName,[[pql uppercaseString] componentsSeparatedByString:@" LIMIT "][1]];
+    
+    id obj = [self getObj:objName];
+
     return [self execQuerySQL:ppDb sql:limitSQL obj:obj completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
         if (success) {
             if (completeHandler != nil) {
@@ -208,8 +208,11 @@ static PaintingliteTableOptionsSelectPQL *_instance = nil;
 }
 
 - (Boolean)execOrderQueryPQL:(sqlite3 *)ppDb pql:(NSString *)pql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull, NSMutableArray<id> * _Nonnull))completeHandler{
-    NSString *orderSQL = [NSString stringWithFormat:@"SELECT * FROM %@ ORDER BY %@", [[self subStringISExistsTable:pql] lowercaseString],[pql componentsSeparatedByString:@" ORDER BY "][1]];
-    id obj = [self getObj:[[self subStringISExistsTable:pql] lowercaseString]];
+    NSString *objName = [self subStringISExistsTable:pql];
+    NSString *tableName = [objName lowercaseString];
+
+    NSString *orderSQL = [NSString stringWithFormat:@"SELECT * FROM %@ ORDER BY %@", tableName,[[pql uppercaseString] componentsSeparatedByString:@" ORDER BY "][1]];
+    id obj = [self getObj:objName];
     return [self execQuerySQL:ppDb sql:orderSQL obj:obj completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
         if (success) {
             if (completeHandler != nil) {
@@ -227,32 +230,34 @@ static PaintingliteTableOptionsSelectPQL *_instance = nil;
 - (Boolean)execPQL:(sqlite3 *)ppDb pql:(NSString *)pql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull, NSMutableArray<id> * _Nonnull))completeHandler{
     
     NSString *tempPql = [pql uppercaseString];
-    
-    if ([tempPql containsString:@"LIMIT"]) {
-        return [self execLimitQueryPQL:ppDb pql:pql completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
-            if (success) {
-                completeHandler(error,success,resArray,resObjList);
-            }
-        }];
-    }else if ([tempPql containsString:@"ORDER"]){
-        return [self execOrderQueryPQL:ppDb pql:pql completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
-            if (success) {
-                completeHandler(error,success,resArray,resObjList);
-            }
-        }];
-    }else if([tempPql containsString:@"LIKE"]){
-        return [self execLikeQueryPQL:ppDb pql:pql completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
-            if (success) {
-                completeHandler(error,success,resArray,resObjList);
-            }
-        }];
-    }else{
-        return [self execQueryPQL:ppDb pql:pql completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
-            if (success) {
-                completeHandler(error,success,resArray,resObjList);
-            }
-        }];
+
+    for (NSString *tempStr in [tempPql componentsSeparatedByString:@" "]) {
+        if ([tempStr isEqualToString:@"LIMIT"]) {
+            return [self execLimitQueryPQL:ppDb pql:pql completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
+                if (success) {
+                    completeHandler(error,success,resArray,resObjList);
+                }
+            }];
+        }else if ([tempStr isEqualToString:@"ORDER"]){
+            return [self execOrderQueryPQL:ppDb pql:pql completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
+                if (success) {
+                    completeHandler(error,success,resArray,resObjList);
+                }
+            }];
+        }else if([tempStr isEqualToString:@"LIKE"]){
+            return [self execLikeQueryPQL:ppDb pql:pql completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
+                if (success) {
+                    completeHandler(error,success,resArray,resObjList);
+                }
+            }];
+        }
     }
+    
+    return [self execQueryPQL:ppDb pql:pql completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
+        if (success) {
+            completeHandler(error,success,resArray,resObjList);
+        }
+    }];
 }
 
 @end

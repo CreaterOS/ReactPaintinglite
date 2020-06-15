@@ -15,6 +15,7 @@
 #define CACGESIZE(SIZE) [NSString stringWithFormat:@"PRAGMA cache_size = %zd;",SIZE]
 #define WALCHECKPOINT(MODE) [NSString stringWithFormat:@"PRAGMA wal_checkpoint(%@);",MODE]
 #define THREADNUM(NUM) [NSString stringWithFormat:@"PRAGMA threads = %zd;",NUM]
+#define JOURNALMODE(MODE) [NSString stringWithFormat:@"PRAGMA journal_mode = %@;",MODE]
 
 @interface PaintingliteConfiguration()
 @property (nonatomic)sqlite3_stmt *stmt;
@@ -215,7 +216,42 @@ static PaintingliteConfiguration *_instance = nil;
 
 #pragma mark - 修改数据库trusted_schema
 + (Boolean)setTrustedSchema:(sqlite3 *)ppDb boolean:(Boolean)boolean{
-    return boolean ? sqlite3_exec(ppDb, [@"PRAGMA trusted_schema = TRUE;" UTF8String], 0, 0, NULL) == SQLITE_OK : sqlite3_exec(ppDb, [@"PRAGMA trusted_schema = FALSE;" UTF8String], 0, 0, NULL) == SQLITE_OK;
+    return boolean ? sqlite3_exec(ppDb, [@"PRAGMA trusted_schema = true;" UTF8String], 0, 0, NULL) == SQLITE_OK : sqlite3_exec(ppDb, [@"PRAGMA trusted_schema = false;" UTF8String], 0, 0, NULL) == SQLITE_OK;
+}
+
+#pragma mark - 修改数据库case_sensitive_like
++ (Boolean)setCaseSensitiveLike:(sqlite3 *)ppDb boolean:(Boolean)boolean{
+    return boolean ? sqlite3_exec(ppDb, [@"PRAGMA case_sensitive_like = true;" UTF8String], 0, 0, NULL) == SQLITE_OK : sqlite3_exec(ppDb, [@"PRAGMA case_sensitive_like = false;" UTF8String], 0, 0, NULL) == SQLITE_OK;
+}
+
+#pragma mark - 修改数据库count_changes
++ (Boolean)setCountChanges:(sqlite3 *)ppDb boolean:(Boolean)boolean{
+    return boolean ? sqlite3_exec(ppDb, [@"PRAGMA count_changes = true;" UTF8String], 0, 0, NULL) == SQLITE_OK : sqlite3_exec(ppDb, [@"PRAGMA count_changes = false;" UTF8String], 0, 0, NULL) == SQLITE_OK;
+}
+
+#pragma mark - 修改数据库journal_mode
++ (Boolean)setJournalMode:(sqlite3 *)ppDb mode:(PaintingliteJournalMode)mode{
+    NSString *journalMode = [NSString string];
+    
+    switch (mode) {
+        case 0:
+            journalMode = @"DELETE";
+            break;
+        case 1:
+            journalMode = @"TRUNCATE";
+            break;
+        case 2:
+            journalMode = @"PERSIST";
+            break;
+        case 3:
+            journalMode = @"MEMORY";
+            break;
+        case 4:
+            journalMode = @"OFF";
+            break;
+    }
+    
+    return sqlite3_exec(ppDb, [JOURNALMODE(journalMode) UTF8String], 0, 0, NULL) == SQLITE_OK;
 }
 
 #pragma mark - 配置数据库名称

@@ -421,7 +421,7 @@ static PaintingliteSessionManager *_instance = nil;
 }
 
 #pragma mark - PQL查询
-- (id)execPrepareStatementPQL{
+- (NSArray<id> *)execPrepareStatementPQL{
     return [self.tableOptions execPrepareStatementPQL:self.ppDb];
 }
 
@@ -442,7 +442,7 @@ static PaintingliteSessionManager *_instance = nil;
     [self.tableOptions setPrepareStatementPQLParameter:tempParamterArray];
 }
 
-- (id)execPQL:(NSString *)pql{
+- (NSArray<id> *)execPQL:(NSString *)pql{
     return [self.tableOptions execPQL:self.ppDb pql:pql];
 }
 
