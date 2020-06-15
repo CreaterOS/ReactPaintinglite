@@ -100,17 +100,41 @@
 //    [self selectMIN];
     
     //查询SQL
-    @autoreleasepool {
+//    @autoreleasepool {
 //        [self execQuery];
 //        [self execQueryPrepare];
 //        [self execQueryLike];
 //        [self execQueryOrderBy];
-    }
+//    }
     
 //    [self execQueryPQL];
-//    [self.sessionM insert:@"INSERT INTO user(name,age) VALUES('sadf','22'),('sadf','23')"];
+//    [self.sessionM insert:@"INSERT INTO dogs(name,age) VALUES('sadf','22'),('sadf','23'),('sadf','22'),('sadf','21')"];
 //    [self execQueryPQLLimit];
-    [self execPQLPrepare];
+//    [self execPQLPrepare];
+   
+//    NSUInteger i = 1;
+//    for (NSDictionary *dict in [self.sessionM execQuerySQL:@"SELECT * FROM eletest WHERE age = (SELECT age FROM user) LIMIT 0,1000"]) {
+//        NSLog(@"i = %zd: %@",i,dict);
+//        i++;
+//    }
+    
+//    NSUInteger i = 1;
+//    for (NSDictionary *dict in [self.sessionM execQuerySQL:@"SELECT * FROM eletest WHERE age = (SELECT age FROM user) LIMIT 0,1000"]) {
+//        NSLog(@"i = %zd: %@",i,dict);
+//        i++;
+//    }
+
+//    [self.sessionM createTableForName:@"dogs" content:@"name TEXT,age INTEGER"];
+    
+    
+//    NSLog(@"%@",[self.sessionM execQuerySQL:@"SELECT * FROM user LEFT JOIN dogs ON user.age = dogs.age LIMIT 0,5"]);
+//    NSLog(@"%@",[self.sessionM execQuerySQL:@"SELECT name FROM user"]);
+//    NSLog(@"%@",[self.sessionM execQuerySQL:@"SELECT * FROM user LEFT JOIN dogs ON user.age = dogs.age LIMIT 0,5"]);
+    
+    for (NSArray *resArray in [self.sessionM execQuerySQL:@"SELECT * FROM user LEFT JOIN dogs ON user.age = dogs.age LIMIT 0,5"]) {
+        NSLog(@"%@",resArray);
+    }
+    
 }
 
 #pragma mark - 打开数据库 (运行正常)

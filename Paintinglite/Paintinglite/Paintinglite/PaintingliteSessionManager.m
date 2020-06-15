@@ -112,8 +112,6 @@ static PaintingliteSessionManager *_instance = nil;
         
         if([fileManager fileExistsAtPath:filePath]){
             success = (sqlite3_open_v2([filePath UTF8String], &_ppDb, SQLITE_OPEN_READWRITE|SQLITE_OPEN_FULLMUTEX, NULL) == SQLITE_OK);
-            //先记录一次快照,防止非框架创建的表
-            [self.snapManager saveSnap:self.ppDb];
         }else{
             success = (sqlite3_open([filePath UTF8String], &_ppDb) == SQLITE_OK);
         }

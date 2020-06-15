@@ -98,14 +98,14 @@
 #pragma mark - 创建 更新 删除数据库
 - (Boolean)sqlite3Exec:(sqlite3 *)ppDb sql:(NSString *)sql{
     NSAssert(sql != NULL, @"SQL Not IS Empty");
-    
+
     Boolean flag = false;
     Boolean sql_flag = [SQL_FIRST_WORDS(sql) containsString:Paintinglite_Sqlite3_CREATE] || [SQL_FIRST_WORDS(sql) containsString:Paintinglite_Sqlite3_DROP] || [SQL_FIRST_WORDS(sql) containsString:Paintinglite_Sqlite3_ALTER] || [SQL_FIRST_WORDS(sql) containsString:Paintinglite_Sqlite3_ALTER_RENAME];
 
     //判断是否有表,有表则不创建
     //更新数据库时候会出问题
     NSString *tableName = [self getOptTableName:ppDb sql:sql];
-  
+
     sql = [self lowerToUpper:sql];
 
     /*
@@ -114,6 +114,7 @@
      */
     @synchronized (self) {
         @autoreleasepool {
+            NSLog(@"%@",sql);
             flag = sqlite3_exec(ppDb, [sql UTF8String], 0, 0, 0) == SQLITE_OK;
             
             if (flag) {
@@ -210,8 +211,43 @@
     return tableName;
 }
 
+#pragma mark - 系统查询方法
+- (NSMutableArray<NSMutableArray<NSString *> *> *)systemExec:(sqlite3 *)ppDb sql:(NSString *__nonnull)sql{
+    NSMutableArray<NSMutableArray<NSString *> *> *resArray = [NSMutableArray array];
+    @synchronized (self) {
+        if (sqlite3_prepare_v2(ppDb, [sql UTF8String], -1, &_stmt, nil) == SQLITE_OK){
+            //查询成功
+            while (sqlite3_step(_stmt) == SQLITE_ROW) {
+                NSMutableArray<NSString *> *textArray = [NSMutableArray array];
+                @autoreleasepool {
+                    unsigned int count = sqlite3_column_count(_stmt);
+                    for (unsigned i = 0; i < count; i++) {
+                       [textArray addObject:[NSString stringWithUTF8String:(char *)sqlite3_column_text(_stmt, i)]];
+                    }
+                }
+                
+                [resArray addObject:textArray];
+            }
+        }else{
+            //写入日志文件
+            [self writeLogFileOptions:sql status:PaintingliteLogError];
+        }
+    }
+    
+    sqlite3_finalize(_stmt);
+
+    return resArray;
+}
+
 #pragma mark - 查询数据库 获得字段名称集合
 - (NSMutableArray *)sqlite3ExecQuery:(sqlite3 *)ppDb sql:(NSString *)sql{
+    
+    /* 对多表连接进行查询 */
+    if ([[sql uppercaseString] containsString:@"JOIN"]){
+        //交给系统操作
+        return [self systemExec:ppDb sql:sql];
+    }
+    
     NSMutableArray<NSDictionary *> *tables = [NSMutableArray array];
     //将结果返回,保存为字典
     
@@ -222,7 +258,6 @@
     //SELECT user.name as paintinglite_name,user.age as paintinglite_age FROM user WHERE paintinglite_name = '...' and paintinglite_age = '...';
     //SELECT * FROM user WHERE age < 40 ORDER BY name DESC
     sql = [self replaceStar:ppDb resArray:resArray sql:sql];
-//    NSLog(@"%@",sql);
     
     @synchronized (self) {
         if (sqlite3_prepare_v2(ppDb, [sql UTF8String], -1, &_stmt, nil) == SQLITE_OK){
@@ -358,7 +393,6 @@
             //创建数据库
             if (flag) {
                 NSString *createSQL = Paintinglite_Sqlite3_CREATE_SQL(tableName, content);
-                NSLog(@"%@",createSQL);
                 [self sqlite3Exec:ppDb sql:createSQL];
             }
         }
