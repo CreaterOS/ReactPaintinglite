@@ -42,7 +42,7 @@ static PaintingliteIntellegenceSelect *_instance = nil;
  */
 - (Boolean)load:(sqlite3 *)ppDb completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull))completeHandler objects:(id)objects, ...{
     //获取每一个对象，从可变参数中获取
-    id obj = [[NSObject alloc] init];
+    id obj = NULL;
     
     __block NSMutableArray *loadArray = [NSMutableArray array];
     Boolean success = false;
@@ -87,7 +87,7 @@ static PaintingliteIntellegenceSelect *_instance = nil;
 #pragma mark - 分页查询
 - (Boolean)limit:(sqlite3 *)ppDb start:(NSUInteger)start end:(NSUInteger)end completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull))completeHandler objects:(id)objects, ...{
     //获取每一个对象，从可变参数中获取
-    id obj = [[NSObject alloc] init];
+    id obj = NULL;
     
     __block NSMutableArray *limitsArray = [NSMutableArray array];
     Boolean success = false;
@@ -132,7 +132,7 @@ static PaintingliteIntellegenceSelect *_instance = nil;
 
 - (Boolean)limit:(sqlite3 *)ppDb startAndEnd:(NSArray<NSArray<NSNumber *> *> *)startAndEnd completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull))completeHandler objects:(id)objects, ...{
     //获取每一个对象，从可变参数中获取
-    id obj = [[NSObject alloc] init];
+    id obj = NULL;
     
     __block NSMutableArray *limitsArray = [NSMutableArray array];
     Boolean success = false;
@@ -182,7 +182,7 @@ static PaintingliteIntellegenceSelect *_instance = nil;
 #pragma mark - 排序查询
 - (Boolean)orderBy:(sqlite3 *)ppDb orderStyle:(PaintingliteOrderByStyle)orderStyle condation:(nonnull NSArray<NSString *> *)condation completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull))completeHandler objects:(id)objects, ...{
     //获取每一个对象，从可变参数中获取
-    id obj = [[NSObject alloc] init];
+    id obj = NULL;
     
     __block NSMutableArray *ordersArray = [NSMutableArray array];
     Boolean success = false;
@@ -230,7 +230,7 @@ static PaintingliteIntellegenceSelect *_instance = nil;
 
 - (Boolean)orderBy:(sqlite3 *)ppDb orderStyleArray:(NSArray<NSString *> *)orderStyleArray condation:(NSArray<NSString *> *)condation completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull))completeHandler objects:(id)objects, ...{
     //获取每一个对象，从可变参数中获取
-    id obj = [[NSObject alloc] init];
+    id obj = NULL;
     
     __block NSMutableArray *ordersArray = [NSMutableArray array];
     Boolean success = false;
@@ -278,7 +278,7 @@ static PaintingliteIntellegenceSelect *_instance = nil;
 #pragma mark - 万能查询
 - (Boolean)query:(sqlite3 *)ppDb sql:(NSArray<NSString *> *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull))completeHandler objects:(id)objects, ...{
     //获取每一个对象，从可变参数中获取
-    id obj = [[NSObject alloc] init];
+    id obj = NULL;
     
     __block NSMutableArray *queryArray = [NSMutableArray array];
     Boolean success = false;

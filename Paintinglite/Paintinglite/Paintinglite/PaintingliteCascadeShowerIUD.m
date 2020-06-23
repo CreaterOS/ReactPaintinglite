@@ -67,14 +67,16 @@ static PaintingliteCascadeShowerIUD *_instance = nil;
             }];
         }
     }
-
-    success = [self insert:ppDb obj:obj completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
-        if (success) {
-            NSMutableArray *newList = [self execQuerySQL:ppDb sql:[NSString stringWithFormat:@"SELECT * FROM %@",[[PaintingliteObjRuntimeProperty getObjName:obj]lowercaseString]]];
-            [resArray addObject:newList];
-        }
-    }];
     
+    if (success) {
+        success = [self insert:ppDb obj:obj completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
+            if (success) {
+                NSMutableArray *newList = [self execQuerySQL:ppDb sql:[NSString stringWithFormat:@"SELECT * FROM %@",[[PaintingliteObjRuntimeProperty getObjName:obj]lowercaseString]]];
+                [resArray addObject:newList];
+            }
+        }];
+    }
+
     if (completeHandler != nil) {
         completeHandler(self.sessionError,success,resArray);
     }
@@ -113,13 +115,15 @@ static PaintingliteCascadeShowerIUD *_instance = nil;
         }
     }
     
-    success = [self update:ppDb obj:obj condition:[condatation firstObject] completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
-        if(success){
-            NSMutableArray *newList = [self execQuerySQL:ppDb sql:[NSString stringWithFormat:@"SELECT * FROM %@",[[PaintingliteObjRuntimeProperty getObjName:obj]lowercaseString]]];
-            [resArray addObject:newList];
-        }
-    }];
-    
+    if (success) {
+        success = [self update:ppDb obj:obj condition:[condatation firstObject] completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
+            if(success){
+                NSMutableArray *newList = [self execQuerySQL:ppDb sql:[NSString stringWithFormat:@"SELECT * FROM %@",[[PaintingliteObjRuntimeProperty getObjName:obj]lowercaseString]]];
+                [resArray addObject:newList];
+            }
+        }];
+    }
+
     if (completeHandler != nil) {
         completeHandler(self.sessionError,success,resArray);
     }
@@ -158,13 +162,15 @@ static PaintingliteCascadeShowerIUD *_instance = nil;
         }
     }
     
-    success = [self del:ppDb sql:[NSString stringWithFormat:@"DELETE FROM %@ WHERE %@",[PaintingliteObjRuntimeProperty getObjName:obj],[condatation firstObject]] completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
-        if(success){
-            NSMutableArray *newList = [self execQuerySQL:ppDb sql:[NSString stringWithFormat:@"SELECT * FROM %@",[[PaintingliteObjRuntimeProperty getObjName:obj]lowercaseString]]];
-            [resArray addObject:newList];
-        }
-    }];
-    
+    if (success) {
+        success = [self del:ppDb sql:[NSString stringWithFormat:@"DELETE FROM %@ WHERE %@",[PaintingliteObjRuntimeProperty getObjName:obj],[condatation firstObject]] completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
+            if(success){
+                NSMutableArray *newList = [self execQuerySQL:ppDb sql:[NSString stringWithFormat:@"SELECT * FROM %@",[[PaintingliteObjRuntimeProperty getObjName:obj]lowercaseString]]];
+                [resArray addObject:newList];
+            }
+        }];
+    }
+
     if (completeHandler != nil) {
         completeHandler(self.sessionError,success,resArray);
     }

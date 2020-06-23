@@ -342,7 +342,7 @@ static PaintingliteTableOptionsSelect *_instance = nil;
     
     //判断传入的end的长度
     NSString *limitSql = [NSString stringWithFormat:@"SELECT * FROM %@ LIMIT %zd,%zd",tableName,start,end];
-    NSLog(@"%@",limitSql);
+//    NSLog(@"%@",limitSql);
     return [self execQuerySQL:ppDb sql:limitSql completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray) {
         if (success) {
             if (completeHandler != nil) {

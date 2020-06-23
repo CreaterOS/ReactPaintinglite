@@ -36,7 +36,7 @@ static PaintingliteConfiguration *_instance = nil;
 
 #pragma mark - 修改Synchronous模式
 + (Boolean)setSynchronous:(sqlite3 *)ppDb mode:(PaintingliteSynchronousMode)mode{
-    NSString *synchronousSQL = [NSString string];
+    NSString *synchronousSQL = NULL;
     switch (mode) {
         case 0:
             synchronousSQL = SYNCHRONOUSMODE(@"OFF");
@@ -79,7 +79,7 @@ static PaintingliteConfiguration *_instance = nil;
 
 #pragma mark - 配置数据库编码格式
 + (Boolean)setEncoding:(sqlite3 *)ppDb encoding:(PaintingliteEncoding)encoding{
-    NSString *encode = [NSString string];
+    NSString *encode = NULL;
     
     switch (encoding) {
         case 0:
@@ -119,7 +119,7 @@ static PaintingliteConfiguration *_instance = nil;
 
 #pragma mark - 修改数据库Auto_Vacuum模式
 + (Boolean)setAutoVacuum:(sqlite3 *)ppDb mode:(PaintingliteAutoVacuumMode)mode{
-    NSString *AutoVacuum = [NSString string];
+    NSString *AutoVacuum = NULL;
     switch (mode) {
         case 0:
             AutoVacuum = @"NONE";
@@ -175,7 +175,7 @@ static PaintingliteConfiguration *_instance = nil;
 
 #pragma mark - 修改数据库wal_checkpoint模式
 + (Boolean)setWalCheckpoint:(sqlite3 *)ppDb mode:(PaintingliteWalCheckpointMode)mode{
-    NSString *WalCheckpoint = [NSString string];
+    NSString *WalCheckpoint = NULL;
     switch (mode) {
         case 0:
             WalCheckpoint = @"PASSIVE";
@@ -231,7 +231,7 @@ static PaintingliteConfiguration *_instance = nil;
 
 #pragma mark - 修改数据库journal_mode
 + (Boolean)setJournalMode:(sqlite3 *)ppDb mode:(PaintingliteJournalMode)mode{
-    NSString *journalMode = [NSString string];
+    NSString *journalMode = NULL;
     
     switch (mode) {
         case 0:

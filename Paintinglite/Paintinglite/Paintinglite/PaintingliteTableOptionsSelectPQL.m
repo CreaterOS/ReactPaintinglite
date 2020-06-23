@@ -52,7 +52,7 @@ static PaintingliteTableOptionsSelectPQL *_instance = nil;
 
 #pragma mark - 截取操作
 - (NSString *)subStringISExistsTable:(NSString *__nonnull)PQL{
-    NSString *objName = [NSString string];
+    NSString *objName = NULL;
     
     //判断表明是否存在，如果存在，则返回表名
 

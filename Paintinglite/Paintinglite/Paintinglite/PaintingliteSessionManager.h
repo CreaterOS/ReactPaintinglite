@@ -113,6 +113,11 @@ NS_ASSUME_NONNULL_BEGIN
 /* =====================================表的操作SQL======================================== */
 
 /**
+ * 系统查询方式
+ */
+- (NSMutableArray<NSMutableArray<NSString *> *> *)systemExec:(NSString *__nonnull)sql;
+
+/**
  * 查看数据
  */
 - (NSMutableArray *)execQuerySQL:(NSString *__nonnull)sql;

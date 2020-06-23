@@ -761,7 +761,7 @@
         NSString *temporaryDirectoryName = [[NSUUID UUID] UUIDString];
         NSString *temporaryDirectory = [NSTemporaryDirectory() stringByAppendingPathComponent:temporaryDirectoryName];
         BOOL directoryCreated = [[NSFileManager defaultManager] createDirectoryAtPath:temporaryDirectory withIntermediateDirectories:YES attributes:nil error:nil];
-        discardableFilePath = directoryCreated ? [temporaryDirectory stringByAppendingPathComponent:discardableFileName] : nil;
+        discardableFilePath = directoryCreated ? [temporaryDirectory stringByAppendingPathComponent:discardableFileName] : NULL;
         [@"" writeToFile:discardableFilePath atomically:YES encoding:NSUTF8StringEncoding error:nil];
     });
     return discardableFilePath;

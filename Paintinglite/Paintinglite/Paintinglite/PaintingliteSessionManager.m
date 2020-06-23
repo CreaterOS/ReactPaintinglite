@@ -11,6 +11,7 @@
 #import "PaintingliteSecurity.h"
 #import "PaintingliteConfiguration.h"
 #import "PaintingliteSnapManager.h"
+#import "PaintingliteExec.h"
 #import "SSZipArchive.h"
 
 @interface PaintingliteSessionManager()
@@ -19,6 +20,7 @@
 @property (nonatomic,strong)PaintingliteSessionError *error; //错误
 @property (nonatomic,strong)PaintingliteConfiguration *configuration; //配置文件
 @property (nonatomic,strong)PaintingliteDataBaseOptions *dataBaseOptions; //数据库操作
+@property (nonatomic,strong)PaintingliteExec *exec; //执行语句
 @property (nonatomic,strong)PaintingliteTableOptions *tableOptions; //表操作
 @property (nonatomic)Boolean closeFlag; //关闭标识符
 @property (nonatomic,strong)PaintingliteSnapManager *snapManager; //快照管理者
@@ -49,6 +51,14 @@
     }
     
     return _dataBaseOptions;
+}
+
+- (PaintingliteExec *)exec{
+    if (!_exec) {
+        _exec = [[PaintingliteExec alloc] init];
+    }
+    
+    return _exec;
 }
 
 - (PaintingliteTableOptions *)tableOptions{
@@ -308,6 +318,11 @@ static PaintingliteSessionManager *_instance = nil;
     dispatch_barrier_async(PaintingliteSessionFactory_Sqlite_Queque, ^{
         NSLog(@"%@",[[self.factory readLogFile:fileName logStatus:logStatus] length] != 0 ? [self.factory readLogFile:fileName logStatus:logStatus] : @"无对应日志");
     });
+}
+
+#pragma mark - 系统查询方式
+- (NSMutableArray<NSMutableArray<NSString *> *> *)systemExec:(NSString *)sql{
+    return [self.exec systemExec:self.ppDb sql:sql];
 }
 
 #pragma mark - 查询数据

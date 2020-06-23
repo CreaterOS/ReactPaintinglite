@@ -98,7 +98,7 @@ static PaintingliteCUDOptions *_instance = nil;
 
     //执行的CUD_Block操作
     __block NSString *tableName = [NSString string];
-
+    
     dispatch_queue_t queue = dispatch_queue_create([@"com.Paintinglite.Queue" UTF8String], DISPATCH_QUEUE_CONCURRENT);
     
     dispatch_barrier_async(queue, ^{
@@ -106,22 +106,18 @@ static PaintingliteCUDOptions *_instance = nil;
     });
     
     //判断表是否存在，判断表的字段
-    dispatch_barrier_async(queue, ^{
-        if (![self.tables containsObject:tableName]){
-            [PaintingliteException PaintingliteException:@"表名不存在" reason:@"数据库找不到表名,无法执行操作"];
-        }
-    });
+    if (![self.tables containsObject:tableName]){
+        [PaintingliteException PaintingliteException:@"表名不存在" reason:@"数据库找不到表名,无法执行操作"];
+    }
 
-    dispatch_barrier_async(queue, ^{
-        //执行语句
-        @autoreleasepool {
-            success = [self.exec sqlite3Exec:ppDb sql:sql];
-        }
- 
-        if (completeHandler != nil) {
-            completeHandler(self.sessionError,success);
-        }
-    });
+    //执行语句
+    @autoreleasepool {
+        success = [self.exec sqlite3Exec:ppDb sql:sql];
+    }
+
+    if (completeHandler != nil) {
+        completeHandler(self.sessionError,success);
+    }
     
     return success;
 }

@@ -114,7 +114,6 @@
      */
     @synchronized (self) {
         @autoreleasepool {
-            NSLog(@"%@",sql);
             flag = sqlite3_exec(ppDb, [sql UTF8String], 0, 0, 0) == SQLITE_OK;
             
             if (flag) {
@@ -297,8 +296,8 @@
 
 #pragma mark - 替代*操作
 - (NSString *__nonnull)replaceStar:(sqlite3 *)ppDb resArray:(NSMutableArray *)resArray sql:(NSString *__nonnull)sql{
-    NSString *tableInfoStr = [NSString string];
-    NSString *tableName = [NSString string];
+    NSString *tableInfoStr = NULL;
+    NSString *tableName = NULL;
     NSString *tempSql = [sql uppercaseString];
     if ([tempSql containsString:@"*"]) {
         if ([tempSql containsString:Paintinglite_Sqlite3_WHERE]) {
@@ -362,7 +361,7 @@
 
 #pragma mark - 类名执行
 - (NSMutableArray *)sqlite3Exec:(sqlite3 *)ppDb objName:(NSString *)objName{
-    NSMutableArray<NSString *> *resArray = [NSMutableArray array];
+    NSMutableArray<NSString *> *resArray = NULL;
     @synchronized (self) {
         objName = [objName lowercaseString];
         //判断是否有这个表存在，存在则查询，否则报错
