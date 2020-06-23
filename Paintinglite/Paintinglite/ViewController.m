@@ -19,6 +19,7 @@
 #import "Paintinglite/PaintingliteConfiguration.h"
 #import "Paintinglite/PaintingliteTransaction.h"
 #import "Paintinglite/PaintingliteExec.h"
+#import "Paintinglite/PaintinglitePressureOS.h"
 #import "EleTest.h"
 #import "User.h"
 
@@ -27,6 +28,7 @@
 @property (nonatomic,strong)PaintingliteAggregateFunc *aggreageteF; //聚合函数
 @property (nonatomic,strong)PaintingliteSplitTable *spliteTable; //分解数据库
 @property (nonatomic,strong)PaintingliteExec *exec; //执行语句
+@property (nonatomic,strong)PaintinglitePressureOS *pressureOS; //压力测试系统
 @property (nonatomic)sqlite3_stmt *stmt;
 @end
 
@@ -63,6 +65,14 @@
     }
     
     return _spliteTable;
+}
+
+- (PaintinglitePressureOS *)pressureOS{
+    if (!_pressureOS) {
+        _pressureOS = [PaintinglitePressureOS sharePaintinglitePressureOS];
+    }
+    
+    return _pressureOS;
 }
 
 - (void)viewDidLoad{
@@ -150,7 +160,32 @@
 //    [self.spliteTable splitTable:[self.sessionM getSqlite3] tabelName:@"eletest" basePoint:2];
 //    [self.spliteTable selectWithSpliteFile:[self.sessionM getSqlite3] tableName:@"eletest" basePoint:2];
 //    [self.spliteTable insertWithSpliteFile:[self.sessionM getSqlite3] tableName:@"eletest" basePoint:2 insertSQL:@"insert into eletest(name,age,teacher,tage,desc) VALUES ('Paintinglite','19','Paintinglite','19','Paintinglite')"];
-    [self.spliteTable deleteWithSpliteFile:[self.sessionM getSqlite3] tableName:@"eletest" basePoint:2 deleteSQL:@"DELETE FROM eletest WHERE age = 19"];
+//    [self.spliteTable deleteWithSpliteFile:[self.sessionM getSqlite3] tableName:@"eletest" basePoint:2 deleteSQL:@"DELETE FROM eletest WHERE age = 19"];
+    
+//    [self.pressureOS paintingliteEfficiency:^{
+//        for (NSUInteger i = 0; i < 1000; i++) {
+//            NSLog(@"paintingliteEfficiency...");
+//        }
+//    }];
+    
+//    [self.pressureOS paintingliteMemoryUSE:^{
+//        for (NSUInteger i = 0; i < 1000; i++) {
+//            NSLog(@"paintingliteEfficiency...");
+//        }
+//    }];
+    
+//    [self.pressureOS paintingliteCPUUSAGE:^{
+//        for (NSUInteger i = 0; i < 10000; i++) {
+//            NSLog(@"paintingliteEfficiency...");
+//        }
+//    }];
+    
+    [self.pressureOS paintinglitePressure:^{
+        for (NSUInteger i = 0; i < 1000; i++) {
+            NSLog(@"paintingliteEfficiency...");
+        }
+    }];
+    
 }
 
 #pragma mark - 打开数据库 (运行正常)
