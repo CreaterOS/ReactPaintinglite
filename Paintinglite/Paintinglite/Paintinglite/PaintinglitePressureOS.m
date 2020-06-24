@@ -33,14 +33,14 @@
         
         /* 获得四个文件的路径 */
         NSString *millionFilePath = [[NSBundle mainBundle] pathForResource:@"millionPressure" ofType:@"txt"];
-        NSString *billionFilePath = [[NSBundle mainBundle] pathForResource:@"billionPressure" ofType:@"txt"];
+//        NSString *billionFilePath = [[NSBundle mainBundle] pathForResource:@"billionPressure" ofType:@"txt"];
         
         /* 获取四个文件的字符串 */
         NSString *millionStr = [self getStrWithFile:millionFilePath];
-        NSString *billionStr = [self getStrWithFile:billionFilePath];
+//        NSString *billionStr = [self getStrWithFile:billionFilePath];
         
         /* 添加测试集合 */
-        [_pressureArray addObject:billionStr];
+//        [_pressureArray addObject:billionStr];
         [_pressureArray addObject:millionStr];
     }
     
