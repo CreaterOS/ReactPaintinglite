@@ -11,12 +11,41 @@
 #import <mach/mach.h>
 
 #define PRESSURETABLE @"CREATE TABLE IF NOT EXISTS pressure(ID INTEGER primary key AUTOINCREMENT,name TEXT,age INTEGER,teacher TEXT,tage INTEGER,desc TEXT)"
+#define DROPPRESSURETABLE @"DROP TABLE pressure"
 
 @interface PaintinglitePressureOS()
 @property (nonatomic)sqlite3 *ppDb;
+@property (nonatomic,strong)NSMutableArray<NSString *> *pressureArray; //测试压力集
 @end
 
 @implementation PaintinglitePressureOS
+
+#pragma mark - 懒加载
+- (NSMutableArray<NSString *> *)pressureArray{
+    if (!_pressureArray) {
+        _pressureArray = [NSMutableArray array];
+        
+        /*
+         准备四个文件
+         100万
+         1000万
+         */
+        
+        /* 获得四个文件的路径 */
+        NSString *millionFilePath = [[NSBundle mainBundle] pathForResource:@"millionPressure" ofType:@"txt"];
+        NSString *billionFilePath = [[NSBundle mainBundle] pathForResource:@"billionPressure" ofType:@"txt"];
+        
+        /* 获取四个文件的字符串 */
+        NSString *millionStr = [self getStrWithFile:millionFilePath];
+        NSString *billionStr = [self getStrWithFile:billionFilePath];
+        
+        /* 添加测试集合 */
+        [_pressureArray addObject:billionStr];
+        [_pressureArray addObject:millionStr];
+    }
+    
+    return _pressureArray;
+}
 
 #pragma mark - 内存计算
 - (int64_t)memoryUsage {
@@ -151,44 +180,77 @@ static PaintinglitePressureOS *_instance = nil;
 }
 
 #pragma mark - 数据库压力测试
-- (void)paintingliteSqlitePressureWithCount{
+- (Boolean)paintingliteSqlitePressure{
     /* 创建测试数据库 */
-    if (sqlite3_open([@"PressureOS" UTF8String],&_ppDb) == SQLITE_OK){
+    if (sqlite3_open([[[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@"PressureOS.db"] UTF8String],&_ppDb) == SQLITE_OK){
         if(sqlite3_exec(_ppDb, [PRESSURETABLE UTF8String], 0, 0, NULL) == SQLITE_OK){
-            /* 插入测试 */
-            /* 更新测试 */
-            /* 查询测试 */
-            /* 删除测试 */
+            /* 压力测试 */
+            [self Pressure];
+            
+            /* 执行完成,删除测试数据库 */
+            return sqlite3_exec(_ppDb, [DROPPRESSURETABLE UTF8String], 0, 0, NULL) == SQLITE_OK;
         }
     }
+    
+    return false;
 }
 
-- (void)insertPressure{
+- (void)Pressure{
+    if ([self.pressureArray count] > 0) {
         @try {
-    
+            
             /* 开起事务 */
             [PaintingliteTransaction begainPaintingliteTransaction:_ppDb];
             
-            /*
-              准备四个文件
-              100万
-              1000万
-              5000万
-              1个亿
-             */
-//            NSString *millionData =
+            /* 从集合中获得测试集 */
+            /* 从测试集中拿出最后一个元素项作为数据集 */
+            NSString *insertSQL = [self.pressureArray lastObject];
             
-            
-            
+            /* 插入测试 */
+            /* 插入数据库 */
+            NSLog(@"INSERT PRESSURE RESULT: ");
+            [self paintinglitePressure:^{
+                sqlite3_exec(self.ppDb, [insertSQL UTF8String], 0, 0, 0);
+            }];
+        
             /* 提交 */
             [PaintingliteTransaction commit:_ppDb];
+            
+            NSLog(@"SELECT PRESSURE RESULT: ");
+            /* 查询测试 */
+            [self paintinglitePressure:^{
+                sqlite3_stmt *stmt;
+                sqlite3_prepare_v2(self.ppDb, [@"SELECT * FROM pressure" UTF8String], -1, &stmt, nil);
+            }];
+            
+            /* 删除数据最后的元素 */
+            [self.pressureArray removeLastObject];
+            
+            /* 删除表中全部数据 */
+            sqlite3_exec(self.ppDb, [@"DELETE FROM pressure" UTF8String], 0, 0, NULL);
+            
+            if (sqlite3_exec(_ppDb, [DROPPRESSURETABLE UTF8String], 0, 0, NULL) == SQLITE_OK) {
+                if (sqlite3_open([[[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@"PressureOS.db"] UTF8String],&_ppDb) == SQLITE_OK){
+                    if(sqlite3_exec(_ppDb, [PRESSURETABLE UTF8String], 0, 0, NULL) == SQLITE_OK){
+                        /* 递归测试 */
+                        [self Pressure];
+                    }
+                }
+            }
+            
         }@catch (NSException *exception) {
             /* 回滚 */
             [PaintingliteTransaction rollback:_ppDb];
             [exception raise];
-        } @finally {
-            
         }
+    }
 }
+
+#pragma mark - 获得字符串
+- (NSString *__nonnull)getStrWithFile:(NSString *__nonnull)filePath{
+    NSError *error = nil;
+    return [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:&error];
+}
+
                      
 @end

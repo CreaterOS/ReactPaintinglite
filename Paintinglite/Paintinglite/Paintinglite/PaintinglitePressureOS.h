@@ -42,7 +42,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)paintinglitePressure:(void (^__nullable)(void))block;
 
 /* 数据库压力测试 */
-- (void)paintingliteSqlitePressureWithCount:(NSUInteger)count;
+- (Boolean)paintingliteSqlitePressure;
 
 @end
 
