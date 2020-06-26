@@ -17,29 +17,32 @@
  * 生成测试报告
  */
 
+#import <UIKit/UIKit.h>
 #import "PaintingliteTableOptions.h"
+
+typedef NS_ENUM(NSUInteger, PaintinglitePressureOSSaveType) {
+    PaintinglitePressureOSSaveDefault,
+    PaintinglitePressureOSSaveHTML,
+    PaintinglitePressureOSSaveTXT
+};
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface PaintinglitePressureOS : PaintingliteTableOptions
 
+@property (nonatomic)PaintinglitePressureOSSaveType saveType; //保存类型
+
 /* 单例模式 */
 + (instancetype)sharePaintinglitePressureOS;
 
 /* 效率测试 */
-- (void)paintingliteEfficiency:(void (^__nullable)(void))block;
+- (float)paintingliteEfficiency:(void (^__nullable)(void))block;
 
 /* 内存测试 */
-- (void)paintingliteMemoryUSE:(void (^__nullable)(void))block;
+- (int64_t)paintingliteMemoryUSE:(void (^__nullable)(void))block;
 
 /* CPU测试 */
-- (void)paintingliteCPUUSAGE:(void (^__nullable)(void))block;
-
-/**
- * 压力测试
- * 效率测试 | 内存测试 | CPU测试
- */
-- (void)paintinglitePressure:(void (^__nullable)(void))block;
+- (float)paintingliteCPUUSAGE:(void (^__nullable)(void))block;
 
 /* 数据库压力测试 */
 - (Boolean)paintingliteSqlitePressure;

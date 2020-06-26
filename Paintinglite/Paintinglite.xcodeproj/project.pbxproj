@@ -10,6 +10,10 @@
 		6800074E2488D19000FF75DE /* PaintingliteCUDOptions.m in Sources */ = {isa = PBXBuildFile; fileRef = 6800074D2488D19000FF75DE /* PaintingliteCUDOptions.m */; };
 		680969332481007A00048369 /* PaintingliteTableOptions.m in Sources */ = {isa = PBXBuildFile; fileRef = 680969322481007A00048369 /* PaintingliteTableOptions.m */; };
 		680969492481F47B00048369 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 680969482481F47B00048369 /* User.m */; };
+		6812B9B824A583CB0091C5EE /* OneHundredThousandPressure.txt in Resources */ = {isa = PBXBuildFile; fileRef = 6812B9B624A583CA0091C5EE /* OneHundredThousandPressure.txt */; };
+		6812B9B924A583CB0091C5EE /* TenThousandPressure.txt in Resources */ = {isa = PBXBuildFile; fileRef = 6812B9B724A583CA0091C5EE /* TenThousandPressure.txt */; };
+		6812B9BB24A583D30091C5EE /* basePressure.txt in Resources */ = {isa = PBXBuildFile; fileRef = 6812B9BA24A583D20091C5EE /* basePressure.txt */; };
+		6812B9BD24A59E920091C5EE /* LOGO.txt in Resources */ = {isa = PBXBuildFile; fileRef = 6812B9BC24A59E920091C5EE /* LOGO.txt */; };
 		68184AC224A38BBA007F266B /* millionPressure.txt in Resources */ = {isa = PBXBuildFile; fileRef = 68184AC124A38BBA007F266B /* millionPressure.txt */; };
 		68275F0A2489392F008DE2A9 /* PaintingliteSnapManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 68275F092489392F008DE2A9 /* PaintingliteSnapManager.m */; };
 		6846BC102484DD5E00887A5C /* PaintingliteTableOptionsSelectPQL.m in Sources */ = {isa = PBXBuildFile; fileRef = 6846BC0F2484DD5E00887A5C /* PaintingliteTableOptionsSelectPQL.m */; };
@@ -85,6 +89,10 @@
 		680969322481007A00048369 /* PaintingliteTableOptions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaintingliteTableOptions.m; sourceTree = "<group>"; };
 		680969472481F47B00048369 /* User.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = User.h; sourceTree = "<group>"; };
 		680969482481F47B00048369 /* User.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
+		6812B9B624A583CA0091C5EE /* OneHundredThousandPressure.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = OneHundredThousandPressure.txt; sourceTree = "<group>"; };
+		6812B9B724A583CA0091C5EE /* TenThousandPressure.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TenThousandPressure.txt; sourceTree = "<group>"; };
+		6812B9BA24A583D20091C5EE /* basePressure.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = basePressure.txt; sourceTree = "<group>"; };
+		6812B9BC24A59E920091C5EE /* LOGO.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LOGO.txt; sourceTree = "<group>"; };
 		68184AC124A38BBA007F266B /* millionPressure.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = millionPressure.txt; sourceTree = "<group>"; };
 		68275F082489392F008DE2A9 /* PaintingliteSnapManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaintingliteSnapManager.h; sourceTree = "<group>"; };
 		68275F092489392F008DE2A9 /* PaintingliteSnapManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaintingliteSnapManager.m; sourceTree = "<group>"; };
@@ -391,7 +399,11 @@
 				68EB381A249083FD00DFC0CA /* PaintingliteUUID.h */,
 				68EB381B249083FD00DFC0CA /* PaintingliteUUID.m */,
 				68EDCA852487A57700031B41 /* PaintingliteExecHeader.h */,
+				6812B9B624A583CA0091C5EE /* OneHundredThousandPressure.txt */,
+				6812B9B724A583CA0091C5EE /* TenThousandPressure.txt */,
 				68184AC124A38BBA007F266B /* millionPressure.txt */,
+				6812B9BA24A583D20091C5EE /* basePressure.txt */,
+				6812B9BC24A59E920091C5EE /* LOGO.txt */,
 			);
 			path = Paintinglite;
 			sourceTree = "<group>";
@@ -510,9 +522,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				68DE9931247C9B6C0078EDD5 /* LaunchScreen.storyboard in Resources */,
+				6812B9B824A583CB0091C5EE /* OneHundredThousandPressure.txt in Resources */,
 				68DE992E247C9B6C0078EDD5 /* Assets.xcassets in Resources */,
+				6812B9BB24A583D30091C5EE /* basePressure.txt in Resources */,
 				68184AC224A38BBA007F266B /* millionPressure.txt in Resources */,
 				68DE992C247C9B6A0078EDD5 /* Main.storyboard in Resources */,
+				6812B9B924A583CB0091C5EE /* TenThousandPressure.txt in Resources */,
+				6812B9BD24A59E920091C5EE /* LOGO.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

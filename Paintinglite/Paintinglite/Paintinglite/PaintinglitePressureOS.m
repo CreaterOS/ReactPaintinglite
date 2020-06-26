@@ -9,9 +9,12 @@
 #import "PaintinglitePressureOS.h"
 #import "PaintingliteTransaction.h"
 #import <mach/mach.h>
+#import <sys/utsname.h>
 
 #define PRESSURETABLE @"CREATE TABLE IF NOT EXISTS pressure(ID INTEGER primary key AUTOINCREMENT,name TEXT,age INTEGER,teacher TEXT,tage INTEGER,desc TEXT)"
 #define DROPPRESSURETABLE @"DROP TABLE pressure"
+
+#define SAVEROOT(PATH) [NSTemporaryDirectory() stringByAppendingPathComponent:PATH]
 
 @interface PaintinglitePressureOS()
 @property (nonatomic)sqlite3 *ppDb;
@@ -27,24 +30,135 @@
         
         /*
          准备四个文件
+         1万
+         10万
          100万
-         1000万
          */
-        
+    
         /* 获得四个文件的路径 */
         NSString *millionFilePath = [[NSBundle mainBundle] pathForResource:@"millionPressure" ofType:@"txt"];
-//        NSString *billionFilePath = [[NSBundle mainBundle] pathForResource:@"billionPressure" ofType:@"txt"];
+        NSString *oneHundredThousandFilePath = [[NSBundle mainBundle] pathForResource:@"OneHundredThousandPressure" ofType:@"txt"];
+        NSString *tenThousandFilePath = [[NSBundle mainBundle] pathForResource:@"TenThousandPressure" ofType:@"txt"];
         
         /* 获取四个文件的字符串 */
         NSString *millionStr = [self getStrWithFile:millionFilePath];
-//        NSString *billionStr = [self getStrWithFile:billionFilePath];
+        NSString *oneHundredThousandStr = [self getStrWithFile:oneHundredThousandFilePath];
+        NSString *tenThousandStr = [self getStrWithFile:tenThousandFilePath];
         
         /* 添加测试集合 */
-//        [_pressureArray addObject:billionStr];
         [_pressureArray addObject:millionStr];
+        [_pressureArray addObject:oneHundredThousandStr];
+        [_pressureArray addObject:tenThousandStr];
     }
     
     return _pressureArray;
+}
+
+#pragma mark - 获取手机型号
+- (NSString *)iphoneType {
+    
+    struct utsname systemInfo;
+    
+    uname(&systemInfo);
+    
+    NSString *platform = [NSString stringWithCString:systemInfo.machine encoding:NSASCIIStringEncoding];
+    
+    if ([platform isEqualToString:@"iPhone1,1"]) return @"iPhone 2G";
+    
+    if ([platform isEqualToString:@"iPhone1,2"]) return @"iPhone 3G";
+    
+    if ([platform isEqualToString:@"iPhone2,1"]) return @"iPhone 3GS";
+    
+    if ([platform isEqualToString:@"iPhone3,1"]) return @"iPhone 4";
+    
+    if ([platform isEqualToString:@"iPhone3,2"]) return @"iPhone 4";
+    
+    if ([platform isEqualToString:@"iPhone3,3"]) return @"iPhone 4";
+    
+    if ([platform isEqualToString:@"iPhone4,1"]) return @"iPhone 4S";
+    
+    if ([platform isEqualToString:@"iPhone5,1"]) return @"iPhone 5";
+    
+    if ([platform isEqualToString:@"iPhone5,2"]) return @"iPhone 5";
+    
+    if ([platform isEqualToString:@"iPhone5,3"]) return @"iPhone 5c";
+    
+    if ([platform isEqualToString:@"iPhone5,4"]) return @"iPhone 5c";
+    
+    if ([platform isEqualToString:@"iPhone6,1"]) return @"iPhone 5s";
+    
+    if ([platform isEqualToString:@"iPhone6,2"]) return @"iPhone 5s";
+    
+    if ([platform isEqualToString:@"iPhone7,1"]) return @"iPhone 6 Plus";
+    
+    if ([platform isEqualToString:@"iPhone7,2"]) return @"iPhone 6";
+    
+    if ([platform isEqualToString:@"iPhone8,1"]) return @"iPhone 6s";
+    
+    if ([platform isEqualToString:@"iPhone8,2"]) return @"iPhone 6s Plus";
+    
+    if ([platform isEqualToString:@"iPhone8,4"]) return @"iPhone SE";
+    
+    if ([platform isEqualToString:@"iPhone9,1"]) return @"iPhone 7";
+    
+    if ([platform isEqualToString:@"iPhone9,2"]) return @"iPhone 7 Plus";
+    
+    if ([platform isEqualToString:@"iPod1,1"]) return @"iPod Touch 1G";
+    
+    if ([platform isEqualToString:@"iPod2,1"]) return @"iPod Touch 2G";
+    
+    if ([platform isEqualToString:@"iPod3,1"]) return @"iPod Touch 3G";
+    
+    if ([platform isEqualToString:@"iPod4,1"]) return @"iPod Touch 4G";
+    
+    if ([platform isEqualToString:@"iPod5,1"]) return @"iPod Touch 5G";
+    
+    if ([platform isEqualToString:@"iPad1,1"]) return @"iPad 1G";
+    
+    if ([platform isEqualToString:@"iPad2,1"]) return @"iPad 2";
+    
+    if ([platform isEqualToString:@"iPad2,2"]) return @"iPad 2";
+    
+    if ([platform isEqualToString:@"iPad2,3"]) return @"iPad 2";
+    
+    if ([platform isEqualToString:@"iPad2,4"]) return @"iPad 2";
+    
+    if ([platform isEqualToString:@"iPad2,5"]) return @"iPad Mini 1G";
+    
+    if ([platform isEqualToString:@"iPad2,6"]) return @"iPad Mini 1G";
+    
+    if ([platform isEqualToString:@"iPad2,7"]) return @"iPad Mini 1G";
+    
+    if ([platform isEqualToString:@"iPad3,1"]) return @"iPad 3";
+    
+    if ([platform isEqualToString:@"iPad3,2"]) return @"iPad 3";
+    
+    if ([platform isEqualToString:@"iPad3,3"]) return @"iPad 3";
+    
+    if ([platform isEqualToString:@"iPad3,4"]) return @"iPad 4";
+    
+    if ([platform isEqualToString:@"iPad3,5"]) return @"iPad 4";
+    
+    if ([platform isEqualToString:@"iPad3,6"]) return @"iPad 4";
+    
+    if ([platform isEqualToString:@"iPad4,1"]) return @"iPad Air";
+    
+    if ([platform isEqualToString:@"iPad4,2"]) return @"iPad Air";
+    
+    if ([platform isEqualToString:@"iPad4,3"]) return @"iPad Air";
+    
+    if ([platform isEqualToString:@"iPad4,4"]) return @"iPad Mini 2G";
+    
+    if ([platform isEqualToString:@"iPad4,5"]) return @"iPad Mini 2G";
+    
+    if ([platform isEqualToString:@"iPad4,6"]) return @"iPad Mini 2G";
+    
+    if ([platform isEqualToString:@"i386"]) return @"iPhone Simulator";
+    
+    if ([platform isEqualToString:@"x86_64"]) return @"iPhone Simulator";
+    
+    return platform;
+    
 }
 
 #pragma mark - 内存计算
@@ -55,12 +169,10 @@
     kern_return_t kernelReturn = task_info(mach_task_self(), TASK_VM_INFO, (task_info_t) &vmInfo, &count);
     if(kernelReturn == KERN_SUCCESS) {
         memoryUsageInByte = (int64_t) vmInfo.phys_footprint;
-        int64_t mb = memoryUsageInByte / 1024 / 1024;
-        NSLog(@"APP占用内存: %lldMB", mb);
     } else {
         NSLog(@"Error with task_info(): %s", mach_error_string(kernelReturn));
     }
-    return memoryUsageInByte;
+    return memoryUsageInByte / 1024 / 1024;
 }
 
 #pragma mark - CPU计算
@@ -138,45 +250,109 @@ static PaintinglitePressureOS *_instance = nil;
 }
 
 #pragma mark - 效率测试
-- (void)paintingliteEfficiency:(void (^)(void))block{
+- (float)paintingliteEfficiency:(void (^)(void))block{
     if (block != nil) {
         NSDate* start = [NSDate date];
     
         /* 执行block */
         block();
         double deltaTime = [[NSDate date] timeIntervalSinceDate:start];
-        NSLog(@"程序段耗时:%.5fs", deltaTime);
+        
+        return deltaTime;
     }
+    
+    return 0.0f;
 }
 
 #pragma mark - 内存测试
-- (void)paintingliteMemoryUSE:(void (^)(void))block{
+- (int64_t)paintingliteMemoryUSE:(void (^)(void))block{
     if (block != nil) {
         /* 执行block */
         block();
-        [self memoryUsage];
+        return [self memoryUsage];
     }
+    
+    return 0;
 }
 
 #pragma mark - CPU测试
-- (void)paintingliteCPUUSAGE:(void (^)(void))block{
+- (float)paintingliteCPUUSAGE:(void (^)(void))block{
     if (block != nil) {
         /* 执行block */
         block();
-        NSLog(@"CPU消耗: %.2f百分比",[self cpu_usage]);
+        return [self cpu_usage];
     }
+    
+    return 0.0f;
 }
 
 #pragma mark - 压力测试
-- (void)paintinglitePressure:(void (^)(void))block{
+- (void)paintinglitePressure:(void (^)(void))block options:(NSString *__nonnull)options countIndex:(NSUInteger)countIndex{
     if (block != nil) {
-        NSDate* start = [NSDate date];
-        block();
-        double deltaTime = [[NSDate date] timeIntervalSinceDate:start];
-        NSLog(@"程序段耗时:%.5fs", deltaTime);
-        [self memoryUsage];
-        NSLog(@"CPU消耗: %.2f百分比",[self cpu_usage]);
+        [self savePressure:self.saveType options:options countIndex:countIndex efficiency:[self paintingliteEfficiency:^{
+            block();
+        }] memoryUsage:[self memoryUsage] cpuUsage:[self cpu_usage]];
     }
+}
+
+
+#pragma mark - 保存测试数据
+- (void)savePressure:(PaintinglitePressureOSSaveType)saveType options:(NSString *__nonnull)options countIndex:(NSUInteger)countIndex efficiency:(float)efficiency memoryUsage:(int64_t)memoryUsage cpuUsage:(float)cpuUsage{
+    
+    /* 文件管理者 */
+    NSFileManager *fileM = [NSFileManager defaultManager];
+    
+    NSArray<NSString *> *countArray = @[@"一万数据量 [10,000]",@"十万数据量 [100,000]",@"百万数据量 [1,000,000]"];
+
+    NSError *error = nil;
+    NSString *LOGOPATH = [[NSBundle mainBundle] pathForResource:@"LOGO" ofType:@"txt"];
+    NSString *textStart = [NSString stringWithFormat:@"Paintinglite Sqlite Pressure Report\n%@",[NSString stringWithContentsOfFile:LOGOPATH usedEncoding:nil error:&error]];
+    ;
+    
+    /* 设备型号 */
+    NSString *iphoneType = [self iphoneType];
+    
+    /* 当前系统版本 */
+    NSString *version = [NSString stringWithFormat:@"系统版本: %@",[[UIDevice currentDevice] systemVersion]];
+    
+    /* 耗时 */
+    NSString *efficiencyStr = [NSString stringWithFormat:@"程序段耗时:%.5fs",efficiency];
+    /* 内存 */
+    NSString *memoryUsageStr = [NSString stringWithFormat:@"APP占用内存: %lld",memoryUsage];
+    /* CPU */
+    NSString *cpuUsageStr = [NSString stringWithFormat:@"CPU消耗: %.2f百分比",cpuUsage];
+    
+    NSString *startStr = @"";
+    if (countIndex == 0 && [options isEqualToString:@"INSERT PRESSURE RESULT"]) {
+        
+        if ([fileM fileExistsAtPath:SAVEROOT(@"pressure_report.txt")]) {
+            [fileM removeItemAtPath:SAVEROOT(@"pressure_report.txt") error:&error];
+        }
+        
+        startStr = [NSString stringWithFormat:@"%@\n手机型号:%@\t系统版本:%@\n",textStart,iphoneType,version];
+    }
+    
+    NSString *pressureStr = [NSString stringWithFormat:@"\n测试数据量:%@\n%@_测试结果:\n(1)%@\n(2)%@\n(3)%@",countArray[countIndex],options,efficiencyStr,memoryUsageStr,cpuUsageStr];
+    
+    NSString *resStr = [NSString stringWithFormat:@"%@%@\n",startStr,pressureStr];
+    
+    if (saveType == PaintinglitePressureOSSaveTXT) {
+        /* 保存文本格式 */
+        if ([fileM fileExistsAtPath:SAVEROOT(@"pressure_report.txt")]) {
+            /* 存在 */
+            NSFileHandle *fileHandle = [NSFileHandle fileHandleForUpdatingAtPath:SAVEROOT(@"pressure_report.txt")];
+            /* 将节点跳到文件的末尾 */
+            [fileHandle seekToEndOfFile];
+            
+            [fileHandle writeData:[resStr dataUsingEncoding:NSUTF8StringEncoding]];
+        }else{
+            /* 不存在 */
+            [resStr writeToFile:SAVEROOT(@"pressure_report.txt") atomically:YES encoding:NSUTF8StringEncoding error:&error];
+        }
+    }else{
+        NSLog(@"%@",resStr);
+    }
+    
 }
 
 #pragma mark - 数据库压力测试
@@ -195,6 +371,7 @@ static PaintinglitePressureOS *_instance = nil;
     return false;
 }
 
+static int i = 0;
 - (void)Pressure{
     if ([self.pressureArray count] > 0) {
         @try {
@@ -208,20 +385,19 @@ static PaintinglitePressureOS *_instance = nil;
             
             /* 插入测试 */
             /* 插入数据库 */
-            NSLog(@"INSERT PRESSURE RESULT: ");
             [self paintinglitePressure:^{
                 sqlite3_exec(self.ppDb, [insertSQL UTF8String], 0, 0, 0);
-            }];
+            } options:@"INSERT PRESSURE RESULT" countIndex:i];
         
             /* 提交 */
             [PaintingliteTransaction commit:_ppDb];
-            
-            NSLog(@"SELECT PRESSURE RESULT: ");
+
             /* 查询测试 */
             [self paintinglitePressure:^{
                 sqlite3_stmt *stmt;
                 sqlite3_prepare_v2(self.ppDb, [@"SELECT * FROM pressure" UTF8String], -1, &stmt, nil);
-            }];
+            } options:@"SELECT PRESSURE RESULT" countIndex:i];
+            
             
             /* 删除数据最后的元素 */
             [self.pressureArray removeLastObject];
@@ -232,6 +408,7 @@ static PaintinglitePressureOS *_instance = nil;
             if (sqlite3_exec(_ppDb, [DROPPRESSURETABLE UTF8String], 0, 0, NULL) == SQLITE_OK) {
                 if (sqlite3_open([[[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@"PressureOS.db"] UTF8String],&_ppDb) == SQLITE_OK){
                     if(sqlite3_exec(_ppDb, [PRESSURETABLE UTF8String], 0, 0, NULL) == SQLITE_OK){
+                        i++;
                         /* 递归测试 */
                         [self Pressure];
                     }

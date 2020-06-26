@@ -39,19 +39,16 @@
 
 #pragma mark - 事务
 + (void)begainPaintingliteTransaction:(sqlite3 *)ppDb{
-    NSLog(@"开起事务...");
     sqlite3_exec(ppDb, [Paintinglite_BEGIN_TRANSACTION UTF8String], 0, 0, NULL);
 }
 
 #pragma mark - 提交
 + (void)commit:(sqlite3 *)ppDb{
-    NSLog(@"提交数据...");
     sqlite3_exec(ppDb, [Paintinglite_COMMIT_TRANSACTION UTF8String], 0, 0, NULL);
 }
 
 #pragma mark - 回滚
 + (void)rollback:(sqlite3 *)ppDb{
-    NSLog(@"回滚数据...");
     sqlite3_exec(ppDb, [Paintinglite_ROLLBACK_TRANSACTION UTF8String], 0, 0, NULL);
 }
 

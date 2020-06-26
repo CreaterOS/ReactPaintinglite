@@ -180,12 +180,13 @@
 //        }
 //    }];
     
-    [self.pressureOS paintinglitePressure:^{
-        for (NSUInteger i = 0; i < 1000; i++) {
-            NSLog(@"paintingliteEfficiency...");
-        }
-    }];
-    
+//    [self.pressureOS paintinglitePressure:^{
+//        for (NSUInteger i = 0; i < 1000; i++) {
+//        }
+//    }];
+
+    [self.pressureOS setSaveType:PaintinglitePressureOSSaveTXT];
+    [self.pressureOS paintingliteSqlitePressure];
 }
 
 #pragma mark - 打开数据库 (运行正常)
