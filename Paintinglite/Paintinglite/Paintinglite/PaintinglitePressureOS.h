@@ -22,7 +22,6 @@
 
 typedef NS_ENUM(NSUInteger, PaintinglitePressureOSSaveType) {
     PaintinglitePressureOSSaveDefault,
-    PaintinglitePressureOSSaveHTML,
     PaintinglitePressureOSSaveTXT
 };
 

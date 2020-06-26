@@ -349,10 +349,7 @@ static PaintinglitePressureOS *_instance = nil;
             /* 不存在 */
             [resStr writeToFile:SAVEROOT(@"pressure_report.txt") atomically:YES encoding:NSUTF8StringEncoding error:&error];
         }
-    }else{
-        NSLog(@"%@",resStr);
     }
-    
 }
 
 #pragma mark - 数据库压力测试
