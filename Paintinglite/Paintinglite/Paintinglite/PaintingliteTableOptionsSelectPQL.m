@@ -78,11 +78,11 @@ static PaintingliteTableOptionsSelectPQL *_instance = nil;
 
 - (Boolean)execQueryPQL:(sqlite3 *)ppDb pql:(NSString *)pql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull, NSMutableArray<id> * _Nonnull))completeHandler{
     //PQL需要转换为sql语句
-    //FROM user
+    //FROM User
     NSString *objName = [[self subStringISExistsTable:pql] lowercaseString];
-    
+    objName = [[[objName substringWithRange:NSMakeRange(0, 1)] uppercaseString] stringByAppendingString:[objName substringFromIndex:1]];
     id obj = [self getObj:objName];
-    
+
     Boolean success = false;
     
     //带有条件的查询需要追加条件
@@ -92,8 +92,9 @@ static PaintingliteTableOptionsSelectPQL *_instance = nil;
     //SELECT * FROM user ...
     
     NSString *condatition = ([pql componentsSeparatedByString:objName][1].length != 0) ? [pql componentsSeparatedByString:objName][1] : @"" ;
-    
+    NSLog(@"%@",condatition);
     if (objName != nil) {
+        NSLog(@"%@",[NSString stringWithFormat:@"SELECT * FROM %@%@",objName,condatition]);
         success = [self execQuerySQL:ppDb sql:[NSString stringWithFormat:@"SELECT * FROM %@%@",objName,condatition] obj:obj completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
             if (success) {
                 if (completeHandler != nil) {

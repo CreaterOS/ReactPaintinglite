@@ -130,9 +130,9 @@
 //    [self deleteValue];
 //    [self updateValue];
     
-    Student *stu = [[Student alloc] init];
-    stu.name = @"CreaterOS";
-    [self.sessionM updateWithObj:stu condition:@"age = 21" completeHandler:nil];
+//    Student *stu = [[Student alloc] init];
+//    stu.name = @"CreaterOS";
+//    [self.sessionM updateWithObj:stu condition:@"age = 21" completeHandler:nil];
     
 //    [self updateValueObj];
 //    NSLog(@"%@",[PaintingliteConfiguration getAutoVacuum:[self.sessionM getSqlite3]]);
@@ -151,9 +151,83 @@
     //查询SQL
 //    @autoreleasepool {
 //        [self execQuery];
+//    [self.sessionM execQuerySQL:@"SELECT * FROM student" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<NSDictionary *> * _Nonnull resArray) {
+//        if (success) {
+//            for (NSDictionary *dict in resArray) {
+//                NSLog(@"%@",dict);
+//            }
+//        }
+//    }];
+    
+//    Student *stu = [[Student alloc] init];
+//    [self.sessionM execQuerySQL:@"SELECT * FROM student" obj:stu completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
+//        if (success) {
+//            for (Student *stu in resObjList) {
+//                NSLog(@"stu.name = %@ and stu.age = %@",stu.name,stu.age);
+//            }
+//        }
+//    }];
+    
 //        [self execQueryPrepare];
+    
+//    [self.sessionM execQuerySQLPrepareStatementSql:@"SELECT * FROM student WHERE name = ?"];
+//    [self.sessionM setPrepareStatementPQLParameter:0 paramter:@"CreaterOS"];
+//    NSLog(@"%@",[self.sessionM execPrepareStatementSql]);
+    
 //        [self execQueryLike];
+//    [self.sessionM execLikeQuerySQLWithTableName:@"student" field:@"name" like:@"%t%" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray) {
+//        if (success) {
+//            for (NSDictionary *dict in resArray) {
+//                NSLog(@"%@",dict);
+//            }
+//        }
+//    }];
+    
+//    Student *stu = [[Student alloc] init];
+//    [self.sessionM execLikeQuerySQLWithField:@"name" like:@"%t%" obj:stu completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
+//        if (success) {
+//            for (NSDictionary *dict in resArray) {
+//                NSLog(@"%@",dict);
+//            }
+//        }
+//    }];
+    
 //        [self execQueryOrderBy];
+    
+//    Student *student = [[Student alloc] init];
+//    [self.sessionM execOrderByQuerySQLWithOrderbyContext:@"name" orderStyle:PaintingliteOrderByDESC obj:student completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
+//        if (success) {
+//            for (Student *stu in resObjList) {
+//                NSLog(@"stu.name = %@ and stu.age = %@",stu.name,stu.age);
+//            }
+//        }
+//    }];
+    
+//    [self.sessionM execOrderByQuerySQLWithTableName:@"student" orderbyContext:@"name" orderStyle:PaintingliteOrderByASC completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<NSDictionary *> * _Nonnull resArray) {
+//        if (success) {
+//            for (NSDictionary *dict in resArray) {
+//                NSLog(@"%@",dict);
+//            }
+//        }
+//    }];
+    
+//    [self.sessionM execLimitQuerySQLWithTableName:@"student" limitStart:0 limitEnd:1 completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray) {
+//        if (success) {
+//            for (NSDictionary *dict in resArray) {
+//                NSLog(@"%@",dict);
+//            }
+//        }
+//    }];
+    
+//    Student *stu = [[Student alloc] init];
+//    [self.sessionM execLimitQuerySQLWithLimitStart:0 limitEnd:1 obj:stu completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
+//        if (success) {
+//            for (Student *stu in resObjList) {
+//                NSLog(@"stu.name = %@ and stu.age = %@",stu.name,stu.age);
+//            }
+//        }
+//    }];
+    
 //    }
     
 //    [self execQueryPQL];
@@ -191,6 +265,44 @@
 //    [self.spliteTable insertWithSpliteFile:[self.sessionM getSqlite3] tableName:@"eletest" basePoint:2 insertSQL:@"insert into eletest(name,age,teacher,tage,desc) VALUES ('Paintinglite','19','Paintinglite','19','Paintinglite')"];
 //    [self.spliteTable deleteWithSpliteFile:[self.sessionM getSqlite3] tableName:@"eletest" basePoint:2 deleteSQL:@"DELETE FROM eletest WHERE age = 19"];
     
+    
+//    [self.sessionM execPQL:@"FROM Student WHERE name = 'CreaterOS'" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
+//        if (success) {
+//            for (Student *stu in resObjList) {
+//                NSLog(@"stu.name = %@ and stu.age = %@",stu.age,stu.age);
+//            }
+//        }
+//    }];
+    
+//    [self.sessionM execPQL:@"FROM Student LIMIT 0,1" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
+//        if (success) {
+//            for (Student *stu in resObjList) {
+//                NSLog(@"stu.name = %@ and stu.age = %@",stu.name,stu.age);
+//            }
+//        }
+//    }];
+    
+//    [self.sessionM execPQL:@"FROM Student ORDER BY name ASC" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
+//            if (success) {
+//                for (Student *stu in resObjList) {
+//                    NSLog(@"stu.name = %@ and stu.age = %@",stu.name,stu.age);
+//                }
+//            }
+//    }];
+
+//    [self.sessionM execPQL:@"FROM Student WHERE name LIKE '%t%'" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
+//        if (success) {
+//            for (Student *stu in resObjList) {
+//                NSLog(@"stu.name = %@ and stu.age = %@",stu.name,stu.age);
+//            }
+//        }
+//    }];
+    
+    [self.sessionM execQueryPQLPrepareStatementPQL:@"FROM Student WHERE name = ?"];
+    [self.sessionM setPrepareStatementPQLParameter:@[@"CreaterOS"]];
+    NSLog(@"%@",[self.sessionM execPrepareStatementPQL]);
+    
+//
 //    [self.pressureOS paintingliteEfficiency:^{
 //        for (NSUInteger i = 0; i < 1000; i++) {
 //            NSLog(@"paintingliteEfficiency...");
