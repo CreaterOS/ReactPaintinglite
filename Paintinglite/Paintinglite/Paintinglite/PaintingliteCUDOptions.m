@@ -153,7 +153,7 @@ static PaintingliteCUDOptions *_instance = nil;
         }
         
         sql = [sql stringByAppendingString:@") VALUES("];
-        NSLog(@"%@",sql);
+        
         //获得对应字段的对象的值
         NSMutableDictionary *propertyValue = [PaintingliteObjRuntimeProperty getObjPropertyValue:obj];
         NSUInteger i = 0;
@@ -176,7 +176,6 @@ static PaintingliteCUDOptions *_instance = nil;
 
         sql = [sql stringByAppendingString:@");"];
     
-        NSLog(@"%@",sql);
         //增加数据
         success = [self.exec sqlite3Exec:ppDb sql:sql];
 

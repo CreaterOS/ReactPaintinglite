@@ -36,6 +36,7 @@
 		689F24C0248CD1B100A9DC3B /* SSZipArchive.m in Sources */ = {isa = PBXBuildFile; fileRef = 689F24B0248CD1B000A9DC3B /* SSZipArchive.m */; };
 		68A1F058247F9CBF0091EAFB /* PaintingliteExec.m in Sources */ = {isa = PBXBuildFile; fileRef = 68A1F057247F9CBF0091EAFB /* PaintingliteExec.m */; };
 		68B84AA02497B9410021CFC2 /* PaintingliteSplitTable.m in Sources */ = {isa = PBXBuildFile; fileRef = 68B84A9F2497B9410021CFC2 /* PaintingliteSplitTable.m */; };
+		68BD0E0324A6F9DB006EFB51 /* Student.m in Sources */ = {isa = PBXBuildFile; fileRef = 68BD0E0224A6F9DB006EFB51 /* Student.m */; };
 		68C2F0A8248B8ECB007ADEB0 /* PaintingliteBackUpManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 68C2F0A7248B8ECB007ADEB0 /* PaintingliteBackUpManager.m */; };
 		68CE9DBF2483505E00B96DC3 /* PaintingliteTransaction.m in Sources */ = {isa = PBXBuildFile; fileRef = 68CE9DBE2483505E00B96DC3 /* PaintingliteTransaction.m */; };
 		68CF58A42484D36C0035F188 /* PaintingliteTableOptionsSelect.m in Sources */ = {isa = PBXBuildFile; fileRef = 68CF58A32484D36C0035F188 /* PaintingliteTableOptionsSelect.m */; };
@@ -142,6 +143,8 @@
 		68A1F057247F9CBF0091EAFB /* PaintingliteExec.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaintingliteExec.m; sourceTree = "<group>"; };
 		68B84A9E2497B9410021CFC2 /* PaintingliteSplitTable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaintingliteSplitTable.h; sourceTree = "<group>"; };
 		68B84A9F2497B9410021CFC2 /* PaintingliteSplitTable.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaintingliteSplitTable.m; sourceTree = "<group>"; };
+		68BD0E0124A6F9DB006EFB51 /* Student.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Student.h; sourceTree = "<group>"; };
+		68BD0E0224A6F9DB006EFB51 /* Student.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Student.m; sourceTree = "<group>"; };
 		68C2F0A6248B8ECB007ADEB0 /* PaintingliteBackUpManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaintingliteBackUpManager.h; sourceTree = "<group>"; };
 		68C2F0A7248B8ECB007ADEB0 /* PaintingliteBackUpManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaintingliteBackUpManager.m; sourceTree = "<group>"; };
 		68CE9DBD2483505E00B96DC3 /* PaintingliteTransaction.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaintingliteTransaction.h; sourceTree = "<group>"; };
@@ -311,6 +314,8 @@
 				68DE9925247C9B6A0078EDD5 /* AppDelegate.m */,
 				68DE9927247C9B6A0078EDD5 /* ViewController.h */,
 				68DE9928247C9B6A0078EDD5 /* ViewController.m */,
+				68BD0E0124A6F9DB006EFB51 /* Student.h */,
+				68BD0E0224A6F9DB006EFB51 /* Student.m */,
 				68D4E3772480E57200053E57 /* Mouse.h */,
 				68D4E3782480E57200053E57 /* Mouse.m */,
 				68D4E37A2480F55300053E57 /* EleTest.h */,
@@ -578,6 +583,7 @@
 				689F24BC248CD1B100A9DC3B /* prng.m in Sources */,
 				689E067A247EACD000D6DF95 /* PaintingliteDataBaseOptions.m in Sources */,
 				68D5030724A1E9E0004EC32D /* PaintinglitePressureOS.m in Sources */,
+				68BD0E0324A6F9DB006EFB51 /* Student.m in Sources */,
 				68D4E37C2480F55300053E57 /* EleTest.m in Sources */,
 				689F24BE248CD1B100A9DC3B /* aestab.m in Sources */,
 				689F24B4248CD1B100A9DC3B /* zip.m in Sources */,

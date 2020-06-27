@@ -22,6 +22,7 @@
 #import "Paintinglite/PaintinglitePressureOS.h"
 #import "EleTest.h"
 #import "User.h"
+#import "Student.h"
 
 @interface ViewController ()
 @property (nonatomic,strong)PaintingliteSessionManager *sessionM; //会语管理者
@@ -119,8 +120,20 @@
 //    [self createTable];
 //     NSLog(@"%@",[self.exec getCurrentTableNameWithJSON]);
 //    [self insertValue];
+//    [self.sessionM insert:@"INSERT INTO student(name,age) VALUES('CreaterOS',21),('Painting',19)"];
+    
+//    Student *stu = [[Student alloc] init];
+//    stu.name = @"ReynBryant";
+//    stu.age = [NSNumber numberWithInteger:21];
+//    [self.sessionM insertWithObj:stu completeHandler:nil];
+    
 //    [self deleteValue];
 //    [self updateValue];
+    
+    Student *stu = [[Student alloc] init];
+    stu.name = @"CreaterOS";
+    [self.sessionM updateWithObj:stu condition:@"age = 21" completeHandler:nil];
+    
 //    [self updateValueObj];
 //    NSLog(@"%@",[PaintingliteConfiguration getAutoVacuum:[self.sessionM getSqlite3]]);
 //    [PaintingliteConfiguration setCacheSize:[self.sessionM getSqlite3] size:8000];
@@ -407,7 +420,7 @@
 - (void)updateValue{
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
     NSLog(@"%f",startTime);
-    [self.sessionM update:@"UPDATE eletest SET name = 'Painting'"];
+    [self.sessionM update:@"UPDATE student SET name = 'Painting' WHERE name = 'ReynBryant'"];
     CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent();
     NSLog(@"%f",endTime);
 }
