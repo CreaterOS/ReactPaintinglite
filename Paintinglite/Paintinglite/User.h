@@ -14,10 +14,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic,strong)NSString *name;
 @property (nonatomic,strong)NSNumber *age;
-@property (nonatomic,strong)NSString *tempStr;
-@property (nonatomic,strong)NSString *tempStr1;
-@property (nonatomic,strong)NSString *tempStr2;
-@property (nonatomic,strong)NSString *tempStr3;
 @property (nonatomic,strong)NSMutableArray<id> *mutableArray;
 
 @end

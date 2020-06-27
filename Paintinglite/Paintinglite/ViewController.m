@@ -78,6 +78,8 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
     
+//    [self openDB];
+    
     //创建数据库
     [self.sessionM openSqlite:@"sqlite" completeHandler:^(NSString * _Nonnull filePath, PaintingliteSessionError * _Nonnull error, Boolean success) {
         if (success) {
@@ -85,16 +87,30 @@
         }
     }];
     
+//    [self.sessionM releaseSqlite];
+    
     //获得数据库版本信息
     [self sqliteVersion];
     
     
     //创建表
 //    [self execTableForOptCreate];
+
+//    [self.sessionM createTableForName:@"student" content:@"name TEXT,age INTEGER"];
+    
+//    User *user = [[User alloc] init];
+//    [self.sessionM createTableForObj:user createStyle:PaintingliteDataBaseOptionsUUID];
+    
     //修改表
 //    [self alterTable];
+//    User *user = [[User alloc] init];
+//    [self.sessionM alterTableForObj:user];
+    
+    
     //删除表
 //    [self execTableForOptDropTable];
+//    User *user = [[User alloc] init];
+//    [self.sessionM dropTableForObj:user];
     
 //    if ([PaintingliteConfiguration setSynchronous:[self.sessionM getSqlite3] mode:PaintingliteSynchronousOFF]) {
 //        NSLog(@"%@",[PaintingliteConfiguration getSynchronous:[self.sessionM getSqlite3]]);
@@ -185,8 +201,8 @@
 //        }
 //    }];
 
-    [self.pressureOS setSaveType:PaintinglitePressureOSSaveTXT];
-    [self.pressureOS paintingliteSqlitePressure];
+//    [self.pressureOS setSaveType:PaintinglitePressureOSSaveTXT];
+//    [self.pressureOS paintingliteSqlitePressure];
 }
 
 #pragma mark - 打开数据库 (运行正常)
@@ -268,7 +284,8 @@
 #pragma mark - 修改表名 (DEBUG: [logging] near ")": syntax error)
 #pragma mark - 方法一
 - (void)alterTable{
-    [self.sessionM alterTableForName:@"cart" newName:@"carts"];
+//    [self.sessionM alterTableForName:@"cart" newName:@"carts"];
+    [self.sessionM alterTableAddColumnWithTableName:@"carts" columnName:@"newColumn" columnType:@"TEXT"];
 }
 
 #pragma mark - 方法二
@@ -330,7 +347,7 @@
 
 #pragma mark - 方法三
 - (void)execTableForOptDropTable{
-    [self.sessionM execTableOptForSQL:@"DROP TABLE teacher" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
+    [self.sessionM execTableOptForSQL:@"DROP TABLE carts" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
         if (success) {
             NSLog(@"删除表成功...");
         }
