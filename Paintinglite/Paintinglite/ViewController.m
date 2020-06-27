@@ -17,6 +17,7 @@
 #import "Paintinglite/PaintingliteAggregateFunc.h"
 #import "Paintinglite/PaintingliteSplitTable.h"
 #import "Paintinglite/PaintingliteConfiguration.h"
+#import "Paintinglite/PaintingliteBackUpManager.h"
 #import "Paintinglite/PaintingliteTransaction.h"
 #import "Paintinglite/PaintingliteExec.h"
 #import "Paintinglite/PaintinglitePressureOS.h"
@@ -28,6 +29,7 @@
 @property (nonatomic,strong)PaintingliteSessionManager *sessionM; //会语管理者
 @property (nonatomic,strong)PaintingliteAggregateFunc *aggreageteF; //聚合函数
 @property (nonatomic,strong)PaintingliteSplitTable *spliteTable; //分解数据库
+@property (nonatomic,strong)PaintingliteBackUpManager *backupM; //备份管理者
 @property (nonatomic,strong)PaintingliteExec *exec; //执行语句
 @property (nonatomic,strong)PaintinglitePressureOS *pressureOS; //压力测试系统
 @property (nonatomic)sqlite3_stmt *stmt;
@@ -66,6 +68,14 @@
     }
     
     return _spliteTable;
+}
+
+- (PaintingliteBackUpManager *)backupM{
+    if (!_backupM) {
+        _backupM = [PaintingliteBackUpManager sharePaintingliteBackUpManager];
+    }
+    
+    return _backupM;
 }
 
 - (PaintinglitePressureOS *)pressureOS{
@@ -298,9 +308,15 @@
 //        }
 //    }];
     
-    [self.sessionM execQueryPQLPrepareStatementPQL:@"FROM Student WHERE name = ?"];
-    [self.sessionM setPrepareStatementPQLParameter:@[@"CreaterOS"]];
-    NSLog(@"%@",[self.sessionM execPrepareStatementPQL]);
+//    [self.sessionM execQueryPQLPrepareStatementPQL:@"FROM Student WHERE name = ?"];
+//    [self.sessionM setPrepareStatementPQLParameter:@[@"CreaterOS"]];
+//    NSLog(@"%@",[self.sessionM execPrepareStatementPQL]);
+    
+//    [self.sessionM readLogFile:@"sqlite"];
+    
+    [self.backupM backupDataBaseWithName:[self.sessionM getSqlite3] sqliteName:@"sqlite" type:PaintingliteBackUpMySql completeHandler:^(NSString * _Nonnull saveFilePath) {
+        NSLog(@"%@",saveFilePath);
+    }];
     
 //
 //    [self.pressureOS paintingliteEfficiency:^{
