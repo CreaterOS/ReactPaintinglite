@@ -1,9 +1,8 @@
 # Paintinglite
-![屏幕快照 2020-06-27 上午9.03.38](/Users/bryantreyn/Desktop/屏幕快照 2020-06-27 上午9.03.38.png)
 
 ### 安装
 
-**直接通过GitHub下载到本地，将Paintinglite拖到项目中，即可体验Paintinglite。**
+**直接通过GitHub下载到本地，将Paintinglite拖到项目中，即可体验Paintinglite。(需要在项目中添加Sqlite3支持的libsqlite3.tbd或libsqlite3.0.tbd)**
 
 ## 简介
 
@@ -55,7 +54,6 @@ Paintinglite支持对象映射,对sqlite3进行了非常轻量级的对象封装
 [self.sessionM openSqlite:@"sqlite04.text"];
 [self.sessionM openSqlite:@"sqlite05.."];
 ```
-![屏幕快照 2020-06-27 上午9.34.08](/Users/bryantreyn/Desktop/屏幕快照 2020-06-27 上午9.34.08.png)
 
 **获得创建数据库的绝对路径。**
 
@@ -104,13 +102,11 @@ Paintinglite支持对象映射,对sqlite3进行了非常轻量级的对象封装
 
 3. 对象创建
 
-   ![屏幕快照 2020-06-27 上午9.45.36](/Users/bryantreyn/Desktop/屏幕快照 2020-06-27 上午9.45.36.png)
 
 ```objective-c
 User *user = [[User alloc] init];
 [self.sessionM createTableForObj:user createStyle:PaintingliteDataBaseOptionsUUID];
 ```
-![屏幕快照 2020-06-27 上午9.45.14](/Users/bryantreyn/Desktop/屏幕快照 2020-06-27 上午9.45.14.png)
 
 对象创建可以自动生成主键:
 
@@ -119,7 +115,6 @@ User *user = [[User alloc] init];
 | UUID | 字符串 |
 | ID   | 数值   |
 
-![屏幕快照 2020-06-27 上午9.45.22](/Users/bryantreyn/Desktop/屏幕快照 2020-06-27 上午9.45.22.png)
 
 ## 4.更新表
 
@@ -138,7 +133,6 @@ User *user = [[User alloc] init];
 
 2. 表名更新 [ 表名称 | 表字段 ]
 
-   ![屏幕快照 2020-06-27 上午9.52.58](/Users/bryantreyn/Desktop/屏幕快照 2020-06-27 上午9.52.58.png)![屏幕快照 2020-06-27 上午9.50.42](/Users/bryantreyn/Desktop/屏幕快照 2020-06-27 上午9.50.42.png)
 ```objective-c
 [self.sessionM alterTableForName:@"cart" newName:@"carts"];
 [self.sessionM alterTableAddColumnWithTableName:@"carts" columnName:@"newColumn" columnType:@"TEXT"];
@@ -166,7 +160,6 @@ NS_ASSUME_NONNULL_END
 User *user = [[User alloc] init];
 [self.sessionM alterTableForObj:user];
 ```
-![屏幕快照 2020-06-27 上午10.08.01](/Users/bryantreyn/Desktop/屏幕快照 2020-06-27 上午10.08.01.png)
 
 ### 5.删除操作
 
@@ -196,11 +189,6 @@ User *user = [[User alloc] init];
 User *user = [[User alloc] init];
 [self.sessionM dropTableForObj:user];
 ```
-
-![屏幕快照 2020-06-27 上午10.13.33](/Users/bryantreyn/Desktop/屏幕快照 2020-06-27 上午10.13.33.png)
-
-
-
 # 表操作
 
 ### 1.查询
@@ -417,17 +405,7 @@ stu.age = [NSNumber numberWithInteger:21];
 [self.sessionM insertWithObj:stu completeHandler:nil];
 ```
 
-![屏幕快照 2020-06-27 上午11.54.07](/Users/bryantreyn/Desktop/屏幕快照 2020-06-27 上午11.54.07.png)
-
 > 对于庞大数据量,Paintinglit仍能够表现出良好的效率，通过一次性读入1千6百万条数据只耗时6ms-7ms。
-
-![屏幕快照 2020-06-12 下午5.45.26](/Users/bryantreyn/Desktop/Paintinglite/PaintinglitePicture/FULL/FULL_INSERT/屏幕快照 2020-06-12 下午5.45.26.png)
-
-![屏幕快照 2020-06-12 下午5.46.11](/Users/bryantreyn/Desktop/Paintinglite/PaintinglitePicture/FULL/FULL_INSERT/屏幕快照 2020-06-12 下午5.46.11.png)
-
-![屏幕快照 2020-06-12 下午5.45.58](/Users/bryantreyn/Desktop/Paintinglite/PaintinglitePicture/FULL/FULL_INSERT/屏幕快照 2020-06-12 下午5.45.58.png)
-
-![屏幕快照 2020-06-12 下午6.12.17](/Users/bryantreyn/Desktop/Paintinglite/PaintinglitePicture/FULL/FULL_INSERT/屏幕快照 2020-06-12 下午6.12.17.png)
 
 ### 3.更新数据
 
@@ -442,8 +420,6 @@ stu.age = [NSNumber numberWithInteger:21];
 [self.sessionM update:@"UPDATE student SET name = 'Painting' WHERE name = 'ReynBryant'"];
 ```
 
-![屏幕快照 2020-06-27 上午11.59.29](/Users/bryantreyn/Desktop/屏幕快照 2020-06-27 上午11.59.29.png)
-
 2. 对象更新
 
    ```objective-c
@@ -457,8 +433,6 @@ stu.age = [NSNumber numberWithInteger:21];
 > User *user = [[User alloc] init];
 > user.name = @"CreaterOS";
 > user.age = 21;
-
-![屏幕快照 2020-06-27 下午12.02.28](/Users/bryantreyn/Desktop/屏幕快照 2020-06-27 下午12.02.28.png)
 
 ### 4.删除数据
 
