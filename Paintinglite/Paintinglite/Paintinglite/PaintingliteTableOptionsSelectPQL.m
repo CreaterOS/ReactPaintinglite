@@ -90,7 +90,9 @@ static PaintingliteTableOptionsSelectPQL *_instance = nil;
     //SELECT * FROM user ORDER BY name DESC
     //SELECT * FROM user LIMIT 1,2
     //SELECT * FROM user ...
-    
+    if (objName == nil) {
+        return false;
+    }
     NSString *condatition = ([pql componentsSeparatedByString:objName][1].length != 0) ? [pql componentsSeparatedByString:objName][1] : @"" ;
     NSLog(@"%@",condatition);
     if (objName != nil) {
@@ -109,6 +111,9 @@ static PaintingliteTableOptionsSelectPQL *_instance = nil;
 
 #pragma mark - 获得对象
 - (id)getObj:(NSString *)objName{
+    if (objName == nil) {
+        return NULL;
+    }
     return [[NSClassFromString(objName) alloc] init];
 }
 

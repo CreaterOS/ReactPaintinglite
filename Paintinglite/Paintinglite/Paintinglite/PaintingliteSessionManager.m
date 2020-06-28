@@ -138,49 +138,6 @@ static PaintingliteSessionManager *_instance = nil;
     return success;
 }
 
-#pragma mark - 打开数据库
-#warning - 实现完成加密操作,但是未完成
-//- (Boolean)openSqliteWithSecurity:(NSString *)fileName completeHandler:(void (^)(NSString * _Nonnull, PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
-//
-//    Boolean success = false;
-//    NSString *filePath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:fileName];
-//
-//    //转化NSData
-//    [PaintingliteSecurity dataSplite:filePath];
-//
-//    //将两个压缩包转换成NSData
-//    NSString *zipRootPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
-//    NSMutableData *data_Split_Start = [NSMutableData dataWithData:[PaintingliteSecurity SecurityDecodeBase64:[NSData dataWithContentsOfFile:[zipRootPath stringByAppendingPathComponent:@"DataBase1.zip"]]]];
-//    NSMutableData *data_Split_End = [NSMutableData dataWithData:[PaintingliteSecurity SecurityDecodeBase64:[NSData dataWithContentsOfFile:[zipRootPath stringByAppendingPathComponent:@"DataBase2.zip"]]]];
-//
-//    [data_Split_Start appendData:data_Split_End];
-//
-//    NSFileManager *fileManager = [NSFileManager defaultManager];
-//    NSError *error = nil;
-//
-//    //根据二进制转换为zip文件，然后解压获得数据库文件
-//    [data_Split_Start writeToFile:[zipRootPath stringByAppendingPathComponent:@"DB.zip"] atomically:YES];
-//
-//    //解压文件
-//    if ([SSZipArchive unzipFileAtPath:[zipRootPath stringByAppendingPathComponent:@"DB.zip"] toDestination:[zipRootPath stringByAppendingPathComponent:@"serurityDB"]]){
-//        //解压成功
-//        [fileManager removeItemAtPath:[zipRootPath stringByAppendingPathComponent:@"DB.zip"] error:&error];
-//        //拷贝
-//        [fileManager copyItemAtPath:[zipRootPath stringByAppendingPathComponent:@"serurityDB/serurityDB.db"] toPath:[zipRootPath stringByAppendingPathComponent:@"serurityDB.db"] error:&error];
-//        [fileManager removeItemAtPath:[zipRootPath stringByAppendingPathComponent:@"serurityDB"] error:&error];
-//        success = [self openSqlite:@"serurityDB.db" completeHandler:nil];
-//    }
-//
-//    @synchronized (self) {
-//        if (completeHandler != nil) {
-//            completeHandler(zipRootPath,self.error,success);
-//        }
-//    }
-//
-//    return success;
-//}
-
-
 #pragma mark - 获得数据库
 - (sqlite3 *)getSqlite3{
     return self.ppDb;

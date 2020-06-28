@@ -21,7 +21,6 @@
 @property (nonatomic,strong)PaintingliteExec *exec; //执行语句
 @property (nonatomic,strong)PaintingliteSessionManager *sessionManager; //会话管理者
 @property (nonatomic,strong)PaintingliteLog *log; //日志
-@property (nonatomic,strong)NSArray *tables; //含有的表名称
 @property (nonatomic,strong)PaintingliteSnapManager *snapManager; //快照管理者
 @end
 
@@ -68,14 +67,6 @@
     return _snapManager;
 }
 
-- (NSArray *)tables{
-    if (!_tables) {
-        _tables = [self.exec getCurrentTableNameWithJSON];
-    }
-    
-    return _tables;
-}
-
 #pragma mark - 单例模式
 static PaintingliteCUDOptions *_instance = nil;
 + (instancetype)sharePaintingliteCUDOptions{
@@ -106,7 +97,7 @@ static PaintingliteCUDOptions *_instance = nil;
     });
     
     //判断表是否存在，判断表的字段
-    if (![self.tables containsObject:tableName]){
+    if (![[self.exec getCurrentTableNameWithJSON] containsObject:tableName]){
         [PaintingliteException PaintingliteException:@"表名不存在" reason:@"数据库找不到表名,无法执行操作"];
     }
 
