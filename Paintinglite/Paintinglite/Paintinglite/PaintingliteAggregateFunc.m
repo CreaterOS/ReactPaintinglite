@@ -68,7 +68,7 @@ static PaintingliteAggregateFunc *_instance = nil;
 - (NSString *__nonnull)aggregateSQL:(PaintingliteAggregateType)type field:(NSString *__nonnull)field tableName:(NSString *__nonnull)tableName condatation:(NSString *__nonnull)condatation{
     
     //判断表是否存在
-    if (![[self.exec getCurrentTableNameWithJSON] containsObject:[tableName lowercaseString]]) {
+    if (![[self.exec getCurrentTableNameWithCache] containsObject:[tableName lowercaseString]]) {
         //抛出异常
         [PaintingliteException PaintingliteException:@"表名不存在" reason:@"数据库中找不到表名,无法查询"];
     }

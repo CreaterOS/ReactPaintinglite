@@ -21,6 +21,12 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface PaintingliteSessionManager : NSObject
+/* 判读是否打开数据库 */
+@property (nonatomic)Boolean isOpen;
+/* 数据库路径 */
+@property (nonatomic,copy)NSString *databasePath;
+/* 数据库大小 */
+@property (nonatomic,assign)double totalSize;
 
 /* 单例模式 */
 + (instancetype)sharePaintingliteSessionManager;
@@ -36,16 +42,14 @@ NS_ASSUME_NONNULL_BEGIN
  * 数据库的名称
  * 连接完成的Block操作
  */
-
 - (Boolean)openSqlite:(NSString *)fileName completeHandler:(void(^ __nullable)(NSString *filePath,PaintingliteSessionError *error,Boolean success))completeHandler;
 
 /**
- * 打开数据库
- * 将db文件切分成四份
- * 每一份加密
- * 四份合起来形成数据库
+ * 连接数据库
  */
-//- (Boolean)openSqliteWithSecurity:(NSString *)fileName completeHandler:(void (^ __nullable)(NSString * _Nonnull, PaintingliteSessionError * _Nonnull, Boolean))completeHandler;
+- (Boolean)openSqliteWithFilePath:(NSString *)filePath;
+
+- (Boolean)openSqliteWithFilePath:(NSString *)filePath completeHandler:(void (^__nullable)(NSString *filePath,PaintingliteSessionError *error,Boolean success))completeHandler;
 
 /**
  * 获得数据库
@@ -56,6 +60,21 @@ NS_ASSUME_NONNULL_BEGIN
  * 获得数据库版本
  */
 - (NSString *)getSqlite3Version;
+
+/**
+ * 获得当前目录下的数据库文件列表
+ */
+- (NSArray<NSString *> *)dictExistsDatabaseList:(NSString *__nonnull)fileDict;
+
+/**
+ * 数据库文件存在
+ */
+- (Boolean)isExistsDatabase:(NSString *__nonnull)filePath;
+
+/**
+ * 数据库文件详细信息
+ */
+- (NSDictionary<NSFileAttributeKey,id> *)databaseInfoDict:(NSString *__nonnull)filePath;
 
 /**
  * 释放数据库

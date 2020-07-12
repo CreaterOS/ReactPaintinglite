@@ -7,12 +7,16 @@
 //
 
 #import "PaintingliteSessionManager.h"
+#import "PaintingliteFileManager.h"
 #import "PaintingliteSessionFactory.h"
 #import "PaintingliteSecurity.h"
 #import "PaintingliteConfiguration.h"
 #import "PaintingliteSnapManager.h"
 #import "PaintingliteExec.h"
 #import "SSZipArchive.h"
+
+#define WEAKSELF(SELF) __weak typeof(SELF) weakself = SELF
+#define STRONGSELF(WEAKSELF) __strong typeof(WEAKSELF) self = WEAKSELF
 
 @interface PaintingliteSessionManager()
 @property (nonatomic,readonly)PaintingliteSessionFactoryLite *ppDb; //数据库
@@ -24,6 +28,7 @@
 @property (nonatomic,strong)PaintingliteTableOptions *tableOptions; //表操作
 @property (nonatomic)Boolean closeFlag; //关闭标识符
 @property (nonatomic,strong)PaintingliteSnapManager *snapManager; //快照管理者
+@property (nonatomic,strong)PaintingliteFileManager *fileManager; //文件管理者
 @end
 
 @implementation PaintingliteSessionManager
@@ -85,6 +90,14 @@
     return _snapManager;
 }
 
+- (PaintingliteFileManager *)fileManager{
+    if (!_fileManager) {
+        _fileManager = [PaintingliteFileManager defaultManager];
+    }
+    
+    return _fileManager;
+}
+
 #pragma mark - 单例模式
 static PaintingliteSessionManager *_instance = nil;
 + (instancetype)sharePaintingliteSessionManager{
@@ -98,42 +111,88 @@ static PaintingliteSessionManager *_instance = nil;
 
 #pragma mark - 连接数据库
 - (Boolean)openSqlite:(NSString *)fileName{
-    __block Boolean flag = false;
-    
-    [self openSqlite:fileName completeHandler:^(NSString * _Nonnull filePath, PaintingliteSessionError * _Nonnull error, Boolean success) {
-        if (success) {
-            flag = true;
-        }
-    }];
+    return [self openSqlite:fileName completeHandler:nil];
+}
 
-    return flag;
+- (Boolean)openSqliteWithFilePath:(NSString *)filePath{
+    return [self openSqliteWithFilePath:filePath completeHandler:nil];
+}
+
+- (Boolean)openSqliteWithFilePath:(NSString *)filePath completeHandler:(void (^)(NSString * _Nonnull, PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
+    NSAssert(filePath != NULL, @"Please set the Sqlite DataBase FilePath");
+    
+    //创建信号量
+    dispatch_semaphore_t signal = dispatch_semaphore_create(0);
+    __block Boolean success = false;
+    WEAKSELF(self);
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        STRONGSELF(weakself);
+        if([self.fileManager fileExistsAtPath:filePath]){
+            success = (sqlite3_open_v2([filePath UTF8String], &(self->_ppDb), SQLITE_OPEN_READWRITE|SQLITE_OPEN_FULLMUTEX, NULL) == SQLITE_OK);
+        }else{
+            success = (sqlite3_open([filePath UTF8String], &(self->_ppDb)) == SQLITE_OK);
+        }
+        
+        /* 数据库打开成功 */
+        self.isOpen = success;
+        /* 数据库文件路径 */
+        self.databasePath = filePath;
+        
+        //保存表快照到一级缓存 -- 当数据库中含有的表的时候保存到快照
+        //查看打开的数据库，进行快照区保存
+        [self.snapManager saveSnap:self.ppDb];
+        
+        //信号量+1
+        dispatch_semaphore_signal(signal);
+    });
+    
+    //信号量等待
+    dispatch_semaphore_wait(signal, DISPATCH_TIME_FOREVER);
+    
+    return success;
 }
 
 - (Boolean)openSqlite:(NSString *)fileName completeHandler:(void (^)(NSString * _Nonnull, PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
     NSAssert(fileName != NULL, @"Please set the Sqlite DataBase Name");
     
-    Boolean success = false;
+    //创建信号量
+    dispatch_semaphore_t signal = dispatch_semaphore_create(0);
+    __block Boolean success = false;
+    
+    /* 打开数据库先判断是否打开数据库,打开了先释放数据库,在打开数据库 */
+    if (self.isOpen) [self releaseSqlite];
     
     //数据库名称名称
     NSString *filePath = [self.configuration configurationFileName:fileName];
-
-    @synchronized (self) {
-        NSFileManager *fileManager = [NSFileManager defaultManager];
-        
-        if([fileManager fileExistsAtPath:filePath]){
-            success = (sqlite3_open_v2([filePath UTF8String], &_ppDb, SQLITE_OPEN_READWRITE|SQLITE_OPEN_FULLMUTEX, NULL) == SQLITE_OK);
+    
+    WEAKSELF(self);
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        STRONGSELF(weakself);
+        if([self.fileManager fileExistsAtPath:filePath]){
+            success = (sqlite3_open_v2([filePath UTF8String], &(self->_ppDb), SQLITE_OPEN_READWRITE|SQLITE_OPEN_FULLMUTEX, NULL) == SQLITE_OK);
         }else{
-            success = (sqlite3_open([filePath UTF8String], &_ppDb) == SQLITE_OK);
+            success = (sqlite3_open([filePath UTF8String], &(self->_ppDb)) == SQLITE_OK);
         }
         
         if (completeHandler != nil) {
             completeHandler(filePath,self.error,success);
         }
-    }
+
+        /* 数据库打开成功 */
+        self.isOpen = success;
+        /* 数据库文件路径 */
+        self.databasePath = filePath;
+        
+        //保存表快照到一级缓存 -- 当数据库中含有的表的时候保存到快照
+        //查看打开的数据库，进行快照区保存
+        [self.snapManager saveSnap:self.ppDb];
+        
+        //信号量+1
+        dispatch_semaphore_signal(signal);
+    });
     
-    //保存表快照到JSON文件 -- 当数据库中含有的表的时候保存到快照
-    //查看打开的数据库，进行快照区保存
-    [self.snapManager saveSnap:self.ppDb];
+    //信号量等待
+    dispatch_semaphore_wait(signal, DISPATCH_TIME_FOREVER);
     
     return success;
 }
@@ -146,6 +205,31 @@ static PaintingliteSessionManager *_instance = nil;
 #pragma mark - 获得数据库版本
 - (NSString *)getSqlite3Version{
     return [@"Paintinglite use sqlite3 version:" stringByAppendingString:[NSString stringWithUTF8String:sqlite3_version]];
+}
+
+#pragma mark - 返回数据库列表
+- (NSArray<NSString *> *)dictExistsDatabaseList:(NSString *__nonnull)fileDict{
+    return [self.fileManager dictExistsFile:fileDict];
+}
+
+#pragma mark - 数据库文件存在
+- (Boolean)isExistsDatabase:(NSString *)filePath{
+    return [self.fileManager fileExistsAtPath:filePath];
+}
+
+#pragma mark - 数据库文件详细信息
+- (NSDictionary<NSFileAttributeKey,id> *)databaseInfoDict:(NSString *)filePath{
+    if ([filePath hasSuffix:@"db"]) {
+        return [self.fileManager databaseInfo:filePath];
+    }
+    
+    return NULL;
+}
+
+#pragma mark - 数据库大小
+- (double)totalSize{
+    NSUInteger fileSize = [(NSNumber *)[self databaseInfoDict:self.databasePath][NSFileSize] integerValue];
+    return fileSize/1024.0/1024.0;
 }
 
 #pragma mark - SQL操作
@@ -234,16 +318,18 @@ static PaintingliteSessionManager *_instance = nil;
 }
 
 - (Boolean)releaseSqliteCompleteHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
-    
+    /* 释放数据库,先判断是否打开数据库,只有打开数据库才可以释放 */
     Boolean success = false;
     
-    @synchronized (self) {
-        if (!self.closeFlag) {
-            success = (sqlite3_close(_ppDb) == SQLITE_OK);
-            self.closeFlag = success;
-            
-            if (completeHandler != nil) {
-                completeHandler(self.error,success);
+    if (self.isOpen) {
+        @synchronized (self) {
+            if (!self.closeFlag) {
+                success = (sqlite3_close(_ppDb) == SQLITE_OK);
+                self.closeFlag = success;
+                
+                if (completeHandler != nil) {
+                    completeHandler(self.error,success);
+                }
             }
         }
     }

@@ -97,7 +97,7 @@ static PaintingliteCUDOptions *_instance = nil;
     });
     
     //判断表是否存在，判断表的字段
-    if (![[self.exec getCurrentTableNameWithJSON] containsObject:tableName]){
+    if (![[self.exec getCurrentTableNameWithCache] containsObject:tableName]){
         [PaintingliteException PaintingliteException:@"表名不存在" reason:@"数据库找不到表名,无法执行操作"];
     }
 

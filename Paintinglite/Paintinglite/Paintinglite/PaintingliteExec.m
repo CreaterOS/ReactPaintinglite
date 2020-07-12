@@ -14,6 +14,7 @@
 #import "PaintingliteLog.h"
 #import "PaintingliteException.h"
 #import "PaintingliteSnapManager.h"
+#import "PaintingliteCache.h"
 #import <objc/runtime.h>
 
 #define Paintinglite_Sqlite3_WHERE @"WHERE"
@@ -56,6 +57,7 @@
 @property (nonatomic,strong)PaintingliteSnapManager *snapManager; //快照管理者
 @property (nonatomic)Boolean isCreateTable; //是否调用创建数据库
 @property (nonatomic)Boolean isSnap; //是否保存过
+@property (nonatomic,strong)PaintingliteCache *cache; //快照缓存
 @end
 
 @implementation PaintingliteExec
@@ -83,6 +85,14 @@
     }
     
     return _snapManager;
+}
+
+- (PaintingliteCache *)cache{
+    if (!_cache) {
+        _cache = [PaintingliteCache sharePaintingliteCache];
+    }
+    
+    return _cache;
 }
 
 #pragma mark - 执行SQL语句
@@ -160,7 +170,7 @@
         tableName = [[[sql componentsSeparatedByString:@"("][0] componentsSeparatedByString:Paintinglite_Sqlite3_SPACE]lastObject];
         
         if (self.isCreateTable && ![firstSQLWords isEqualToString:Paintinglite_Sqlite3_INSERT]) {
-            if ([[self getCurrentTableNameWithJSON] containsObject:[tableName lowercaseString]]) {
+            if ([[self getCurrentTableNameWithCache] containsObject:[tableName lowercaseString]]) {
                 [PaintingliteException PaintingliteException:@"表名存在" reason:@"数据库中已经存在表名，无法建立新表"];
             }
         }else{
@@ -187,7 +197,7 @@
     }else if ([firstSQLWords isEqualToString:Paintinglite_Sqlite3_DROP]){
         tableName = [[sql componentsSeparatedByString:Paintinglite_Sqlite3_SPACE]lastObject];
 
-        if (![[self getCurrentTableNameWithJSON] containsObject:[tableName lowercaseString]]) {
+        if (![[self getCurrentTableNameWithCache] containsObject:[tableName lowercaseString]]) {
             [PaintingliteException PaintingliteException:@"表名不存在" reason:[NSString stringWithFormat:@"数据库中查找不到表名[%@]",tableName]];
         }
     }else if ([firstSQLWords isEqualToString:Paintinglite_Sqlite3_DELETE]){
@@ -356,7 +366,7 @@
     @synchronized (self) {
         objName = [objName lowercaseString];
         //判断是否有这个表存在，存在则查询，否则报错
-        if (![[self getCurrentTableNameWithJSON] containsObject:[objName lowercaseString]]) {
+        if (![[self getCurrentTableNameWithCache] containsObject:[objName lowercaseString]]) {
             [PaintingliteException PaintingliteException:@"无法执行操作" reason:@"表名不存在"];
         }
         //保存表结构快照
@@ -374,7 +384,7 @@
     Boolean flag = true;
     
     @synchronized (self) {
-        NSArray *tables = [self getCurrentTableNameWithJSON];
+        NSArray *tables = [self getCurrentTableNameWithCache];
         if (tables.count != 0 && [tables containsObject:[tableName lowercaseString]]) {
             //包含了就不能创建了
             flag = false;
@@ -397,7 +407,7 @@
     
     Boolean flag = true;
 
-    if ([[self getCurrentTableNameWithJSON] containsObject:[tableName lowercaseString]]) {
+    if ([[self getCurrentTableNameWithCache] containsObject:[tableName lowercaseString]]) {
         //有表，则删除
         if (flag) {
             NSString *dropSQL = Paintinglite_Sqlite3_DROP_SQL(tableName);
@@ -444,7 +454,7 @@
 - (void)getPaintingliteExecCreate:(sqlite3 *)ppDb objName:(NSString *__nonnull)objName obj:(id)obj createSytle:(PaintingliteDataBaseOptionsCreateStyle)createStyle{
     
     //如果存在表则不能创建
-    if ([[self getCurrentTableNameWithJSON] containsObject:[[PaintingliteObjRuntimeProperty getObjName:obj] lowercaseString]]) {
+    if ([[self getCurrentTableNameWithCache] containsObject:[[PaintingliteObjRuntimeProperty getObjName:obj] lowercaseString]]) {
         [PaintingliteException PaintingliteException:@"表名存在" reason:@"数据库中已经存在表名，无法建立新表"];
     }
     
@@ -472,7 +482,7 @@
 
 - (void)getPaintingliteExecAlterRename:(sqlite3 *)ppDb obj:(id)obj{
     //表存在才可以重命名表
-    if ([[self getCurrentTableNameWithJSON] containsObject:[(NSString *)obj[0] lowercaseString]]) {
+    if ([[self getCurrentTableNameWithCache] containsObject:[(NSString *)obj[0] lowercaseString]]) {
         [self sqlite3Exec:ppDb sql:Paintinglite_Sqlite3_ALTER_RENAME_SQL(obj[0],obj[1])];
     }else{
         [PaintingliteException PaintingliteException:@"表名不存在" reason:@"数据库中未找到表名"];
@@ -481,7 +491,7 @@
 
 - (void)getPaintingliteExecAlterAddColumn:(sqlite3 *)ppDb obj:(id)obj{
     //表存在才可以添加表的字段
-    if ([[self getCurrentTableNameWithJSON] containsObject:[(NSString *)obj[0] lowercaseString]]){
+    if ([[self getCurrentTableNameWithCache] containsObject:[(NSString *)obj[0] lowercaseString]]){
         NSString *alterSQL = Paintinglite_Sqlite3_ALTER_ADD_COLUMN_SQL(obj[0],obj[1],obj[2]);
         [self sqlite3Exec:ppDb sql:alterSQL];
     }else{
@@ -490,7 +500,7 @@
 }
 
 - (void)getPaintingliteExecAlterObj:(sqlite3 *)ppDb objName:(NSString *)objName obj:(id)obj{
-        if ([[self getCurrentTableNameWithJSON] containsObject:[objName lowercaseString]]) {
+        if ([[self getCurrentTableNameWithCache] containsObject:[objName lowercaseString]]) {
             NSArray *propertyNameArray = [[PaintingliteObjRuntimeProperty getObjPropertyName:obj] allKeys];
             //检查列表是否有更新
             //查看字段和当前表的字段进行对比操作，如果出现不一样则更新表
@@ -515,17 +525,16 @@
         }
 }
 
-#pragma mark - 读取JSON文件
+#pragma mark - 读取缓存
 #pragma mark - 获得数据库含有表名称
-- (NSArray *)getCurrentTableNameWithJSON{
-    NSError *error = nil;
+- (NSArray *)getCurrentTableNameWithCache{
+    NSMutableArray<NSString *> *tableNameArray = [NSMutableArray array];
     
-    //文件存在才能读取
-    NSString *filePath =   [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@"Tables_Snap.json"];
-    NSFileManager *fileM = [NSFileManager defaultManager];
-
+    for (NSUInteger i = 0; i < self.cache.tableCount; i++) {
+        [tableNameArray addObject:[self.cache getSnapTableNameCache:[NSString stringWithFormat:@"snap_tableName_%zd",i]]];
+    }
     
-    return [fileM fileExistsAtPath:filePath] ? [NSJSONSerialization JSONObjectWithData:[PaintingliteSecurity SecurityDecodeBase64:[NSData dataWithContentsOfFile:filePath]] options:NSJSONReadingAllowFragments error:&error][@"TablesSnap"] : [NSArray array];
+    return tableNameArray;
 }
 
 /* 获得表字段 */
@@ -644,7 +653,7 @@
 #pragma mark - 判断表是否存在
 - (void)isNotExistsTable:(NSString *__nonnull)tableName{
     if (self.isCreateTable) {
-        if (![[self getCurrentTableNameWithJSON] containsObject:[tableName lowercaseString]]) {
+        if (![[self getCurrentTableNameWithCache] containsObject:[tableName lowercaseString]]) {
             [PaintingliteException PaintingliteException:@"表名不存在" reason:[NSString stringWithFormat:@"数据库中查找不到表名[%@]",tableName]];
         }
     }

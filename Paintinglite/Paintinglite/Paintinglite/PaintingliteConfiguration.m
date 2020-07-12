@@ -263,7 +263,9 @@ static PaintingliteConfiguration *_instance = nil;
         fileName = [fileName stringByAppendingString:@".db"];
     }else{
         //判断.后边是不是sqlite3后缀，不是则替换成db
-        fileName = [[fileName componentsSeparatedByString:@"."][1] isEqualToString:@"db"] ? fileName : [[fileName componentsSeparatedByString:@"."][0] stringByAppendingString:@".db"]  ;
+        if ([fileName hasSuffix:@".db"]) {
+            fileName = [[fileName componentsSeparatedByString:@"."][0] stringByAppendingString:@".db"];
+        }
     }
    
     if (!fileName.isAbsolutePath) {

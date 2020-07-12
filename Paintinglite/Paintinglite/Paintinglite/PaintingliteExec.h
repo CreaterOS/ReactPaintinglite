@@ -58,7 +58,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSMutableArray *)getTableInfo:(sqlite3 *)ppDb objName:(NSString *__nonnull)objName;
 
 /* 获得表名当前JSON文件 */
-- (NSArray *)getCurrentTableNameWithJSON;
+- (NSArray *)getCurrentTableNameWithCache;
 
 /* 判断表名是否存在 */
 - (void)isNotExistsTable:(NSString *__nonnull)tableName;

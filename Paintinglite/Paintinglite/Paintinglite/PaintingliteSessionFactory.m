@@ -7,12 +7,14 @@
 //
 
 #import "PaintingliteSessionFactory.h"
+#import "PaintingliteCache.h"
 #import "PaintingliteSecurity.h"
 #import "PaintingliteLog.h"
 
 @interface PaintingliteSessionFactory()
 @property (nonatomic)sqlite3_stmt *stmt;
 @property (nonatomic,strong)PaintingliteLog *log; //日志
+@property (nonatomic,strong)PaintingliteCache *cache; //快照缓存
 @end
 
 @implementation PaintingliteSessionFactory
@@ -24,6 +26,14 @@
     }
     
     return _log;
+}
+
+- (PaintingliteCache *)cache{
+    if (!_cache) {
+        _cache = [PaintingliteCache sharePaintingliteCache];
+    }
+    
+    return _cache;
 }
 
 #pragma mark - 单例模式
@@ -66,8 +76,14 @@ static PaintingliteSessionFactory *_instance = nil;
     }
     
     if (tables.count != 0) {
-        //写入JSON快照
-        (status == PaintingliteSessionFactoryTableJSON) ? [self writeTablesSnapJSON:tables status:PaintingliteSessionFactoryTableJSON] : [self writeTablesSnapJSON:tables status:PaintingliteSessionFactoryTableINFOJSON];
+        //写入缓存
+        if (status == PaintingliteSessionFactoryTableJSON) {
+            for (NSString *databaseName in tables) {
+                [self.cache addSnapTableNameCache:databaseName];
+            }
+        }else{
+            [self writeTablesSnapJSON:tables status:PaintingliteSessionFactoryTableINFOJSON];
+        }
     }
     
     return tables;
