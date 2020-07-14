@@ -44,7 +44,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (float)paintingliteCPUUSAGE:(void (^__nullable)(void))block;
 
 /* 数据库压力测试 */
-- (Boolean)paintingliteSqlitePressure;
+- (Boolean)paintingliteSqlitePressure:(NSString *)firstPressureStr,... NS_REQUIRES_NIL_TERMINATION;
 
 @end
 

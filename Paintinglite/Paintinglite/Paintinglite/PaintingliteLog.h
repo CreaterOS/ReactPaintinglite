@@ -22,9 +22,12 @@ typedef NS_ENUM(NSInteger, PaintingliteLogStatus){
 NS_ASSUME_NONNULL_BEGIN
 
 @interface PaintingliteLog : NSObject
-@property (nonatomic,strong)NSString *options; //操作
+@property (nonatomic,copy)NSString *options; //操作
 @property (nonatomic,strong)NSDate *optDate;  //操作日期
 @property (nonatomic)PaintingliteLogStatus status; //操作状态
+
+/* 目录下所有的日志文件路径 */
+@property (nonatomic,strong)NSDictionary<NSString *,NSString *> *logsPath;
 
 /* 单例模式 */
 + (instancetype)sharePaintingliteLog;
@@ -41,6 +44,15 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSString *)readLogFile:(NSString *)fileName dateTime:(NSDate *__nonnull)dateTime;
 
 - (NSString *)readLogFile:(NSString *)fileName logStatus:(PaintingliteLogStatus)logStatus;
+
+/* 查看日志文件最终修改时间 */
+- (NSDate *)logFileModificationTime:(NSString *__nonnull)logFilePath;
+
+/* 查看日志文件大小 */
+- (double)logFileSize:(NSString *__nonnull)logFilePath;
+
+/* 查看日志文件条数 */
+- (NSUInteger)logfileLineWithDatabaseName:(NSString *__nonnull)logfileName;
 
 @end
 

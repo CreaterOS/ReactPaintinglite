@@ -11,11 +11,13 @@
 #import "PaintingliteObjRuntimeProperty.h"
 #import "PaintingliteDataBaseOptions.h"
 #import "PaintingliteSecurity.h"
-#import "PaintingliteLog.h"
 #import "PaintingliteException.h"
 #import "PaintingliteSnapManager.h"
 #import "PaintingliteCache.h"
 #import <objc/runtime.h>
+
+#define WEAKSELF(SELF) __weak typeof(SELF) weakself = SELF
+#define STRONGSELF(WEAKSELF) __strong typeof(WEAKSELF) self = WEAKSELF
 
 #define Paintinglite_Sqlite3_WHERE @"WHERE"
 #define Paintinglite_Sqlite3_LIMIT @"LIMIT"
@@ -52,7 +54,6 @@
 
 @interface PaintingliteExec()
 @property (nonatomic,strong)PaintingliteSessionFactory *factory; //工厂
-@property (nonatomic,strong)PaintingliteLog *log; //日志
 @property (nonatomic)sqlite3_stmt *stmt;
 @property (nonatomic,strong)PaintingliteSnapManager *snapManager; //快照管理者
 @property (nonatomic)Boolean isCreateTable; //是否调用创建数据库
@@ -69,14 +70,6 @@
     }
 
     return _factory;
-}
-
-- (PaintingliteLog *)log{
-    if (!_log) {
-        _log = [PaintingliteLog sharePaintingliteLog];
-    }
-    
-    return _log;
 }
 
 - (PaintingliteSnapManager *)snapManager{
@@ -100,49 +93,57 @@
 - (Boolean)sqlite3Exec:(sqlite3 *)ppDb sql:(NSString *)sql{
     NSAssert(sql != NULL, @"SQL Not IS Empty");
 
-    Boolean flag = false;
-    Boolean sql_flag = [SQL_FIRST_WORDS(sql) containsString:Paintinglite_Sqlite3_CREATE] || [SQL_FIRST_WORDS(sql) containsString:Paintinglite_Sqlite3_DROP] || [SQL_FIRST_WORDS(sql) containsString:Paintinglite_Sqlite3_ALTER] || [SQL_FIRST_WORDS(sql) containsString:Paintinglite_Sqlite3_ALTER_RENAME];
+    dispatch_semaphore_t signal = dispatch_semaphore_create(0);
+    __block Boolean flag = false;
+    NSString *firstWords = SQL_FIRST_WORDS(sql);
+    __block Boolean sql_flag = [firstWords containsString:Paintinglite_Sqlite3_CREATE] || [firstWords containsString:Paintinglite_Sqlite3_DROP] || [firstWords containsString:Paintinglite_Sqlite3_ALTER] || [firstWords containsString:Paintinglite_Sqlite3_ALTER_RENAME];
 
-    //判断是否有表,有表则不创建
-    //更新数据库时候会出问题
-    NSString *tableName = [self getOptTableName:ppDb sql:sql];
-
-    sql = [self lowerToUpper:sql];
-
-    /*
-      执行sqlite3_exec(),成功在保存快照
-      成功失败都会进行日志记录
-     */
-    @synchronized (self) {
-        @autoreleasepool {
-            flag = sqlite3_exec(ppDb, [sql UTF8String], 0, 0, 0) == SQLITE_OK;
-            
-            if (flag) {
-                //执行成功
-                /*
-                 保存快照
-                 对表的操作
-                 对表的数据项进行操作
-                 */
-                
-                if (sql_flag) {
-                    //增加对表的快照保存
-                    [self.snapManager saveSnap:ppDb];
-                    //对表结构的快照保存
-                    [self.snapManager saveTableInfoSnap:ppDb objName:tableName];
-                }
-            }else{
-                //执行失败
-                [self writeLogFileOptions:sql status:PaintingliteLogError];
-            }
-        }
-
+    __block NSString *tableName = [self getOptTableName:ppDb sql:sql];
+    
+    __block NSString *lowerSql = [self lowerToUpper:sql];
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        //判断是否有表,有表则不创建
+        /*
+         执行sqlite3_exec(),成功在保存快照
+         成功失败都会进行日志记录
+         */
+        flag = sqlite3_exec(ppDb, [lowerSql UTF8String], 0, 0, 0) == SQLITE_OK;
         
-        tableName = nil;
-
-        //释放
-        sqlite3_finalize(_stmt);
-    }
+        /* 拼接缓存操作 */
+        NSString *optAndStatusStr = [lowerSql stringByAppendingString:@" | "];
+        if (flag) {
+            //执行成功
+            /*
+             保存快照
+             对表的操作
+             对表的数据项进行操作
+             */
+            
+            if (sql_flag) {
+                //增加对表的快照保存
+                [self.snapManager saveSnap:ppDb];
+                //对表结构的快照保存
+                [self.snapManager saveTableInfoSnap:ppDb objName:tableName];
+            }
+            
+            optAndStatusStr = [optAndStatusStr stringByAppendingString:@"success"];
+        }else{
+            //执行失败
+            optAndStatusStr = [optAndStatusStr stringByAppendingString:@"error"];
+        }
+        
+        //写入缓存
+        [self.cache addDatabaseOptionsCache:optAndStatusStr];
+        
+        dispatch_semaphore_signal(signal);
+    });
+    
+    dispatch_semaphore_wait(signal, DISPATCH_TIME_FOREVER);
+   
+    //释放
+    sqlite3_finalize(_stmt);
+    tableName = nil;
     
     return flag;
 }
@@ -214,6 +215,7 @@
 #pragma mark - 系统查询方法
 - (NSMutableArray<NSMutableArray<NSString *> *> *)systemExec:(sqlite3 *)ppDb sql:(NSString *__nonnull)sql{
     NSMutableArray<NSMutableArray<NSString *> *> *resArray = [NSMutableArray array];
+    NSString *optAndStatusStr = [sql stringByAppendingString:@" | "];
     @synchronized (self) {
         if (sqlite3_prepare_v2(ppDb, [sql UTF8String], -1, &_stmt, nil) == SQLITE_OK){
             //查询成功
@@ -228,11 +230,16 @@
                 
                 [resArray addObject:textArray];
             }
+        
+            optAndStatusStr = [optAndStatusStr stringByAppendingString:@"success"];
         }else{
-            //写入日志文件
-            [self writeLogFileOptions:sql status:PaintingliteLogError];
+            //执行失败
+            optAndStatusStr = [optAndStatusStr stringByAppendingString:@"error"];
         }
     }
+    
+    //写入缓存
+    [self.cache addDatabaseOptionsCache:optAndStatusStr];
     
     sqlite3_finalize(_stmt);
 
@@ -258,7 +265,7 @@
     //SELECT user.name as paintinglite_name,user.age as paintinglite_age FROM user WHERE paintinglite_name = '...' and paintinglite_age = '...';
     //SELECT * FROM user WHERE age < 40 ORDER BY name DESC
     sql = [self replaceStar:ppDb resArray:resArray sql:sql];
-    
+    NSString *optAndStatusStr = [sql stringByAppendingString:@" | "];
     @synchronized (self) {
         if (sqlite3_prepare_v2(ppDb, [sql UTF8String], -1, &_stmt, nil) == SQLITE_OK){
             //查询成功
@@ -284,12 +291,16 @@
                     [tables addObject:queryDict];
                 }
             }
+            optAndStatusStr = [optAndStatusStr stringByAppendingString:@"success"];
         }else{
-            //写入日志文件
-            [self writeLogFileOptions:sql status:PaintingliteLogError];
+            //执行失败
+            optAndStatusStr = [optAndStatusStr stringByAppendingString:@"error"];
         }
     }
-    
+
+    //写入缓存
+    [self.cache addDatabaseOptionsCache:optAndStatusStr];
+
     sqlite3_finalize(_stmt);
         
     return tables;
@@ -641,13 +652,6 @@
     }
     
     return value;
-}
-
-#pragma mark - 写日志
-- (void)writeLogFileOptions:(NSString *__nonnull)sql status:(PaintingliteLogStatus)status{
-   
-    [self.log writeLogFileOptions:sql status:status completeHandler:nil];
-    self.log = nil;
 }
 
 #pragma mark - 判断表是否存在

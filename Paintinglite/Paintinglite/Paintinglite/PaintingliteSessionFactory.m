@@ -78,6 +78,7 @@ static PaintingliteSessionFactory *_instance = nil;
     if (tables.count != 0) {
         //写入缓存
         if (status == PaintingliteSessionFactoryTableJSON) {
+            /* 添加之前先清除之前缓存 */
             for (NSString *databaseName in tables) {
                 [self.cache addSnapTableNameCache:databaseName];
             }

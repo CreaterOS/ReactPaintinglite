@@ -209,7 +209,14 @@ static PaintingliteSessionManager *_instance = nil;
 
 #pragma mark - 返回数据库列表
 - (NSArray<NSString *> *)dictExistsDatabaseList:(NSString *__nonnull)fileDict{
-    return [self.fileManager dictExistsFile:fileDict];
+    NSMutableArray<NSString *> *databaseArray = [NSMutableArray array];
+    NSArray<NSString *> *filePathArray = [self.fileManager dictExistsFile:fileDict];
+    for (NSString *fileName in filePathArray) {
+        if ([fileName hasSuffix:@"db"]){
+            [databaseArray addObject:fileName];
+        }
+    }
+    return (NSArray *)databaseArray;
 }
 
 #pragma mark - 数据库文件存在
@@ -337,30 +344,25 @@ static PaintingliteSessionManager *_instance = nil;
     return success;
 }
 
+#pragma mark - 日志文件操作
 #pragma mark - 删除日志文件
-- (void)removeLogFile:(NSString *)fileName{
+- (void)removeLogFileWithDatabaseName:(NSString *)fileName{
     dispatch_async(PaintingliteSessionFactory_Sqlite_Queque, ^{
          [self.factory removeLogFile:fileName];
     });
 }
 
 #pragma mark - 读取日志文件
-- (void)readLogFile:(NSString *)fileName{
-    dispatch_barrier_async(PaintingliteSessionFactory_Sqlite_Queque, ^{
-        NSLog(@"%@",[self.factory readLogFile:fileName]);
-    });
+- (void)readLogFileWithDatabaseName:(NSString *)fileName{
+    NSLog(@"%@",[self.factory readLogFile:fileName]);
 }
 
-- (void)readLogFile:(NSString *)fileName dateTime:(NSDate *)dateTime{
-    dispatch_barrier_async(PaintingliteSessionFactory_Sqlite_Queque, ^{
-        NSLog(@"%@",[[self.factory readLogFile:fileName dateTime:dateTime] length] != 0 ? [self.factory readLogFile:fileName dateTime:dateTime] : @"无操作日志");
-    });
+- (void)readLogFileWithDatabaseName:(NSString *)fileName dateTime:(NSDate *)dateTime{
+    NSLog(@"%@",[[self.factory readLogFile:fileName dateTime:dateTime] length] != 0 ? [self.factory readLogFile:fileName dateTime:dateTime] : @"无操作日志");
 }
 
-- (void)readLogFile:(NSString *)fileName logStatus:(PaintingliteLogStatus)logStatus{
-    dispatch_barrier_async(PaintingliteSessionFactory_Sqlite_Queque, ^{
+- (void)readLogFileWithDatabaseName:(NSString *)fileName logStatus:(PaintingliteLogStatus)logStatus{
         NSLog(@"%@",[[self.factory readLogFile:fileName logStatus:logStatus] length] != 0 ? [self.factory readLogFile:fileName logStatus:logStatus] : @"无对应日志");
-    });
 }
 
 #pragma mark - 系统查询方式

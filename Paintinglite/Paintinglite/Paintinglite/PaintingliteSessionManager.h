@@ -81,21 +81,21 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (Boolean)releaseSqlite;
 
-- (Boolean)releaseSqliteCompleteHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
+- (Boolean)releaseSqliteCompleteHandler:(void(^__nullable)(PaintingliteSessionError *error,Boolean success))completeHandler;
 
 /**
  * 删除日志文件
  */
-- (void)removeLogFile:(NSString *)fileName;
+- (void)removeLogFileWithDatabaseName:(NSString *__nonnull)fileName;
 
 /**
  * 读取日志文件
  */
-- (void)readLogFile:(NSString *__nonnull)fileName;
+- (void)readLogFileWithDatabaseName:(NSString *__nonnull)fileName;
 
-- (void)readLogFile:(NSString *)fileName dateTime:(NSDate *__nonnull)dateTime;
+- (void)readLogFileWithDatabaseName:(NSString *__nonnull)fileName dateTime:(NSDate *__nonnull)dateTime;
 
-- (void)readLogFile:(NSString *)fileName logStatus:(PaintingliteLogStatus)logStatus;
+- (void)readLogFileWithDatabaseName:(NSString *__nonnull)fileName logStatus:(PaintingliteLogStatus)logStatus;
 
 #pragma mark - SQL语句执行
 - (Boolean)execTableOptForSQL:(NSString *)sql;

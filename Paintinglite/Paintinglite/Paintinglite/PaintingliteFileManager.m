@@ -23,18 +23,10 @@ static PaintingliteFileManager *_instance = nil;
 
 #pragma mark - 文件目录
 - (NSArray<NSString *> *)dictExistsFile:(NSString *__nonnull)filePath{
-    NSMutableArray<NSString *> *databaseArray = [NSMutableArray array];
-    
     /* 根据传入的文件目录,返回当前文件目录下的所有含有.db后缀的文件名称 */
     NSError *error = nil;
     NSArray<NSString *> *filePathArray = [self contentsOfDirectoryAtPath:filePath error:&error];
-    for (NSString *fileName in filePathArray) {
-        if ([fileName hasSuffix:@"db"]){
-            [databaseArray addObject:fileName];
-        }
-    }
-    
-    return (NSArray *)databaseArray;
+    return (NSArray *)filePathArray;
 }
 
 #pragma mark - 数据库文件基本信息

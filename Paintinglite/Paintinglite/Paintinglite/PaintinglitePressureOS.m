@@ -27,28 +27,6 @@
 - (NSMutableArray<NSString *> *)pressureArray{
     if (!_pressureArray) {
         _pressureArray = [NSMutableArray array];
-        
-        /*
-         准备四个文件
-         1万
-         10万
-         100万
-         */
-    
-        /* 获得四个文件的路径 */
-        NSString *millionFilePath = [[NSBundle mainBundle] pathForResource:@"millionPressure" ofType:@"txt"];
-        NSString *oneHundredThousandFilePath = [[NSBundle mainBundle] pathForResource:@"OneHundredThousandPressure" ofType:@"txt"];
-        NSString *tenThousandFilePath = [[NSBundle mainBundle] pathForResource:@"TenThousandPressure" ofType:@"txt"];
-        
-        /* 获取四个文件的字符串 */
-        NSString *millionStr = [self getStrWithFile:millionFilePath];
-        NSString *oneHundredThousandStr = [self getStrWithFile:oneHundredThousandFilePath];
-        NSString *tenThousandStr = [self getStrWithFile:tenThousandFilePath];
-        
-        /* 添加测试集合 */
-        [_pressureArray addObject:millionStr];
-        [_pressureArray addObject:oneHundredThousandStr];
-        [_pressureArray addObject:tenThousandStr];
     }
     
     return _pressureArray;
@@ -373,7 +351,22 @@ static PaintinglitePressureOS *_instance = nil;
 }
 
 #pragma mark - 数据库压力测试
-- (Boolean)paintingliteSqlitePressure{
+- (Boolean)paintingliteSqlitePressure:(NSString *)firstPressureStr, ...{
+    va_list args;
+    
+    //添加第一个元素
+    [self.pressureArray addObject:firstPressureStr];
+    
+    va_start(args, firstPressureStr);
+    NSString *arg = [NSString string];
+    while ((arg = va_arg(args, NSString *))) {
+        /* 获得每一个参数 */
+        /* 组合数组 */
+        [self.pressureArray addObject:arg];
+    }
+    
+    va_end(args);
+    
     /* 创建测试数据库 */
     if (sqlite3_open([[[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@"PressureOS.db"] UTF8String],&_ppDb) == SQLITE_OK){
         if(sqlite3_exec(_ppDb, [PRESSURETABLE UTF8String], 0, 0, NULL) == SQLITE_OK){
@@ -385,6 +378,7 @@ static PaintinglitePressureOS *_instance = nil;
         }
     }
     
+    
     return false;
 }
 
@@ -392,7 +386,6 @@ static int i = 0;
 - (void)Pressure{
     if ([self.pressureArray count] > 0) {
         @try {
-            
             /* 开起事务 */
             [PaintingliteTransaction begainPaintingliteTransaction:_ppDb];
             
