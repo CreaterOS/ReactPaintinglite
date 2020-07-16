@@ -11,8 +11,9 @@
 
 | Paintinglite版本更新 |      |
 | ------------------- | ---- |
-| v1.1版本更新概要 | 相对比v1.0优化打开数据库操作和增加了查看数据库文件存在,大小等重要信息|
-| v1.2版本更新概要 | 重新修订了压力测试策略,极大程度上缩减框架大小(<10MB)，增加一级缓存和日志写入策略|
+| v1.1版本更新概要 | 相对比v1.0优化打开数据库操作和增加了查看数据库文件存在,大小等重要信息 |
+| v1.2版本更新概要 | 重新修订了压力测试策略,极大程度上缩减框架大小(<10MB)，增加一级缓存和日志写入策略 |
+| v1.3版本更新概要 | 修复了一级缓存导致的对象封装操作漏洞,完善了一集缓存,优化了对表的CREATE,ALTER,DROP操作,增加了线程优化策略 |
 
 ## 简介
 
@@ -665,6 +666,12 @@ Paintinglite为开发者提供了日志记录功能,可以记录开发中对sqli
 
 - (void)removeLogFile:(NSString *)fileName;
 
+```
+
+## 日志模块更新
+通过一级缓存分批写入日志文件,建议开发在AppDelegate中实例化PaintingliteCache,在applicationDidEnterBackground:(UIApplication *)application和applicationWillTerminate:(UIApplication *)application中手动调用日志写入方法,则可以将未达到缓存基点的日志及时写入日志文件。
+```objective-c
+[self.cache pushCacheToLogFile];
 ```
 
 # 数据库备份(PaintingliteBackUpManager)
