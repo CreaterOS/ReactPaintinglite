@@ -43,7 +43,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (Boolean)sqlite3Exec:(sqlite3 *)ppDb tableName:(NSString *)tableName;
 
-- (Boolean)sqlite3Exec:(sqlite3 *)ppDb obj:(id)obj status:(PaintingliteExecStatus)status createStyle:(PaintingliteDataBaseOptionsCreateStyle)createStyle;
+- (Boolean)sqlite3Exec:(sqlite3 *)ppDb obj:(id)obj status:(PaintingliteExecStatus)status createStyle:(PaintingliteDataBaseOptionsPrimaryKeyStyle)createStyle;
 
 /* 根据类名执行SQL */
 - (NSMutableArray *)sqlite3Exec:(sqlite3 *)ppDb objName:(NSString *)objName;
@@ -55,7 +55,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSMutableArray *)execQueryTableInfo:(sqlite3 *)ppDb tableName:(NSString *__nonnull)tableName;
 
 /* 获得表字段 */
-- (NSMutableArray *)getTableInfo:(sqlite3 *)ppDb objName:(NSString *__nonnull)objName;
+- (NSMutableArray *)getTableInfo:(sqlite3 *)ppDb tableName:(NSString *__nonnull)tableName;
 
 /* 获得表名当前JSON文件 */
 - (NSArray *)getCurrentTableNameWithCache;

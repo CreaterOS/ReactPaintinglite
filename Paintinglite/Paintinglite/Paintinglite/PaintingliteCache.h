@@ -14,6 +14,7 @@
  */
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -29,14 +30,14 @@ NS_ASSUME_NONNULL_BEGIN
 /* 添加表名称缓存 */
 - (void)addSnapTableNameCache:(NSString *__nonnull)tableName;
 
-/* 获得表名称缓存 */
-- (NSString *)getSnapTableNameCache:(NSString *__nonnull)cacheKey;
+/* 添加表结构缓存 */
+- (void)addSnapTableInfoNameCache:(NSArray *__nonnull)infoArray tableName:(NSString *__nonnull)tableName;
 
 /* 添加数据库操作缓存 */
 - (void)addDatabaseOptionsCache:(NSString *__nonnull)optStr;
 
-/* 获得数据库操作缓存 */
-- (NSString *)getDatabaseOptionsCache:(NSString *__nonnull)cacheKey;
+/* 缓存写入日志文件 */
+- (void)pushCacheToLogFile;
 
 @end
 

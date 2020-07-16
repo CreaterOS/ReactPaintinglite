@@ -18,8 +18,8 @@
 #define PaintingliteSessionFactory_Sqlite_Queque dispatch_queue_create("PaintingliteSessionFactory_Sqlite_Queque", NULL)
 
 typedef NS_ENUM(NSUInteger, PaintingliteSessionFactoryStatus) {
-    PaintingliteSessionFactoryTableJSON,
-    PaintingliteSessionFactoryTableINFOJSON
+    PaintingliteSessionFactoryTableCache,
+    PaintingliteSessionFactoryTableINFOCache
 };
 
 NS_ASSUME_NONNULL_BEGIN
@@ -30,7 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)sharePaintingliteSessionFactory;
 
 /* 执行查询 */
-- (NSMutableArray *)execQuery:(sqlite3 *)ppDb sql:(NSString *)sql status:(PaintingliteSessionFactoryStatus)status;
+- (NSMutableArray *)execQuery:(sqlite3 *)ppDb tableName:(NSString *__nonnull)tableNaem sql:(NSString *__nonnull)sql status:(PaintingliteSessionFactoryStatus)status;
 
 /* 删除日志文件 */
 - (void)removeLogFile:(NSString *)fileName;

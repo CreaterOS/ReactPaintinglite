@@ -12,7 +12,7 @@
 
 #pragma mark - 抛出异常
 + (void)PaintingliteException:(NSString *)exceptionWithName reason:(NSString *)reason{
-    return ;
+    NSLog(@"exceptionWithName: %@ reason: %@",exceptionWithName,reason);
 }
 
 @end

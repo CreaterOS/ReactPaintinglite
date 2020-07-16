@@ -9,6 +9,7 @@
 #import "ViewController.h"
 #import "Paintinglite/PaintingliteSessionManager.h"
 #import "Paintinglite/PaintingliteExec.h"
+#import "Paintinglite/PaintingliteCache.h"
 
 @interface ViewController ()
 

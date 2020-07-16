@@ -18,7 +18,7 @@
 #import "PaintingliteSessionError.h"
 #import <Sqlite3.h>
 
-typedef NS_ENUM(NSUInteger, PaintingliteDataBaseOptionsCreateStyle) {
+typedef NS_ENUM(NSUInteger, PaintingliteDataBaseOptionsPrimaryKeyStyle) {
     PaintingliteDataBaseOptionsDefault, //默认不带主键
     PaintingliteDataBaseOptionsUUID, //用UUID做主键
     PaintingliteDataBaseOptionsID //用ID做主键
@@ -38,8 +38,8 @@ NS_ASSUME_NONNULL_BEGIN
 /* 创建表 */
 - (Boolean)createTableForName:(sqlite3 *)ppDb tableName:(NSString *)tableName content:(NSString *)content;
 - (Boolean)createTableForName:(sqlite3 *)ppDb tableName:(NSString *)tableName content:(NSString *)content completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success))completeHandler;
-- (Boolean)createTableForObj:(sqlite3 *)ppDb obj:(id)obj createStyle:(PaintingliteDataBaseOptionsCreateStyle)createStyle;
-- (Boolean)createTableForObj:(sqlite3 *)ppDb obj:(id)obj createStyle:(PaintingliteDataBaseOptionsCreateStyle)createStyle completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success))completeHandler;
+- (Boolean)createTableForObj:(sqlite3 *)ppDb obj:(id)obj createStyle:(PaintingliteDataBaseOptionsPrimaryKeyStyle)createStyle;
+- (Boolean)createTableForObj:(sqlite3 *)ppDb obj:(id)obj createStyle:(PaintingliteDataBaseOptionsPrimaryKeyStyle)createStyle completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success))completeHandler;
 
 /* 更新表 */
 - (BOOL)alterTableForName:(sqlite3 *)ppDb oldName:(NSString *__nonnull)oldName newName:(NSString *__nonnull)newName;

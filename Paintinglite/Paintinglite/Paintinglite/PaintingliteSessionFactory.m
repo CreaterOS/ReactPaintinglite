@@ -48,74 +48,62 @@ static PaintingliteSessionFactory *_instance = nil;
 }
 
 #pragma mark - 执行查询
-- (NSMutableArray *)execQuery:(sqlite3 *)ppDb sql:(NSString *)sql status:(PaintingliteSessionFactoryStatus)status{
-    NSMutableArray<NSString *> *tables = [NSMutableArray array];
+- (NSMutableArray *)execQuery:(sqlite3 *)ppDb tableName:(NSString * _Nonnull)tableName sql:(NSString * _Nonnull)sql status:(PaintingliteSessionFactoryStatus)status{
+    __block NSMutableArray<NSString *> *tables = [NSMutableArray array];
 
-    @synchronized (self) {
-        if (sqlite3_prepare_v2(ppDb, [sql UTF8String], -1, &_stmt, nil) == SQLITE_OK){
+    __block NSString *optAndStatusStr = [sql stringByAppendingString:@" | "];
+    
+    dispatch_semaphore_t signal = dispatch_semaphore_create(0);
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        if (sqlite3_prepare_v2(ppDb, [sql UTF8String], -1, &(self->_stmt), nil) == SQLITE_OK){
             //查询成功
-            while (sqlite3_step(_stmt) == SQLITE_ROW) {
+            while (sqlite3_step(self->_stmt) == SQLITE_ROW) {
                 //获得数据库中含有的表名
-                if (status == PaintingliteSessionFactoryTableJSON) {
-                    char *name = (char *)sqlite3_column_text(_stmt, 0);
+                if (status == PaintingliteSessionFactoryTableCache) {
+                    char *name = (char *)sqlite3_column_text(self->_stmt, 0);
                     [tables addObject:[NSString stringWithFormat:@"%s",name]];
-                }else if (status == PaintingliteSessionFactoryTableINFOJSON){
+                }else if (status == PaintingliteSessionFactoryTableINFOCache){
                     //保存数据库中的字段名
-                    char *name = (char *)sqlite3_column_text(_stmt, 1);
+                    char *name = (char *)sqlite3_column_text(self->_stmt, 1);
                     [tables addObject:[NSString stringWithFormat:@"%s",name]];
                 }
             }
+            
+            //写入日志缓存
+            optAndStatusStr = [optAndStatusStr stringByAppendingString:@"success"];
         }else{
-            //写入日志文件
-            [self.log writeLogFileOptions:sql status:PaintingliteLogError completeHandler:^(NSString * _Nonnull logFilePath) {
-                ;
-            }];
+            //写入日志缓存
+            optAndStatusStr = [optAndStatusStr stringByAppendingString:@"error"];
         }
         
-        sqlite3_finalize(_stmt);
-    }
-    
-    if (tables.count != 0) {
-        //写入缓存
-        if (status == PaintingliteSessionFactoryTableJSON) {
-            /* 添加之前先清除之前缓存 */
-            for (NSString *databaseName in tables) {
-                [self.cache addSnapTableNameCache:databaseName];
+        //添加缓存
+        [self.cache addDatabaseOptionsCache:optAndStatusStr];
+        
+        if (tables.count != 0) {
+            if (status == PaintingliteSessionFactoryTableCache) {
+                //表名缓存
+                NSUInteger count = 0;
+                self.cache.tableCount = 0;
+                for (NSString *databaseName in tables) {
+                    [self.cache removeObjectForKey:[NSString stringWithFormat:@"snap_tableName_%zd",count]];
+                    [self.cache addSnapTableNameCache:databaseName];
+                    count++;
+                }
+            }else{
+                //表字段集合缓存
+                [self.cache removeObjectForKey:[NSString stringWithFormat:@"snap_%@_info",tableName]];
+                [self.cache addSnapTableInfoNameCache:tables tableName:tableName];
             }
-        }else{
-            [self writeTablesSnapJSON:tables status:PaintingliteSessionFactoryTableINFOJSON];
         }
-    }
+        
+        dispatch_semaphore_signal(signal);
+    });
+
+    dispatch_semaphore_wait(signal, DISPATCH_TIME_FOREVER);
+    sqlite3_finalize(_stmt);
     
     return tables;
-}
-
-#pragma mark - 写入JSON快照
-- (void)writeTablesSnapJSON:(NSMutableArray *)tables status:(PaintingliteSessionFactoryStatus)status{
-    NSDictionary *tablesSnapDict = @{((status == PaintingliteSessionFactoryTableJSON) ? @"TablesSnap" : @"TablesInfoSnap"):tables};
-    
-    //写入JSON文件
-    @synchronized (self) {
-        if ([NSJSONSerialization isValidJSONObject:tablesSnapDict]) {
-            NSError *error = nil;
-           
-            NSData *data =  [PaintingliteSecurity SecurityBase64:[NSJSONSerialization dataWithJSONObject:tablesSnapDict options:NSJSONWritingPrettyPrinted error:&error]];
-      
-            NSString *TablesSnapJsonPath = [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) firstObject] stringByAppendingPathComponent:(status == PaintingliteSessionFactoryTableJSON ? @"Tables_Snap.json" : @"TablesInfo_Snap.json")];
-            NSFileManager *fileManager = [NSFileManager defaultManager];
-            
-            if ([fileManager fileExistsAtPath:TablesSnapJsonPath]) {
-                [fileManager removeItemAtPath:TablesSnapJsonPath error:&error];
-            }
-            
-            //判断是否存则这个文件
-            [data writeToFile:TablesSnapJsonPath atomically:YES];
-            
-            data = nil;
-        }
-        
-        tablesSnapDict = nil;
-    }
 }
 
 #pragma mark - 删除日志文件

@@ -82,11 +82,11 @@ static PaintingliteDataBaseOptions *_instance = nil;
 }
 
 /* Obj创建 */
-- (Boolean)createTableForObj:(sqlite3 *)ppDb obj:(id)obj createStyle:(PaintingliteDataBaseOptionsCreateStyle)createStyle{
+- (Boolean)createTableForObj:(sqlite3 *)ppDb obj:(id)obj createStyle:(PaintingliteDataBaseOptionsPrimaryKeyStyle)createStyle{
     return [self createTableForObj:ppDb obj:obj createStyle:createStyle completeHandler:nil];
 }
 
-- (Boolean)createTableForObj:(sqlite3 *)ppDb obj:(id)obj createStyle:(PaintingliteDataBaseOptionsCreateStyle)createStyle completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
+- (Boolean)createTableForObj:(sqlite3 *)ppDb obj:(id)obj createStyle:(PaintingliteDataBaseOptionsPrimaryKeyStyle)createStyle completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
     
     Boolean success = [self.exec sqlite3Exec:ppDb obj:obj status:PaintingliteExecCreate createStyle:createStyle];
     
@@ -115,9 +115,7 @@ static PaintingliteDataBaseOptions *_instance = nil;
 }
 
 - (BOOL)alterTableAddColumn:(sqlite3 *)ppDb tableName:(NSString *)tableName columnName:(NSString *)columnName columnType:(NSString *)columnType{
-    return [self alterTableAddColumn:ppDb tableName:tableName columnName:columnName columnType:columnType completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
-        ;
-    }];
+    return [self alterTableAddColumn:ppDb tableName:tableName columnName:columnName columnType:columnType completeHandler:nil];
 }
 
 - (BOOL)alterTableAddColumn:(sqlite3 *)ppDb tableName:(NSString *)tableName columnName:(NSString *)columnName columnType:(NSString *)columnType completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
@@ -131,15 +129,11 @@ static PaintingliteDataBaseOptions *_instance = nil;
 }
 
 - (BOOL)alterTableForObj:(sqlite3 *)ppDb obj:(id)obj columnName:(NSString *__nonnull)columnName columnType:(NSString *__nonnull)columnType{
-    return [self alterTableForObj:ppDb obj:obj completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
-        ;
-    }];
+    return [self alterTableForObj:ppDb obj:obj completeHandler:nil];
 }
 
 - (BOOL)alterTableForObj:(sqlite3 *)ppDb obj:(id)obj{
-    return [self alterTableForObj:ppDb obj:obj completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
-        ;
-    }];
+    return [self alterTableForObj:ppDb obj:obj completeHandler:nil];
 }
 
 - (BOOL)alterTableForObj:(sqlite3 *)ppDb obj:(id)obj completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{

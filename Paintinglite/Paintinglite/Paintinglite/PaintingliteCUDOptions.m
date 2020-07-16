@@ -85,26 +85,20 @@ static PaintingliteCUDOptions *_instance = nil;
 
 #pragma mark - 基本操作
 - (Boolean)baseCUD:(sqlite3 *)ppDb sql:(NSString *)sql CUDHandler:(NSString * (^)(void))CUDHandler completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
-    __block Boolean success = false;
+    Boolean success = false;
 
     //执行的CUD_Block操作
-    __block NSString *tableName = [NSString string];
+    NSString *tableName = [NSString string];
     
-    dispatch_queue_t queue = dispatch_queue_create([@"com.Paintinglite.Queue" UTF8String], DISPATCH_QUEUE_CONCURRENT);
-    
-    dispatch_barrier_async(queue, ^{
-        if (CUDHandler != nil) tableName = CUDHandler();
-    });
-    
+    if (CUDHandler != nil) tableName = CUDHandler();
+
     //判断表是否存在，判断表的字段
     if (![[self.exec getCurrentTableNameWithCache] containsObject:tableName]){
         [PaintingliteException PaintingliteException:@"表名不存在" reason:@"数据库找不到表名,无法执行操作"];
     }
 
     //执行语句
-    @autoreleasepool {
-        success = [self.exec sqlite3Exec:ppDb sql:sql];
-    }
+    success = [self.exec sqlite3Exec:ppDb sql:sql];
 
     if (completeHandler != nil) {
         completeHandler(self.sessionError,success);
@@ -133,7 +127,7 @@ static PaintingliteCUDOptions *_instance = nil;
         [self.exec isNotExistsTable:tableName];
 
         //获取表的字段，寻找对应的对象字段
-        NSMutableArray *tableInfoArray = [self.exec getTableInfo:ppDb objName:tableName];
+        NSMutableArray *tableInfoArray = [self.exec getTableInfo:ppDb tableName:tableName];
         
         NSString *sql = [NSString stringWithFormat:@"INSERT INTO %@(",tableName];
 
@@ -212,7 +206,7 @@ static PaintingliteCUDOptions *_instance = nil;
         }];
         
         //获取表的字段，寻找对应的对象字段
-        NSMutableArray *tableInfoArray = [self.exec getTableInfo:ppDb objName:tableName];
+        NSMutableArray *tableInfoArray = [self.exec getTableInfo:ppDb tableName:tableName];
         //获得对应字段的对象的值
         NSMutableDictionary *propertyValue = [PaintingliteObjRuntimeProperty getObjPropertyValue:obj];
         

@@ -52,14 +52,12 @@ static PaintingliteSnapManager *_instance = nil;
 
 #pragma mark - 表名称的快照
 - (void)saveSnap:(sqlite3 *)ppDb{
-    [self.factory execQuery:ppDb sql:HAVE_TABLE_SQL status:PaintingliteSessionFactoryTableJSON];
+    [self.factory execQuery:ppDb tableName:[NSString string] sql:HAVE_TABLE_SQL status:PaintingliteSessionFactoryTableCache];
 }
 
 #pragma mark - 表结构的快照
-- (void)saveTableInfoSnap:(sqlite3 *)ppDb objName:(NSString *)objName{
-    @autoreleasepool {
-        [self.factory execQuery:ppDb sql:TABLE_INFO(objName) status:PaintingliteSessionFactoryTableINFOJSON];
-    }
+- (void)saveTableInfoSnap:(sqlite3 *)ppDb tableName:(NSString *)tableName{
+    [self.factory execQuery:ppDb tableName:tableName sql:TABLE_INFO(tableName) status:PaintingliteSessionFactoryTableINFOCache];
 }
 
 #pragma mark - 表的数据快照
