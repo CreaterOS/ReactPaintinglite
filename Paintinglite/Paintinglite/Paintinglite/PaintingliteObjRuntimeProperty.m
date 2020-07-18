@@ -35,7 +35,7 @@
         //属性名称需要处理_
         ivarName = [ivarName substringFromIndex:1];
 
-        if ([ivarType isEqualToString:@"q"] || [ivarType isEqualToString:@"Q"]) {
+        if ([ivarType isEqualToString:@"q"] || [ivarType isEqualToString:@"Q"] || [ivarType isEqualToString:[NSString stringWithFormat:@"@\"NSNumber\""]] ) {
             ivarType = @"INTEGER";
         }else if ([ivarType isEqualToString:[NSString stringWithFormat:@"@\"NSString\""]] || [ivarType isEqualToString:[NSString stringWithFormat:@"@"]]) {
             ivarType = @"TEXT";
@@ -81,28 +81,35 @@
 }
 
 #pragma mark - 属性方法动态赋值
+/**
+ * value: 包含表的结构
+ */
 + (id)setObjPropertyValue:(id)obj value:(NSMutableDictionary *)value{
     unsigned int count = 0;
     obj = [[[obj class] alloc] init];
+    
+    /* obj属性Ivar */
     Ivar *propertyIvar = class_copyIvarList([obj class], &count);
 
-    for (unsigned int i = 0; i < count; i++) {
-        //给ivar赋值value
-        Ivar ivar = propertyIvar[i];
-        
-        if (count != [value allKeys].count) {
-            if (i == [value allKeys].count) {
-                break;
-            }
-            
+    for (unsigned int i = 0; i < [value allKeys].count; i++) {
+        @autoreleasepool {
+            //给ivar赋值value
             Ivar ivar = propertyIvar[i];
-            //说明数据库返回的个数和ivar的个数不相同
-            //寻找匹配的字段，进行赋值，没有的字段采用默认值
-            if([[[NSString stringWithUTF8String:ivar_getName(ivar)] substringFromIndex:1] isEqualToString:[value allKeys][i]]){
-                object_setIvar(obj, ivar, [value allValues][i]);
+            
+            if (count != [value allKeys].count) {
+                if (i == count) {
+                    break;
+                }
+                
+                Ivar ivar = propertyIvar[i];
+                //说明数据库返回的个数和ivar的个数不相同
+                //寻找匹配的字段，进行赋值，没有的字段采用默认值
+                if ([[value allKeys] containsObject:[[NSString stringWithUTF8String:ivar_getName(ivar)] substringFromIndex:1]]) {
+                     object_setIvar(obj, ivar, [value allValues][[[value allKeys] indexOfObject:[[NSString stringWithUTF8String:ivar_getName(ivar)] substringFromIndex:1]]]);
+                }
+            }else{
+                object_setIvar(obj, ivar, [value allValues][[[value allKeys] indexOfObject:[[NSString stringWithUTF8String:ivar_getName(ivar)] substringFromIndex:1]]]);
             }
-        }else{
-            object_setIvar(obj, ivar, [value allValues][i]);
         }
     }
     

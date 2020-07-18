@@ -247,50 +247,48 @@
     
     NSMutableArray<NSDictionary *> *tables = [NSMutableArray array];
     //将结果返回,保存为字典
-    
-    NSMutableArray *resArray = [self getObjName:sql ppDb:ppDb];
+    __block NSMutableArray *resArray = [self getObjName:sql ppDb:ppDb];
     
     //替换SELECT * FROM user 中星号
     //SELECT * FROM user WHERE name = '...'
     //SELECT user.name as paintinglite_name,user.age as paintinglite_age FROM user WHERE paintinglite_name = '...' and paintinglite_age = '...';
     //SELECT * FROM user WHERE age < 40 ORDER BY name DESC
     sql = [self replaceStar:ppDb resArray:resArray sql:sql];
-    NSString *optAndStatusStr = [sql stringByAppendingString:@" | "];
-    @synchronized (self) {
-        if (sqlite3_prepare_v2(ppDb, [sql UTF8String], -1, &_stmt, nil) == SQLITE_OK){
+
+    dispatch_semaphore_t signal = dispatch_semaphore_create(0);
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSString *optAndStatusStr = [sql stringByAppendingString:@" | "];
+        
+        if (sqlite3_prepare_v2(ppDb, [sql UTF8String], -1, &(self->_stmt), nil) == SQLITE_OK){
             //查询成功
-            while (sqlite3_step(_stmt) == SQLITE_ROW) {
-                @autoreleasepool {
-                    NSMutableDictionary<id,id> *queryDict = [NSMutableDictionary dictionary];
-                    //resArray是一个含有表字段的数据，根据resArray获得值加入
-                    for (unsigned int i = 0; i < resArray.count; i++) {
-                        //取出来的值，然后判断类型，进行类型分类
-                        /**
-                         SQLITE_INTEGER  1
-                         SQLITE_FLOAT    2
-                         SQLITE3_TEXT    3
-                         SQLITE_BLOB     4
-                         SQLITE_NULL     5
-                         */
-                        @autoreleasepool {
-                            id value = nil;
-                            value = [self caseTheType:sqlite3_column_type(_stmt, i) index:i value:value];
-                            [queryDict setValue:value forKey:resArray[i]];
-                        }
+            while (sqlite3_step(self->_stmt) == SQLITE_ROW) {
+                NSMutableDictionary<id,id> *queryDict = [NSMutableDictionary dictionary];
+                //resArray是一个含有表字段的数据，根据resArray获得值加入
+                for (unsigned int i = 0; i < resArray.count; i++) {
+                    //取出来的值，然后判断类型，进行类型分类
+                    @autoreleasepool {
+                        id value = nil;
+                        value = [self caseTheType:sqlite3_column_type(self->_stmt, i) index:i value:value];
+                        [queryDict setValue:value forKey:resArray[i]];
                     }
-                    [tables addObject:queryDict];
                 }
+                [tables addObject:queryDict];
             }
             optAndStatusStr = [optAndStatusStr stringByAppendingString:@"success"];
         }else{
             //执行失败
             optAndStatusStr = [optAndStatusStr stringByAppendingString:@"error"];
         }
-    }
-
-    //写入缓存
-    [self.cache addDatabaseOptionsCache:optAndStatusStr];
-
+        
+        //写入缓存
+        [self.cache addDatabaseOptionsCache:optAndStatusStr];
+        
+        dispatch_semaphore_signal(signal);
+    });
+    
+    dispatch_semaphore_wait(signal,DISPATCH_TIME_FOREVER);
+    
     sqlite3_finalize(_stmt);
         
     return tables;
@@ -298,44 +296,54 @@
 
 #pragma mark - 替代*操作
 - (NSString *__nonnull)replaceStar:(sqlite3 *)ppDb resArray:(NSMutableArray *)resArray sql:(NSString *__nonnull)sql{
-    NSString *tableInfoStr = NULL;
-    NSString *tableName = NULL;
-    NSString *tempSql = [sql uppercaseString];
-    if ([tempSql containsString:@"*"]) {
-        if ([tempSql containsString:Paintinglite_Sqlite3_WHERE]) {
-            tableName = [[[sql componentsSeparatedByString:[NSString stringWithFormat:@" %@",Paintinglite_Sqlite3_WHERE]][0] componentsSeparatedByString:Paintinglite_Sqlite3_SPACE]lastObject];
-            tableInfoStr = [NSString stringWithFormat:@"%@",[self getTableInfo:ppDb tableName:tableName]];
-        }else if([tempSql containsString:Paintinglite_Sqlite3_ORDER]){
-            tableName = [[[sql componentsSeparatedByString:[NSString stringWithFormat:@" %@",Paintinglite_Sqlite3_ORDER]][0] componentsSeparatedByString:Paintinglite_Sqlite3_SPACE]lastObject];
-            tableInfoStr = [NSString stringWithFormat:@"%@",[self getTableInfo:ppDb tableName:tableName]];
-        }else if([tempSql containsString:Paintinglite_Sqlite3_LIMIT]){
-            tableName = [[[sql componentsSeparatedByString:[NSString stringWithFormat:@" %@",Paintinglite_Sqlite3_LIMIT]][0] componentsSeparatedByString:Paintinglite_Sqlite3_SPACE]lastObject];
-            tableInfoStr = [NSString stringWithFormat:@"%@",[self getTableInfo:ppDb tableName:tableName]];
-        }else{
-            tableName = [[sql componentsSeparatedByString:Paintinglite_Sqlite3_SPACE]lastObject];
-            tableInfoStr = [NSString stringWithFormat:@"%@",[self getTableInfo:ppDb tableName:tableName]];
-        }
-        
-        //去除换行和空格
-        tableInfoStr = [[tableInfoStr stringByReplacingOccurrencesOfString:@"\n" withString:@""] stringByReplacingOccurrencesOfString:Paintinglite_Sqlite3_SPACE withString:@""];
-        tableInfoStr = [tableInfoStr substringWithRange:NSMakeRange(1, tableInfoStr.length - 2)];
-        
-        //SELECT name,age FROM user
-        //每一个数组增加user.
-        NSString *str = [NSString stringWithFormat:@"%@.",tableName];
-        NSString *resStr = [NSString string];
-        
-        NSUInteger i = 0;
-        NSArray<NSString*> *tableInfoArray = [tableInfoStr componentsSeparatedByString:@","];
-        for (NSString *field in tableInfoArray) {
-            resStr = (i == tableInfoArray.count - 1) ? [resStr stringByAppendingString:[NSString stringWithFormat:@"%@ as %@",[str stringByAppendingString:field],[NSString stringWithFormat:@"painting_%@",field]]] : [resStr stringByAppendingString:[NSString stringWithFormat:@"%@ as %@,",[str stringByAppendingString:field],[NSString stringWithFormat:@"painting_%@",field]]];
-            i++;
-        }
-        
-        sql = [sql stringByReplacingOccurrencesOfString:@"*" withString:resStr];
-    }
+    __block NSString *tableInfoStr = NULL;
+    __block NSString *tableName = NULL;
+    __block NSString *tempSql = [sql uppercaseString];
     
-    return sql;
+    dispatch_semaphore_t signal = dispatch_semaphore_create(0);
+
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        
+        if ([tempSql containsString:@"*"]) {
+            if ([tempSql containsString:Paintinglite_Sqlite3_WHERE]) {
+                tableName = [[[sql componentsSeparatedByString:[NSString stringWithFormat:@" %@",Paintinglite_Sqlite3_WHERE]][0] componentsSeparatedByString:Paintinglite_Sqlite3_SPACE]lastObject];
+                tableInfoStr = [NSString stringWithFormat:@"%@",[self getTableInfo:ppDb tableName:tableName]];
+            }else if([tempSql containsString:Paintinglite_Sqlite3_ORDER]){
+                tableName = [[[sql componentsSeparatedByString:[NSString stringWithFormat:@" %@",Paintinglite_Sqlite3_ORDER]][0] componentsSeparatedByString:Paintinglite_Sqlite3_SPACE]lastObject];
+                tableInfoStr = [NSString stringWithFormat:@"%@",[self getTableInfo:ppDb tableName:tableName]];
+            }else if([tempSql containsString:Paintinglite_Sqlite3_LIMIT]){
+                tableName = [[[sql componentsSeparatedByString:[NSString stringWithFormat:@" %@",Paintinglite_Sqlite3_LIMIT]][0] componentsSeparatedByString:Paintinglite_Sqlite3_SPACE]lastObject];
+                tableInfoStr = [NSString stringWithFormat:@"%@",[self getTableInfo:ppDb tableName:tableName]];
+            }else{
+                tableName = [[sql componentsSeparatedByString:Paintinglite_Sqlite3_SPACE]lastObject];
+                tableInfoStr = [NSString stringWithFormat:@"%@",[self getTableInfo:ppDb tableName:tableName]];
+            }
+            
+            //去除换行和空格
+            tableInfoStr = [[tableInfoStr stringByReplacingOccurrencesOfString:@"\n" withString:@""] stringByReplacingOccurrencesOfString:Paintinglite_Sqlite3_SPACE withString:@""];
+            tableInfoStr = [tableInfoStr substringWithRange:NSMakeRange(1, tableInfoStr.length - 2)];
+            
+            //SELECT name,age FROM user
+            //每一个数组增加user.
+            NSString *str = [NSString stringWithFormat:@"%@.",tableName];
+            NSString *resStr = [NSString string];
+            
+            NSUInteger i = 0;
+            NSArray<NSString*> *tableInfoArray = [tableInfoStr componentsSeparatedByString:@","];
+            for (NSString *field in tableInfoArray) {
+                resStr = (i == tableInfoArray.count - 1) ? [resStr stringByAppendingString:[NSString stringWithFormat:@"%@ as %@",[str stringByAppendingString:field],[NSString stringWithFormat:@"painting_%@",field]]] : [resStr stringByAppendingString:[NSString stringWithFormat:@"%@ as %@,",[str stringByAppendingString:field],[NSString stringWithFormat:@"painting_%@",field]]];
+                i++;
+            }
+            
+            tempSql = [sql stringByReplacingOccurrencesOfString:@"*" withString:resStr];
+        }
+        
+        dispatch_semaphore_signal(signal);
+    });
+    
+    dispatch_semaphore_wait(signal, DISPATCH_TIME_FOREVER);
+    
+    return (sql = tempSql);
 }
 
 #pragma mark - 类名执行

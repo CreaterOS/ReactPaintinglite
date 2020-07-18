@@ -50,14 +50,20 @@ static PaintingliteAggregateFunc *_instance = nil;
 - (double)Aggregate:(sqlite3 *)ppDb sql:(NSString *__nonnull)sql{
     //查询总个数
     //SELECT count(*) FROM user
-    double number = 0;
+    __block double number = 0;
     
-    if (sqlite3_prepare_v2(ppDb, [sql UTF8String], -1, &_stmt, nil) == SQLITE_OK){
-        //查询成功
-        while (sqlite3_step(_stmt) == SQLITE_ROW) {
-            number = sqlite3_column_double(_stmt, 0);
+    dispatch_semaphore_t signal = dispatch_semaphore_create(0);
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        if (sqlite3_prepare_v2(ppDb, [sql UTF8String], -1, &(self->_stmt), nil) == SQLITE_OK){
+            //查询成功
+            while (sqlite3_step(self->_stmt) == SQLITE_ROW) {
+                number = sqlite3_column_double(self->_stmt, 0);
+            }
         }
-    }
+        dispatch_semaphore_signal(signal);
+    });
+    
+    dispatch_semaphore_wait(signal, DISPATCH_TIME_FOREVER);
     
     sqlite3_finalize(_stmt);
     
@@ -84,7 +90,7 @@ static PaintingliteAggregateFunc *_instance = nil;
         return [NSString stringWithFormat:@"SELECT AVG(%@) FROM %@ %@",field,[tableName lowercaseString],condatation];
     }
     
-    return @"";
+    return NULL;
 }
 
 #pragma mark - 统计个数

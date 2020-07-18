@@ -62,21 +62,19 @@ static PaintingliteTableOptionsSelect *_instance = nil;
 }
 
 - (Boolean)execQuerySQL:(sqlite3 *)ppDb sql:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull))completeHandler{
-    
     NSMutableArray *array = [self.exec sqlite3ExecQuery:ppDb sql:sql];
+    
     Boolean success = (array.count != -1);
     NSMutableArray *resArray = [NSMutableArray array];
     
-    @autoreleasepool {
-        if (success) {
-            resArray = array;
-        }
-        
-        if (completeHandler != nil) {
-            completeHandler(self.sessionError,success,resArray);
-        }
+    if (success) {
+        resArray = array;
     }
-
+    
+    if (completeHandler != nil) {
+        completeHandler(self.sessionError,success,resArray);
+    }
+    
     return success;
 }
 
@@ -96,29 +94,38 @@ static PaintingliteTableOptionsSelect *_instance = nil;
     __block NSMutableArray *execQueryArray = [NSMutableArray array];
 
     return [PaintingliteTransaction begainPaintingliteTransaction:ppDb exec:^Boolean{
-        Boolean success = [self execQuerySQL:ppDb sql:sql completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray) {
-            if (success) {
-                execQueryArray = resArray;
-            }
-        }];
+        __block Boolean success = false;
         
-        NSMutableArray<id> *resObjList = [NSMutableArray array];
+        __block NSMutableArray<id> *resObjList = [NSMutableArray array];
         
-        @synchronized (self) {
+        dispatch_semaphore_t signal = dispatch_semaphore_create(0);
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+           success = [self execQuerySQL:ppDb sql:sql completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray) {
+                if (success) {
+                    execQueryArray = resArray;
+                }
+            }];
+            
             //开始封装
             for (NSUInteger i = 0; i < execQueryArray.count; i++) {
-                id tempObj = nil;
-                
-                tempObj = [PaintingliteObjRuntimeProperty setObjPropertyValue:obj value: execQueryArray[i]];
-                
-                [resObjList addObject:tempObj];
+                @autoreleasepool {
+                    id tempObj = nil;
+                    
+                    tempObj = [PaintingliteObjRuntimeProperty setObjPropertyValue:obj value: execQueryArray[i]];
+                    
+                    [resObjList addObject:tempObj];
+                }
             }
             
-        }
+            if (completeHandler != nil) {
+                completeHandler(self.sessionError,success,execQueryArray,resObjList);
+            }
+            
+            dispatch_semaphore_signal(signal);
+        });
         
-        if (completeHandler != nil) {
-            completeHandler(self.sessionError,success,execQueryArray,resObjList);
-        }
+        dispatch_semaphore_wait(signal, DISPATCH_TIME_FOREVER);
         
         return success;
     }];
@@ -193,7 +200,6 @@ static PaintingliteTableOptionsSelect *_instance = nil;
                 NSRange range = [tempPrepareStatementSql rangeOfString:@"?"];
                 tempPrepareStatementSql = [tempPrepareStatementSql stringByReplacingCharactersInRange:range withString:[NSString stringWithFormat:@"\'%@\'",paramter]];
                 self.prepareStatementSql = tempPrepareStatementSql;
-                NSLog(@"%@",tempPrepareStatementSql);
                 //更新下标
                 self.paramterIndex++;
             }
@@ -287,6 +293,9 @@ static PaintingliteTableOptionsSelect *_instance = nil;
 
 - (Boolean)execLikeQuerySQL:(sqlite3 *)ppDb tableName:(NSString * _Nonnull)tableName field:(NSString * _Nonnull)field like:(NSString * _Nonnull)like completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull))completeHandler{
     
+    /* like字符串'...'处理 */
+    like = [self strWipeMark:like];
+ 
     NSString *likeSql = [NSString stringWithFormat:@"SELECT * FROM %@ WHERE %@ like '%@'",tableName,field,like];
     //执行模态查询
     return [self execQuerySQL:ppDb sql:likeSql completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray) {
@@ -312,11 +321,14 @@ static PaintingliteTableOptionsSelect *_instance = nil;
 }
 
 - (Boolean)execLikeQuerySQL:(sqlite3 *)ppDb field:(NSString *)field like:(NSString *)like obj:(id)obj completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull, NSMutableArray<id> * _Nonnull))completeHandler{
+    like = [self strWipeMark:like];
     
     NSString *likeSql = [NSString stringWithFormat:@"SELECT * FROM %@ WHERE %@ like '%@'",[[PaintingliteObjRuntimeProperty getObjName:obj] lowercaseString],field,like];
     
     return [self execQuerySQL:ppDb sql:likeSql obj:obj completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
-        completeHandler(error,success,resArray,resObjList);
+        if (success && completeHandler != nil) {
+            completeHandler(error,success,resArray,resObjList);
+        }
     }];
 }
 
@@ -420,11 +432,20 @@ static PaintingliteTableOptionsSelect *_instance = nil;
 - (Boolean)execOrderByQuerySQL:(sqlite3 *)ppDb orderbyContext:(NSString *)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle obj:(id)obj completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull, NSMutableArray<id> * _Nonnull))completeHandler{
     
     NSString *orderBySql = [NSString stringWithFormat:@"SELECT * FROM %@ ORDER BY %@ %@",[[PaintingliteObjRuntimeProperty getObjName:obj] lowercaseString],orderbyContext,(orderStyle == PaintingliteOrderByASC) ? @"ASC" : @"DESC"];
-    NSLog(@"%@",orderBySql);
-    
+
     return [self execQuerySQL:ppDb sql:orderBySql obj:obj completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
         completeHandler(error,success,resArray,resObjList);
     }];
+}
+
+#pragma mark - 字符串'...'处理
+- (NSString *__nonnull)strWipeMark:(NSString *__nonnull)str{
+    if ([[str substringWithRange:NSMakeRange(0, 1)] isEqualToString:@"'"] && [[str substringWithRange:NSMakeRange(str.length-1, 1)] isEqualToString:@"'"]) {
+        /* 取出中间部分 */
+        return [str substringWithRange:NSMakeRange(1, str.length-2)];
+    }
+    
+    return NULL;
 }
 
 @end

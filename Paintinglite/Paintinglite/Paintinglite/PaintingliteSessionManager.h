@@ -139,9 +139,9 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * 查看数据
  */
-- (NSMutableArray *)execQuerySQL:(NSString *__nonnull)sql;
+- (NSMutableArray<NSDictionary *> *)execQuerySQL:(NSString *__nonnull)sql;
 - (Boolean)execQuerySQL:(NSString *__nonnull)sql completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success,NSMutableArray<NSDictionary *> *resArray))completeHandler;
-- (id)execQuerySQL:(NSString *__nonnull)sql obj:(id)obj;
+- (NSMutableArray<id> *)execQuerySQL:(NSString *__nonnull)sql obj:(id)obj;
 - (Boolean)execQuerySQL:(NSString *__nonnull)sql obj:(id)obj completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success,NSMutableArray<NSDictionary *> *resArray,NSMutableArray<id> *resObjList))completeHandler;
 
 - (void)execQuerySQLPrepareStatementSql:(NSString *__nonnull)prepareStatementSql;
@@ -156,23 +156,23 @@ NS_ASSUME_NONNULL_BEGIN
 - (id)execPrepareStatementSqlWithObj:(id)obj;
 - (Boolean)execPrepareStatementSqlWithObj:(id)obj completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success,NSMutableArray<NSDictionary *> *resArray,NSMutableArray<id>* resObjList))completeHandler;
 
-- (NSMutableArray<NSDictionary *> *)execLikeQuerySQLWithTableName:(NSString *__nonnull)tableName field:(NSString *__nonnull)field like:(NSString *__nonnull)like;
-- (Boolean)execLikeQuerySQLWithTableName:(NSString *__nonnull)tableName field:(NSString *__nonnull)field like:(NSString *__nonnull)like completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray<NSDictionary *> *resArray))completeHandler;
+- (NSMutableArray<NSDictionary *> *)execQueryLikeSQLWithTableName:(NSString *__nonnull)tableName field:(NSString *__nonnull)field like:(NSString *__nonnull)like;
+- (Boolean)execQueryLikeSQLWithTableName:(NSString *__nonnull)tableName field:(NSString *__nonnull)field like:(NSString *__nonnull)like completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray<NSDictionary *> *resArray))completeHandler;
 
-- (id)execLikeQuerySQLWithField:(NSString *__nonnull)field like:(NSString *__nonnull)like obj:(id)obj;
-- (Boolean)execLikeQuerySQLWithField:(NSString *__nonnull)field like:(NSString *__nonnull)like obj:(id)obj completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray<NSDictionary *> *resArray,NSMutableArray<id>* resObjList))completeHandler;
+- (NSMutableArray<id> *)execQueryLikeSQLWithField:(NSString *__nonnull)field like:(NSString *__nonnull)like obj:(id)obj;
+- (Boolean)execQueryLikeSQLWithField:(NSString *__nonnull)field like:(NSString *__nonnull)like obj:(id)obj completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray<NSDictionary *> *resArray,NSMutableArray<id>* resObjList))completeHandler;
 
-- (NSMutableArray<NSDictionary *> *)execLimitQuerySQLWithTableName:(NSString *__nonnull)tableName limitStart:(NSUInteger)start limitEnd:(NSUInteger)end;
-- (Boolean)execLimitQuerySQLWithTableName:(NSString *__nonnull)tableName limitStart:(NSUInteger)start limitEnd:(NSUInteger)end completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray<NSDictionary *> *resArray))completeHandler;
+- (NSMutableArray<NSDictionary *> *)execQueryLimitSQLWithTableName:(NSString *__nonnull)tableName limitStart:(NSUInteger)start limitEnd:(NSUInteger)end;
+- (Boolean)execQueryLimitSQLWithTableName:(NSString *__nonnull)tableName limitStart:(NSUInteger)start limitEnd:(NSUInteger)end completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray<NSDictionary *> *resArray))completeHandler;
 
-- (id)execLimitQuerySQLWithLimitStart:(NSUInteger)start limitEnd:(NSUInteger)end obj:(id)obj;
-- (Boolean)execLimitQuerySQLWithLimitStart:(NSUInteger)start limitEnd:(NSUInteger)end obj:(id)obj completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray<NSDictionary *> *resArray,NSMutableArray<id>* resObjList))completeHandler;
+- (NSMutableArray<id> *)execQueryLimitSQLWithLimitStart:(NSUInteger)start limitEnd:(NSUInteger)end obj:(id)obj;
+- (Boolean)execQueryLimitSQLWithLimitStart:(NSUInteger)start limitEnd:(NSUInteger)end obj:(id)obj completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray<NSDictionary *> *resArray,NSMutableArray<id>* resObjList))completeHandler;
 
-- (NSMutableArray<NSDictionary *> *)execOrderByQuerySQLWithTableName:(NSString *__nonnull)tableName orderbyContext:(NSString *__nonnull)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle;
-- (Boolean)execOrderByQuerySQLWithTableName:(NSString *__nonnull)tableName orderbyContext:(NSString *__nonnull)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray<NSDictionary *> *resArray))completeHandler;
+- (NSMutableArray<NSDictionary *> *)execQueryOrderBySQLWithTableName:(NSString *__nonnull)tableName orderbyContext:(NSString *__nonnull)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle;
+- (Boolean)execQueryOrderBySQLWithTableName:(NSString *__nonnull)tableName orderbyContext:(NSString *__nonnull)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray<NSDictionary *> *resArray))completeHandler;
 
-- (id)execOrderByQuerySQLWithOrderbyContext:(NSString *__nonnull)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle obj:(id)obj;
-- (Boolean)execOrderByQuerySQLWithOrderbyContext:(NSString *__nonnull)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle obj:(id)obj completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray<NSDictionary *> *resArray,NSMutableArray<id>* resObjList))completeHandler;
+- (NSMutableArray<id> *)execQueryOrderBySQLWithOrderbyContext:(NSString *__nonnull)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle obj:(id)obj;
+- (Boolean)execQueryOrderBySQLWithOrderbyContext:(NSString *__nonnull)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle obj:(id)obj completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray<NSDictionary *> *resArray,NSMutableArray<id>* resObjList))completeHandler;
 
 /* =====================================表的操作PQL======================================== */
 
@@ -184,7 +184,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)setPrepareStatementPQLParameter:(NSUInteger)index paramter:(NSString *__nonnull)paramter;
 - (void)setPrepareStatementPQLParameter:(NSArray *__nonnull)paramter;
 
-- (id)execPQL:(NSString *__nonnull)pql;
+/**
+ * PQL语法规则
+ * FROM + 类名 + [条件]
+ */
+- (NSMutableArray<id> *)execPQL:(NSString *__nonnull)pql;
 - (Boolean)execPQL:(NSString *__nonnull)pql completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray,NSMutableArray<id>* resObjList))completeHandler;
 
 /* =====================================表的操作CUD======================================== */
@@ -203,6 +207,9 @@ NS_ASSUME_NONNULL_BEGIN
 /* 删除数据 */
 - (Boolean)del:(NSString *__nonnull)sql;
 - (Boolean)del:(NSString *__nonnull)sql completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success))completeHandler;
+
+/* 表结构查询 */
+- (NSMutableArray<NSDictionary *> *)tableInfoWithTableName:(NSString *__nonnull)tableName;
 
 @end
 

@@ -261,7 +261,10 @@ static PaintingliteTableOptionsSelectPQL *_instance = nil;
     
     return [self execQueryPQL:ppDb pql:pql completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
         if (success) {
-            completeHandler(error,success,resArray,resObjList);
+            if (completeHandler != nil) {
+                completeHandler(error,success,resArray,resObjList);
+            }
+            
         }
     }];
 }
