@@ -17,20 +17,6 @@
 		6888B26F24B9DBFA003345D9 /* PaintingliteCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6888B26E24B9DBFA003345D9 /* PaintingliteCache.m */; };
 		689E0677247EA79300D6DF95 /* PaintingliteSecurity.m in Sources */ = {isa = PBXBuildFile; fileRef = 689E0676247EA79300D6DF95 /* PaintingliteSecurity.m */; };
 		689E067A247EACD000D6DF95 /* PaintingliteDataBaseOptions.m in Sources */ = {isa = PBXBuildFile; fileRef = 689E0679247EACD000D6DF95 /* PaintingliteDataBaseOptions.m */; };
-		689F24B3248CD1B100A9DC3B /* unzip.m in Sources */ = {isa = PBXBuildFile; fileRef = 689F2491248CD1B000A9DC3B /* unzip.m */; };
-		689F24B4248CD1B100A9DC3B /* zip.m in Sources */ = {isa = PBXBuildFile; fileRef = 689F2492248CD1B000A9DC3B /* zip.m */; };
-		689F24B5248CD1B100A9DC3B /* ioapi.m in Sources */ = {isa = PBXBuildFile; fileRef = 689F2493248CD1B000A9DC3B /* ioapi.m */; };
-		689F24B6248CD1B100A9DC3B /* mztools.m in Sources */ = {isa = PBXBuildFile; fileRef = 689F2494248CD1B000A9DC3B /* mztools.m */; };
-		689F24B7248CD1B100A9DC3B /* aeskey.m in Sources */ = {isa = PBXBuildFile; fileRef = 689F249B248CD1B000A9DC3B /* aeskey.m */; };
-		689F24B8248CD1B100A9DC3B /* hmac.m in Sources */ = {isa = PBXBuildFile; fileRef = 689F249D248CD1B000A9DC3B /* hmac.m */; };
-		689F24B9248CD1B100A9DC3B /* aescrypt.m in Sources */ = {isa = PBXBuildFile; fileRef = 689F24A0248CD1B000A9DC3B /* aescrypt.m */; };
-		689F24BA248CD1B100A9DC3B /* fileenc.m in Sources */ = {isa = PBXBuildFile; fileRef = 689F24A1248CD1B000A9DC3B /* fileenc.m */; };
-		689F24BB248CD1B100A9DC3B /* sha1.m in Sources */ = {isa = PBXBuildFile; fileRef = 689F24A4248CD1B000A9DC3B /* sha1.m */; };
-		689F24BC248CD1B100A9DC3B /* prng.m in Sources */ = {isa = PBXBuildFile; fileRef = 689F24AA248CD1B000A9DC3B /* prng.m */; };
-		689F24BD248CD1B100A9DC3B /* pwd2key.m in Sources */ = {isa = PBXBuildFile; fileRef = 689F24AB248CD1B000A9DC3B /* pwd2key.m */; };
-		689F24BE248CD1B100A9DC3B /* aestab.m in Sources */ = {isa = PBXBuildFile; fileRef = 689F24AC248CD1B000A9DC3B /* aestab.m */; };
-		689F24BF248CD1B100A9DC3B /* entropy.m in Sources */ = {isa = PBXBuildFile; fileRef = 689F24AF248CD1B000A9DC3B /* entropy.m */; };
-		689F24C0248CD1B100A9DC3B /* SSZipArchive.m in Sources */ = {isa = PBXBuildFile; fileRef = 689F24B0248CD1B000A9DC3B /* SSZipArchive.m */; };
 		68A1F058247F9CBF0091EAFB /* PaintingliteExec.m in Sources */ = {isa = PBXBuildFile; fileRef = 68A1F057247F9CBF0091EAFB /* PaintingliteExec.m */; };
 		68B84AA02497B9410021CFC2 /* PaintingliteSplitTable.m in Sources */ = {isa = PBXBuildFile; fileRef = 68B84A9F2497B9410021CFC2 /* PaintingliteSplitTable.m */; };
 		68C2F0A8248B8ECB007ADEB0 /* PaintingliteBackUpManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 68C2F0A7248B8ECB007ADEB0 /* PaintingliteBackUpManager.m */; };
@@ -95,40 +81,6 @@
 		689E0676247EA79300D6DF95 /* PaintingliteSecurity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaintingliteSecurity.m; sourceTree = "<group>"; };
 		689E0678247EACD000D6DF95 /* PaintingliteDataBaseOptions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaintingliteDataBaseOptions.h; sourceTree = "<group>"; };
 		689E0679247EACD000D6DF95 /* PaintingliteDataBaseOptions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaintingliteDataBaseOptions.m; sourceTree = "<group>"; };
-		689F248C248CD1AF00A9DC3B /* SSZipArchive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSZipArchive.h; sourceTree = "<group>"; };
-		689F248E248CD1AF00A9DC3B /* SSZipCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSZipCommon.h; sourceTree = "<group>"; };
-		689F248F248CD1AF00A9DC3B /* ZipArchive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZipArchive.h; sourceTree = "<group>"; };
-		689F2491248CD1B000A9DC3B /* unzip.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = unzip.m; sourceTree = "<group>"; };
-		689F2492248CD1B000A9DC3B /* zip.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = zip.m; sourceTree = "<group>"; };
-		689F2493248CD1B000A9DC3B /* ioapi.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ioapi.m; sourceTree = "<group>"; };
-		689F2494248CD1B000A9DC3B /* mztools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = mztools.m; sourceTree = "<group>"; };
-		689F2495248CD1B000A9DC3B /* crypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = crypt.h; sourceTree = "<group>"; };
-		689F2496248CD1B000A9DC3B /* zip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zip.h; sourceTree = "<group>"; };
-		689F2497248CD1B000A9DC3B /* unzip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = unzip.h; sourceTree = "<group>"; };
-		689F2498248CD1B000A9DC3B /* mztools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mztools.h; sourceTree = "<group>"; };
-		689F2499248CD1B000A9DC3B /* ioapi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ioapi.h; sourceTree = "<group>"; };
-		689F249B248CD1B000A9DC3B /* aeskey.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = aeskey.m; sourceTree = "<group>"; };
-		689F249C248CD1B000A9DC3B /* prng.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = prng.h; sourceTree = "<group>"; };
-		689F249D248CD1B000A9DC3B /* hmac.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = hmac.m; sourceTree = "<group>"; };
-		689F249E248CD1B000A9DC3B /* aestab.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = aestab.h; sourceTree = "<group>"; };
-		689F249F248CD1B000A9DC3B /* pwd2key.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pwd2key.h; sourceTree = "<group>"; };
-		689F24A0248CD1B000A9DC3B /* aescrypt.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = aescrypt.m; sourceTree = "<group>"; };
-		689F24A1248CD1B000A9DC3B /* fileenc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = fileenc.m; sourceTree = "<group>"; };
-		689F24A2248CD1B000A9DC3B /* aesopt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = aesopt.h; sourceTree = "<group>"; };
-		689F24A3248CD1B000A9DC3B /* aes_via_ace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = aes_via_ace.h; sourceTree = "<group>"; };
-		689F24A4248CD1B000A9DC3B /* sha1.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = sha1.m; sourceTree = "<group>"; };
-		689F24A5248CD1B000A9DC3B /* brg_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = brg_types.h; sourceTree = "<group>"; };
-		689F24A6248CD1B000A9DC3B /* entropy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = entropy.h; sourceTree = "<group>"; };
-		689F24A7248CD1B000A9DC3B /* hmac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hmac.h; sourceTree = "<group>"; };
-		689F24A8248CD1B000A9DC3B /* brg_endian.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = brg_endian.h; sourceTree = "<group>"; };
-		689F24A9248CD1B000A9DC3B /* aes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = aes.h; sourceTree = "<group>"; };
-		689F24AA248CD1B000A9DC3B /* prng.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = prng.m; sourceTree = "<group>"; };
-		689F24AB248CD1B000A9DC3B /* pwd2key.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = pwd2key.m; sourceTree = "<group>"; };
-		689F24AC248CD1B000A9DC3B /* aestab.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = aestab.m; sourceTree = "<group>"; };
-		689F24AD248CD1B000A9DC3B /* sha1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha1.h; sourceTree = "<group>"; };
-		689F24AE248CD1B000A9DC3B /* fileenc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fileenc.h; sourceTree = "<group>"; };
-		689F24AF248CD1B000A9DC3B /* entropy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = entropy.m; sourceTree = "<group>"; };
-		689F24B0248CD1B000A9DC3B /* SSZipArchive.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSZipArchive.m; sourceTree = "<group>"; };
 		68A1F056247F9CBF0091EAFB /* PaintingliteExec.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaintingliteExec.h; sourceTree = "<group>"; };
 		68A1F057247F9CBF0091EAFB /* PaintingliteExec.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaintingliteExec.m; sourceTree = "<group>"; };
 		68B84A9E2497B9410021CFC2 /* PaintingliteSplitTable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaintingliteSplitTable.h; sourceTree = "<group>"; };
@@ -208,63 +160,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		689F248A248CD14600A9DC3B /* SSZipArchive */ = {
-			isa = PBXGroup;
-			children = (
-				689F249A248CD1B000A9DC3B /* aes */,
-				689F2490248CD1B000A9DC3B /* minizip */,
-				689F248C248CD1AF00A9DC3B /* SSZipArchive.h */,
-				689F24B0248CD1B000A9DC3B /* SSZipArchive.m */,
-				689F248E248CD1AF00A9DC3B /* SSZipCommon.h */,
-				689F248F248CD1AF00A9DC3B /* ZipArchive.h */,
-			);
-			path = SSZipArchive;
-			sourceTree = "<group>";
-		};
-		689F2490248CD1B000A9DC3B /* minizip */ = {
-			isa = PBXGroup;
-			children = (
-				689F2491248CD1B000A9DC3B /* unzip.m */,
-				689F2492248CD1B000A9DC3B /* zip.m */,
-				689F2493248CD1B000A9DC3B /* ioapi.m */,
-				689F2494248CD1B000A9DC3B /* mztools.m */,
-				689F2495248CD1B000A9DC3B /* crypt.h */,
-				689F2496248CD1B000A9DC3B /* zip.h */,
-				689F2497248CD1B000A9DC3B /* unzip.h */,
-				689F2498248CD1B000A9DC3B /* mztools.h */,
-				689F2499248CD1B000A9DC3B /* ioapi.h */,
-			);
-			path = minizip;
-			sourceTree = "<group>";
-		};
-		689F249A248CD1B000A9DC3B /* aes */ = {
-			isa = PBXGroup;
-			children = (
-				689F249B248CD1B000A9DC3B /* aeskey.m */,
-				689F249C248CD1B000A9DC3B /* prng.h */,
-				689F249D248CD1B000A9DC3B /* hmac.m */,
-				689F249E248CD1B000A9DC3B /* aestab.h */,
-				689F249F248CD1B000A9DC3B /* pwd2key.h */,
-				689F24A0248CD1B000A9DC3B /* aescrypt.m */,
-				689F24A1248CD1B000A9DC3B /* fileenc.m */,
-				689F24A2248CD1B000A9DC3B /* aesopt.h */,
-				689F24A3248CD1B000A9DC3B /* aes_via_ace.h */,
-				689F24A4248CD1B000A9DC3B /* sha1.m */,
-				689F24A5248CD1B000A9DC3B /* brg_types.h */,
-				689F24A6248CD1B000A9DC3B /* entropy.h */,
-				689F24A7248CD1B000A9DC3B /* hmac.h */,
-				689F24A8248CD1B000A9DC3B /* brg_endian.h */,
-				689F24A9248CD1B000A9DC3B /* aes.h */,
-				689F24AA248CD1B000A9DC3B /* prng.m */,
-				689F24AB248CD1B000A9DC3B /* pwd2key.m */,
-				689F24AC248CD1B000A9DC3B /* aestab.m */,
-				689F24AD248CD1B000A9DC3B /* sha1.h */,
-				689F24AE248CD1B000A9DC3B /* fileenc.h */,
-				689F24AF248CD1B000A9DC3B /* entropy.m */,
-			);
-			path = aes;
-			sourceTree = "<group>";
-		};
 		68DE9918247C9B6A0078EDD5 = {
 			isa = PBXGroup;
 			children = (
@@ -324,7 +219,6 @@
 		68DE9956247C9B9F0078EDD5 /* Paintinglite */ = {
 			isa = PBXGroup;
 			children = (
-				689F248A248CD14600A9DC3B /* SSZipArchive */,
 				68DE9957247C9C260078EDD5 /* PaintingliteSessionManager.h */,
 				68DE9958247C9C260078EDD5 /* PaintingliteSessionManager.m */,
 				6888B26A24B9BF61003345D9 /* PaintingliteFileManager.h */,
@@ -524,44 +418,30 @@
 			files = (
 				68DE9929247C9B6A0078EDD5 /* ViewController.m in Sources */,
 				68EDCA84248747E200031B41 /* PaintingliteIntellegenceSelect.m in Sources */,
-				689F24B7248CD1B100A9DC3B /* aeskey.m in Sources */,
 				68275F0A2489392F008DE2A9 /* PaintingliteSnapManager.m in Sources */,
 				68DE9934247C9B6C0078EDD5 /* main.m in Sources */,
 				68D7BB60247FE56500AB994A /* PaintingliteObjRuntimeProperty.m in Sources */,
 				68CF58A42484D36C0035F188 /* PaintingliteTableOptionsSelect.m in Sources */,
 				68D6B434248DFB32008A2CD6 /* PaintingliteAggregateFunc.m in Sources */,
 				68DE9965247CA2490078EDD5 /* PaintingliteConfiguration.m in Sources */,
-				689F24BB248CD1B100A9DC3B /* sha1.m in Sources */,
 				68DE9968247CA5870078EDD5 /* PaintingliteSessionError.m in Sources */,
 				68CF869D24809DC000755126 /* PaintingliteException.m in Sources */,
 				68DE9959247C9C260078EDD5 /* PaintingliteSessionManager.m in Sources */,
 				6879F980248E66F300E66ABB /* PaintingliteCascadeShowerIUD.m in Sources */,
-				689F24B3248CD1B100A9DC3B /* unzip.m in Sources */,
 				6800074E2488D19000FF75DE /* PaintingliteCUDOptions.m in Sources */,
-				689F24B6248CD1B100A9DC3B /* mztools.m in Sources */,
 				68DE9926247C9B6A0078EDD5 /* AppDelegate.m in Sources */,
 				68DE996B247D0B680078EDD5 /* PaintingliteLog.m in Sources */,
-				689F24BC248CD1B100A9DC3B /* prng.m in Sources */,
 				689E067A247EACD000D6DF95 /* PaintingliteDataBaseOptions.m in Sources */,
 				68D5030724A1E9E0004EC32D /* PaintinglitePressureOS.m in Sources */,
-				689F24BE248CD1B100A9DC3B /* aestab.m in Sources */,
-				689F24B4248CD1B100A9DC3B /* zip.m in Sources */,
 				68DE9962247CA1140078EDD5 /* PaintingliteSessionFactory.m in Sources */,
-				689F24BF248CD1B100A9DC3B /* entropy.m in Sources */,
 				68EB381C249083FD00DFC0CA /* PaintingliteUUID.m in Sources */,
-				689F24B9248CD1B100A9DC3B /* aescrypt.m in Sources */,
 				6846BC102484DD5E00887A5C /* PaintingliteTableOptionsSelectPQL.m in Sources */,
 				68C2F0A8248B8ECB007ADEB0 /* PaintingliteBackUpManager.m in Sources */,
-				689F24B8248CD1B100A9DC3B /* hmac.m in Sources */,
 				689E0677247EA79300D6DF95 /* PaintingliteSecurity.m in Sources */,
 				6888B26C24B9BF61003345D9 /* PaintingliteFileManager.m in Sources */,
-				689F24B5248CD1B100A9DC3B /* ioapi.m in Sources */,
-				689F24BA248CD1B100A9DC3B /* fileenc.m in Sources */,
 				68A1F058247F9CBF0091EAFB /* PaintingliteExec.m in Sources */,
 				6888B26F24B9DBFA003345D9 /* PaintingliteCache.m in Sources */,
-				689F24C0248CD1B100A9DC3B /* SSZipArchive.m in Sources */,
 				68CE9DBF2483505E00B96DC3 /* PaintingliteTransaction.m in Sources */,
-				689F24BD248CD1B100A9DC3B /* pwd2key.m in Sources */,
 				680969332481007A00048369 /* PaintingliteTableOptions.m in Sources */,
 				68B84AA02497B9410021CFC2 /* PaintingliteSplitTable.m in Sources */,
 			);

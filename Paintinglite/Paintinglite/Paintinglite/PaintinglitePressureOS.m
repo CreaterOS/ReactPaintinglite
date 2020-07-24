@@ -186,7 +186,6 @@
         return -1;
     }
     
-    task_basic_info_t      basic_info;
     thread_array_t         thread_list;
     mach_msg_type_number_t thread_count;
     
@@ -194,18 +193,13 @@
     mach_msg_type_number_t thread_info_count;
     
     thread_basic_info_t basic_info_th;
-    uint32_t stat_thread = 0; // Mach threads
-    
-    basic_info = (task_basic_info_t)tinfo;
     
     // get threads in the task
     kr = task_threads(mach_task_self(), &thread_list, &thread_count);
     if (kr != KERN_SUCCESS) {
         return -1;
     }
-    if (thread_count > 0)
-        stat_thread += thread_count;
-    
+
     long tot_sec = 0;
     long tot_usec = 0;
     float tot_cpu = 0;
@@ -358,7 +352,7 @@ static PaintinglitePressureOS *_instance = nil;
     [self.pressureArray addObject:firstPressureStr];
     
     va_start(args, firstPressureStr);
-    NSString *arg = [NSString string];
+    NSString *arg;
     while ((arg = va_arg(args, NSString *))) {
         /* 获得每一个参数 */
         /* 组合数组 */

@@ -9,21 +9,7 @@
 #import "PaintingliteCache.h"
 #import "PaintingliteLog.h"
 
-@interface PaintingliteCache()
-@property (nonatomic,strong)PaintingliteLog *log; //日志
-@end
-
 @implementation PaintingliteCache
-
-#pragma mark - 懒加载
-- (PaintingliteLog *)log{
-    if (!_log) {
-        _log = [PaintingliteLog sharePaintingliteLog];
-    }
-    
-    return _log;
-}
-
 #pragma mark - 单例模式
 static PaintingliteCache *_instance = nil;
 + (instancetype)sharePaintingliteCache{
@@ -105,8 +91,7 @@ static int count = 0;
 
 #pragma mark - 写日志
 - (void)writeLogFileOptions:(NSString *__nonnull)sql status:(PaintingliteLogStatus)status{
-    [self.log writeLogFileOptions:sql status:status completeHandler:nil];
-    self.log = nil;
+    [[PaintingliteLog sharePaintingliteLog] writeLogFileOptions:sql status:status completeHandler:nil];
 }
 
 @end

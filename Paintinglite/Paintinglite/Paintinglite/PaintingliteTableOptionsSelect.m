@@ -75,6 +75,9 @@ static PaintingliteTableOptionsSelect *_instance = nil;
         completeHandler(self.sessionError,success,resArray);
     }
     
+    array = nil;
+    resArray = nil;
+    
     return success;
 }
 
@@ -445,7 +448,7 @@ static PaintingliteTableOptionsSelect *_instance = nil;
         return [str substringWithRange:NSMakeRange(1, str.length-2)];
     }
     
-    return NULL;
+    return [NSString string];
 }
 
 @end

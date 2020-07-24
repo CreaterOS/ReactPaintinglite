@@ -7,7 +7,6 @@
 //
 
 #import "PaintingliteSecurity.h"
-#import "SSZipArchive/SSZipArchive.h"
 
 @implementation PaintingliteSecurity
 

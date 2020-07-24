@@ -13,89 +13,25 @@
 #import "PaintingliteConfiguration.h"
 #import "PaintingliteSnapManager.h"
 #import "PaintingliteExec.h"
-#import "SSZipArchive.h"
 
 #define WEAKSELF(SELF) __weak typeof(SELF) weakself = SELF
 #define STRONGSELF(WEAKSELF) __strong typeof(WEAKSELF) self = WEAKSELF
 
 @interface PaintingliteSessionManager()
 @property (nonatomic,readonly)PaintingliteSessionFactoryLite *ppDb; //数据库
-@property (nonatomic,strong)PaintingliteSessionFactory *factory; //工厂类
-@property (nonatomic,strong)PaintingliteSessionError *error; //错误
-@property (nonatomic,strong)PaintingliteConfiguration *configuration; //配置文件
-@property (nonatomic,strong)PaintingliteDataBaseOptions *dataBaseOptions; //数据库操作
 @property (nonatomic,strong)PaintingliteExec *exec; //执行语句
-@property (nonatomic,strong)PaintingliteTableOptions *tableOptions; //表操作
 @property (nonatomic)Boolean closeFlag; //关闭标识符
-@property (nonatomic,strong)PaintingliteSnapManager *snapManager; //快照管理者
-@property (nonatomic,strong)PaintingliteFileManager *fileManager; //文件管理者
 @end
 
 @implementation PaintingliteSessionManager
 
 #pragma mark - 懒加载
-- (PaintingliteSessionError *)error{
-    if (!_error) {
-        _error = [PaintingliteSessionError sharePaintingliteSessionError];
-    }
-    
-    return _error;
-}
-
-- (PaintingliteSessionFactory *)factory{
-    if (!_factory) {
-        _factory = [PaintingliteSessionFactory sharePaintingliteSessionFactory];
-    }
-    
-    return _factory;
-}
-
-- (PaintingliteDataBaseOptions *)dataBaseOptions{
-    if (!_dataBaseOptions) {
-        _dataBaseOptions = [PaintingliteDataBaseOptions sharePaintingliteDataBaseOptions];
-    }
-    
-    return _dataBaseOptions;
-}
-
 - (PaintingliteExec *)exec{
     if (!_exec) {
         _exec = [[PaintingliteExec alloc] init];
     }
     
     return _exec;
-}
-
-- (PaintingliteTableOptions *)tableOptions{
-    if (!_tableOptions) {
-        _tableOptions = [PaintingliteTableOptions sharePaintingliteTableOptions];
-    }
-    
-    return _tableOptions;
-}
-
-- (PaintingliteConfiguration *)configuration{
-    if (!_configuration) {
-        _configuration = [PaintingliteConfiguration sharePaintingliteConfiguration];
-    }
-    
-    return _configuration;
-}
-
-- (PaintingliteSnapManager *)snapManager{
-    if (!_snapManager) {
-        _snapManager = [PaintingliteSnapManager sharePaintingliteSnapManager];
-    }
-    
-    return _snapManager;
-}
-
-- (PaintingliteFileManager *)fileManager{
-    if (!_fileManager) {
-        _fileManager = [PaintingliteFileManager defaultManager];
-    }
-    
-    return _fileManager;
 }
 
 #pragma mark - 单例模式
@@ -127,7 +63,7 @@ static PaintingliteSessionManager *_instance = nil;
     WEAKSELF(self);
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         STRONGSELF(weakself);
-        if([self.fileManager fileExistsAtPath:filePath]){
+        if([[PaintingliteFileManager defaultManager] fileExistsAtPath:filePath]){
             success = (sqlite3_open_v2([filePath UTF8String], &(self->_ppDb), SQLITE_OPEN_READWRITE|SQLITE_OPEN_FULLMUTEX, NULL) == SQLITE_OK);
         }else{
             success = (sqlite3_open([filePath UTF8String], &(self->_ppDb)) == SQLITE_OK);
@@ -140,7 +76,7 @@ static PaintingliteSessionManager *_instance = nil;
         
         //保存表快照到一级缓存 -- 当数据库中含有的表的时候保存到快照
         //查看打开的数据库，进行快照区保存
-        [self.snapManager saveSnap:self.ppDb];
+        [[PaintingliteSnapManager sharePaintingliteSnapManager] saveSnap:self.ppDb];
         
         //信号量+1
         dispatch_semaphore_signal(signal);
@@ -163,19 +99,19 @@ static PaintingliteSessionManager *_instance = nil;
     if (self.isOpen) [self releaseSqlite];
     
     //数据库名称名称
-    NSString *filePath = [self.configuration configurationFileName:fileName];
+    NSString *filePath = [[PaintingliteConfiguration sharePaintingliteConfiguration] configurationFileName:fileName];
     
     WEAKSELF(self);
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         STRONGSELF(weakself);
-        if([self.fileManager fileExistsAtPath:filePath]){
+        if([[PaintingliteFileManager defaultManager] fileExistsAtPath:filePath]){
             success = (sqlite3_open_v2([filePath UTF8String], &(self->_ppDb), SQLITE_OPEN_READWRITE|SQLITE_OPEN_FULLMUTEX, NULL) == SQLITE_OK);
         }else{
             success = (sqlite3_open([filePath UTF8String], &(self->_ppDb)) == SQLITE_OK);
         }
         
         if (completeHandler != nil) {
-            completeHandler(filePath,self.error,success);
+            completeHandler(filePath,[PaintingliteSessionError sharePaintingliteSessionError],success);
         }
 
         /* 数据库打开成功 */
@@ -185,7 +121,7 @@ static PaintingliteSessionManager *_instance = nil;
         
         //保存表快照到一级缓存 -- 当数据库中含有的表的时候保存到快照
         //查看打开的数据库，进行快照区保存
-        [self.snapManager saveSnap:self.ppDb];
+        [[PaintingliteSnapManager sharePaintingliteSnapManager] saveSnap:self.ppDb];
         
         //信号量+1
         dispatch_semaphore_signal(signal);
@@ -210,7 +146,7 @@ static PaintingliteSessionManager *_instance = nil;
 #pragma mark - 返回数据库列表
 - (NSArray<NSString *> *)dictExistsDatabaseList:(NSString *__nonnull)fileDict{
     NSMutableArray<NSString *> *databaseArray = [NSMutableArray array];
-    NSArray<NSString *> *filePathArray = [self.fileManager dictExistsFile:fileDict];
+    NSArray<NSString *> *filePathArray = [[PaintingliteFileManager defaultManager] dictExistsFile:fileDict];
     for (NSString *fileName in filePathArray) {
         if ([fileName hasSuffix:@"db"]){
             [databaseArray addObject:fileName];
@@ -221,16 +157,16 @@ static PaintingliteSessionManager *_instance = nil;
 
 #pragma mark - 数据库文件存在
 - (Boolean)isExistsDatabase:(NSString *)filePath{
-    return [self.fileManager fileExistsAtPath:filePath];
+    return [[PaintingliteFileManager defaultManager] fileExistsAtPath:filePath];
 }
 
 #pragma mark - 数据库文件详细信息
 - (NSDictionary<NSFileAttributeKey,id> *)databaseInfoDict:(NSString *)filePath{
     if ([filePath hasSuffix:@"db"]) {
-        return [self.fileManager databaseInfo:filePath];
+        return [[PaintingliteFileManager defaultManager] databaseInfo:filePath];
     }
     
-    return NULL;
+    return [NSDictionary dictionary];
 }
 
 #pragma mark - 数据库大小
@@ -246,7 +182,7 @@ static PaintingliteSessionManager *_instance = nil;
 }
 
 - (Boolean)execTableOptForSQL:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
-    return [self.dataBaseOptions execTableOptForSQL:self.ppDb sql:sql completeHandler:completeHandler];
+    return [[PaintingliteDataBaseOptions sharePaintingliteDataBaseOptions] execTableOptForSQL:self.ppDb sql:sql completeHandler:completeHandler];
 }
 
 - (Boolean)createTableForName:(NSString *)tableName content:(NSString *)content{
@@ -259,7 +195,7 @@ static PaintingliteSessionManager *_instance = nil;
         NSLog(@"Database Not Open");
         return false;
     }
-    return [self.dataBaseOptions createTableForName:self.ppDb tableName:tableName content:content completeHandler:completeHandler];
+    return [[PaintingliteDataBaseOptions sharePaintingliteDataBaseOptions] createTableForName:self.ppDb tableName:tableName content:content completeHandler:completeHandler];
 }
 
 - (Boolean)createTableForObj:(id)obj primaryKeyStyle:(PaintingliteDataBaseOptionsPrimaryKeyStyle)primaryKeyStyle{
@@ -271,7 +207,7 @@ static PaintingliteSessionManager *_instance = nil;
         NSLog(@"Database Not Open");
         return false;
     }
-    return [self.dataBaseOptions createTableForObj:self.ppDb obj:obj createStyle:primaryKeyStyle completeHandler:completeHandler];
+    return [[PaintingliteDataBaseOptions sharePaintingliteDataBaseOptions] createTableForObj:self.ppDb obj:obj createStyle:primaryKeyStyle completeHandler:completeHandler];
 }
 
 #pragma mark - 更新表
@@ -284,7 +220,7 @@ static PaintingliteSessionManager *_instance = nil;
         NSLog(@"Database Not Open");
         return false;
     }
-    return [self.dataBaseOptions alterTableForName:self.ppDb oldName:oldName newName:newName completeHandler:completeHandler];
+    return [[PaintingliteDataBaseOptions sharePaintingliteDataBaseOptions] alterTableForName:self.ppDb oldName:oldName newName:newName completeHandler:completeHandler];
 }
 
 - (BOOL)alterTableAddColumnWithTableName:(NSString *)tableName columnName:(NSString *)columnName columnType:(NSString *)columnType{
@@ -296,7 +232,7 @@ static PaintingliteSessionManager *_instance = nil;
         NSLog(@"Database Not Open");
         return false;
     }
-    return [self.dataBaseOptions alterTableAddColumn:self.ppDb tableName:tableName columnName:columnName columnType:columnType completeHandler:completeHandler];
+    return [[PaintingliteDataBaseOptions sharePaintingliteDataBaseOptions] alterTableAddColumn:self.ppDb tableName:tableName columnName:columnName columnType:columnType completeHandler:completeHandler];
 }
 
 - (BOOL)alterTableForObj:(id)obj{
@@ -308,7 +244,7 @@ static PaintingliteSessionManager *_instance = nil;
         NSLog(@"Database Not Open");
         return false;
     }
-    return [self.dataBaseOptions alterTableForObj:self.ppDb obj:obj completeHandler:completeHandler];
+    return [[PaintingliteDataBaseOptions sharePaintingliteDataBaseOptions] alterTableForObj:self.ppDb obj:obj completeHandler:completeHandler];
 }
 
 #pragma mark - 删除表
@@ -322,7 +258,7 @@ static PaintingliteSessionManager *_instance = nil;
     if (!self.isOpen) {
         NSLog(@"Database Not Open");
     }
-    return [self.dataBaseOptions dropTableForTableName:self.ppDb tableName:tableName completeHandler:completeHandler];
+    return [[PaintingliteDataBaseOptions sharePaintingliteDataBaseOptions] dropTableForTableName:self.ppDb tableName:tableName completeHandler:completeHandler];
 }
 
 - (Boolean)dropTableForObj:(id)obj{
@@ -336,7 +272,7 @@ static PaintingliteSessionManager *_instance = nil;
         NSLog(@"Database Not Open");
         return false;
     }
-    return [self.dataBaseOptions dropTableForObj:self.ppDb obj:obj completeHandler:completeHandler];
+    return [[PaintingliteDataBaseOptions sharePaintingliteDataBaseOptions] dropTableForObj:self.ppDb obj:obj completeHandler:completeHandler];
 }
 
 #pragma mark - 释放数据库
@@ -363,7 +299,7 @@ static PaintingliteSessionManager *_instance = nil;
                 self.closeFlag = success;
                 
                 if (completeHandler != nil) {
-                    completeHandler(self.error,success);
+                    completeHandler([PaintingliteSessionError sharePaintingliteSessionError],success);
                 }
             }
         }
@@ -378,21 +314,21 @@ static PaintingliteSessionManager *_instance = nil;
 #pragma mark - 删除日志文件
 - (void)removeLogFileWithDatabaseName:(NSString *)fileName{
     dispatch_async(PaintingliteSessionFactory_Sqlite_Queque, ^{
-         [self.factory removeLogFile:fileName];
+         [[PaintingliteSessionFactory sharePaintingliteSessionFactory] removeLogFile:fileName];
     });
 }
 
 #pragma mark - 读取日志文件
 - (void)readLogFileWithDatabaseName:(NSString *)fileName{
-    NSLog(@"%@",[self.factory readLogFile:fileName]);
+    NSLog(@"%@",[[PaintingliteSessionFactory sharePaintingliteSessionFactory] readLogFile:fileName]);
 }
 
 - (void)readLogFileWithDatabaseName:(NSString *)fileName dateTime:(NSDate *)dateTime{
-    NSLog(@"%@",[[self.factory readLogFile:fileName dateTime:dateTime] length] != 0 ? [self.factory readLogFile:fileName dateTime:dateTime] : @"无操作日志");
+    NSLog(@"%@",[[[PaintingliteSessionFactory sharePaintingliteSessionFactory] readLogFile:fileName dateTime:dateTime] length] != 0 ? [[PaintingliteSessionFactory sharePaintingliteSessionFactory] readLogFile:fileName dateTime:dateTime] : @"无操作日志");
 }
 
 - (void)readLogFileWithDatabaseName:(NSString *)fileName logStatus:(PaintingliteLogStatus)logStatus{
-        NSLog(@"%@",[[self.factory readLogFile:fileName logStatus:logStatus] length] != 0 ? [self.factory readLogFile:fileName logStatus:logStatus] : @"无对应日志");
+        NSLog(@"%@",[[[PaintingliteSessionFactory sharePaintingliteSessionFactory] readLogFile:fileName logStatus:logStatus] length] != 0 ? [[PaintingliteSessionFactory sharePaintingliteSessionFactory] readLogFile:fileName logStatus:logStatus] : @"无对应日志");
 }
 
 #pragma mark - 系统查询方式
@@ -418,11 +354,11 @@ static PaintingliteSessionManager *_instance = nil;
         NSLog(@"Database Not Open");
         return false;
     }
-    return [self.tableOptions execQuerySQL:self.ppDb sql:sql completeHandler:completeHandler];
+    return [[PaintingliteTableOptions sharePaintingliteTableOptions] execQuerySQL:self.ppDb sql:sql completeHandler:completeHandler];
 }
 
 - (NSMutableArray<id> *)execQuerySQL:(NSString *)sql obj:(id)obj{
-    __block NSMutableArray<id> *execQueryObj = NULL;
+    __block NSMutableArray<id> *execQueryObj = [NSMutableArray array];
     
     [self execQuerySQL:sql obj:obj completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> *  _Nonnull resObjList) {
         if (success) {
@@ -438,28 +374,28 @@ static PaintingliteSessionManager *_instance = nil;
         NSLog(@"Database Not Open");
         return false;
     }
-    return [self.tableOptions execQuerySQL:self.ppDb sql:sql obj:obj completeHandler:completeHandler];
+    return [[PaintingliteTableOptions sharePaintingliteTableOptions] execQuerySQL:self.ppDb sql:sql obj:obj completeHandler:completeHandler];
 }
 
 - (void)execQuerySQLPrepareStatementSql:(NSString *)prepareStatementSql{
-    [self.tableOptions execQuerySQLPrepareStatementSql:prepareStatementSql];
+    [[PaintingliteTableOptions sharePaintingliteTableOptions] execQuerySQLPrepareStatementSql:prepareStatementSql];
 }
 
 - (void)setPrepareStatementSqlParameter:(NSUInteger)index paramter:(NSString *)paramter{
-    [self.tableOptions setPrepareStatementSqlParameter:index paramter:paramter];
+    [[PaintingliteTableOptions sharePaintingliteTableOptions] setPrepareStatementSqlParameter:index paramter:paramter];
 }
 
 - (void)setPrepareStatementSqlParameter:(NSArray *)paramter{
     NSMutableArray *paramterMutableArray = [NSMutableArray arrayWithArray:paramter];
-    [self.tableOptions setPrepareStatementSqlParameter:paramterMutableArray];
+    [[PaintingliteTableOptions sharePaintingliteTableOptions] setPrepareStatementSqlParameter:paramterMutableArray];
 }
 
 - (NSMutableArray *)execPrepareStatementSql{
     if (!self.isOpen) {
         NSLog(@"Database Not Open");
-        return NULL;
+        return [NSMutableArray array];
     }
-    return [self.tableOptions execPrepareStatementSql:self.ppDb];
+    return [[PaintingliteTableOptions sharePaintingliteTableOptions] execPrepareStatementSql:self.ppDb];
 }
 
 - (Boolean)execPrepareStatementSqlCompleteHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<NSDictionary *> * _Nonnull))completeHandler{
@@ -467,15 +403,15 @@ static PaintingliteSessionManager *_instance = nil;
         NSLog(@"Database Not Open");
         return false;
     }
-    return [self.tableOptions execPrepareStatementSql:self.ppDb completeHandler:completeHandler];
+    return [[PaintingliteTableOptions sharePaintingliteTableOptions] execPrepareStatementSql:self.ppDb completeHandler:completeHandler];
 }
 
 - (id)execPrepareStatementSqlWithObj:(id)obj{
     if (!self.isOpen) {
         NSLog(@"Database Not Open");
-        return NULL;
+        return [NSObject new];
     }
-    return [self.tableOptions execPrepareStatementSql:self.ppDb obj:obj];
+    return [[PaintingliteTableOptions sharePaintingliteTableOptions] execPrepareStatementSql:self.ppDb obj:obj];
 }
 
 - (Boolean)execPrepareStatementSqlWithObj:(id)obj completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<NSDictionary *> * _Nonnull, NSMutableArray<id> * _Nonnull))completeHandler{
@@ -483,11 +419,11 @@ static PaintingliteSessionManager *_instance = nil;
         NSLog(@"Database Not Open");
         return false;
     }
-    return [self.tableOptions execPrepareStatementSql:self.ppDb obj:obj completeHandler:completeHandler];
+    return [[PaintingliteTableOptions sharePaintingliteTableOptions] execPrepareStatementSql:self.ppDb obj:obj completeHandler:completeHandler];
 }
 
 - (NSMutableArray<NSDictionary *> *)execQueryLikeSQLWithTableName:(NSString *)tableName field:(NSString *)field like:(NSString *)like{
-    return [self.tableOptions execLikeQuerySQL:self.ppDb tableName:tableName field:field like:like];
+    return [[PaintingliteTableOptions sharePaintingliteTableOptions] execLikeQuerySQL:self.ppDb tableName:tableName field:field like:like];
 }
 
 - (Boolean)execQueryLikeSQLWithTableName:(NSString *)tableName field:(NSString *)field like:(NSString *)like completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<NSDictionary *> * _Nonnull))completeHandler{
@@ -495,11 +431,11 @@ static PaintingliteSessionManager *_instance = nil;
         NSLog(@"Database Not Open");
         return false;
     }
-    return [self.tableOptions execLikeQuerySQL:self.ppDb tableName:tableName field:field like:like completeHandler:completeHandler];
+    return [[PaintingliteTableOptions sharePaintingliteTableOptions] execLikeQuerySQL:self.ppDb tableName:tableName field:field like:like completeHandler:completeHandler];
 }
 
 - (NSMutableArray<id> *)execQueryLikeSQLWithField:(NSString *)field like:(NSString *)like obj:(id)obj{
-    return [self.tableOptions execLikeQuerySQL:self.ppDb field:field like:like obj:obj];
+    return [[PaintingliteTableOptions sharePaintingliteTableOptions] execLikeQuerySQL:self.ppDb field:field like:like obj:obj];
 }
 
 - (Boolean)execQueryLikeSQLWithField:(NSString *)field like:(NSString *)like obj:(id)obj completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<NSDictionary *> * _Nonnull, NSMutableArray<id> * _Nonnull))completeHandler{
@@ -507,11 +443,11 @@ static PaintingliteSessionManager *_instance = nil;
         NSLog(@"Database Not Open");
         return false;
     }
-    return [self.tableOptions execLikeQuerySQL:self.ppDb field:field like:like obj:obj completeHandler:completeHandler];
+    return [[PaintingliteTableOptions sharePaintingliteTableOptions] execLikeQuerySQL:self.ppDb field:field like:like obj:obj completeHandler:completeHandler];
 }
 
 - (NSMutableArray *)execQueryLimitSQLWithTableName:(NSString *)tableName limitStart:(NSUInteger)start limitEnd:(NSUInteger)end{
-    return [self.tableOptions execLimitQuerySQL:self.ppDb tableName:tableName limitStart:start limitEnd:end];
+    return [[PaintingliteTableOptions sharePaintingliteTableOptions] execLimitQuerySQL:self.ppDb tableName:tableName limitStart:start limitEnd:end];
 }
 
 - (Boolean)execQueryLimitSQLWithTableName:(NSString *)tableName limitStart:(NSUInteger)start limitEnd:(NSUInteger)end completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<NSDictionary *> * _Nonnull))completeHandler{
@@ -519,11 +455,11 @@ static PaintingliteSessionManager *_instance = nil;
         NSLog(@"Database Not Open");
         return false;
     }
-    return [self.tableOptions execLimitQuerySQL:self.ppDb tableName:tableName limitStart:start limitEnd:end completeHandler:completeHandler];
+    return [[PaintingliteTableOptions sharePaintingliteTableOptions] execLimitQuerySQL:self.ppDb tableName:tableName limitStart:start limitEnd:end completeHandler:completeHandler];
 }
 
 - (NSMutableArray<id> *)execQueryLimitSQLWithLimitStart:(NSUInteger)start limitEnd:(NSUInteger)end obj:(id)obj{
-    return [self.tableOptions execLimitQuerySQL:self.ppDb limitStart:start limitEnd:end obj:obj];
+    return [[PaintingliteTableOptions sharePaintingliteTableOptions] execLimitQuerySQL:self.ppDb limitStart:start limitEnd:end obj:obj];
 }
 
 - (Boolean)execQueryLimitSQLWithLimitStart:(NSUInteger)start limitEnd:(NSUInteger)end obj:(id)obj completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<NSDictionary *> * _Nonnull, NSMutableArray<id> * _Nonnull))completeHandler{
@@ -531,11 +467,11 @@ static PaintingliteSessionManager *_instance = nil;
         NSLog(@"Database Not Open");
         return false;
     }
-    return [self.tableOptions execLimitQuerySQL:self.ppDb limitStart:start limitEnd:end obj:obj completeHandler:completeHandler];
+    return [[PaintingliteTableOptions sharePaintingliteTableOptions] execLimitQuerySQL:self.ppDb limitStart:start limitEnd:end obj:obj completeHandler:completeHandler];
 }
 
 - (NSMutableArray *)execQueryOrderBySQLWithTableName:(NSString *)tableName orderbyContext:(NSString *)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle{
-    return [self.tableOptions execOrderByQuerySQL:self.ppDb tableName:tableName orderbyContext:orderbyContext orderStyle:orderStyle];
+    return [[PaintingliteTableOptions sharePaintingliteTableOptions] execOrderByQuerySQL:self.ppDb tableName:tableName orderbyContext:orderbyContext orderStyle:orderStyle];
 }
 
 - (Boolean)execQueryOrderBySQLWithTableName:(NSString *)tableName orderbyContext:(NSString *)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<NSDictionary *> * _Nonnull))completeHandler{
@@ -543,11 +479,11 @@ static PaintingliteSessionManager *_instance = nil;
         NSLog(@"Database Not Open");
         return false;
     }
-    return [self.tableOptions execOrderByQuerySQL:self.ppDb tableName:tableName orderbyContext:orderbyContext orderStyle:orderStyle completeHandler:completeHandler];
+    return [[PaintingliteTableOptions sharePaintingliteTableOptions] execOrderByQuerySQL:self.ppDb tableName:tableName orderbyContext:orderbyContext orderStyle:orderStyle completeHandler:completeHandler];
 }
 
 - (NSMutableArray<id> *)execQueryOrderBySQLWithOrderbyContext:(NSString *)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle obj:(id)obj{
-    return [self.tableOptions execOrderByQuerySQL:self.ppDb orderbyContext:orderbyContext orderStyle:orderStyle obj:obj];
+    return [[PaintingliteTableOptions sharePaintingliteTableOptions] execOrderByQuerySQL:self.ppDb orderbyContext:orderbyContext orderStyle:orderStyle obj:obj];
 }
 
 - (Boolean)execQueryOrderBySQLWithOrderbyContext:(NSString *)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle obj:(id)obj completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<NSDictionary *> * _Nonnull, NSMutableArray<id> * _Nonnull))completeHandler{
@@ -555,12 +491,12 @@ static PaintingliteSessionManager *_instance = nil;
         NSLog(@"Database Not Open");
         return false;
     }
-    return [self.tableOptions execOrderByQuerySQL:self.ppDb orderbyContext:orderbyContext orderStyle:orderStyle obj:obj completeHandler:completeHandler];
+    return [[PaintingliteTableOptions sharePaintingliteTableOptions] execOrderByQuerySQL:self.ppDb orderbyContext:orderbyContext orderStyle:orderStyle obj:obj completeHandler:completeHandler];
 }
 
 #pragma mark - PQL查询
 - (NSArray<id> *)execPrepareStatementPQL{
-    return [self.tableOptions execPrepareStatementPQL:self.ppDb];
+    return [[PaintingliteTableOptions sharePaintingliteTableOptions] execPrepareStatementPQL:self.ppDb];
 }
 
 - (Boolean)execPrepareStatementPQLWithCompleteHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull, NSMutableArray<id> * _Nonnull))completeHandler{
@@ -568,24 +504,24 @@ static PaintingliteSessionManager *_instance = nil;
         NSLog(@"Database Not Open");
         return false;
     }
-    return [self.tableOptions execPrepareStatementPQL:self.ppDb completeHandler:completeHandler];
+    return [[PaintingliteTableOptions sharePaintingliteTableOptions] execPrepareStatementPQL:self.ppDb completeHandler:completeHandler];
 }
 
 - (void)execQueryPQLPrepareStatementPQL:(NSString *)prepareStatementPQL{
-    [self.tableOptions execQueryPQLPrepareStatementPQL:prepareStatementPQL];
+    [[PaintingliteTableOptions sharePaintingliteTableOptions] execQueryPQLPrepareStatementPQL:prepareStatementPQL];
 }
 
 - (void)setPrepareStatementPQLParameter:(NSUInteger)index paramter:(NSString *)paramter{
-    [self.tableOptions setPrepareStatementPQLParameter:index paramter:paramter];
+    [[PaintingliteTableOptions sharePaintingliteTableOptions] setPrepareStatementPQLParameter:index paramter:paramter];
 }
 
 - (void)setPrepareStatementPQLParameter:(NSArray *)paramter{
     NSMutableArray *tempParamterArray = [[NSMutableArray alloc] initWithArray:paramter];
-    [self.tableOptions setPrepareStatementPQLParameter:tempParamterArray];
+    [[PaintingliteTableOptions sharePaintingliteTableOptions] setPrepareStatementPQLParameter:tempParamterArray];
 }
 
 - (NSMutableArray<id> *)execPQL:(NSString *)pql{
-    return [self.tableOptions execPQL:self.ppDb pql:pql];
+    return [[PaintingliteTableOptions sharePaintingliteTableOptions] execPQL:self.ppDb pql:pql];
 }
 
 - (Boolean)execPQL:(NSString *)pql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull, NSMutableArray<id> * _Nonnull))completeHandler{
@@ -593,7 +529,7 @@ static PaintingliteSessionManager *_instance = nil;
         NSLog(@"Database Not Open");
         return false;
     }
-    return [self.tableOptions execPQL:self.ppDb pql:pql completeHandler:completeHandler];
+    return [[PaintingliteTableOptions sharePaintingliteTableOptions] execPQL:self.ppDb pql:pql completeHandler:completeHandler];
 }
 
 #pragma mark - CUD
@@ -607,7 +543,7 @@ static PaintingliteSessionManager *_instance = nil;
         NSLog(@"Database Not Open");
         return false;
     }
-    return [self.tableOptions insert:self.ppDb sql:sql completeHandler:completeHandler];
+    return [[PaintingliteTableOptions sharePaintingliteTableOptions] insert:self.ppDb sql:sql completeHandler:completeHandler];
 }
 
 - (Boolean)insertWithObj:(id)obj completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
@@ -615,16 +551,16 @@ static PaintingliteSessionManager *_instance = nil;
         NSLog(@"Database Not Open");
         return false;
     }
-    return [self.tableOptions insert:self.ppDb obj:obj completeHandler:completeHandler];
+    return [[PaintingliteTableOptions sharePaintingliteTableOptions] insert:self.ppDb obj:obj completeHandler:completeHandler];
 }
 
 #pragma mark - 更新数据
 - (Boolean)update:(NSString *)sql{
-    return [self.tableOptions update:self.ppDb sql:sql];
+    return [[PaintingliteTableOptions sharePaintingliteTableOptions] update:self.ppDb sql:sql];
 }
 
 - (Boolean)update:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
-    return [self.tableOptions update:self.ppDb sql:sql completeHandler:completeHandler];
+    return [[PaintingliteTableOptions sharePaintingliteTableOptions] update:self.ppDb sql:sql completeHandler:completeHandler];
 }
 
 - (Boolean)updateWithObj:(id)obj condition:(NSString * _Nonnull)condition completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
@@ -632,12 +568,12 @@ static PaintingliteSessionManager *_instance = nil;
         NSLog(@"Database Not Open");
         return false;
     }
-    return [self.tableOptions update:self.ppDb obj:obj condition:condition completeHandler:completeHandler];
+    return [[PaintingliteTableOptions sharePaintingliteTableOptions] update:self.ppDb obj:obj condition:condition completeHandler:completeHandler];
 }
 
 #pragma mark - 删除数据
 - (Boolean)del:(NSString *)sql{
-    return [self.tableOptions del:self.ppDb sql:sql];
+    return [[PaintingliteTableOptions sharePaintingliteTableOptions] del:self.ppDb sql:sql];
 }
 
 - (Boolean)del:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
@@ -645,30 +581,12 @@ static PaintingliteSessionManager *_instance = nil;
         NSLog(@"Database Not Open");
         return false;
     }
-    return [self.tableOptions del:self.ppDb sql:sql completeHandler:completeHandler];
+    return [[PaintingliteTableOptions sharePaintingliteTableOptions] del:self.ppDb sql:sql completeHandler:completeHandler];
 }
 
 #pragma mark - 表结构查询
 - (NSMutableArray<NSDictionary *> *)tableInfoWithTableName:(NSString *)tableName{
-    NSMutableArray *tableinfoArray = [NSMutableArray array];
-    /* 确认表名称存在 */
-    if (self.isOpen && [[self.exec getCurrentTableNameWithCache] containsObject:tableName]) {
-        /* 返回表的结构 */
-        sqlite3_stmt *stmt;
-        if (sqlite3_prepare_v2(_ppDb, [[NSString stringWithFormat:@"PRAGMA TABLE_INFO(%@)",tableName] UTF8String], -1, &(stmt), nil) == SQLITE_OK){
-            //查询成功
-            NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-            while (sqlite3_step(stmt) == SQLITE_ROW) {
-                //保存数据库中的字段名
-                char *name = (char *)sqlite3_column_text(stmt, 1);
-                char *type = (char *)sqlite3_column_text(stmt, 2);
-                [dict setValue:[NSString stringWithUTF8String:type] forKey:[NSString stringWithUTF8String:name]];
-            }
-            [tableinfoArray addObject:dict];
-        }
-    }
-        
-    return tableinfoArray;
+    return [self.exec execQueryTableInfo:_ppDb tableName:tableName];
 }
 
 @end

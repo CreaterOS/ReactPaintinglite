@@ -42,9 +42,16 @@ NS_ASSUME_NONNULL_BEGIN
 - (Boolean)backupDataBaseWithName:(sqlite3 *)ppDb sqliteName:(NSString *)sqliteName type:(PaintingliteBackUpManagerDBType)type completeHandler:(void(^ __nullable)(NSString *saveFilePath))completeHandler;
 
 /**
+ * 根据表名称数组备份
+ * tableNameArray -- 表名数组
+ * ppDb -- 数据库ppDb
+ */
+- (Boolean)backupTableRowWithTableName:(NSMutableArray<NSString *> *__nonnull)tableNameArray ppDb:(sqlite3 *)ppDb;
+
+/**
  * 回退一次表数据
  */
-- (Boolean)backupTableValueForBeforeOpt:(sqlite3 *)ppDb tableName:(NSString *__nonnull)tableName completeHandler:(void(^ __nullable)(PaintingliteSessionError *sessionerror,Boolean success, NSMutableArray<id> *newList))completeHandler;
+- (Boolean)backupTableValueForBeforeOpt:(sqlite3 *)ppDb tableName:(NSString *__nonnull)tableName completeHandler:(void(^ __nullable)(PaintingliteSessionError *sessionerror,Boolean success, NSMutableArray<NSDictionary *> *newList))completeHandler;
 
 @end
 

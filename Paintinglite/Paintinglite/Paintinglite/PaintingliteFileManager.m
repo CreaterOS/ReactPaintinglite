@@ -37,7 +37,7 @@ static PaintingliteFileManager *_instance = nil;
         return [self attributesOfItemAtPath:filePath error:&error];
     }
     
-    return NULL;
+    return [NSDictionary dictionary];
 }
 
 @end

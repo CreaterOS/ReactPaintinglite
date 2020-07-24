@@ -60,44 +60,4 @@ static PaintingliteSnapManager *_instance = nil;
     [self.factory execQuery:ppDb tableName:tableName sql:TABLE_INFO(tableName) status:PaintingliteSessionFactoryTableINFOCache];
 }
 
-#pragma mark - 表的数据快照
-- (Boolean)saveTableValue:(sqlite3 *)ppDb tableName:(NSString *)tableName{
-    NSMutableArray *queryArray = [self.exec sqlite3ExecQuery:ppDb sql:SELECT_QUERY_SQL(tableName)];
-    //写入JSON文件
-    Boolean success = false;
-    @autoreleasepool {
-        success = [queryArray writeToFile:[Paintinglite_SNAP_ROOT_PATH stringByAppendingPathComponent:[NSString stringWithFormat:@"%@_VALUE.json",tableName]] atomically:YES];
-    }
-
-    
-    [queryArray removeAllObjects];
-    
-    return success;
-}
-
-#pragma mark - 删除所有快照
-- (Boolean)removeSnap:(NSString *__nonnull)tableName{
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSString *fileValuePath = [Paintinglite_SNAP_ROOT_PATH stringByAppendingPathComponent:[NSString stringWithFormat:@"%@_VALUE.json",tableName]];
-    NSString *fileInfoSnapPath = [Paintinglite_SNAP_ROOT_PATH stringByAppendingPathComponent:[NSString stringWithFormat:@"TablesInfo_Snap.json"]];
-    NSString *fileSnapPath = [Paintinglite_SNAP_ROOT_PATH stringByAppendingPathComponent:[NSString stringWithFormat:@"Tables_Snap.json"]];
-    
-    Boolean success = false;
-    NSError *error = nil;
-    
-    if ([fileManager fileExistsAtPath:fileValuePath]) {
-        success = [fileManager removeItemAtPath:fileValuePath error:&error];
-    }
-    
-    if ([fileManager fileExistsAtPath:fileInfoSnapPath]) {
-        success = [fileManager removeItemAtPath:fileInfoSnapPath error:&error];
-    }
-    
-    if ([fileManager fileExistsAtPath:fileSnapPath]) {
-        success = [fileManager removeItemAtPath:fileSnapPath error:&error];
-    }
-    
-    return success;
-}
-
 @end

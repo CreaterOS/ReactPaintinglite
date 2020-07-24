@@ -53,41 +53,12 @@
 #define SQL_FIRST_WORDS(sql) [[[sql uppercaseString] componentsSeparatedByString:@" "] firstObject]
 
 @interface PaintingliteExec()
-@property (nonatomic,strong)PaintingliteSessionFactory *factory; //工厂
 @property (nonatomic)sqlite3_stmt *stmt;
-@property (nonatomic,strong)PaintingliteSnapManager *snapManager; //快照管理者
 @property (nonatomic)Boolean isCreateTable; //是否调用创建数据库
 @property (nonatomic)Boolean isSnap; //是否保存过
-@property (nonatomic,strong)PaintingliteCache *cache; //快照缓存
 @end
 
 @implementation PaintingliteExec
-
-#pragma mark - 懒加载
-- (PaintingliteSessionFactory *)factory{
-    if (!_factory) {
-        _factory = [PaintingliteSessionFactory sharePaintingliteSessionFactory];
-    }
-
-    return _factory;
-}
-
-- (PaintingliteSnapManager *)snapManager{
-    if (!_snapManager) {
-        _snapManager = [PaintingliteSnapManager sharePaintingliteSnapManager];
-    }
-    
-    return _snapManager;
-}
-
-- (PaintingliteCache *)cache{
-    if (!_cache) {
-        _cache = [PaintingliteCache sharePaintingliteCache];
-    }
-    
-    return _cache;
-}
-
 #pragma mark - 执行SQL语句
 #pragma mark - 创建 更新 删除数据库
 - (Boolean)sqlite3Exec:(sqlite3 *)ppDb sql:(NSString *)sql{
@@ -117,13 +88,13 @@
         NSString *optAndStatusStr = [lowerSql stringByAppendingString:@" | "];
         if (flag && sql_flag) {
             //增加对表的快照保存
-            [self.snapManager saveSnap:ppDb];
+            [[PaintingliteSnapManager sharePaintingliteSnapManager] saveSnap:ppDb];
             //对表结构的快照保存
-            [self.snapManager saveTableInfoSnap:ppDb tableName:tableName];
+            [[PaintingliteSnapManager sharePaintingliteSnapManager] saveTableInfoSnap:ppDb tableName:tableName];
         }
         
         //写入缓存
-        [self.cache addDatabaseOptionsCache:[optAndStatusStr stringByAppendingString:flag ? @"success" : @"error"]];
+        [[PaintingliteCache sharePaintingliteCache] addDatabaseOptionsCache:[optAndStatusStr stringByAppendingString:flag ? @"success" : @"error"]];
         
         dispatch_semaphore_signal(signal);
     });
@@ -229,7 +200,7 @@
     }
     
     //写入缓存
-    [self.cache addDatabaseOptionsCache:optAndStatusStr];
+    [[PaintingliteCache sharePaintingliteCache] addDatabaseOptionsCache:optAndStatusStr];
     
     sqlite3_finalize(_stmt);
 
@@ -245,7 +216,7 @@
         return [self systemExec:ppDb sql:sql];
     }
     
-    NSMutableArray<NSDictionary *> *tables = [NSMutableArray array];
+    __block NSMutableArray<NSDictionary *> *tables = [NSMutableArray array];
     //将结果返回,保存为字典
     __block NSMutableArray *resArray = [self getObjName:sql ppDb:ppDb];
     
@@ -259,30 +230,33 @@
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSString *optAndStatusStr = [sql stringByAppendingString:@" | "];
-        
+ 
         if (sqlite3_prepare_v2(ppDb, [sql UTF8String], -1, &(self->_stmt), nil) == SQLITE_OK){
             //查询成功
+            NSUInteger resArrayCount = resArray.count;
             while (sqlite3_step(self->_stmt) == SQLITE_ROW) {
-                NSMutableDictionary<id,id> *queryDict = [NSMutableDictionary dictionary];
-                //resArray是一个含有表字段的数据，根据resArray获得值加入
-                for (unsigned int i = 0; i < resArray.count; i++) {
-                    //取出来的值，然后判断类型，进行类型分类
-                    @autoreleasepool {
-                        id value = nil;
-                        value = [self caseTheType:sqlite3_column_type(self->_stmt, i) index:i value:value];
-                        [queryDict setValue:value forKey:resArray[i]];
+                @autoreleasepool {
+                    NSMutableDictionary<id,id> *queryDict = [NSMutableDictionary dictionary];
+                    //resArray是一个含有表字段的数据，根据resArray获得值加入
+                    for (unsigned int i = 0; i < resArrayCount; ++i) {
+                        //取出来的值，然后判断类型，进行类型分类
+                        @autoreleasepool {
+                            id value = nil;
+                            [queryDict setValue:[self caseTheType:sqlite3_column_type(self->_stmt, i) index:i value:value] forKey:resArray[i]];
+                        }
                     }
+                    
+                    [tables addObject:queryDict];
                 }
-                [tables addObject:queryDict];
             }
             optAndStatusStr = [optAndStatusStr stringByAppendingString:@"success"];
         }else{
             //执行失败
             optAndStatusStr = [optAndStatusStr stringByAppendingString:@"error"];
         }
-        
+    
         //写入缓存
-        [self.cache addDatabaseOptionsCache:optAndStatusStr];
+        [[PaintingliteCache sharePaintingliteCache] addDatabaseOptionsCache:optAndStatusStr];
         
         dispatch_semaphore_signal(signal);
     });
@@ -290,7 +264,7 @@
     dispatch_semaphore_wait(signal,DISPATCH_TIME_FOREVER);
     
     sqlite3_finalize(_stmt);
-        
+    
     return tables;
 }
 
@@ -496,7 +470,7 @@
             //查看字段和当前表的字段进行对比操作，如果出现不一样则更新表
             
             /* 获得表信息的缓存 */
-            NSArray *tableInfoArray = (NSArray *)[self.cache objectForKey:[NSString stringWithFormat:@"snap_%@_info",[objName lowercaseString]]];
+            NSArray *tableInfoArray = (NSArray *)[[PaintingliteCache sharePaintingliteCache] objectForKey:[NSString stringWithFormat:@"snap_%@_info",[objName lowercaseString]]];
          
             if ([propertyNameArray isEqualToArray:tableInfoArray]) {
                 //完全相等，没必要更新操作
@@ -518,8 +492,8 @@
 - (NSArray *)getCurrentTableNameWithCache{
     NSMutableArray<NSString *> *tableNameArray = [NSMutableArray array];
     
-    for (NSUInteger i = 0; i < self.cache.tableCount; i++) {
-        NSString *tableName = (NSString*)[self.cache objectForKey:[NSString stringWithFormat:@"snap_tableName_%zd",i]];
+    for (NSUInteger i = 0; i < [PaintingliteCache sharePaintingliteCache].tableCount; i++) {
+        NSString *tableName = (NSString*)[[PaintingliteCache sharePaintingliteCache] objectForKey:[NSString stringWithFormat:@"snap_tableName_%zd",i]];
         if (![tableNameArray containsObject:tableName]) {
             [tableNameArray addObject:tableName];
         }
@@ -530,45 +504,53 @@
 
 /* 获得表字段 */
 - (NSMutableArray *)getTableInfo:(sqlite3 *)ppDb tableName:(NSString *__nonnull)tableName{
-    return [self.factory execQuery:ppDb tableName:tableName sql:TABLE_INFO(tableName) status:PaintingliteSessionFactoryTableINFOCache];
+    return [[PaintingliteSessionFactory sharePaintingliteSessionFactory] execQuery:ppDb tableName:tableName sql:TABLE_INFO(tableName) status:PaintingliteSessionFactoryTableINFOCache];
 }
 
 #pragma mark - 获得表的名称
 - (NSMutableArray<NSString *> *)execQueryTable:(sqlite3 *)ppDb{
-    NSMutableArray<NSString *> *tables = [NSMutableArray array];
+    __block NSMutableArray<NSString *> *tables = [NSMutableArray array];
     
-    @synchronized (self) {
-        if (sqlite3_prepare_v2(ppDb, [SHOW_TABLES UTF8String], -1, &_stmt, nil) == SQLITE_OK){
+    dispatch_semaphore_t signal = dispatch_semaphore_create(0);
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        if (sqlite3_prepare_v2(ppDb, [SHOW_TABLES UTF8String], -1, &(self->_stmt), nil) == SQLITE_OK){
             //查询成功
-            while (sqlite3_step(_stmt) == SQLITE_ROW) {
+            while (sqlite3_step(self->_stmt) == SQLITE_ROW) {
                 //获得数据库中含有的表名
-                char *name = (char *)sqlite3_column_text(_stmt, 0);
+                char *name = (char *)sqlite3_column_text(self->_stmt, 0);
                 [tables addObject:[NSString stringWithFormat:@"%s",name]];
             }
         }
-    }
+        
+        dispatch_semaphore_signal(signal);
+    });
+    
+    dispatch_semaphore_wait(signal, DISPATCH_TIME_FOREVER);
     
     return tables;
 }
 
 #pragma mark - 获得表的结构字典数组
 - (NSMutableArray *)execQueryTableInfo:(sqlite3 *)ppDb tableName:(NSString *__nonnull)tableName{
-    NSMutableArray<NSMutableDictionary *> *tables = [NSMutableArray array];
+    __block NSMutableArray<NSMutableDictionary *> *tables = [NSMutableArray array];
     
-    NSString *tableInfoSql = TABLE_INFO(tableName);
-    @synchronized (self) {
-        if (sqlite3_prepare_v2(ppDb, [tableInfoSql UTF8String], -1, &_stmt, nil) == SQLITE_OK){
+    __block NSString *tableInfoSql = TABLE_INFO(tableName);
+    
+    dispatch_semaphore_t signal = dispatch_semaphore_create(0);
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        if (sqlite3_prepare_v2(ppDb, [tableInfoSql UTF8String], -1, &(self->_stmt), nil) == SQLITE_OK){
             //查询成功
-            while (sqlite3_step(_stmt) == SQLITE_ROW) {
+            while (sqlite3_step(self->_stmt) == SQLITE_ROW) {
                 NSMutableDictionary<NSString *,NSString *> *tablesInfoDict = [NSMutableDictionary dictionary];
                 
                 //保存数据库中的字段名
-                char *cid  = (char *)sqlite3_column_text(_stmt, 0);
-                char *name = (char *)sqlite3_column_text(_stmt, 1);
-                char *type = (char *)sqlite3_column_text(_stmt, 2);
-                char *notnull = (char *)sqlite3_column_text(_stmt, 3);
-                char *dflt_value = (char *)sqlite3_column_text(_stmt, 4);
-                char *pk = (char *)sqlite3_column_text(_stmt, 5);
+                char *cid  = (char *)sqlite3_column_text(self->_stmt, 0);
+                char *name = (char *)sqlite3_column_text(self->_stmt, 1);
+                char *type = (char *)sqlite3_column_text(self->_stmt, 2);
+                char *notnull = (char *)sqlite3_column_text(self->_stmt, 3);
+                char *dflt_value = (char *)sqlite3_column_text(self->_stmt, 4);
+                char *pk = (char *)sqlite3_column_text(self->_stmt, 5);
                 
                 [tablesInfoDict setValue:[NSString stringWithFormat:@"%s",cid] forKey:TABLEINFO_CID];
                 [tablesInfoDict setValue:[NSString stringWithFormat:@"%s",name] forKey:TABLEINFO_NAME];
@@ -580,7 +562,11 @@
                 [tables addObject:tablesInfoDict];
             }
         }
-    }
+        
+        dispatch_semaphore_signal(signal);
+    });
+
+    dispatch_semaphore_wait(signal, DISPATCH_TIME_FOREVER);
     
     return tables;
 }

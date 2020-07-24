@@ -64,42 +64,38 @@ static PaintingliteLog *_instance = nil;
     self.status = status;
     self.optDate = [NSDate date];
     
-    WEAKSELF(self);
-    dispatch_barrier_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        STRONGSELF(weakself);
-        //写入日志文件使用数据库名称_Log
-        NSString *logFilePath = [NSString stringWithFormat:@"%@_Log.txt",[self.configuration.fileName componentsSeparatedByString:@"."][0]];
-        
-        NSString *logStr = [NSString string];
-        if (status == PaintingliteLogSuccess) {
-            logStr = [NSString stringWithFormat:@"[%@] ---- [%@] ---- [%@]",self.options,[NSDateFormatter localizedStringFromDate:self.optDate dateStyle:NSDateFormatterFullStyle timeStyle:NSDateFormatterFullStyle],@"success"];
-        }else if (status == PaintingliteLogError){
-            logStr = [NSString stringWithFormat:@"[%@] ---- [%@] ---- [%@]",self.options,[NSDateFormatter localizedStringFromDate:self.optDate dateStyle:NSDateFormatterFullStyle timeStyle:NSDateFormatterFullStyle],@"error"];
-        }
-        
-        if ([self.fileManager fileExistsAtPath:logFilePath]){
-            NSError *error = nil;
-            
-            //读取里面的内容
-            logStr = [logStr stringByAppendingFormat:@"\n%@",[NSString stringWithContentsOfFile:logFilePath encoding:NSUTF8StringEncoding error:&error]];
-            [self.fileManager removeItemAtPath:logFilePath error:&error];
-        }
-        
-        NSData *logData= [NSMutableData dataWithData:[logStr dataUsingEncoding:NSUTF8StringEncoding]];
-        
-        //写入日志文件
-        [logData writeToFile:logFilePath atomically:YES];
-        
-        self.logFilePath = logFilePath;
-        
-        if (completeHandler != nil) {
-            completeHandler(logFilePath);
-        }
-        
-        self.fileManager = nil;
-        logData = nil;
-    });
+    //写入日志文件使用数据库名称_Log
+    NSString *logFilePath = [NSString stringWithFormat:@"%@_Log.txt",[self.configuration.fileName componentsSeparatedByString:@"."][0]];
     
+    NSString *logStr = [NSString string];
+    if (status == PaintingliteLogSuccess) {
+        logStr = [NSString stringWithFormat:@"[%@] ---- [%@] ---- [%@]",self.options,[NSDateFormatter localizedStringFromDate:self.optDate dateStyle:NSDateFormatterFullStyle timeStyle:NSDateFormatterFullStyle],@"success"];
+    }else if (status == PaintingliteLogError){
+        logStr = [NSString stringWithFormat:@"[%@] ---- [%@] ---- [%@]",self.options,[NSDateFormatter localizedStringFromDate:self.optDate dateStyle:NSDateFormatterFullStyle timeStyle:NSDateFormatterFullStyle],@"error"];
+    }
+    
+    NSData *logData= [NSMutableData dataWithData:[logStr dataUsingEncoding:NSUTF8StringEncoding]];
+    if ([self.fileManager fileExistsAtPath:logFilePath]){
+        NSFileHandle *fileHandle = [NSFileHandle fileHandleForWritingAtPath:logFilePath];
+        [fileHandle seekToEndOfFile];
+        [fileHandle writeData:logData];
+        [fileHandle closeFile];
+    }else{
+        //写入日志文件
+    dispatch_barrier_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [logData writeToFile:logFilePath atomically:YES];
+        });
+        
+    }
+    
+    self.logFilePath = logFilePath;
+    
+    if (completeHandler != nil) {
+        completeHandler(logFilePath);
+    }
+    
+    self.fileManager = nil;
+    logData = nil;
 }
 
 #pragma mark - 删除日志文件

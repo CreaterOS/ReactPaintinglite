@@ -90,7 +90,7 @@ static PaintingliteAggregateFunc *_instance = nil;
         return [NSString stringWithFormat:@"SELECT AVG(%@) FROM %@ %@",field,[tableName lowercaseString],condatation];
     }
     
-    return NULL;
+    return [NSString string];
 }
 
 #pragma mark - 统计个数

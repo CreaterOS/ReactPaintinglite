@@ -28,9 +28,6 @@ NS_ASSUME_NONNULL_BEGIN
 /* 保存表结构快照 */
 - (void)saveTableInfoSnap:(sqlite3 *)ppDb tableName:(NSString *)tableName;
 
-/* 保存表数据 */
-- (Boolean)saveTableValue:(sqlite3 *)ppDb tableName:(NSString *)tableName;
-
 @end
 
 NS_ASSUME_NONNULL_END
