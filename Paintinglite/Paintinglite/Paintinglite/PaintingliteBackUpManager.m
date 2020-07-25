@@ -17,7 +17,6 @@
 @interface PaintingliteBackUpManager()
 @property (nonatomic,strong)PaintingliteExec *exec; //执行语句
 @property (nonatomic,strong)NSString *saveFilePath; //保存文件路径
-@property (nonatomic,strong)NSFileHandle *fileHandle;
 @end
 
 @implementation PaintingliteBackUpManager
@@ -140,7 +139,6 @@ static PaintingliteBackUpManager *_instance = nil;
         }
         
         success = true;
-        [self.fileHandle closeFile];
         
         dispatch_semaphore_signal(signal);
     });
@@ -287,10 +285,11 @@ static PaintingliteBackUpManager *_instance = nil;
         /* 说明有文件了 */
         NSFileHandle *fileHandle = [NSFileHandle fileHandleForWritingAtPath:self.saveFilePath];
         [fileHandle seekToEndOfFile];
-        self.fileHandle = fileHandle;
-        
+
         //sqlContent追加换行
         [fileHandle writeData:[[sqlContent stringByAppendingString:@"\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+        
+        [fileHandle closeFile];
         
         return true;
     }
