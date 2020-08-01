@@ -11,7 +11,6 @@
 #import "PaintingliteExec.h"
 
 @interface PaintingliteSnapManager()
-@property (nonatomic,strong)PaintingliteSessionFactory *factory; //工厂
 @property (nonatomic,strong)PaintingliteExec *exec; //执行语句
 @end
 
@@ -23,14 +22,6 @@
 @implementation PaintingliteSnapManager
 
 #pragma mark - 懒加载
-- (PaintingliteSessionFactory *)factory{
-    if (!_factory) {
-        _factory = [PaintingliteSessionFactory sharePaintingliteSessionFactory];
-    }
-    
-    return _factory;
-}
-
 - (PaintingliteExec *)exec{
     if (!_exec) {
         _exec = [[PaintingliteExec alloc] init];
@@ -52,12 +43,12 @@ static PaintingliteSnapManager *_instance = nil;
 
 #pragma mark - 表名称的快照
 - (void)saveSnap:(sqlite3 *)ppDb{
-    [self.factory execQuery:ppDb tableName:[NSString string] sql:HAVE_TABLE_SQL status:PaintingliteSessionFactoryTableCache];
+    [[PaintingliteSessionFactory sharePaintingliteSessionFactory] execQuery:ppDb tableName:[NSString string] sql:HAVE_TABLE_SQL status:PaintingliteSessionFactoryTableCache];
 }
 
 #pragma mark - 表结构的快照
 - (void)saveTableInfoSnap:(sqlite3 *)ppDb tableName:(NSString *)tableName{
-    [self.factory execQuery:ppDb tableName:tableName sql:TABLE_INFO(tableName) status:PaintingliteSessionFactoryTableINFOCache];
+    [[PaintingliteSessionFactory sharePaintingliteSessionFactory] execQuery:ppDb tableName:tableName sql:TABLE_INFO(tableName) status:PaintingliteSessionFactoryTableINFOCache];
 }
 
 @end

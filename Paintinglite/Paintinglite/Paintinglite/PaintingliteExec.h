@@ -30,7 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface PaintingliteExec : NSObject
 
 /* 系统执行方式 */
-- (NSMutableArray<NSMutableArray<NSString *> *> *)systemExec:(sqlite3 *)ppDb sql:(NSString *__nonnull)sql;
+- (NSMutableArray<NSMutableDictionary<NSString *,NSString *> *> *)systemExec:(sqlite3 *)ppDb sql:(NSString *__nonnull)sql;
 
 /* 执行SQL语句 */
 - (Boolean)sqlite3Exec:(sqlite3 *)ppDb sql:(NSString *)sql;

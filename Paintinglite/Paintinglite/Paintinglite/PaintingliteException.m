@@ -15,4 +15,8 @@
     NSLog(@"exceptionWithName: %@ reason: %@",exceptionWithName,reason);
 }
 
++ (void)PaintingliteXMLException:(NSString *)exceptionWithName reason:(NSString *)reason{
+     NSLog(@"exceptionWithName: %@ reason: %@",exceptionWithName,reason);
+}
+
 @end

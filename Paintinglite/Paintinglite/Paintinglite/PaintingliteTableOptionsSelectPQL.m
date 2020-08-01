@@ -14,7 +14,6 @@
 
 @interface PaintingliteTableOptionsSelectPQL()
 @property (nonatomic,strong)PaintingliteExec *exec; //执行语句
-@property (nonatomic,strong)PaintingliteSessionError *sessionError;
 @property (nonatomic,assign)NSUInteger paramterIndex; //下标
 @property (nonatomic,strong)id obj; //对象
 
@@ -29,14 +28,6 @@
     }
     
     return _exec;
-}
-
-- (PaintingliteSessionError *)sessionError{
-    if (!_sessionError) {
-        _sessionError = [PaintingliteSessionError sharePaintingliteSessionError];
-    }
-    
-    return _sessionError;
 }
 
 #pragma mark - 单例模式
@@ -100,7 +91,7 @@ static PaintingliteTableOptionsSelectPQL *_instance = nil;
         success = [self execQuerySQL:ppDb sql:[NSString stringWithFormat:@"SELECT * FROM %@%@",objName,condatition] obj:obj completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
             if (success) {
                 if (completeHandler != nil) {
-                    completeHandler(self.sessionError,success,resArray,resObjList);
+                    completeHandler([PaintingliteSessionError sharePaintingliteSessionError],success,resArray,resObjList);
                 }
             }
         }];
@@ -139,7 +130,7 @@ static PaintingliteTableOptionsSelectPQL *_instance = nil;
         if (success) {
             self.obj = nil;
             if (completeHandler != nil) {
-                completeHandler(self.sessionError,success,resArray,resObjList);
+                completeHandler([PaintingliteSessionError sharePaintingliteSessionError],success,resArray,resObjList);
             }
         }
     }];

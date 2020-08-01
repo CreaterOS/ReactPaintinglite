@@ -10,14 +10,19 @@
 		6800074E2488D19000FF75DE /* PaintingliteCUDOptions.m in Sources */ = {isa = PBXBuildFile; fileRef = 6800074D2488D19000FF75DE /* PaintingliteCUDOptions.m */; };
 		680969332481007A00048369 /* PaintingliteTableOptions.m in Sources */ = {isa = PBXBuildFile; fileRef = 680969322481007A00048369 /* PaintingliteTableOptions.m */; };
 		6812B9BD24A59E920091C5EE /* LOGO.txt in Resources */ = {isa = PBXBuildFile; fileRef = 6812B9BC24A59E920091C5EE /* LOGO.txt */; };
+		68194BE024CC31E400E57E54 /* user.xml in Resources */ = {isa = PBXBuildFile; fileRef = 68194BDF24CC31E300E57E54 /* user.xml */; };
+		68194BE324CC565E00E57E54 /* Eletest.m in Sources */ = {isa = PBXBuildFile; fileRef = 68194BE224CC565E00E57E54 /* Eletest.m */; };
 		68275F0A2489392F008DE2A9 /* PaintingliteSnapManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 68275F092489392F008DE2A9 /* PaintingliteSnapManager.m */; };
 		6846BC102484DD5E00887A5C /* PaintingliteTableOptionsSelectPQL.m in Sources */ = {isa = PBXBuildFile; fileRef = 6846BC0F2484DD5E00887A5C /* PaintingliteTableOptionsSelectPQL.m */; };
 		6879F980248E66F300E66ABB /* PaintingliteCascadeShowerIUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 6879F97F248E66F300E66ABB /* PaintingliteCascadeShowerIUD.m */; };
+		6883B28A24CC2E0500BAA3C2 /* XMLReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 6883B28824CC2E0500BAA3C2 /* XMLReader.m */; };
+		6883B28D24CC2F6400BAA3C2 /* PaintingliteXMLSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6883B28C24CC2F6400BAA3C2 /* PaintingliteXMLSessionManager.m */; };
 		6888B26C24B9BF61003345D9 /* PaintingliteFileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6888B26B24B9BF61003345D9 /* PaintingliteFileManager.m */; };
 		6888B26F24B9DBFA003345D9 /* PaintingliteCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6888B26E24B9DBFA003345D9 /* PaintingliteCache.m */; };
 		689E0677247EA79300D6DF95 /* PaintingliteSecurity.m in Sources */ = {isa = PBXBuildFile; fileRef = 689E0676247EA79300D6DF95 /* PaintingliteSecurity.m */; };
 		689E067A247EACD000D6DF95 /* PaintingliteDataBaseOptions.m in Sources */ = {isa = PBXBuildFile; fileRef = 689E0679247EACD000D6DF95 /* PaintingliteDataBaseOptions.m */; };
 		68A1F058247F9CBF0091EAFB /* PaintingliteExec.m in Sources */ = {isa = PBXBuildFile; fileRef = 68A1F057247F9CBF0091EAFB /* PaintingliteExec.m */; };
+		68B20F1424D40531007522BA /* Bus.m in Sources */ = {isa = PBXBuildFile; fileRef = 68B20F1324D40531007522BA /* Bus.m */; };
 		68B84AA02497B9410021CFC2 /* PaintingliteSplitTable.m in Sources */ = {isa = PBXBuildFile; fileRef = 68B84A9F2497B9410021CFC2 /* PaintingliteSplitTable.m */; };
 		68C2F0A8248B8ECB007ADEB0 /* PaintingliteBackUpManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 68C2F0A7248B8ECB007ADEB0 /* PaintingliteBackUpManager.m */; };
 		68CE9DBF2483505E00B96DC3 /* PaintingliteTransaction.m in Sources */ = {isa = PBXBuildFile; fileRef = 68CE9DBE2483505E00B96DC3 /* PaintingliteTransaction.m */; };
@@ -42,6 +47,7 @@
 		68DE996B247D0B680078EDD5 /* PaintingliteLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 68DE996A247D0B680078EDD5 /* PaintingliteLog.m */; };
 		68EB381C249083FD00DFC0CA /* PaintingliteUUID.m in Sources */ = {isa = PBXBuildFile; fileRef = 68EB381B249083FD00DFC0CA /* PaintingliteUUID.m */; };
 		68EDCA84248747E200031B41 /* PaintingliteIntellegenceSelect.m in Sources */ = {isa = PBXBuildFile; fileRef = 68EDCA83248747E200031B41 /* PaintingliteIntellegenceSelect.m */; };
+		68F260B224D1209700652C03 /* PaintingliteJSContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 68F260B124D1209700652C03 /* PaintingliteJSContext.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,12 +73,19 @@
 		680969312481007A00048369 /* PaintingliteTableOptions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaintingliteTableOptions.h; sourceTree = "<group>"; };
 		680969322481007A00048369 /* PaintingliteTableOptions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaintingliteTableOptions.m; sourceTree = "<group>"; };
 		6812B9BC24A59E920091C5EE /* LOGO.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LOGO.txt; sourceTree = "<group>"; };
+		68194BDF24CC31E300E57E54 /* user.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = user.xml; sourceTree = "<group>"; };
+		68194BE124CC565E00E57E54 /* Eletest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Eletest.h; sourceTree = "<group>"; };
+		68194BE224CC565E00E57E54 /* Eletest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Eletest.m; sourceTree = "<group>"; };
 		68275F082489392F008DE2A9 /* PaintingliteSnapManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaintingliteSnapManager.h; sourceTree = "<group>"; };
 		68275F092489392F008DE2A9 /* PaintingliteSnapManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaintingliteSnapManager.m; sourceTree = "<group>"; };
 		6846BC0E2484DD5E00887A5C /* PaintingliteTableOptionsSelectPQL.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaintingliteTableOptionsSelectPQL.h; sourceTree = "<group>"; };
 		6846BC0F2484DD5E00887A5C /* PaintingliteTableOptionsSelectPQL.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaintingliteTableOptionsSelectPQL.m; sourceTree = "<group>"; };
 		6879F97E248E66F300E66ABB /* PaintingliteCascadeShowerIUD.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaintingliteCascadeShowerIUD.h; sourceTree = "<group>"; };
 		6879F97F248E66F300E66ABB /* PaintingliteCascadeShowerIUD.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaintingliteCascadeShowerIUD.m; sourceTree = "<group>"; };
+		6883B28824CC2E0500BAA3C2 /* XMLReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMLReader.m; sourceTree = "<group>"; };
+		6883B28924CC2E0500BAA3C2 /* XMLReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMLReader.h; sourceTree = "<group>"; };
+		6883B28B24CC2F6400BAA3C2 /* PaintingliteXMLSessionManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaintingliteXMLSessionManager.h; sourceTree = "<group>"; };
+		6883B28C24CC2F6400BAA3C2 /* PaintingliteXMLSessionManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaintingliteXMLSessionManager.m; sourceTree = "<group>"; };
 		6888B26A24B9BF61003345D9 /* PaintingliteFileManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaintingliteFileManager.h; sourceTree = "<group>"; };
 		6888B26B24B9BF61003345D9 /* PaintingliteFileManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaintingliteFileManager.m; sourceTree = "<group>"; };
 		6888B26D24B9DBFA003345D9 /* PaintingliteCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaintingliteCache.h; sourceTree = "<group>"; };
@@ -83,6 +96,8 @@
 		689E0679247EACD000D6DF95 /* PaintingliteDataBaseOptions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaintingliteDataBaseOptions.m; sourceTree = "<group>"; };
 		68A1F056247F9CBF0091EAFB /* PaintingliteExec.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaintingliteExec.h; sourceTree = "<group>"; };
 		68A1F057247F9CBF0091EAFB /* PaintingliteExec.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaintingliteExec.m; sourceTree = "<group>"; };
+		68B20F1224D40531007522BA /* Bus.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Bus.h; sourceTree = "<group>"; };
+		68B20F1324D40531007522BA /* Bus.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Bus.m; sourceTree = "<group>"; };
 		68B84A9E2497B9410021CFC2 /* PaintingliteSplitTable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaintingliteSplitTable.h; sourceTree = "<group>"; };
 		68B84A9F2497B9410021CFC2 /* PaintingliteSplitTable.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaintingliteSplitTable.m; sourceTree = "<group>"; };
 		68C2F0A6248B8ECB007ADEB0 /* PaintingliteBackUpManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaintingliteBackUpManager.h; sourceTree = "<group>"; };
@@ -132,6 +147,8 @@
 		68EDCA82248747E200031B41 /* PaintingliteIntellegenceSelect.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaintingliteIntellegenceSelect.h; sourceTree = "<group>"; };
 		68EDCA83248747E200031B41 /* PaintingliteIntellegenceSelect.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaintingliteIntellegenceSelect.m; sourceTree = "<group>"; };
 		68EDCA852487A57700031B41 /* PaintingliteExecHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaintingliteExecHeader.h; sourceTree = "<group>"; };
+		68F260B024D1209700652C03 /* PaintingliteJSContext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaintingliteJSContext.h; sourceTree = "<group>"; };
+		68F260B124D1209700652C03 /* PaintingliteJSContext.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaintingliteJSContext.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -189,6 +206,11 @@
 				68DE9925247C9B6A0078EDD5 /* AppDelegate.m */,
 				68DE9927247C9B6A0078EDD5 /* ViewController.h */,
 				68DE9928247C9B6A0078EDD5 /* ViewController.m */,
+				68194BE124CC565E00E57E54 /* Eletest.h */,
+				68194BE224CC565E00E57E54 /* Eletest.m */,
+				68B20F1224D40531007522BA /* Bus.h */,
+				68B20F1324D40531007522BA /* Bus.m */,
+				68194BDF24CC31E300E57E54 /* user.xml */,
 				68DE992A247C9B6A0078EDD5 /* Main.storyboard */,
 				68DE992D247C9B6C0078EDD5 /* Assets.xcassets */,
 				68DE992F247C9B6C0078EDD5 /* LaunchScreen.storyboard */,
@@ -270,6 +292,12 @@
 				68EB381A249083FD00DFC0CA /* PaintingliteUUID.h */,
 				68EB381B249083FD00DFC0CA /* PaintingliteUUID.m */,
 				68EDCA852487A57700031B41 /* PaintingliteExecHeader.h */,
+				6883B28B24CC2F6400BAA3C2 /* PaintingliteXMLSessionManager.h */,
+				6883B28C24CC2F6400BAA3C2 /* PaintingliteXMLSessionManager.m */,
+				6883B28924CC2E0500BAA3C2 /* XMLReader.h */,
+				6883B28824CC2E0500BAA3C2 /* XMLReader.m */,
+				68F260B024D1209700652C03 /* PaintingliteJSContext.h */,
+				68F260B124D1209700652C03 /* PaintingliteJSContext.m */,
 				6812B9BC24A59E920091C5EE /* LOGO.txt */,
 			);
 			path = Paintinglite;
@@ -389,6 +417,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				68DE9931247C9B6C0078EDD5 /* LaunchScreen.storyboard in Resources */,
+				68194BE024CC31E400E57E54 /* user.xml in Resources */,
 				68DE992E247C9B6C0078EDD5 /* Assets.xcassets in Resources */,
 				68DE992C247C9B6A0078EDD5 /* Main.storyboard in Resources */,
 				6812B9BD24A59E920091C5EE /* LOGO.txt in Resources */,
@@ -416,6 +445,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				68B20F1424D40531007522BA /* Bus.m in Sources */,
 				68DE9929247C9B6A0078EDD5 /* ViewController.m in Sources */,
 				68EDCA84248747E200031B41 /* PaintingliteIntellegenceSelect.m in Sources */,
 				68275F0A2489392F008DE2A9 /* PaintingliteSnapManager.m in Sources */,
@@ -426,7 +456,9 @@
 				68DE9965247CA2490078EDD5 /* PaintingliteConfiguration.m in Sources */,
 				68DE9968247CA5870078EDD5 /* PaintingliteSessionError.m in Sources */,
 				68CF869D24809DC000755126 /* PaintingliteException.m in Sources */,
+				68194BE324CC565E00E57E54 /* Eletest.m in Sources */,
 				68DE9959247C9C260078EDD5 /* PaintingliteSessionManager.m in Sources */,
+				6883B28A24CC2E0500BAA3C2 /* XMLReader.m in Sources */,
 				6879F980248E66F300E66ABB /* PaintingliteCascadeShowerIUD.m in Sources */,
 				6800074E2488D19000FF75DE /* PaintingliteCUDOptions.m in Sources */,
 				68DE9926247C9B6A0078EDD5 /* AppDelegate.m in Sources */,
@@ -435,12 +467,14 @@
 				68D5030724A1E9E0004EC32D /* PaintinglitePressureOS.m in Sources */,
 				68DE9962247CA1140078EDD5 /* PaintingliteSessionFactory.m in Sources */,
 				68EB381C249083FD00DFC0CA /* PaintingliteUUID.m in Sources */,
+				6883B28D24CC2F6400BAA3C2 /* PaintingliteXMLSessionManager.m in Sources */,
 				6846BC102484DD5E00887A5C /* PaintingliteTableOptionsSelectPQL.m in Sources */,
 				68C2F0A8248B8ECB007ADEB0 /* PaintingliteBackUpManager.m in Sources */,
 				689E0677247EA79300D6DF95 /* PaintingliteSecurity.m in Sources */,
 				6888B26C24B9BF61003345D9 /* PaintingliteFileManager.m in Sources */,
 				68A1F058247F9CBF0091EAFB /* PaintingliteExec.m in Sources */,
 				6888B26F24B9DBFA003345D9 /* PaintingliteCache.m in Sources */,
+				68F260B224D1209700652C03 /* PaintingliteJSContext.m in Sources */,
 				68CE9DBF2483505E00B96DC3 /* PaintingliteTransaction.m in Sources */,
 				680969332481007A00048369 /* PaintingliteTableOptions.m in Sources */,
 				68B84AA02497B9410021CFC2 /* PaintingliteSplitTable.m in Sources */,

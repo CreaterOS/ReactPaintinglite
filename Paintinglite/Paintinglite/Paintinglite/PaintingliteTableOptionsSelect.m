@@ -12,7 +12,6 @@
 #import "PaintingliteTransaction.h"
 
 @interface PaintingliteTableOptionsSelect()
-@property (nonatomic,strong)PaintingliteSessionError *sessionError;
 @property (nonatomic,strong)PaintingliteExec *exec; //执行语句
 @property (nonatomic,strong,readwrite,nonnull)NSString *prepareStatementSql;
 @property (nonatomic,assign)NSUInteger paramterIndex; //下标
@@ -21,14 +20,6 @@
 @implementation PaintingliteTableOptionsSelect
 
 #pragma mark - 懒加载
-- (PaintingliteSessionError *)sessionError{
-    if (!_sessionError) {
-        _sessionError = [PaintingliteSessionError sharePaintingliteSessionError];
-    }
-    
-    return _sessionError;
-}
-
 - (PaintingliteExec *)exec{
     if (!_exec) {
         _exec = [[PaintingliteExec alloc] init];
@@ -72,7 +63,7 @@ static PaintingliteTableOptionsSelect *_instance = nil;
     }
     
     if (completeHandler != nil) {
-        completeHandler(self.sessionError,success,resArray);
+        completeHandler([PaintingliteSessionError sharePaintingliteSessionError],success,resArray);
     }
     
     array = nil;
@@ -122,7 +113,7 @@ static PaintingliteTableOptionsSelect *_instance = nil;
             }
             
             if (completeHandler != nil) {
-                completeHandler(self.sessionError,success,execQueryArray,resObjList);
+                completeHandler([PaintingliteSessionError sharePaintingliteSessionError],success,execQueryArray,resObjList);
             }
             
             dispatch_semaphore_signal(signal);

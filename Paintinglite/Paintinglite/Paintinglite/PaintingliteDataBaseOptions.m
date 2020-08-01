@@ -12,21 +12,12 @@
 #import "PaintingliteLog.h"
 
 @interface PaintingliteDataBaseOptions()
-@property (nonatomic,strong)PaintingliteSessionError *sessionError;
 @property (nonatomic,strong)PaintingliteExec *exec; //执行语句
 @end
 
 @implementation PaintingliteDataBaseOptions
 
 #pragma mark - 懒加载
-- (PaintingliteSessionError *)sessionError{
-    if (!_sessionError) {
-        _sessionError = [PaintingliteSessionError sharePaintingliteSessionError];
-    }
-    
-    return _sessionError;
-}
-
 - (PaintingliteExec *)exec{
     if (!_exec) {
         _exec = [[PaintingliteExec alloc] init];
@@ -57,7 +48,7 @@ static PaintingliteDataBaseOptions *_instance = nil;
     Boolean flag = [self.exec sqlite3Exec:ppDb sql:sql];
 
     if (completeHandler != nil) {
-        completeHandler(self.sessionError,flag);
+        completeHandler([PaintingliteSessionError sharePaintingliteSessionError],flag);
     }
     
     return flag;
@@ -74,7 +65,7 @@ static PaintingliteDataBaseOptions *_instance = nil;
     Boolean flag = [self.exec sqlite3Exec:ppDb tableName:tableName content:content];
     
     if (completeHandler != nil) {
-        completeHandler(self.sessionError,flag);
+        completeHandler([PaintingliteSessionError sharePaintingliteSessionError],flag);
     }
     
     return flag;
@@ -91,7 +82,7 @@ static PaintingliteDataBaseOptions *_instance = nil;
     Boolean success = [self.exec sqlite3Exec:ppDb obj:obj status:PaintingliteExecCreate createStyle:createStyle];
     
     if (completeHandler != nil) {
-        completeHandler(self.sessionError,success);
+        completeHandler([PaintingliteSessionError sharePaintingliteSessionError],success);
     }
     
     return success;
@@ -108,7 +99,7 @@ static PaintingliteDataBaseOptions *_instance = nil;
     Boolean success = [self.exec sqlite3Exec:ppDb obj:@[oldName,newName] status:PaintingliteExecAlterRename createStyle:PaintingliteDataBaseOptionsDefault];
     
     if (completeHandler != nil) {
-        completeHandler(self.sessionError,success);
+        completeHandler([PaintingliteSessionError sharePaintingliteSessionError],success);
     }
     
     return success;
@@ -122,7 +113,7 @@ static PaintingliteDataBaseOptions *_instance = nil;
     Boolean success = [self.exec sqlite3Exec:ppDb obj:@[tableName,columnName,columnType] status:PaintingliteExecAlterAddColumn createStyle:PaintingliteDataBaseOptionsDefault];
     
     if (completeHandler != nil) {
-        completeHandler(self.sessionError,success);
+        completeHandler([PaintingliteSessionError sharePaintingliteSessionError],success);
     }
     
     return success;
@@ -140,7 +131,7 @@ static PaintingliteDataBaseOptions *_instance = nil;
     Boolean success = [self.exec sqlite3Exec:ppDb obj:obj status:PaintingliteExecAlterObj createStyle:PaintingliteDataBaseOptionsDefault];
     
     if (completeHandler != nil) {
-        completeHandler(self.sessionError,success);
+        completeHandler([PaintingliteSessionError sharePaintingliteSessionError],success);
     }
     
     return success;
@@ -157,7 +148,7 @@ static PaintingliteDataBaseOptions *_instance = nil;
     Boolean success = [self.exec sqlite3Exec:ppDb tableName:tableName];
     
     if (completeHandler != nil) {
-        completeHandler(self.sessionError,success);
+        completeHandler([PaintingliteSessionError sharePaintingliteSessionError],success);
     }
     
     return success;
@@ -172,7 +163,7 @@ static PaintingliteDataBaseOptions *_instance = nil;
     Boolean success = [self.exec sqlite3Exec:ppDb obj:obj status:PaintingliteExecDrop createStyle:PaintingliteDataBaseOptionsDefault];
 
     if (completeHandler != nil) {
-        completeHandler(self.sessionError,success);
+        completeHandler([PaintingliteSessionError sharePaintingliteSessionError],success);
     }
     
 

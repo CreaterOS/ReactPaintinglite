@@ -14,6 +14,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (void)PaintingliteException:(NSString *)exceptionWithName reason:(NSString *)reason;
 
+/* 解析XML报错 */
++ (void)PaintingliteXMLException:(NSString *)exceptionWithName reason:(NSString *)reason;
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -13,29 +13,9 @@
 
 @interface PaintingliteSessionFactory()
 @property (nonatomic)sqlite3_stmt *stmt;
-@property (nonatomic,strong)PaintingliteLog *log; //日志
-@property (nonatomic,strong)PaintingliteCache *cache; //快照缓存
 @end
 
 @implementation PaintingliteSessionFactory
-
-#pragma mark - 懒加载
-- (PaintingliteLog *)log{
-    if (!_log) {
-        _log = [PaintingliteLog sharePaintingliteLog];
-    }
-    
-    return _log;
-}
-
-- (PaintingliteCache *)cache{
-    if (!_cache) {
-        _cache = [PaintingliteCache sharePaintingliteCache];
-    }
-    
-    return _cache;
-}
-
 #pragma mark - 单例模式
 static PaintingliteSessionFactory *_instance = nil;
 + (instancetype)sharePaintingliteSessionFactory{
@@ -78,22 +58,22 @@ static PaintingliteSessionFactory *_instance = nil;
         }
         
         //添加缓存
-        [self.cache addDatabaseOptionsCache:optAndStatusStr];
+        [[PaintingliteCache sharePaintingliteCache] addDatabaseOptionsCache:optAndStatusStr];
         
         if (tables.count != 0) {
             if (status == PaintingliteSessionFactoryTableCache) {
                 //表名缓存
                 NSUInteger count = 0;
-                self.cache.tableCount = 0;
+                [PaintingliteCache sharePaintingliteCache].tableCount = 0;
                 for (NSString *databaseName in tables) {
-                    [self.cache removeObjectForKey:[NSString stringWithFormat:@"snap_tableName_%zd",count]];
-                    [self.cache addSnapTableNameCache:databaseName];
+                    [[PaintingliteCache sharePaintingliteCache] removeObjectForKey:[NSString stringWithFormat:@"snap_tableName_%zd",count]];
+                    [[PaintingliteCache sharePaintingliteCache] addSnapTableNameCache:databaseName];
                     count++;
                 }
             }else{
                 //表字段集合缓存
-                [self.cache removeObjectForKey:[NSString stringWithFormat:@"snap_%@_info",tableName]];
-                [self.cache addSnapTableInfoNameCache:tables tableName:tableName];
+                [[PaintingliteCache sharePaintingliteCache] removeObjectForKey:[NSString stringWithFormat:@"snap_%@_info",tableName]];
+                [[PaintingliteCache sharePaintingliteCache] addSnapTableInfoNameCache:tables tableName:tableName];
             }
         }
         
@@ -108,20 +88,20 @@ static PaintingliteSessionFactory *_instance = nil;
 
 #pragma mark - 删除日志文件
 - (void)removeLogFile:(NSString *)fileName{
-    [self.log removeLogFile:fileName];
+    [[PaintingliteLog sharePaintingliteLog] removeLogFile:fileName];
 }
 
 #pragma mark - 读取日志文件
 - (NSString *)readLogFile:(NSString *)fileName{
-    return [self.log readLogFile:fileName];
+    return [[PaintingliteLog sharePaintingliteLog] readLogFile:fileName];
 }
 
 - (NSString *)readLogFile:(NSString *)fileName dateTime:(NSDate *)dateTime{
-    return [self.log readLogFile:fileName dateTime:dateTime];
+    return [[PaintingliteLog sharePaintingliteLog] readLogFile:fileName dateTime:dateTime];
 }
 
 - (NSString *)readLogFile:(NSString *)fileName logStatus:(PaintingliteLogStatus)logStatus{
-    return [self.log readLogFile:fileName logStatus:logStatus]; 
+    return [[PaintingliteLog sharePaintingliteLog] readLogFile:fileName logStatus:logStatus]; 
 }
 
 @end

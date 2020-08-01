@@ -11,7 +11,6 @@
 #import "PaintingliteExec.h"
 
 @interface PaintingliteAggregateFunc()
-@property (nonatomic,strong)PaintingliteSessionError *sessionError;
 @property (nonatomic,strong)PaintingliteExec *exec; //执行语句
 @property (nonatomic)sqlite3_stmt *stmt;
 @end
@@ -19,14 +18,6 @@
 @implementation PaintingliteAggregateFunc
 
 #pragma mark - 懒加载
-- (PaintingliteSessionError *)sessionError{
-    if (!_sessionError) {
-        _sessionError = [PaintingliteSessionError sharePaintingliteSessionError];
-    }
-    
-    return _sessionError;
-}
-
 - (PaintingliteExec *)exec{
     if (!_exec) {
         _exec = [[PaintingliteExec alloc] init];
@@ -98,7 +89,7 @@ static PaintingliteAggregateFunc *_instance = nil;
     return [self count:ppDb tableName:tableName condatation:@"" completeHandler:^(PaintingliteSessionError * _Nonnull sessionerror, Boolean success, NSUInteger count) {
         if (success) {
             if (completeHandler != nil) {
-                completeHandler(self.sessionError,success,count);
+                completeHandler([PaintingliteSessionError sharePaintingliteSessionError],success,count);
             }
         }
     }];
@@ -112,7 +103,7 @@ static PaintingliteAggregateFunc *_instance = nil;
     success = number != -1;
     
     if (completeHandler != nil) {
-        completeHandler(self.sessionError,success,number);
+        completeHandler([PaintingliteSessionError sharePaintingliteSessionError],success,number);
     }
     
     return success;
@@ -137,7 +128,7 @@ static PaintingliteAggregateFunc *_instance = nil;
     success = number != -1;
     
     if (completeHandler != nil) {
-        completeHandler(self.sessionError,success,number);
+        completeHandler([PaintingliteSessionError sharePaintingliteSessionError],success,number);
     }
     
     return success;
@@ -162,7 +153,7 @@ static PaintingliteAggregateFunc *_instance = nil;
     success = number != -1;
     
     if (completeHandler != nil) {
-        completeHandler(self.sessionError,success,number);
+        completeHandler([PaintingliteSessionError sharePaintingliteSessionError],success,number);
     }
     
     return success;
@@ -187,7 +178,7 @@ static PaintingliteAggregateFunc *_instance = nil;
     success = number != -1;
     
     if (completeHandler != nil) {
-        completeHandler(self.sessionError,success,number);
+        completeHandler([PaintingliteSessionError sharePaintingliteSessionError],success,number);
     }
     
     return success;
@@ -212,7 +203,7 @@ static PaintingliteAggregateFunc *_instance = nil;
     success = number != -1;
     
     if (completeHandler != nil) {
-        completeHandler(self.sessionError,success,number);
+        completeHandler([PaintingliteSessionError sharePaintingliteSessionError],success,number);
     }
     
     return success;

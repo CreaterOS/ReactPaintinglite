@@ -11,20 +11,9 @@
 #import "PaintingliteSessionError.h"
 
 @interface PaintingliteCascadeShowerIUD()
-@property (nonatomic,strong)PaintingliteSessionError *sessionError;
 @end
 
 @implementation PaintingliteCascadeShowerIUD
-
-#pragma mark - 懒加载
-- (PaintingliteSessionError *)sessionError{
-    if (!_sessionError) {
-        _sessionError = [PaintingliteSessionError sharePaintingliteSessionError];
-    }
-    
-    return _sessionError;
-}
-
 #pragma mark - 单例模式
 static PaintingliteCascadeShowerIUD *_instance = nil;
 + (instancetype)sharePaintingliteCascadeShowerIUD{
@@ -78,7 +67,7 @@ static PaintingliteCascadeShowerIUD *_instance = nil;
     }
 
     if (completeHandler != nil) {
-        completeHandler(self.sessionError,success,resArray);
+        completeHandler([PaintingliteSessionError sharePaintingliteSessionError],success,resArray);
     }
     
     return success;
@@ -125,7 +114,7 @@ static PaintingliteCascadeShowerIUD *_instance = nil;
     }
 
     if (completeHandler != nil) {
-        completeHandler(self.sessionError,success,resArray);
+        completeHandler([PaintingliteSessionError sharePaintingliteSessionError],success,resArray);
     }
     
     return success;
@@ -172,7 +161,7 @@ static PaintingliteCascadeShowerIUD *_instance = nil;
     }
 
     if (completeHandler != nil) {
-        completeHandler(self.sessionError,success,resArray);
+        completeHandler([PaintingliteSessionError sharePaintingliteSessionError],success,resArray);
     }
     
     return success;

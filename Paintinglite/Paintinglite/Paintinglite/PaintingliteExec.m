@@ -73,18 +73,16 @@
     /* 获得表名 */
     __block NSString *tableName = [self getOptTableName:ppDb sql:sql];
     
-    /* sql语句小写 */
     __block NSString *lowerSql = [self lowerToUpper:sql];
-    
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         //判断是否有表,有表则不创建
         /*
          执行sqlite3_exec(),成功在保存快照
          成功失败都会进行日志记录
          */
-    
         /* 拼接缓存操作 */
         flag = sqlite3_exec(ppDb, [lowerSql UTF8String], 0, 0, 0) == SQLITE_OK;
+
         NSString *optAndStatusStr = [lowerSql stringByAppendingString:@" | "];
         if (flag && sql_flag) {
             //增加对表的快照保存
@@ -174,22 +172,33 @@
 }
 
 #pragma mark - 系统查询方法
-- (NSMutableArray<NSMutableArray<NSString *> *> *)systemExec:(sqlite3 *)ppDb sql:(NSString *__nonnull)sql{
-    NSMutableArray<NSMutableArray<NSString *> *> *resArray = [NSMutableArray array];
+- (NSMutableArray<NSMutableDictionary<NSString *,NSString *> *> *)systemExec:(sqlite3 *)ppDb sql:(NSString *__nonnull)sql{
+    NSMutableArray<NSMutableDictionary<NSString *,NSString *> *> *resArray = [NSMutableArray array];
     NSString *optAndStatusStr = [sql stringByAppendingString:@" | "];
     @synchronized (self) {
         if (sqlite3_prepare_v2(ppDb, [sql UTF8String], -1, &_stmt, nil) == SQLITE_OK){
             //查询成功
             while (sqlite3_step(_stmt) == SQLITE_ROW) {
-                NSMutableArray<NSString *> *textArray = [NSMutableArray array];
+                /* 获得字段个数 */
                 unsigned int count = sqlite3_column_count(_stmt);
+                NSMutableDictionary<NSString *,NSString *> *dict = [NSMutableDictionary dictionary];
+                
                 for (unsigned i = 0; i < count; i++) {
                     @autoreleasepool {
-                        [textArray addObject:[NSString stringWithUTF8String:(char *)sqlite3_column_text(_stmt, i)]];
+                        /* 取出字段 */
+                        /* 根据tableName,name组合唯一的字段名 */
+                        char *name = (char *)sqlite3_column_name(_stmt, i);
+                        char *tableName = (char *)sqlite3_column_table_name(_stmt, i);
+                        
+                        NSString *filedsName = [[NSString stringWithUTF8String:tableName] stringByAppendingString:[NSString stringWithFormat:@".%@",[NSString stringWithUTF8String:name]]];
+                        /* 内容 */
+                        char *text = (char *)sqlite3_column_text(_stmt, i);
+                        NSString *textStr = text != nil ? [NSString stringWithUTF8String:text] : @"(null)";
+                        [dict setObject:textStr forKey:filedsName];
+                        
                     }
                 }
-                
-                [resArray addObject:textArray];
+                [resArray addObject:dict];
             }
         
             optAndStatusStr = [optAndStatusStr stringByAppendingString:@"success"];
@@ -219,12 +228,6 @@
     __block NSMutableArray<NSDictionary *> *tables = [NSMutableArray array];
     //将结果返回,保存为字典
     __block NSMutableArray *resArray = [self getObjName:sql ppDb:ppDb];
-    
-    //替换SELECT * FROM user 中星号
-    //SELECT * FROM user WHERE name = '...'
-    //SELECT user.name as paintinglite_name,user.age as paintinglite_age FROM user WHERE paintinglite_name = '...' and paintinglite_age = '...';
-    //SELECT * FROM user WHERE age < 40 ORDER BY name DESC
-    sql = [self replaceStar:ppDb resArray:resArray sql:sql];
 
     dispatch_semaphore_t signal = dispatch_semaphore_create(0);
     
@@ -574,23 +577,26 @@
 #pragma mark - 查询截取类名称
 - (NSMutableArray *)getObjName:(NSString *__nonnull)sql ppDb:(sqlite3 *)ppDb{
     sql = [sql uppercaseString];
-    if (![sql containsString:Paintinglite_Sqlite3_WHERE]) {
-        //没有WHERE条件
-        if ([sql containsString:Paintinglite_Sqlite3_LIMIT]) {
-            //有Limit
-            return [self sqlite3Exec:ppDb objName:[[[sql componentsSeparatedByString:Paintinglite_Sqlite3_FROM][1] componentsSeparatedByString:[NSString stringWithFormat:@" %@",Paintinglite_Sqlite3_LIMIT]][0] lowercaseString]];
-        }else if ([sql containsString:Paintinglite_Sqlite3_ORDER]){
-            //有ORDER
-            return [self sqlite3Exec:ppDb objName:[[[sql componentsSeparatedByString:Paintinglite_Sqlite3_FROM][1] componentsSeparatedByString:[NSString stringWithFormat:@" %@",Paintinglite_Sqlite3_ORDER]][0] lowercaseString]];
-        }else{
-            //没有Limit
-            return [self sqlite3Exec:ppDb objName:[[sql componentsSeparatedByString:Paintinglite_Sqlite3_FROM][1] lowercaseString]];
-        }
-    }else{
-        //用WHREE条件
-        //取出FROM 和 WHERE之间的表名
-        return [self sqlite3Exec:ppDb objName:[[[sql componentsSeparatedByString:Paintinglite_Sqlite3_FROM][1] componentsSeparatedByString:[NSString stringWithFormat:@" %@",Paintinglite_Sqlite3_WHERE]][0] lowercaseString]];
-    }
+    
+    return [self sqlite3Exec:ppDb objName:[[[[[sql componentsSeparatedByString:@"FROM "] lastObject] componentsSeparatedByString:@" "] firstObject] lowercaseString]];    
+    
+//    if (![sql containsString:Paintinglite_Sqlite3_WHERE]) {
+//        //没有WHERE条件
+//        if ([sql containsString:Paintinglite_Sqlite3_LIMIT]) {
+//            //有Limit
+//            return [self sqlite3Exec:ppDb objName:[[[sql componentsSeparatedByString:Paintinglite_Sqlite3_FROM][1] componentsSeparatedByString:[NSString stringWithFormat:@" %@",Paintinglite_Sqlite3_LIMIT]][0] lowercaseString]];
+//        }else if ([sql containsString:Paintinglite_Sqlite3_ORDER]){
+//            //有ORDER
+//            return [self sqlite3Exec:ppDb objName:[[[sql componentsSeparatedByString:Paintinglite_Sqlite3_FROM][1] componentsSeparatedByString:[NSString stringWithFormat:@" %@",Paintinglite_Sqlite3_ORDER]][0] lowercaseString]];
+//        }else{
+//            //没有Limit
+//            return [self sqlite3Exec:ppDb objName:[[sql componentsSeparatedByString:Paintinglite_Sqlite3_FROM][1] lowercaseString]];
+//        }
+//    }else{
+//        //用WHREE条件
+//        //取出FROM 和 WHERE之间的表名
+//        return [self sqlite3Exec:ppDb objName:[[[sql componentsSeparatedByString:Paintinglite_Sqlite3_FROM][1] componentsSeparatedByString:[NSString stringWithFormat:@" %@",Paintinglite_Sqlite3_WHERE]][0] lowercaseString]];
+//    }
 }
 
 #pragma mark - 类型转换
@@ -602,9 +608,11 @@
         case SQLITE_FLOAT:
             value = [NSNumber numberWithDouble:sqlite3_column_double(_stmt, i)];
             break;
-        case SQLITE3_TEXT:
-            value = [NSString stringWithUTF8String:(const char *)sqlite3_column_text(_stmt, i)];
+        case SQLITE3_TEXT:{
+            char *text = (char *)sqlite3_column_text(_stmt, i);
+            value = text != nil ? [NSString stringWithUTF8String:text] : @"(null)";
             break;
+        }
         case SQLITE_BLOB:
             value = CFBridgingRelease(sqlite3_column_blob(_stmt, i));
             break;

@@ -14,57 +14,22 @@
 #import "PaintingliteException.h"
 #import "PaintingliteLog.h"
 #import "PaintingliteSnapManager.h"
+#import "PaintingliteAggregateFunc.h"
 #import "PaintingliteUUID.h"
 
 @interface PaintingliteCUDOptions()
-@property (nonatomic,strong)PaintingliteSessionError *sessionError;
 @property (nonatomic,strong)PaintingliteExec *exec; //执行语句
-@property (nonatomic,strong)PaintingliteSessionManager *sessionManager; //会话管理者
-@property (nonatomic,strong)PaintingliteLog *log; //日志
-@property (nonatomic,strong)PaintingliteSnapManager *snapManager; //快照管理者
 @end
 
 @implementation PaintingliteCUDOptions
 
 #pragma mark - 懒加载
-- (PaintingliteSessionError *)sessionError{
-    if (!_sessionError) {
-        _sessionError = [PaintingliteSessionError sharePaintingliteSessionError];
-    }
-    
-    return _sessionError;
-}
-
 - (PaintingliteExec *)exec{
     if (!_exec) {
         _exec = [[PaintingliteExec alloc] init];
     }
     
     return _exec;
-}
-
-- (PaintingliteSessionManager *)sessionManager{
-    if (!_sessionManager) {
-        _sessionManager = [PaintingliteSessionManager sharePaintingliteSessionManager];
-    }
-    
-    return _sessionManager;
-}
-
-- (PaintingliteLog *)log{
-    if (!_log) {
-        _log = [PaintingliteLog sharePaintingliteLog];
-    }
-    
-    return _log;
-}
-
-- (PaintingliteSnapManager *)snapManager{
-    if (!_snapManager) {
-        _snapManager = [PaintingliteSnapManager sharePaintingliteSnapManager];
-    }
-    
-    return _snapManager;
 }
 
 #pragma mark - 单例模式
@@ -89,9 +54,9 @@ static PaintingliteCUDOptions *_instance = nil;
 
     //执行的CUD_Block操作
     NSString *tableName = [NSString string];
-    
-    if (CUDHandler != nil) tableName = CUDHandler();
 
+    if (CUDHandler != nil) tableName = CUDHandler();
+   
     //判断表是否存在，判断表的字段
     if (![[self.exec getCurrentTableNameWithCache] containsObject:tableName]){
         [PaintingliteException PaintingliteException:@"表名不存在" reason:@"数据库找不到表名,无法执行操作"];
@@ -101,7 +66,7 @@ static PaintingliteCUDOptions *_instance = nil;
     success = [self.exec sqlite3Exec:ppDb sql:sql];
 
     if (completeHandler != nil) {
-        completeHandler(self.sessionError,success);
+        completeHandler([PaintingliteSessionError sharePaintingliteSessionError],success);
     }
     
     return success;
@@ -137,7 +102,7 @@ static PaintingliteCUDOptions *_instance = nil;
             sql = (i == tableInfoArray.count - 1) ? [sql stringByAppendingString:[NSString stringWithFormat:@"%@",tableInfoName]] : [sql stringByAppendingString:[NSString stringWithFormat:@"%@,",tableInfoName]];
         }
         
-        sql = [sql stringByAppendingString:@") VALUES("];
+        sql = [sql stringByAppendingString:@") VALUES ("];
         
         //获得对应字段的对象的值
         NSMutableDictionary *propertyValue = [PaintingliteObjRuntimeProperty getObjPropertyValue:obj];
@@ -149,24 +114,33 @@ static PaintingliteCUDOptions *_instance = nil;
                 sql = [sql stringByAppendingString:[NSString stringWithFormat:@"'%@',",[PaintingliteUUID getPaintingliteUUID]]];
                 i = 1;
             }else if([tableInfoArray containsObject:@"ID"]){
-                sql = [sql stringByAppendingString:[NSString stringWithFormat:@"'%d',",[[[self.sessionManager execQuerySQL:[NSString stringWithFormat:@"SELECT * FROM %@",tableName]] lastObject][@"ID"] intValue] + 1]];
+                NSDictionary *dict = [[self execQuerySQL:ppDb sql:[NSString stringWithFormat:@"SELECT * FROM %@ ORDER BY ID DESC LIMIT 1",tableName]] lastObject];
+                
+                sql = [sql stringByAppendingString:[NSString stringWithFormat:@"%zd,",[dict[@"ID"] integerValue] + 1]];
                 i = 1;
             }
         }
         
+        /* 获得属性类型字典 */
+        NSDictionary *objPropertyTypeDict = [PaintingliteObjRuntimeProperty getObjPropertyType:obj];
         for(; i < tableInfoArray.count; i++){
             NSString *tableInfoName = tableInfoArray[i];
-            sql = (i == tableInfoArray.count - 1) ? [sql stringByAppendingString:[NSString stringWithFormat:@"'%@'",propertyValue[tableInfoName]]] : [sql stringByAppendingString:[NSString stringWithFormat:@"'%@',",propertyValue[tableInfoName]]];
+
+            if ([objPropertyTypeDict[tableInfoName] isEqualToString:@"@\"NSString\""]) {
+                sql = (i == tableInfoArray.count - 1) ? [sql stringByAppendingString:[NSString stringWithFormat:@"'%@'",propertyValue[tableInfoName]]] : [sql stringByAppendingString:[NSString stringWithFormat:@"'%@',",propertyValue[tableInfoName]]];
+            }else{
+                sql = (i == tableInfoArray.count - 1) ? [sql stringByAppendingString:[NSString stringWithFormat:@"%@",propertyValue[tableInfoName]]] : [sql stringByAppendingString:[NSString stringWithFormat:@"%@,",propertyValue[tableInfoName]]];
+            }
         }
 
         sql = [sql stringByAppendingString:@");"];
-    
+        NSLog(@"%@",sql);
+        
         //增加数据
         success = [self.exec sqlite3Exec:ppDb sql:sql];
 
-
         if (completeHandler != nil) {
-            completeHandler(self.sessionError,success);
+            completeHandler([PaintingliteSessionError sharePaintingliteSessionError],success);
         }
 
         return success;
@@ -229,7 +203,7 @@ static PaintingliteCUDOptions *_instance = nil;
         //增加数据
         success = [self.exec sqlite3Exec:ppDb sql:sql];
         if (completeHandler != nil) {
-            completeHandler(self.sessionError,success);
+            completeHandler([PaintingliteSessionError sharePaintingliteSessionError],success);
         }
         
         return success;

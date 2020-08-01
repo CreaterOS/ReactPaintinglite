@@ -1,0 +1,90 @@
+<mapper namespace="bus">
+    <sql id="busSql">UUID,BusDesc,BusTitle,BusYear</sql>
+    
+    <!--  配置ResultMap -->
+    <resultMap type="Eletest" id="eletestResult">
+        <!--    配置主键    -->
+        <result property="ID" column="id"/>
+        <!--     配置其他字段   -->
+        <result property="username" column="usrname" />
+        <result property="birthday" column="birthday"/>
+        <result property="sex" column="sex"/>
+        <result property="address" column="address"/>
+    </resultMap>
+
+    <select id="getBusOne" resultType="NSDictionary">
+        SELECT <include refid="busSql"></include> FROM bus WHERE BusDesc like '?'
+    </select>
+    
+    <select id="getBus" resultType="NSMutableArray">
+        SELECT <include refid="busSql"></include> FROM bus WHERE BusDesc like '?'
+    </select>
+    
+    <select id="getBusByObj" resultType="NSMutaleArray" parameterType="Bus">
+        SELECT <include refid="busSql"></include> FROM bus WHERE 1 = 1 <if test="BusDesc != null and BusDesc != ''">AND BusDesc = ?</if>
+    </select>
+    
+    <select id="getBusByObjWhere" resultType="NSMutaleArray" parameterType="Bus">
+        SELECT <include refid="busSql"></include> FROM bus <where><if test="BusDesc != null and BusDesc != ''">BusDesc = ?</if></where>
+    </select>
+
+    <insert id="insertBusByObj" parameterType="Bus">
+        INSERT INTO bus(<include refid="busSql"></include>) VALUES (#UUID,#BusDesc,#BusTitle,#BusYear);
+    </insert>
+    
+    <insert id="insertBusByAutoObj" parameterType="Bus">
+        ?
+    </insert>
+    
+    <update id="updateBusByObj" parameterType="Bus">
+        UPDATE bus SET UUID = #UUID WHERE BusYear = #BusYear;
+    </update>
+    
+    <delete id="deleteBusByObj" parameterType="Bus">
+        DELETE FROM bus WHERE UUID = #UUID;
+    </delete>
+    
+    <select id="getEleByObj" resultType="NSDictionary" parameterType="Eletest" resultMap="eletestResult">
+        SELECT <include refid="eletestSql"></include> FROM eletest WHERE 1 = 1 AND tage = ? <if test="name != null and name !=''">AND name = ?</if> <if test="desc != null and desc != ''">AND desc = ?</if> <if test="teacher != null and teacher != ''">AND teacher = ?</if>
+    </select>
+    
+    <select id="getEleByObjWhere" resultType="NSDictionary" parameterType="Eletest" resultMap="eletestResult">
+        SELECT <include refid="eletestSql"></include> FROM eletest <where><if test="name != null and name !=''">name = ?</if> <if test="desc != null and desc != ''">desc = ?</if> <if test="teacher != null and teacher != ''">teacher = ?</if></where>
+    </select>
+
+    <select id="getEleById" resultType="Eletest" >
+        ?
+    </select>
+    
+	<!-- 数据库插入配置 -->
+    <insert id="getInsertEletest" parameterType="Eletest">
+        INSERT INTO eletest(name,age,desc,tage,teacher) VALUES (#name,#age,#desc,#tage,#teacher);
+	</insert>
+
+    <insert id="getInsertEletestAuto" parameterType="Eletest">
+        ?
+    </insert>
+    
+	<!-- 数据库插入返回主键配置 -->
+	<insert id="getInsertUserReturnPrimaryKey" parameterType="Eletest" useGeneratedKeys="true" keyProperty="ID">
+		<selectKey keyProperty="ID" order="AFTER" >
+			SELECT LAST_INSERT_ID();
+		</selectKey>
+		?
+	</insert>
+	
+	<!-- 数据库更新配置 -->
+	<update id="getUpdateEle" parameterType="Eletest">
+        UPDATE eletest SET name = #name and tage = #tage WHERE teacher = #teacher and age = #age;
+	</update>
+	
+	<!-- 数据库删除配置 -->
+	<delete id="getDeleteUser" parameterType="Eletest">
+        DELETE FROM eletest WHERE name = #name and teacher = #teacher and tage = #tage;
+	</delete>
+    
+    <delete id="getDeleteEleAuto" parameterType="Eletest">
+        ?
+    </delete>
+    
+</mapper>

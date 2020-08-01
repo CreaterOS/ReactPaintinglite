@@ -332,7 +332,7 @@ static PaintingliteSessionManager *_instance = nil;
 }
 
 #pragma mark - 系统查询方式
-- (NSMutableArray<NSMutableArray<NSString *> *> *)systemExec:(NSString *)sql{
+- (NSMutableArray<NSMutableDictionary<NSString *,NSString *> *> *)systemExec:(NSString *)sql{
     return [self.exec systemExec:self.ppDb sql:sql];
 }
 
@@ -551,6 +551,7 @@ static PaintingliteSessionManager *_instance = nil;
         NSLog(@"Database Not Open");
         return false;
     }
+
     return [[PaintingliteTableOptions sharePaintingliteTableOptions] insert:self.ppDb obj:obj completeHandler:completeHandler];
 }
 

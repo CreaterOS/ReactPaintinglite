@@ -17,30 +17,11 @@
 #define STRONGSELF(WEAKSELF) __strong typeof(WEAKSELF) self = WEAKSELF
 
 @interface PaintingliteLog()
-@property (nonatomic,strong)PaintingliteConfiguration *configuration; //配置文件
-@property (nonatomic,strong)PaintingliteFileManager *fileManager; //文件管理者
 @property (nonatomic,copy)NSString *logFilePath; //日志文件
 
 @end
 
 @implementation PaintingliteLog
-
-#pragma mark - 懒加载
-- (PaintingliteConfiguration *)configuration{
-    if (!_configuration) {
-        _configuration = [PaintingliteConfiguration sharePaintingliteConfiguration];
-    }
-    
-    return _configuration;
-}
-
-- (NSFileManager *)fileManager{
-    if (!_fileManager) {
-        _fileManager = [PaintingliteFileManager defaultManager];
-    }
-    
-    return _fileManager;
-}
 
 #pragma mark - 单例模式
 static PaintingliteLog *_instance = nil;
@@ -65,7 +46,7 @@ static PaintingliteLog *_instance = nil;
     self.optDate = [NSDate date];
     
     //写入日志文件使用数据库名称_Log
-    NSString *logFilePath = [NSString stringWithFormat:@"%@_Log.txt",[self.configuration.fileName componentsSeparatedByString:@"."][0]];
+    NSString *logFilePath = [NSString stringWithFormat:@"%@_Log.txt",[[PaintingliteConfiguration sharePaintingliteConfiguration].fileName componentsSeparatedByString:@"."][0]];
     
     NSString *logStr = [NSString string];
     if (status == PaintingliteLogSuccess) {
@@ -75,7 +56,7 @@ static PaintingliteLog *_instance = nil;
     }
     
     NSData *logData= [NSMutableData dataWithData:[logStr dataUsingEncoding:NSUTF8StringEncoding]];
-    if ([self.fileManager fileExistsAtPath:logFilePath]){
+    if ([[PaintingliteFileManager defaultManager] fileExistsAtPath:logFilePath]){
         NSFileHandle *fileHandle = [NSFileHandle fileHandleForWritingAtPath:logFilePath];
         [fileHandle seekToEndOfFile];
         [fileHandle writeData:logData];
@@ -94,14 +75,13 @@ static PaintingliteLog *_instance = nil;
         completeHandler(logFilePath);
     }
     
-    self.fileManager = nil;
     logData = nil;
 }
 
 #pragma mark - 删除日志文件
 - (Boolean)removeLogFile{
     NSError *error = nil;
-    return [self.fileManager removeItemAtPath:self.logFilePath error:&error];
+    return [[PaintingliteFileManager defaultManager] removeItemAtPath:self.logFilePath error:&error];
 }
 
 - (Boolean)removeLogFile:(NSString *)fileName{
@@ -112,7 +92,7 @@ static PaintingliteLog *_instance = nil;
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSError *error = nil;
-        success = [self.fileManager removeItemAtPath:[self LogFilePath:fileName] error:&error];
+        success = [[PaintingliteFileManager defaultManager] removeItemAtPath:[self LogFilePath:fileName] error:&error];
         
         //增加信号量
         dispatch_semaphore_signal(signal);
@@ -133,7 +113,7 @@ static PaintingliteLog *_instance = nil;
     WEAKSELF(self);
     dispatch_barrier_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         STRONGSELF(weakself);
-        if ([self.fileManager fileExistsAtPath:[self LogFilePath:fileName]]) {
+        if ([[PaintingliteFileManager defaultManager] fileExistsAtPath:[self LogFilePath:fileName]]) {
             logStr = [NSString stringWithFormat:@"\n%@ LOG FILE %@\n%@\n%@\n",PaintingliteLeft_Rigth_Line,PaintingliteLeft_Rigth_Line,[[NSString alloc] initWithData:[self logData:fileName] encoding:NSUTF8StringEncoding],PaintingliteLine];
         }
         
@@ -199,7 +179,7 @@ static PaintingliteLog *_instance = nil;
 #pragma mark - 目录下所有的日志文件路径
 - (NSDictionary<NSString *,NSString *> *)logsPath{
     NSString *rootPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
-    NSArray<NSString *> *filePathArray = [self.fileManager dictExistsFile:rootPath];
+    NSArray<NSString *> *filePathArray = [[PaintingliteFileManager defaultManager] dictExistsFile:rootPath];
     NSMutableDictionary *logsPathDict = [NSMutableDictionary dictionary];
 
     for (NSString *fileName in filePathArray) {
@@ -216,12 +196,12 @@ static PaintingliteLog *_instance = nil;
 
 #pragma mark - 查看日志文件最终修改时间
 - (NSDate *)logFileModificationTime:(NSString *)logFilePath{
-    return (NSDate *)[self.fileManager databaseInfo:logFilePath][NSFileModificationDate];
+    return (NSDate *)[[PaintingliteFileManager defaultManager] databaseInfo:logFilePath][NSFileModificationDate];
 }
 
 #pragma mark - 查看日志文件大小
 - (double)logFileSize:(NSString *)logFilePath{
-    NSUInteger logfileSize = [(NSNumber *)[self.fileManager databaseInfo:logFilePath][NSFileSize] integerValue];
+    NSUInteger logfileSize = [(NSNumber *)[[PaintingliteFileManager defaultManager] databaseInfo:logFilePath][NSFileSize] integerValue];
     return logfileSize/1024.0/1024.0;
 }
 
