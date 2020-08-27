@@ -90,6 +90,7 @@
 		6888B26B24B9BF61003345D9 /* PaintingliteFileManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaintingliteFileManager.m; sourceTree = "<group>"; };
 		6888B26D24B9DBFA003345D9 /* PaintingliteCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaintingliteCache.h; sourceTree = "<group>"; };
 		6888B26E24B9DBFA003345D9 /* PaintingliteCache.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaintingliteCache.m; sourceTree = "<group>"; };
+		688ED67B24F758150024A921 /* PaintingliteShortcutSQL.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaintingliteShortcutSQL.h; sourceTree = "<group>"; };
 		689E0675247EA79300D6DF95 /* PaintingliteSecurity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaintingliteSecurity.h; sourceTree = "<group>"; };
 		689E0676247EA79300D6DF95 /* PaintingliteSecurity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaintingliteSecurity.m; sourceTree = "<group>"; };
 		689E0678247EACD000D6DF95 /* PaintingliteDataBaseOptions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaintingliteDataBaseOptions.h; sourceTree = "<group>"; };
@@ -241,6 +242,7 @@
 		68DE9956247C9B9F0078EDD5 /* Paintinglite */ = {
 			isa = PBXGroup;
 			children = (
+				688ED67B24F758150024A921 /* PaintingliteShortcutSQL.h */,
 				68DE9957247C9C260078EDD5 /* PaintingliteSessionManager.h */,
 				68DE9958247C9C260078EDD5 /* PaintingliteSessionManager.m */,
 				6888B26A24B9BF61003345D9 /* PaintingliteFileManager.h */,

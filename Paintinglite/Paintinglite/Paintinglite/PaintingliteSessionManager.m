@@ -13,6 +13,7 @@
 #import "PaintingliteConfiguration.h"
 #import "PaintingliteSnapManager.h"
 #import "PaintingliteExec.h"
+#import "PaintingliteCache.h"
 
 #define WEAKSELF(SELF) __weak typeof(SELF) weakself = SELF
 #define STRONGSELF(WEAKSELF) __strong typeof(WEAKSELF) self = WEAKSELF
@@ -45,6 +46,16 @@ static PaintingliteSessionManager *_instance = nil;
     return _instance;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        //加载缓存
+        [PaintingliteCache sharePaintingliteCache];
+    }
+    return self;
+}
+
 #pragma mark - 连接数据库
 - (Boolean)openSqlite:(NSString *)fileName{
     return [self openSqlite:fileName completeHandler:nil];
@@ -56,11 +67,12 @@ static PaintingliteSessionManager *_instance = nil;
 
 - (Boolean)openSqliteWithFilePath:(NSString *)filePath completeHandler:(void (^)(NSString * _Nonnull, PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
     NSAssert(filePath != NULL, @"Please set the Sqlite DataBase FilePath");
-    
+
     //创建信号量
     dispatch_semaphore_t signal = dispatch_semaphore_create(0);
     __block Boolean success = false;
     WEAKSELF(self);
+    
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         STRONGSELF(weakself);
         if([[PaintingliteFileManager defaultManager] fileExistsAtPath:filePath]){
@@ -102,6 +114,7 @@ static PaintingliteSessionManager *_instance = nil;
     NSString *filePath = [[PaintingliteConfiguration sharePaintingliteConfiguration] configurationFileName:fileName];
     
     WEAKSELF(self);
+    
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         STRONGSELF(weakself);
         if([[PaintingliteFileManager defaultManager] fileExistsAtPath:filePath]){

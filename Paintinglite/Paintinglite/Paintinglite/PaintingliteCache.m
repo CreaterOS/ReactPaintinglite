@@ -8,6 +8,14 @@
 
 #import "PaintingliteCache.h"
 #import "PaintingliteLog.h"
+#import <os/lock.h>
+
+#define WEAK_SELF __weak typeof(self) weakSelf = self;
+#define STRONG_SELF __strong typeof(weakSelf) self = weakSelf;
+ 
+@interface PaintingliteCache()<UIApplicationDelegate>
+
+@end
 
 @implementation PaintingliteCache
 #pragma mark - 单例模式
@@ -26,7 +34,12 @@ static PaintingliteCache *_instance = nil;
     self = [super init];
     if (self) {
         //注册通知写日志
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(writeLogFile) name:@"PaintingliteWriteTableLogNotification" object:self];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(performLocked:) name:@"PaintingliteWriteTableLogNotification" object:self];
+#if SD_UIKIT
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveMemoryWarning) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
+#endif
     }
     return self;
 }
@@ -65,10 +78,13 @@ static int count = 0;
         count = 0;
     }
 }
-#pragma mark - 写入日志
-- (void)writeLogFile{
-    /* 写入文件 */
-    @synchronized (self) {
+
+#pragma mark - 缓存写入日志文件
+- (void)pushCacheToLogFile{
+    WEAK_SELF
+    [self performLocked:^{
+        /* 写入文件 */
+        STRONG_SELF
         for (NSUInteger i = 1; i <= self.optCount; i++) {
             @autoreleasepool {
                 /* 获得语句当前执行状态 */
@@ -76,22 +92,27 @@ static int count = 0;
                 NSString *optAndStatus = (NSString *)[self objectForKey:cacheKey];
                 /* 分隔符 | */
                 NSArray<NSString *> *strArray = [optAndStatus componentsSeparatedByString:@" | "];
-                [self writeLogFileOptions:[strArray firstObject] status:([[strArray lastObject] isEqualToString:@"success"]) ? PaintingliteLogSuccess : PaintingliteLogError];
+                
+                //写入文件
+                [[PaintingliteLog sharePaintingliteLog] writeLogFileOptions:[strArray firstObject]  status:([[strArray lastObject] isEqualToString:@"success"]) ? PaintingliteLogSuccess : PaintingliteLogError completeHandler:nil];
                 /* 清除缓存 */
                 [self removeObjectForKey:cacheKey];
             }
         }
-    }
+    }];
 }
 
-#pragma mark - 缓存写入日志文件
-- (void)pushCacheToLogFile{
-    [self writeLogFile];
+#pragma mark - 自旋锁写入
+- (void)performLocked:(dispatch_block_t)block{
+    os_unfair_lock_t cache_lock = &(OS_UNFAIR_LOCK_INIT);
+    os_unfair_lock_lock(cache_lock);
+    block();
+    os_unfair_lock_unlock(cache_lock);
 }
 
-#pragma mark - 写日志
-- (void)writeLogFileOptions:(NSString *__nonnull)sql status:(PaintingliteLogStatus)status{
-    [[PaintingliteLog sharePaintingliteLog] writeLogFileOptions:sql status:status completeHandler:nil];
+#pragma mark - 释放内存
+- (void)dealloc{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end

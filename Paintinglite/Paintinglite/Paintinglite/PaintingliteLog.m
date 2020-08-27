@@ -18,7 +18,7 @@
 
 @interface PaintingliteLog()
 @property (nonatomic,copy)NSString *logFilePath; //日志文件
-
+@property (nonatomic,strong)dispatch_queue_t queue;
 @end
 
 @implementation PaintingliteLog
@@ -32,6 +32,15 @@ static PaintingliteLog *_instance = nil;
     });
     
     return _instance;
+}
+
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        self.queue = dispatch_queue_create([@"writeFileQueue" UTF8String], DISPATCH_QUEUE_SERIAL);
+    }
+    return self;
 }
 
 #pragma mark - 写入日志文件
@@ -50,9 +59,9 @@ static PaintingliteLog *_instance = nil;
     
     NSString *logStr = [NSString string];
     if (status == PaintingliteLogSuccess) {
-        logStr = [NSString stringWithFormat:@"[%@] ---- [%@] ---- [%@]",self.options,[NSDateFormatter localizedStringFromDate:self.optDate dateStyle:NSDateFormatterFullStyle timeStyle:NSDateFormatterFullStyle],@"success"];
+        logStr = [NSString stringWithFormat:@"● [%@] ---- [%@] ---- [%@]\n",self.options,[NSDateFormatter localizedStringFromDate:self.optDate dateStyle:NSDateFormatterFullStyle timeStyle:NSDateFormatterFullStyle],@"success"];
     }else if (status == PaintingliteLogError){
-        logStr = [NSString stringWithFormat:@"[%@] ---- [%@] ---- [%@]",self.options,[NSDateFormatter localizedStringFromDate:self.optDate dateStyle:NSDateFormatterFullStyle timeStyle:NSDateFormatterFullStyle],@"error"];
+        logStr = [NSString stringWithFormat:@"● [%@] ---- [%@] ---- [%@]\n",self.options,[NSDateFormatter localizedStringFromDate:self.optDate dateStyle:NSDateFormatterFullStyle timeStyle:NSDateFormatterFullStyle],@"error"];
     }
     
     NSData *logData= [NSMutableData dataWithData:[logStr dataUsingEncoding:NSUTF8StringEncoding]];
@@ -63,10 +72,9 @@ static PaintingliteLog *_instance = nil;
         [fileHandle closeFile];
     }else{
         //写入日志文件
-    dispatch_barrier_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        dispatch_barrier_async(self.queue, ^{
             [logData writeToFile:logFilePath atomically:YES];
         });
-        
     }
     
     self.logFilePath = logFilePath;
@@ -90,7 +98,7 @@ static PaintingliteLog *_instance = nil;
     //创建信号量
     dispatch_semaphore_t signal = dispatch_semaphore_create(0);
     
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    dispatch_barrier_async(self.queue, ^{
         NSError *error = nil;
         success = [[PaintingliteFileManager defaultManager] removeItemAtPath:[self LogFilePath:fileName] error:&error];
         
@@ -111,7 +119,7 @@ static PaintingliteLog *_instance = nil;
     //创建信号量
     dispatch_semaphore_t signal = dispatch_semaphore_create(0);
     WEAKSELF(self);
-    dispatch_barrier_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    dispatch_barrier_async(self.queue, ^{
         STRONGSELF(weakself);
         if ([[PaintingliteFileManager defaultManager] fileExistsAtPath:[self LogFilePath:fileName]]) {
             logStr = [NSString stringWithFormat:@"\n%@ LOG FILE %@\n%@\n%@\n",PaintingliteLeft_Rigth_Line,PaintingliteLeft_Rigth_Line,[[NSString alloc] initWithData:[self logData:fileName] encoding:NSUTF8StringEncoding],PaintingliteLine];
@@ -132,7 +140,7 @@ static PaintingliteLog *_instance = nil;
     
     dispatch_semaphore_t signal = dispatch_semaphore_create(0);
     WEAKSELF(self);
-    dispatch_barrier_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    dispatch_barrier_async(self.queue, ^{
         STRONGSELF(weakself);
         NSString *logStr = [[NSString alloc] initWithData:[self logData:fileName] encoding:NSUTF8StringEncoding];
         
@@ -153,7 +161,7 @@ static PaintingliteLog *_instance = nil;
     
     dispatch_semaphore_t signal = dispatch_semaphore_create(0);
     WEAKSELF(self);
-    dispatch_barrier_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    dispatch_barrier_async(self.queue, ^{
         STRONGSELF(weakself);
         NSString *logStr = [[NSString alloc] initWithData:[self logData:fileName] encoding:NSUTF8StringEncoding];
         
