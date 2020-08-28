@@ -69,7 +69,15 @@ static PaintingliteCUDOptions *_instance = nil;
         completeHandler([PaintingliteSessionError sharePaintingliteSessionError],success);
     }
     
+    //操作完成后释放资源
+    self.exec = nil;
+    
     return success;
+}
+
+- (void)dealloc
+{
+    self.exec = nil;
 }
 
 - (Boolean)insert:(sqlite3 *)ppDb sql:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{

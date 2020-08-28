@@ -34,7 +34,7 @@ static PaintingliteCache *_instance = nil;
     self = [super init];
     if (self) {
         //注册通知写日志
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(performLocked:) name:@"PaintingliteWriteTableLogNotification" object:self];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pushCacheToLogFile) name:@"PaintingliteWriteTableLogNotification" object:self];
 #if SD_UIKIT
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
@@ -81,11 +81,7 @@ static int count = 0;
 
 #pragma mark - 缓存写入日志文件
 - (void)pushCacheToLogFile{
-    WEAK_SELF
-    [self performLocked:^{
-        /* 写入文件 */
-        STRONG_SELF
-        for (NSUInteger i = 1; i <= self.optCount; i++) {
+       for (NSUInteger i = 1; i <= self.optCount; i++) {
             @autoreleasepool {
                 /* 获得语句当前执行状态 */
                 NSString *cacheKey = [NSString stringWithFormat:@"database_opt_%zd",i];
@@ -99,15 +95,6 @@ static int count = 0;
                 [self removeObjectForKey:cacheKey];
             }
         }
-    }];
-}
-
-#pragma mark - 自旋锁写入
-- (void)performLocked:(dispatch_block_t)block{
-    os_unfair_lock_t cache_lock = &(OS_UNFAIR_LOCK_INIT);
-    os_unfair_lock_lock(cache_lock);
-    block();
-    os_unfair_lock_unlock(cache_lock);
 }
 
 #pragma mark - 释放内存

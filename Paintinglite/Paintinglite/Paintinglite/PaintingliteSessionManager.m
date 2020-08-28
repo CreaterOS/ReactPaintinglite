@@ -326,9 +326,7 @@ static PaintingliteSessionManager *_instance = nil;
 #pragma mark - 日志文件操作
 #pragma mark - 删除日志文件
 - (void)removeLogFileWithDatabaseName:(NSString *)fileName{
-    dispatch_async(PaintingliteSessionFactory_Sqlite_Queque, ^{
-         [[PaintingliteSessionFactory sharePaintingliteSessionFactory] removeLogFile:fileName];
-    });
+     [[PaintingliteSessionFactory sharePaintingliteSessionFactory] removeLogFile:fileName];
 }
 
 #pragma mark - 读取日志文件

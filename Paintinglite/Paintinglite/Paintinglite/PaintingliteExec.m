@@ -635,4 +635,9 @@
     }
 }
 
+#pragma mark - dealloc
+- (void)dealloc{
+    sqlite3_finalize(self.stmt);
+}
+
 @end
