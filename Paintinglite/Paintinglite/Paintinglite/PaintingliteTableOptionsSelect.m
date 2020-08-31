@@ -206,8 +206,14 @@ static PaintingliteTableOptionsSelect *_instance = nil;
 /**
  * 递归式的传递参数
  * 传入参数形式使用数组来进行设置
+ * 递归采用递归锁
  */
 - (void)setPrepareStatementSqlParameter:(NSMutableArray *)paramter{
+    NSRecursiveLock *recursiveLock = [[NSRecursiveLock alloc] init];
+    
+    //lock
+    [recursiveLock lock];
+    
     NSString *tempPrepareStatementSql = [NSString string];
     if (self.prepareStatementSql.length != 0) {
         tempPrepareStatementSql = self.prepareStatementSql;
@@ -215,17 +221,19 @@ static PaintingliteTableOptionsSelect *_instance = nil;
     
     if ([tempPrepareStatementSql containsString:@"?"]) {
         NSRange range = [tempPrepareStatementSql rangeOfString:@"?"];
-        tempPrepareStatementSql = [tempPrepareStatementSql stringByReplacingCharactersInRange:range withString:[NSString stringWithFormat:@"\'%@\'",[paramter firstObject]]];
+        Boolean flag = [[paramter firstObject] isKindOfClass:[NSString class]] || [[paramter firstObject] isKindOfClass:[NSMutableString class]];
+        tempPrepareStatementSql = [tempPrepareStatementSql stringByReplacingCharactersInRange:range withString:flag ? [NSString stringWithFormat:@"\'%@\'",[paramter firstObject]] : [NSString stringWithFormat:@"%@",[paramter firstObject]]];
         self.prepareStatementSql = tempPrepareStatementSql;
         //删除第一个下标
         [paramter removeObject:[paramter firstObject]];
         //递归调用
         [self setPrepareStatementSqlParameter:paramter];
-        
-        NSLog(@"%@",tempPrepareStatementSql);
         //更新下标
         self.paramterIndex++;
     }
+    
+    //unlock
+    [recursiveLock unlock];
 }
 
 /* 获得'?'的个数 */
