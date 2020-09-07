@@ -24,19 +24,26 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,assign)NSUInteger limitedCacheCount; //支持缓存最大条数
 @property (nonatomic,assign)NSUInteger baseReleaseLine; //释放基准线
 
-/* 单例模式 */
+
+/// 单例模式
 + (instancetype)sharePaintingliteCache;
 
-/* 添加表名称缓存 */
+/// 表名称缓存
+/// @param tableName 表名称
 - (void)addSnapTableNameCache:(NSString *__nonnull)tableName;
 
-/* 添加表结构缓存 */
+/// 表结构缓存
+/// @param infoArray 信息数组
+/// @param tableName 表名
 - (void)addSnapTableInfoNameCache:(NSArray *__nonnull)infoArray tableName:(NSString *__nonnull)tableName;
 
-/* 添加数据库操作缓存 */
+
+/// 操作缓存
+/// @param optStr 操作字符串
 - (void)addDatabaseOptionsCache:(NSString *__nonnull)optStr;
 
-/* 缓存写入日志文件 */
+
+/// 写入缓存文件
 - (void)pushCacheToLogFile;
 
 @end

@@ -49,58 +49,86 @@ typedef NS_ENUM(NSUInteger, PaintingliteJournalMode) {
 
 NS_ASSUME_NONNULL_BEGIN
 
+
 @interface PaintingliteConfiguration : NSObject
 @property (nonatomic,copy)NSString *fileName; //数据库文件名称
 
-/* 单例模式 */
+/// 单例模式
 + (instancetype)sharePaintingliteConfiguration;
 
-/* 配置数据库文件名称 */
+/// 配置数据库文件名称
+/// @param fileName 数据库名称
 - (NSString *)configurationFileName:(NSString *__nonnull)fileName;
 
-/* 修改数据库Synchronous模式 */
+/// Synchronous模式
+/// @param ppDb ppDb
+/// @param mode 模式
 + (Boolean)setSynchronous:(sqlite3 *)ppDb mode:(PaintingliteSynchronousMode)mode;
 
-/* 查看数据库Synchronous模式 */
+/// 查看数据库Synchronous模式
+/// @param ppDb ppDb
 + (NSString *)getSynchronous:(sqlite3 *)ppDb;
 
-/* 配置数据库编码 */
+
+/// 配置数据库编码
+/// @param ppDb ppDb
+/// @param encoding 编码
 + (Boolean)setEncoding:(sqlite3 *)ppDb encoding:(PaintingliteEncoding)encoding;
 
-/* 查看数据库编码 */
+/// 查看数据库编码
+/// @param ppDb ppDb
 + (NSString *)getEncoding:(sqlite3 *)ppDb;
 
-/* 修改数据库Auto_Vacuum模式 */
+/// Auto_Vacuum模式
+/// @param ppDb ppDb
+/// @param mode 模式
 + (Boolean)setAutoVacuum:(sqlite3 *)ppDb mode:(PaintingliteAutoVacuumMode)mode;
 
-/* 查看数据库Auto_Vacuum模式 */
+/// Auto_Vacuum模式
+/// @param ppDb ppDb
 + (NSString *)getAutoVacuum:(sqlite3 *)ppDb;
 
-/* 修改数据库wal_checkpoint模式 */
+/// wal_checkpoint模式
+/// @param ppDb ppDb
+/// @param mode 模式
 + (Boolean)setWalCheckpoint:(sqlite3 *)ppDb mode:(PaintingliteWalCheckpointMode)mode;
 
-/* 修改数据库CacheSize数值 */
+/// CacheSize数值
+/// @param ppDb ppDb
+/// @param size 缓存大小
 + (Boolean)setCacheSize:(sqlite3 *)ppDb size:(NSUInteger)size;
 
-/* 查看数据库CacheSize数值 */
+/// CacheSize数值
+/// @param ppDb ppDb
 + (NSString *)getCacheSize:(sqlite3 *)ppDb;
 
-/* 修改数据库Thread数值 */
+/// Thread数值
+/// @param ppDb ppDb
+/// @param number 线程数
 + (Boolean)setThreadNum:(sqlite3 *)ppDb number:(NSUInteger)number;
 
-/* 查看数据库Thread数值 */
+/// 查看数据库Thread数值
+/// @param ppDb ppDb
 + (NSString *)getThread:(sqlite3 *)ppDb;
 
-/* 修改数据库trusted_schema */
+/// trusted_schema
+/// @param ppDb ppDb
+/// @param boolean 是否开启
 + (Boolean)setTrustedSchema:(sqlite3 *)ppDb boolean:(Boolean)boolean;
 
-/* 修改数据库case_sensitive_like */
+/// case_sensitive_like
+/// @param ppDb ppDb
+/// @param boolean 是否开启
 + (Boolean)setCaseSensitiveLike:(sqlite3 *)ppDb boolean:(Boolean)boolean;
 
-/* 修改数据库count_changes */
+/// count_changes
+/// @param ppDb ppDb
+/// @param boolean 是否开启
 + (Boolean)setCountChanges:(sqlite3 *)ppDb boolean:(Boolean)boolean;
 
-/* 修改数据库journal_mode */
+/// journal_mode
+/// @param ppDb ppDb
+/// @param mode 是否开启
 + (Boolean)setJournalMode:(sqlite3 *)ppDb mode:(PaintingliteJournalMode)mode;
 
 @end
