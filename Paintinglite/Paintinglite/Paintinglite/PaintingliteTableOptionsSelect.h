@@ -13,7 +13,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface PaintingliteTableOptionsSelect : PaintingliteTableOptions
 
-/* 单例模式 */
+
+/// 单例模式
 + (instancetype)sharePaintingliteTableSelectOptions;
 
 

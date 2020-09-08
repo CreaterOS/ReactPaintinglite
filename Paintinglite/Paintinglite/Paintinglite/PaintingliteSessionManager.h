@@ -124,7 +124,6 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param completeHandler 回调操作
 - (Boolean)createTableForName:(NSString *)tableName content:(NSString *)content completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success))completeHandler;
 
-
 /// 创建表
 /// @param obj 对象
 /// @param primaryKeyStyle 主键类型
@@ -165,7 +164,6 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param completeHandler 回调操作
 - (BOOL)alterTableAddColumnWithTableName:(NSString *)tableName columnName:(NSString *__nonnull)columnName columnType:(NSString *__nonnull)columnType completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success))completeHandler;
 
-
 /// 修改表
 /// @param obj 对象
 - (BOOL)alterTableForObj:(id)obj;
@@ -191,7 +189,6 @@ NS_ASSUME_NONNULL_BEGIN
 /// 删除表
 /// @param obj 对象
 - (Boolean)dropTableForObj:(id)obj;
-
 
 /// 删除表
 /// @param obj 对象
@@ -332,7 +329,6 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param orderStyle 排序方式
 - (NSMutableArray<NSDictionary *> *)execQueryOrderBySQLWithTableName:(NSString *__nonnull)tableName orderbyContext:(NSString *__nonnull)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle;
 
-
 /// 排序查询
 /// @param tableName 表名
 /// @param orderbyContext  排序内容字段
@@ -340,13 +336,11 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param completeHandler 回调操作
 - (Boolean)execQueryOrderBySQLWithTableName:(NSString *__nonnull)tableName orderbyContext:(NSString *__nonnull)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray<NSDictionary *> *resArray))completeHandler;
 
-
 /// 排序查询
 /// @param orderbyContext 排序内容字段
 /// @param orderStyle 排序方式
 /// @param obj 对象
 - (NSMutableArray<id> *)execQueryOrderBySQLWithOrderbyContext:(NSString *__nonnull)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle obj:(id)obj;
-
 
 /// 排序查询
 /// @param orderbyContext 排序内容字段
@@ -361,7 +355,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// 执行PQL条件查询
 - (id)execPrepareStatementPQL;
-
 
 /// 执行PQL条件查询
 /// @param completeHandler 回调操作
