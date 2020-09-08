@@ -6,7 +6,6 @@
 //  Copyright © 2020 Bryant Reyn. All rights reserved.
 //
 
-#import "PaintingliteTableOptions.h"
 
 /**
  * 使用PQL语句进行快速查询
@@ -18,11 +17,14 @@
  * 1.基本查询 2.条件查询 3.分页查询 4.排序查询 5.模糊查询
  * 直接封装到对象中
  */
+
+#import "PaintingliteTableOptions.h"
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface PaintingliteTableOptionsSelectPQL : PaintingliteTableOptions
 
-/* 单例模式 */
+/// 单例模式
 + (instancetype)sharePaintingliteTableOptionsSelectPQL;
 
 @end

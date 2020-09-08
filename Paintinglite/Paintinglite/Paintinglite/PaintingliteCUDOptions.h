@@ -20,10 +20,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface PaintingliteCUDOptions : PaintingliteTableOptions
 
-/* 单例模式 */
+/// 单例模式
 + (instancetype)sharePaintingliteCUDOptions;
 
-/* 基本CUD操作 */
+/// CUD操作
+/// @param ppDb ppDb
+/// @param sql CUD sql语句
+/// @param CUDHandler CUD回调操作
+/// @param completeHandler 回调操作
 - (Boolean)baseCUD:(sqlite3 *)ppDb sql:(NSString *)sql CUDHandler:(NSString *(^)(void))CUDHandler completeHandler:(void (^)(PaintingliteSessionError *sessionerror, Boolean success))completeHandler;
 
 @end
