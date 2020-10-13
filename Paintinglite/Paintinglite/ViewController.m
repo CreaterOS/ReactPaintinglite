@@ -9,6 +9,8 @@
 #import "ViewController.h"
 #import "Paintinglite/PaintingliteSessionManager.h"
 #import "Paintinglite/PaintingliteTransaction.h"
+#import "PaintingliteSecurity.h"
+#import "SSZipArchive.h"
 
 @interface ViewController ()
 
@@ -19,11 +21,82 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
     PaintingliteSessionManager *manager = [PaintingliteSessionManager sharePaintingliteSessionManager];
-    [manager openSqlite:@"sqlite.db" completeHandler:^(NSString * _Nonnull filePath, PaintingliteSessionError * _Nonnull error, Boolean success) {
-        if (success) {
-            NSLog(@"%@",filePath);
-        }
-    }];
+    [manager openEncryptSqlite:@"test.db" completeHandler:nil];
+//    [manager createTableForName:@"Stu" content:@"UUID TEXT,NAME TEXT"];
+//    NSLog(@"resume flag:%hhu",[manager resume]);
+//    [manager insert:@"INSERT INTO Stu VALUES ('asdf','qwer'),('asdf','qwer'),('asdf','qwer'),('asdf','qwer'),('asdf','qwer'),('asdf','qwer'),('asdf','qwer'),('asdf','qwer')"];
+//    [manager resume];
+    NSLog(@"%@",[manager execQuerySQL:@"SELECT * FROM Stu"]);
+        
+    
+    
+    
+//    Boolean createFlag = [[[PaintingliteSecurity alloc] init] encryptDatabase:@"/Users/bryantreyn/Desktop/WechatIMG2508.jpeg"];
+//    Boolean unzipFlag = [[[PaintingliteSecurity alloc] init] encodeDatabase];
+//    NSLog(@"createFlag:%hhu, unzipFlag:%hhu",createFlag,unzipFlag);
+//    NSLog(@"unzipFlag:%hhu",unzipFlag);
+//    [manager openSqlite:@"sqlite.db" completeHandler:^(NSString * _Nonnull filePath, PaintingliteSessionError * _Nonnull error, Boolean success) {
+//        if (success) {
+//            NSLog(@"%@",filePath);
+//            NSLog(@"create zip:%hhu",[[[PaintingliteSecurity alloc] init] encryptDatabase:filePath]);
+//            NSLog(@"unzip zip:%hhu",[[[PaintingliteSecurity alloc] init] encodeDatabase]);
+//        }
+//    }];
+    
+//    [manager openSqliteWithFilePath:[[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@"sqlite2.db"] completeHandler:^(NSString * _Nonnull filePath, PaintingliteSessionError * _Nonnull error, Boolean success) {
+//        if (success) {
+//            NSLog(@"%@",filePath);
+//        }
+//    }];
+    
+//    [manager openSqlite:@"sqlite2.db" completeHandler:^(NSString * _Nonnull filePath, PaintingliteSessionError * _Nonnull error, Boolean success) {
+//        ;
+//    }];
+
+//    [[NSFileManager defaultManager] createFileAtPath:[[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)lastObject] stringByAppendingPathComponent:@"sqlite2.db"] contents:nil attributes:nil];
+//    if ([[[PaintingliteSecurity alloc] init] encryptDatabase:[[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)lastObject] stringByAppendingPathComponent:@"sqlite2.db"]]){
+//        NSLog(@"zip success...");
+//    }
+//
+//    if ([[[PaintingliteSecurity alloc] init] encodeDatabase]){
+//           NSLog(@"unzip success...");
+//    }
+    
+//    [manager openSqliteWithFilePath:[[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)lastObject] stringByAppendingPathComponent:@"sqlite2.db"]];
+    
+//    [manager createTableForName:@"Stu" content:@"UUID TEXT,NAME TEXT"];
+//    [manager resume];
+//    [manager insert:@"INSERT INTO Stu VALUES ('asdf','qwer'),('asdf','qwer'),('asdf','qwer'),('asdf','qwer'),('asdf','qwer'),('asdf','qwer'),('asdf','qwer'),('asdf','qwer')"];
+//    [manager resume];
+//    NSLog(@"%@",[manager execQuerySQL:@"SELECT * FROM Stu"]);
+    
+//    NSString *targetPath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)lastObject] stringByAppendingPathComponent:@"ZIP.zip"];
+//    NSString *sourcePath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)lastObject] stringByAppendingPathComponent:@"sqlite2.txt"];
+//    if ([SSZipArchive createZipFileAtPath:targetPath withFilesAtPaths:@[sourcePath] withPassword:@"12345"]){
+//        NSLog(@"ZIP SUCCESS...");
+//    }
+//    if ([SSZipArchive unzipFileAtPath:targetPath toDestination:[[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)lastObject] stringByAppendingPathComponent:@"ZIP"] overwrite:YES password:@"12345" error:nil]){
+//        NSLog(@"UNZIP SUCCESS...");
+//    }
+//
+    
+//    if ([[[PaintingliteSecurity alloc] init] encodeDatabase]){
+//        NSLog(@"unzip success...");
+//    }
+    
+//    [manager openSqlite:@"sqlite.db" completeHandler:^(NSString * _Nonnull filePath, PaintingliteSessionError * _Nonnull error, Boolean success) {
+//        if (success) {
+//            NSLog(@"%@",filePath);
+//        }
+//    }];
+    
+//    [manager createTableForName:@"Stu" content:@"UUID TEXT,NAME TEXT"];
+//    [manager resume];
+    
+//    [manager insert:@"INSERT INTO Stu VALUES ('ADasdfSF','asdfadsf')"];
+//    [manager resume];
+//    NSLog(@"%@",[manager execQuerySQL:@"SELECT * FROM Stu"]);
+//    [manager resume];
     
 //    [manager execQuerySQL:@"select * from eletest" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<NSDictionary *> * _Nonnull resArray) {
 //        if (success) {

@@ -33,13 +33,19 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 /// 打开数据库
-/// @param fileName 数据库的名称
+/// @param fileName 数据库名称
 - (Boolean)openSqlite:(NSString *)fileName;
 
 /// 打开数据库
-/// @param fileName 数据库的名称
+/// @param fileName 数据库名称
 /// @param completeHandler 回调操作
 - (Boolean)openSqlite:(NSString *)fileName completeHandler:(void(^ __nullable)(NSString *filePath,PaintingliteSessionError *error,Boolean success))completeHandler;
+
+
+/// 打开数据库
+/// @param fileName 数据库名称
+/// @param completeHandler 回调操作
+- (Boolean)openEncryptSqlite:(NSString *)fileName completeHandler:(void (^ __nullable)(NSString * _Nonnull, PaintingliteSessionError * _Nonnull, Boolean))completeHandler;
 
 /// 打开数据库
 /// @param filePath 数据库路径
@@ -49,8 +55,19 @@ NS_ASSUME_NONNULL_BEGIN
 /// 打开数据库
 /// @param filePath 数据库路径
 /// @param completeHandler 回调操作
-- (Boolean)openSqliteWithFilePath:(NSString *)filePath completeHandler:(void (^__nullable)(NSString *filePath,PaintingliteSessionError *error,Boolean success))completeHandler;
+- (Boolean)openSqliteFilePath:(NSString *)filePath completeHandler:(void (^__nullable)(NSString *filePath,PaintingliteSessionError *error,Boolean success))completeHandler;
 
+
+/// 打开数据库 -- 加密
+/// @param filePath 数据库路径
+/// @param completeHandler 回调操作
+- (Boolean)openEncryptSqliteFilePath:(NSString *)filePath completeHandler:(void (^ __nullable)(NSString * _Nonnull, PaintingliteSessionError * _Nonnull, Boolean))completeHandler;
+
+/// 加密数据库
+- (Boolean)resume;
+
+/// 删除加密文件夹
+- (Boolean)delEncryptDict;
 
 /// 获得数据库
 - (sqlite3 *)getSqlite3;
@@ -428,7 +445,6 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param sql 删除sql语句
 /// @param completeHandler 回调操作
 - (Boolean)del:(NSString *__nonnull)sql completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success))completeHandler;
-
 
 /// 表结构查询
 /// @param tableName 表名称

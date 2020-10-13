@@ -20,6 +20,15 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSData *)SecurityDecodeBase64:(NSData *)data;
 + (NSString *)StringWithDecodeSecurityBase64:(NSString *)baseStr;
 
+
+/// 加密数据库
+/// @param databasePath 数据库路径
+/// 自动产生加密KEY
+- (Boolean)encryptDatabase:(NSString *__nonnull)databasePath;
+
+/// 解密数据库
+- (Boolean)encodeDatabase;
+
 @end
 
 NS_ASSUME_NONNULL_END
