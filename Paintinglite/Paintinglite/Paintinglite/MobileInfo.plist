@@ -1,0 +1,966 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<dict>
+		<key>version</key>
+		<string>iPhone1,1</string>
+		<key>mobileType</key>
+		<string>iPhone 2G</string>
+		<key>cpu</key>
+		<string>412Mhz 单核 ARM1176JZF-S</string>
+		<key>speed</key>
+		<string>0.384 Mbps</string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPhone1,2</string>
+		<key>mobileType</key>
+		<string>iPhone 3G</string>
+		<key>cpu</key>
+		<string>412Mhz 单核 ARM1176JZF-S</string>
+		<key>speed</key>
+		<string>3.6 Mbps</string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPhone2,1</string>
+		<key>mobileType</key>
+		<string>iPhone 3GS</string>
+		<key>cpu</key>
+		<string>600Mhz 单核 ARM Cortex-A8</string>
+		<key>speed</key>
+		<string>7.2 Mbps</string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPhone3,1</string>
+		<key>mobileType</key>
+		<string>iPhone 4</string>
+		<key>cpu</key>
+		<string>1Ghz 单核 Cortex-A8</string>
+		<key>speed</key>
+		<string>14.4/5.76 Mbps</string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPhone3,2</string>
+		<key>mobileType</key>
+		<string>iPhone 4</string>
+		<key>cpu</key>
+		<string>1Ghz 单核 Cortex-A8</string>
+		<key>speed</key>
+		<string>14.4/5.76 Mbps</string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPhone3,3</string>
+		<key>mobileType</key>
+		<string>iPhone 4</string>
+		<key>cpu</key>
+		<string>1Ghz 单核 Cortex-A8</string>
+		<key>speed</key>
+		<string>14.4/5.76 Mbps</string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPhone4,1</string>
+		<key>mobileType</key>
+		<string>iPhone 4S</string>
+		<key>cpu</key>
+		<string>1Ghz 单核 Cortex-A8</string>
+		<key>speed</key>
+		<string>14.4/5.76 Mbps</string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPhone5,1</string>
+		<key>mobileType</key>
+		<string>iPhone 5</string>
+		<key>cpu</key>
+		<string>1.3Ghz 双核 Swift ARM v7</string>
+		<key>speed</key>
+		<string>100/50 Mbps</string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPhone5,2</string>
+		<key>mobileType</key>
+		<string>iPhone 5</string>
+		<key>cpu</key>
+		<string>1.3Ghz 双核 Swift ARM v7</string>
+		<key>speed</key>
+		<string>100/50 Mbps</string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPhone5,3</string>
+		<key>mobileType</key>
+		<string>iPhone 5c</string>
+		<key>cpu</key>
+		<string>1.3Ghz 双核 Swift ARM v7</string>
+		<key>speed</key>
+		<string>100/50 Mbps</string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPhone5,4</string>
+		<key>mobileType</key>
+		<string>iPhone 5c</string>
+		<key>cpu</key>
+		<string>1.3Ghz 双核 Swift ARM v7</string>
+		<key>speed</key>
+		<string>100/50 Mbps</string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPhone6,1</string>
+		<key>mobileType</key>
+		<string>iPhone 5s</string>
+		<key>cpu</key>
+		<string>1.5Ghz 双核 Cyclone ARM v8</string>
+		<key>speed</key>
+		<string>100/50 Mbps</string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPhone6,2</string>
+		<key>mobileType</key>
+		<string>iPhone 5s</string>
+		<key>cpu</key>
+		<string>1.5Ghz 双核 Cyclone ARM v8</string>
+		<key>speed</key>
+		<string>100/50 Mbps</string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPhone7,1</string>
+		<key>mobileType</key>
+		<string>iPhone 6 Plus</string>
+		<key>cpu</key>
+		<string>1.4Ghz 双核 Typhoon ARM v8</string>
+		<key>speed</key>
+		<string>150/50 Mbps</string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPhone7,2</string>
+		<key>mobileType</key>
+		<string>iPhone 6</string>
+		<key>cpu</key>
+		<string>1.4Ghz 双核 Typhoon ARM v8</string>
+		<key>speed</key>
+		<string>150/50 Mbps</string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPhone8,1</string>
+		<key>mobileType</key>
+		<string>iPhone 6s</string>
+		<key>cpu</key>
+		<string>1.84Ghz 双核 Twister</string>
+		<key>speed</key>
+		<string>300/50 Mbps</string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPhone8,2</string>
+		<key>mobileType</key>
+		<string>iPhone 6s Plus</string>
+		<key>cpu</key>
+		<string>1.84Ghz 双核 Twister</string>
+		<key>speed</key>
+		<string>300/50 Mbps</string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPhone8,4</string>
+		<key>mobileType</key>
+		<string>iPhone SE</string>
+		<key>cpu</key>
+		<string>1.84Ghz 双核 Apple Twister</string>
+		<key>speed</key>
+		<string>150/50 Mbps</string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPhone9,1</string>
+		<key>mobileType</key>
+		<string>iPhone 7</string>
+		<key>cpu</key>
+		<string>四核, 2处理器:2.34Ghz 双核 Hurricane 2Ghz 双核 Zephyr</string>
+		<key>speed</key>
+		<string>450/50 Mbps</string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPhone9,2</string>
+		<key>mobileType</key>
+		<string>iPhone 7 Plus</string>
+		<key>cpu</key>
+		<string>四核, 2处理器:2.34Ghz 双核 Hurricane 2Ghz 双核 Zephyr</string>
+		<key>speed</key>
+		<string>450/50 Mbps</string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPhone10,1</string>
+		<key>mobileType</key>
+		<string>iPhone 8</string>
+		<key>cpu</key>
+		<string>六核, 2处理器:2.39Ghz 双核 Monsoon 1.6Ghz 四核 Mistral</string>
+		<key>speed</key>
+		<string>1024/150 Mbps</string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPhone10,2</string>
+		<key>mobileType</key>
+		<string>iPhone 8 Plus</string>
+		<key>cpu</key>
+		<string>六核, 2处理器:2.39Ghz 双核 Monsoon 1.6Ghz 四核 Mistral</string>
+		<key>speed</key>
+		<string>1024/150 Mbps</string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPhone10,3</string>
+		<key>mobileType</key>
+		<string>iPhone X</string>
+		<key>cpu</key>
+		<string>六核, 2处理器:2.39Ghz 双核 Monsoon 1.6Ghz 四核 Mistral</string>
+		<key>speed</key>
+		<string>1024/150 Mbps</string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPhone11,2</string>
+		<key>mobileType</key>
+		<string>iPhone XS</string>
+		<key>cpu</key>
+		<string>六核, 2处理器:2.25Ghz 双核 Vortex 1.6Ghz 四核 Tempest</string>
+		<key>speed</key>
+		<string>1024/150 Mbps</string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPhone11,4</string>
+		<key>mobileType</key>
+		<string>iPhone XS MAX</string>
+		<key>cpu</key>
+		<string>六核, 2处理器:2.25Ghz 双核 Vortex 1.6Ghz 四核 Tempest</string>
+		<key>speed</key>
+		<string>1024/150 Mbps</string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPhone11,8</string>
+		<key>mobileType</key>
+		<string>iPhone XR</string>
+		<key>cpu</key>
+		<string>六核, 2处理器:2.25Ghz 双核 Vortex 1.6Ghz 四核 Tempest</string>
+		<key>speed</key>
+		<string>1024/150 Mbps</string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPhone12,1</string>
+		<key>mobileType</key>
+		<string>iPhone 11</string>
+		<key>cpu</key>
+		<string>六核, 2处理器:2.65Ghz 双核 Lightning 1.8Ghz 四核 Thunder</string>
+		<key>speed</key>
+		<string>1024/150 Mbps</string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPhone12,3</string>
+		<key>mobileType</key>
+		<string>iPhone 11 Pro</string>
+		<key>cpu</key>
+		<string>六核, 2处理器:2.65Ghz 双核 Lightning 1.8Ghz 四核 Thunder</string>
+		<key>speed</key>
+		<string>1024/150 Mbps</string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPhone12,5</string>
+		<key>mobileType</key>
+		<string>iPhone 11 Pro Max</string>
+		<key>cpu</key>
+		<string>六核, 2处理器:2.65Ghz 双核 Lightning 1.8Ghz 四核 Thunder</string>
+		<key>speed</key>
+		<string>1024/150 Mbps</string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPhone12,8</string>
+		<key>mobileType</key>
+		<string>iPhone SE(2020)</string>
+		<key>cpu</key>
+		<string>六核, 2处理器:2.65Ghz 双核 Lightning 1.8Ghz 四核 Thunder</string>
+		<key>speed</key>
+		<string>1024/150 Mbps</string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPod1,1</string>
+		<key>mobileType</key>
+		<string>iPod Touch 1</string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPod2,1</string>
+		<key>mobileType</key>
+		<string>iPod Touch 2</string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPod3,1</string>
+		<key>mobileType</key>
+		<string>iPod Touch 3</string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPod4,1</string>
+		<key>mobileType</key>
+		<string>iPod Touch 4</string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPod5,1</string>
+		<key>mobileType</key>
+		<string>iPod Touch 5</string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPod7,1</string>
+		<key>mobileType</key>
+		<string>iPod Touch 6</string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPod9,1</string>
+		<key>mobileType</key>
+		<string>iPod Touch 7</string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>i386</string>
+		<key>mobileType</key>
+		<string>iPhone Simulator</string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>x86_64</string>
+		<key>mobileType</key>
+		<string>iPhone Simulator</string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad1,1</string>
+		<key>mobileType</key>
+		<string>iPad 1</string>
+		<key>cpu</key>
+		<string>1Ghz 单核 ARM Cortex-A8</string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad2,1</string>
+		<key>mobileType</key>
+		<string>iPad 2</string>
+		<key>cpu</key>
+		<string>1Ghz 双核 ARM Cortex-A9</string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad2,2</string>
+		<key>mobileType</key>
+		<string>iPad 2</string>
+		<key>cpu</key>
+		<string>1Ghz 双核 ARM Cortex-A9</string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad2,3</string>
+		<key>mobileType</key>
+		<string>iPad 2</string>
+		<key>cpu</key>
+		<string>1Ghz 双核 ARM Cortex-A9</string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad2,4</string>
+		<key>mobileType</key>
+		<string>iPad 2</string>
+		<key>cpu</key>
+		<string>1Ghz 双核 ARM Cortex-A9</string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad3,1</string>
+		<key>mobileType</key>
+		<string>iPad 3</string>
+		<key>cpu</key>
+		<string>1Ghz 双核 ARM Cortex-A9</string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad3,2</string>
+		<key>mobileType</key>
+		<string>iPad 3</string>
+		<key>cpu</key>
+		<string>1Ghz 双核 ARM Cortex-A9</string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad3,3</string>
+		<key>mobileType</key>
+		<string>iPad 3</string>
+		<key>cpu</key>
+		<string>1Ghz 双核 ARM Cortex-A9</string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad3,4</string>
+		<key>mobileType</key>
+		<string>iPad 4</string>
+		<key>cpu</key>
+		<string>1.4Ghz 双核 Apple Swift</string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad3,5</string>
+		<key>mobileType</key>
+		<string>iPad 4</string>
+		<key>cpu</key>
+		<string>1.4Ghz 双核 Apple Swift</string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad3,6</string>
+		<key>mobileType</key>
+		<string>iPad 4</string>
+		<key>cpu</key>
+		<string>1.4Ghz 双核 Apple Swift</string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad4,1</string>
+		<key>mobileType</key>
+		<string>iPad Air</string>
+		<key>cpu</key>
+		<string>1.4Ghz 双核 Cyclone</string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad4,2</string>
+		<key>mobileType</key>
+		<string>iPad Air</string>
+		<key>cpu</key>
+		<string>1.4Ghz 双核 Cyclone</string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad4,3</string>
+		<key>mobileType</key>
+		<string>iPad Air</string>
+		<key>cpu</key>
+		<string>1.4Ghz 双核 Cyclone</string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad5,3</string>
+		<key>mobileType</key>
+		<string>iPad Air 2</string>
+		<key>cpu</key>
+		<string>1.5Ghz 3核 Apple Cyclone</string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad5,4</string>
+		<key>mobileType</key>
+		<string>iPad Air 2</string>
+		<key>cpu</key>
+		<string>1.5Ghz 3核 Apple Cyclone</string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad11,3</string>
+		<key>mobileType</key>
+		<string>iPad Air 3</string>
+		<key>cpu</key>
+		<string>1.5Ghz 3核 Apple Cyclone</string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad11,4</string>
+		<key>mobileType</key>
+		<string>iPad Air 3</string>
+		<key>cpu</key>
+		<string>1.5Ghz 3核 Apple Cyclone</string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad2,5</string>
+		<key>mobileType</key>
+		<string>iPad mini</string>
+		<key>cpu</key>
+		<string>1Ghz 双核 ARM Cortex-A9</string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad2,6</string>
+		<key>mobileType</key>
+		<string>iPad mini</string>
+		<key>cpu</key>
+		<string>1Ghz 双核 ARM Cortex-A9</string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad2,7</string>
+		<key>mobileType</key>
+		<string>iPad mini</string>
+		<key>cpu</key>
+		<string>1Ghz 双核 ARM Cortex-A9</string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad4,4</string>
+		<key>mobileType</key>
+		<string>iPad mini 2</string>
+		<key>cpu</key>
+		<string>1.3Ghz 双核 Cyclone ARM v8</string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad4,5</string>
+		<key>mobileType</key>
+		<string>iPad mini 2</string>
+		<key>cpu</key>
+		<string>1.3Ghz 双核 Cyclone ARM v8</string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad4,6</string>
+		<key>mobileType</key>
+		<string>iPad mini 2</string>
+		<key>cpu</key>
+		<string>1.3Ghz 双核 Cyclone ARM v8</string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad4,7</string>
+		<key>mobileType</key>
+		<string>iPad mini 3</string>
+		<key>cpu</key>
+		<string>1.3Ghz 双核 Cyclone</string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad4,8</string>
+		<key>mobileType</key>
+		<string>iPad mini 3</string>
+		<key>cpu</key>
+		<string>1.3Ghz 双核 Cyclone</string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad4,9</string>
+		<key>mobileType</key>
+		<string>iPad mini 3</string>
+		<key>cpu</key>
+		<string>1.3Ghz 双核 Cyclone</string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad5,1</string>
+		<key>mobileType</key>
+		<string>iPad mini 4</string>
+		<key>cpu</key>
+		<string>Apple A8,+M8运动协处理器</string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad5,2</string>
+		<key>mobileType</key>
+		<string>iPad mini 4</string>
+		<key>cpu</key>
+		<string>Apple A8,+M8运动协处理器</string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad11,1</string>
+		<key>mobileType</key>
+		<string>iPad mini 5</string>
+		<key>cpu</key>
+		<string>Apple A12</string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad11,2</string>
+		<key>mobileType</key>
+		<string>iPad mini 5</string>
+		<key>cpu</key>
+		<string>Apple A12</string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad6,11</string>
+		<key>mobileType</key>
+		<string>iPad (9.7)</string>
+		<key>cpu</key>
+		<string>64 位架构的 A10 Fusion 芯片，嵌入式 M10 协处理器 </string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad6,12</string>
+		<key>mobileType</key>
+		<string>iPad (9.7)</string>
+		<key>cpu</key>
+		<string>64 位架构的 A10 Fusion 芯片，嵌入式 M10 协处理器 </string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad7,5</string>
+		<key>mobileType</key>
+		<string>iPad 9.7(2018)</string>
+		<key>cpu</key>
+		<string>64 位架构的 A10 Fusion 芯片，嵌入式 M10 协处理器 </string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad7,6</string>
+		<key>mobileType</key>
+		<string>iPad 9.7(2018)</string>
+		<key>cpu</key>
+		<string>64 位架构的 A10 Fusion 芯片，嵌入式 M10 协处理器 </string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad7,11</string>
+		<key>mobileType</key>
+		<string>iPad 2019</string>
+		<key>cpu</key>
+		<string>64 位架构的 A10 Fusion 芯片，嵌入式 M10 协处理器 </string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad7,12</string>
+		<key>mobileType</key>
+		<string>iPad 2019</string>
+		<key>cpu</key>
+		<string>64 位架构的 A10 Fusion 芯片，嵌入式 M10 协处理器 </string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad6,3</string>
+		<key>mobileType</key>
+		<string>iPad Pro(9.7)</string>
+		<key>cpu</key>
+		<string>Apple A9X,M9运动协处理器 </string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad6,4</string>
+		<key>mobileType</key>
+		<string>iPad Pro(9.7)</string>
+		<key>cpu</key>
+		<string>Apple A9X,M9运动协处理器 </string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad6,7</string>
+		<key>mobileType</key>
+		<string>iPad Pro(12.9)</string>
+		<key>cpu</key>
+		<string>苹果A12X</string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad6,8</string>
+		<key>mobileType</key>
+		<string>iPad Pro(12.9)</string>
+		<key>cpu</key>
+		<string>苹果A12X</string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad7,3</string>
+		<key>mobileType</key>
+		<string>iPad Pro 2(10.5)</string>
+		<key>cpu</key>
+		<string></string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad7,4</string>
+		<key>mobileType</key>
+		<string>iPad Pro 2(10.5)</string>
+		<key>cpu</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad7,1</string>
+		<key>mobileType</key>
+		<string>iPad Pro 2(12.9)</string>
+		<key>cpu</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad7,2</string>
+		<key>mobileType</key>
+		<string>iPad Pro 2(12.9)</string>
+		<key>cpu</key>
+		<string></string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad8,1</string>
+		<key>mobileType</key>
+		<string>iPad Pro 3(11)</string>
+		<key>cpu</key>
+		<string></string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad8,2</string>
+		<key>mobileType</key>
+		<string>iPad Pro 3(11)</string>
+		<key>cpu</key>
+		<string></string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad8,3</string>
+		<key>mobileType</key>
+		<string>iPad Pro 3(11)</string>
+		<key>cpu</key>
+		<string></string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad8,4</string>
+		<key>mobileType</key>
+		<string>iPad Pro 3(11)</string>
+		<key>cpu</key>
+		<string></string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad8,5</string>
+		<key>mobileType</key>
+		<string>iPad Pro 3(12.9)</string>
+		<key>cpu</key>
+		<string></string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad8,6</string>
+		<key>mobileType</key>
+		<string>iPad Pro 3(12.9)</string>
+		<key>cpu</key>
+		<string></string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad8,7</string>
+		<key>mobileType</key>
+		<string>iPad Pro 3(12.9)</string>
+		<key>cpu</key>
+		<string></string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad8,8</string>
+		<key>mobileType</key>
+		<string>iPad Pro 3(12.9)</string>
+		<key>cpu</key>
+		<string></string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad8,10</string>
+		<key>mobileType</key>
+		<string>iPad Pro 4(11)</string>
+		<key>cpu</key>
+		<string></string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad8,9</string>
+		<key>mobileType</key>
+		<string>iPad Pro 4(11)</string>
+		<key>cpu</key>
+		<string></string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad8,11</string>
+		<key>mobileType</key>
+		<string>iPad Pro 4(12.9)</string>
+		<key>cpu</key>
+		<string></string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad8,12</string>
+		<key>mobileType</key>
+		<string>iPad Pro 4(12.9)</string>
+		<key>cpu</key>
+		<string></string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad11,6</string>
+		<key>mobileType</key>
+		<string>iPad 8</string>
+		<key>cpu</key>
+		<string></string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad11,7</string>
+		<key>mobileType</key>
+		<string>iPad 8</string>
+		<key>cpu</key>
+		<string></string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad13,1</string>
+		<key>mobileType</key>
+		<string>iPad Air 4</string>
+		<key>cpu</key>
+		<string></string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+	<dict>
+		<key>version</key>
+		<string>iPad13,2</string>
+		<key>mobileType</key>
+		<string>iPad Air 4</string>
+		<key>cpu</key>
+		<string></string>
+		<key>speed</key>
+		<string></string>
+	</dict>
+</array>
+</plist>

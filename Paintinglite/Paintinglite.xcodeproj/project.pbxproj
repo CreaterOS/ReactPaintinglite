@@ -25,6 +25,7 @@
 		68B20F1424D40531007522BA /* Bus.m in Sources */ = {isa = PBXBuildFile; fileRef = 68B20F1324D40531007522BA /* Bus.m */; };
 		68B84AA02497B9410021CFC2 /* PaintingliteSplitTable.m in Sources */ = {isa = PBXBuildFile; fileRef = 68B84A9F2497B9410021CFC2 /* PaintingliteSplitTable.m */; };
 		68C2F0A8248B8ECB007ADEB0 /* PaintingliteBackUpManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 68C2F0A7248B8ECB007ADEB0 /* PaintingliteBackUpManager.m */; };
+		68C49C782538361E0038A2C3 /* MobileInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 68C49C772538361E0038A2C3 /* MobileInfo.plist */; };
 		68CE9DBF2483505E00B96DC3 /* PaintingliteTransaction.m in Sources */ = {isa = PBXBuildFile; fileRef = 68CE9DBE2483505E00B96DC3 /* PaintingliteTransaction.m */; };
 		68CF58A42484D36C0035F188 /* PaintingliteTableOptionsSelect.m in Sources */ = {isa = PBXBuildFile; fileRef = 68CF58A32484D36C0035F188 /* PaintingliteTableOptionsSelect.m */; };
 		68CF869D24809DC000755126 /* PaintingliteException.m in Sources */ = {isa = PBXBuildFile; fileRef = 68CF869C24809DC000755126 /* PaintingliteException.m */; };
@@ -117,6 +118,7 @@
 		68B84A9F2497B9410021CFC2 /* PaintingliteSplitTable.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaintingliteSplitTable.m; sourceTree = "<group>"; };
 		68C2F0A6248B8ECB007ADEB0 /* PaintingliteBackUpManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaintingliteBackUpManager.h; sourceTree = "<group>"; };
 		68C2F0A7248B8ECB007ADEB0 /* PaintingliteBackUpManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaintingliteBackUpManager.m; sourceTree = "<group>"; };
+		68C49C772538361E0038A2C3 /* MobileInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = MobileInfo.plist; sourceTree = "<group>"; };
 		68CE9DBD2483505E00B96DC3 /* PaintingliteTransaction.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaintingliteTransaction.h; sourceTree = "<group>"; };
 		68CE9DBE2483505E00B96DC3 /* PaintingliteTransaction.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaintingliteTransaction.m; sourceTree = "<group>"; };
 		68CF58A22484D36C0035F188 /* PaintingliteTableOptionsSelect.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaintingliteTableOptionsSelect.h; sourceTree = "<group>"; };
@@ -398,6 +400,7 @@
 				6883B28824CC2E0500BAA3C2 /* XMLReader.m */,
 				68F260B024D1209700652C03 /* PaintingliteJSContext.h */,
 				68F260B124D1209700652C03 /* PaintingliteJSContext.m */,
+				68C49C772538361E0038A2C3 /* MobileInfo.plist */,
 				6812B9BC24A59E920091C5EE /* LOGO.txt */,
 			);
 			path = Paintinglite;
@@ -520,6 +523,7 @@
 				68194BE024CC31E400E57E54 /* user.xml in Resources */,
 				68DE992E247C9B6C0078EDD5 /* Assets.xcassets in Resources */,
 				68DE992C247C9B6A0078EDD5 /* Main.storyboard in Resources */,
+				68C49C782538361E0038A2C3 /* MobileInfo.plist in Resources */,
 				6812B9BD24A59E920091C5EE /* LOGO.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -763,6 +767,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = Z4ZKC7258G;
 				INFOPLIST_FILE = Paintinglite/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -780,6 +785,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = Z4ZKC7258G;
 				INFOPLIST_FILE = Paintinglite/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12;
 				LD_RUNPATH_SEARCH_PATHS = (

@@ -8,13 +8,87 @@
 
 #import "PaintinglitePressureOS.h"
 #import "PaintingliteTransaction.h"
+#import "PaintingliteFileManager.h"
 #import <mach/mach.h>
 #import <sys/utsname.h>
+
+#define PRESSOS_DB_PATH(PATH) [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:PATH]
 
 #define PRESSURETABLE @"CREATE TABLE IF NOT EXISTS pressure(ID INTEGER primary key AUTOINCREMENT,name TEXT,age INTEGER,teacher TEXT,tage INTEGER,desc TEXT)"
 #define DROPPRESSURETABLE @"DROP TABLE pressure"
 
 #define SAVEROOT(PATH) [NSTemporaryDirectory() stringByAppendingPathComponent:PATH]
+
+/**
+ * 设备模型类
+ */
+@interface MobileModel : NSObject
+@property (nonatomic,copy)NSString *version; //设备版本
+@property (nonatomic,copy)NSString *mobileType; //设备类型
+@property (nonatomic,copy)NSString *cpu; //处理器
+@property (nonatomic,copy)NSString *speed; //下载上传速度
+
+/// 模型字典KVO
+/// @param dict 数组
++ (instancetype)modelWithDict:(NSDictionary *)dict;
+@end
+
+@implementation MobileModel
+#pragma mark - 模型字典KVO
++ (instancetype)modelWithDict:(NSDictionary *)dict{
+    MobileModel *model = [MobileModel new];
+    [model setValuesForKeysWithDictionary:dict];
+    return model;
+}
+@end
+
+/**
+ * 设备类
+ * 设备型号 ｜设备参数
+*/
+@interface Mobile : NSObject
+/// 获得设备型号
+- (MobileModel *)getMobileType;
+@end
+
+@interface Mobile()
+@property (nonatomic,strong)NSMutableArray<MobileModel *> *modelArr; //模型数组
+@end
+
+@implementation Mobile
+#pragma mark - 懒加载
+- (NSMutableArray<MobileModel *> *)modelArr{
+    if (!_modelArr) {
+        _modelArr = [NSMutableArray array];
+        //读取MobileInfo.plist文件
+        NSString *infoPath = [[NSBundle mainBundle] pathForResource:@"MobileInfo" ofType:@"plist"];
+        NSArray *mobileArr = [[NSArray alloc] initWithContentsOfFile:infoPath];
+        for (NSDictionary *dict in mobileArr) {
+            [_modelArr addObject:[MobileModel modelWithDict:dict]];
+        }
+    }
+    
+    return _modelArr;
+}
+
+//返回设备型号
+- (MobileModel *)getMobileType{
+    struct utsname systemInfo;
+    
+    uname(&systemInfo);
+    
+    NSString *platform = [NSString stringWithCString:systemInfo.machine encoding:NSASCIIStringEncoding];
+
+    for (MobileModel *model in self.modelArr) {
+        if ([platform isEqualToString:model.version]) {
+            return model;
+        }
+    }
+    
+    return nil;
+}
+
+@end
 
 @interface PaintinglitePressureOS()
 @property (nonatomic)sqlite3 *ppDb;
@@ -30,133 +104,6 @@
     }
     
     return _pressureArray;
-}
-
-#pragma mark - 获取手机型号
-- (NSString *)iphoneType {
-    
-    struct utsname systemInfo;
-    
-    uname(&systemInfo);
-    
-    NSString *platform = [NSString stringWithCString:systemInfo.machine encoding:NSASCIIStringEncoding];
-    
-    if ([platform isEqualToString:@"iPhone1,1"]) return @"iPhone 2G";
-    
-    if ([platform isEqualToString:@"iPhone1,2"]) return @"iPhone 3G";
-    
-    if ([platform isEqualToString:@"iPhone2,1"]) return @"iPhone 3GS";
-    
-    if ([platform isEqualToString:@"iPhone3,1"]) return @"iPhone 4";
-    
-    if ([platform isEqualToString:@"iPhone3,2"]) return @"iPhone 4";
-    
-    if ([platform isEqualToString:@"iPhone3,3"]) return @"iPhone 4";
-    
-    if ([platform isEqualToString:@"iPhone4,1"]) return @"iPhone 4S";
-    
-    if ([platform isEqualToString:@"iPhone5,1"]) return @"iPhone 5";
-    
-    if ([platform isEqualToString:@"iPhone5,2"]) return @"iPhone 5";
-    
-    if ([platform isEqualToString:@"iPhone5,3"]) return @"iPhone 5c";
-    
-    if ([platform isEqualToString:@"iPhone5,4"]) return @"iPhone 5c";
-    
-    if ([platform isEqualToString:@"iPhone6,1"]) return @"iPhone 5s";
-    
-    if ([platform isEqualToString:@"iPhone6,2"]) return @"iPhone 5s";
-    
-    if ([platform isEqualToString:@"iPhone7,1"]) return @"iPhone 6 Plus";
-    
-    if ([platform isEqualToString:@"iPhone7,2"]) return @"iPhone 6";
-    
-    if ([platform isEqualToString:@"iPhone8,1"]) return @"iPhone 6s";
-    
-    if ([platform isEqualToString:@"iPhone8,2"]) return @"iPhone 6s Plus";
-    
-    if ([platform isEqualToString:@"iPhone8,4"]) return @"iPhone SE";
-    
-    if ([platform isEqualToString:@"iPhone9,1"]) return @"iPhone 7";
-    
-    if ([platform isEqualToString:@"iPhone9,2"]) return @"iPhone 7 Plus";
-    
-    if ([platform isEqualToString:@"iPhone10,1"]) return @"iPhone 8";
-    
-    if ([platform isEqualToString:@"iPhone10,2"]) return @"iPhone 8 Plus";
-    
-    if ([platform isEqualToString:@"iPhone10,3"]) return @"iPhone X";
-    
-    if ([platform isEqualToString:@"iPhone11,2"]) return @"iPhone XS";
-    
-    if ([platform isEqualToString:@"iPhone11,4"]) return @"iPhone XS MAX";
-    
-    if ([platform isEqualToString:@"iPhone11,8"]) return @"iPhone XR";
-    
-    if ([platform isEqualToString:@"iPhone12,1"]) return @"iPhone 11";
-    
-    if ([platform isEqualToString:@"iPhone12,3"]) return @"iPhone 11 Pro";
-    
-    if ([platform isEqualToString:@"iPhone12,5"]) return @"iPhone 11 Pro Max";
-    
-    if ([platform isEqualToString:@"iPhone12,8"]) return @"iPhone SE2";
-    
-    if ([platform isEqualToString:@"iPod1,1"]) return @"iPod Touch 1G";
-    
-    if ([platform isEqualToString:@"iPod2,1"]) return @"iPod Touch 2G";
-    
-    if ([platform isEqualToString:@"iPod3,1"]) return @"iPod Touch 3G";
-    
-    if ([platform isEqualToString:@"iPod4,1"]) return @"iPod Touch 4G";
-    
-    if ([platform isEqualToString:@"iPod5,1"]) return @"iPod Touch 5G";
-    
-    if ([platform isEqualToString:@"iPad1,1"]) return @"iPad 1G";
-    
-    if ([platform isEqualToString:@"iPad2,1"]) return @"iPad 2";
-    
-    if ([platform isEqualToString:@"iPad2,2"]) return @"iPad 2";
-    
-    if ([platform isEqualToString:@"iPad2,3"]) return @"iPad 2";
-    
-    if ([platform isEqualToString:@"iPad2,4"]) return @"iPad 2";
-    
-    if ([platform isEqualToString:@"iPad2,5"]) return @"iPad Mini 1G";
-    
-    if ([platform isEqualToString:@"iPad2,6"]) return @"iPad Mini 1G";
-    
-    if ([platform isEqualToString:@"iPad2,7"]) return @"iPad Mini 1G";
-    
-    if ([platform isEqualToString:@"iPad3,1"]) return @"iPad 3";
-    
-    if ([platform isEqualToString:@"iPad3,2"]) return @"iPad 3";
-    
-    if ([platform isEqualToString:@"iPad3,3"]) return @"iPad 3";
-    
-    if ([platform isEqualToString:@"iPad3,4"]) return @"iPad 4";
-    
-    if ([platform isEqualToString:@"iPad3,5"]) return @"iPad 4";
-    
-    if ([platform isEqualToString:@"iPad3,6"]) return @"iPad 4";
-    
-    if ([platform isEqualToString:@"iPad4,1"]) return @"iPad Air";
-    
-    if ([platform isEqualToString:@"iPad4,2"]) return @"iPad Air";
-    
-    if ([platform isEqualToString:@"iPad4,3"]) return @"iPad Air";
-    
-    if ([platform isEqualToString:@"iPad4,4"]) return @"iPad Mini 2G";
-    
-    if ([platform isEqualToString:@"iPad4,5"]) return @"iPad Mini 2G";
-    
-    if ([platform isEqualToString:@"iPad4,6"]) return @"iPad Mini 2G";
-    
-    if ([platform isEqualToString:@"i386"]) return @"iPhone Simulator";
-    
-    if ([platform isEqualToString:@"x86_64"]) return @"iPhone Simulator";
-    
-    return platform;
-    
 }
 
 #pragma mark - 内存计算
@@ -289,7 +236,13 @@ static PaintinglitePressureOS *_instance = nil;
 
 
 #pragma mark - 保存测试数据
+static NSUInteger groupCount = -1;
 - (void)savePressure:(PaintinglitePressureOSSaveType)saveType options:(NSString *__nonnull)options countIndex:(NSUInteger)countIndex efficiency:(float)efficiency memoryUsage:(int64_t)memoryUsage cpuUsage:(float)cpuUsage{
+    Boolean newGroupFlag = false;
+    if (groupCount != countIndex){
+        groupCount = countIndex;
+        newGroupFlag = true;
+    }
     
     /* 文件管理者 */
     NSFileManager *fileM = [NSFileManager defaultManager];
@@ -301,8 +254,14 @@ static PaintinglitePressureOS *_instance = nil;
     NSString *textStart = [NSString stringWithFormat:@"Paintinglite Sqlite Pressure Report\n%@",[NSString stringWithContentsOfFile:LOGOPATH usedEncoding:nil error:&error]];
     ;
     
+    /* 获得MobileModel */
+    MobileModel *model = [[Mobile new] getMobileType];
     /* 设备型号 */
-    NSString *iphoneType = [self iphoneType];
+    NSString *iphoneType = model.mobileType != NULL ? model.mobileType : @"未知设备";
+    /* 设备处理器信息 */
+    NSString *cpuInfo = model.cpu != NULL ? model.cpu : @"未录入库";
+    /* 设备下载上传速度 */
+    NSString *speedInfo = model.speed != NULL ? model.speed : @"未录入库";
     
     /* 当前系统版本 */
     NSString *version = [NSString stringWithFormat:@"系统版本: %@",[[UIDevice currentDevice] systemVersion]];
@@ -321,10 +280,14 @@ static PaintinglitePressureOS *_instance = nil;
             [fileM removeItemAtPath:SAVEROOT(@"pressure_report.txt") error:&error];
         }
         
-        startStr = [NSString stringWithFormat:@"%@\n手机型号:%@\t系统版本:%@\n",textStart,iphoneType,version];
+        startStr = [NSString stringWithFormat:@"%@\n手机型号:%@\t%@\t处理器:%@\t下载/上传速率:%@\n",textStart,iphoneType,version,cpuInfo,speedInfo];
     }
     
     NSString *pressureStr = [NSString stringWithFormat:@"\n测试数据量:%@\n%@_测试结果:\n(1)%@\n(2)%@\n(3)%@",countArray[countIndex],options,efficiencyStr,memoryUsageStr,cpuUsageStr];
+    
+    if (newGroupFlag){
+        pressureStr = [[NSString stringWithFormat:@"\n======= GROUP %zd =======\n",groupCount] stringByAppendingString:pressureStr];
+    }
     
     NSString *resStr = [NSString stringWithFormat:@"%@%@\n",startStr,pressureStr];
     
@@ -362,13 +325,39 @@ static PaintinglitePressureOS *_instance = nil;
     va_end(args);
     
     /* 创建测试数据库 */
-    if (sqlite3_open([[[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:@"PressureOS.db"] UTF8String],&_ppDb) == SQLITE_OK){
+    //存在PressureOS数据库,删除后在添加
+    NSString *path = PRESSOS_DB_PATH(@"PressureOS.db");
+    NSError *error = nil;
+    if ([[PaintingliteFileManager defaultManager] fileExistsAtPath:path]){
+        if (![[PaintingliteFileManager defaultManager] removeItemAtPath:path error:&error]){
+            if (error) {
+                NSLog(@" === REMOVE PRESSURE OS DATABASE ERROR: %@ ===",error.localizedDescription);
+            }
+        }
+    }
+    
+    if (sqlite3_open([path UTF8String],&_ppDb) == SQLITE_OK){
+        /*
+         CREATE TABLE IF NOT EXISTS pressure(ID INTEGER primary key AUTOINCREMENT,name TEXT,age INTEGER,teacher TEXT,tage INTEGER,desc TEXT)
+         */
         if(sqlite3_exec(_ppDb, [PRESSURETABLE UTF8String], 0, 0, NULL) == SQLITE_OK){
             /* 压力测试 */
             [self Pressure];
             
             /* 执行完成,删除测试数据库 */
-            return sqlite3_exec(_ppDb, [DROPPRESSURETABLE UTF8String], 0, 0, NULL) == SQLITE_OK;
+            /*
+                @"DROP TABLE pressure"
+             */
+            if (sqlite3_exec(_ppDb, [DROPPRESSURETABLE UTF8String], 0, 0, NULL) == SQLITE_OK){
+                //释放数据库
+                sqlite3_close(_ppDb);
+                //删除压力测试数据库文件
+                if (![[PaintingliteFileManager defaultManager] removeItemAtPath:path error:&error]){
+                    if (error) {
+                        NSLog(@" === REMOVE PRESSURE OS DATABASE ERROR: %@ ===",error.localizedDescription);
+                    }
+                }else return true;
+            }
         }
     }
     
@@ -433,5 +422,4 @@ static int i = 0;
     return [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:&error];
 }
 
-                     
 @end

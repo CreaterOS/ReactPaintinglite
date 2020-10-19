@@ -32,10 +32,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// 执行查询
 /// @param ppDb ppDb
-/// @param tableNaem 表名
+/// @param tableName 表名
 /// @param sql sql语句
 /// @param status 工厂状态
-- (NSMutableArray *)execQuery:(sqlite3 *)ppDb tableName:(NSString *__nonnull)tableNaem sql:(NSString *__nonnull)sql status:(PaintingliteSessionFactoryStatus)status;
+- (NSMutableArray *)execQuery:(sqlite3 *)ppDb tableName:(NSString *__nonnull)tableName sql:(NSString *__nonnull)sql status:(PaintingliteSessionFactoryStatus)status;
 
 /// 删除日志
 /// @param fileName 文件名称
