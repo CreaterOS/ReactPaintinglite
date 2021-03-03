@@ -10,6 +10,7 @@
 #import "PaintingliteSessionFactory.h"
 #import "PaintingliteExec.h"
 #import "PaintingliteLog.h"
+#import "PaintingliteWarningHelper.h"
 
 @interface PaintingliteDataBaseOptions()
 @property (nonatomic,strong)PaintingliteExec *exec; //执行语句
@@ -45,6 +46,10 @@ static PaintingliteDataBaseOptions *_instance = nil;
 }
 
 - (Boolean)execTableOptForSQL:(sqlite3 *)ppDb sql:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
+    if (sql == NULL || sql == (id)[NSNull null] || sql.length == 0) {
+        return NO;
+    }
+    
     Boolean flag = [self.exec sqlite3Exec:ppDb sql:sql];
 
     if (completeHandler != nil) {
@@ -60,7 +65,11 @@ static PaintingliteDataBaseOptions *_instance = nil;
 }
 
 - (Boolean)createTableForName:(sqlite3 *)ppDb tableName:(NSString *)tableName content:(NSString *)content completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
-    NSAssert(tableName != NULL, @"Table Name IS Not Empty");
+    /// 表名称为空
+    if (tableName == NULL || tableName == (id)[NSNull null] || tableName.length == 0) {
+        [PaintingliteWarningHelper warningReason:@"TableName IS NULL OR TableName Len IS 0" time:[NSDate date] solve:@"Reset The TableName" args:nil];
+        return NO;
+    }
     
     Boolean flag = [self.exec sqlite3Exec:ppDb tableName:tableName content:content];
     
@@ -78,6 +87,11 @@ static PaintingliteDataBaseOptions *_instance = nil;
 }
 
 - (Boolean)createTableForObj:(sqlite3 *)ppDb obj:(id)obj createStyle:(PaintingliteDataBaseOptionsPrimaryKeyStyle)createStyle completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
+    /// 对象为空
+    if (obj == NULL || obj == (id)[NSNull null]) {
+        [PaintingliteWarningHelper warningReason:@"Object IS NULL OR Object IS [NSNull null]" time:[NSDate date] solve:@"Reset The Object" args:nil];
+        return NO;
+    }
     
     Boolean success = [self.exec sqlite3Exec:ppDb obj:obj status:PaintingliteExecCreate createStyle:createStyle];
     
@@ -96,6 +110,18 @@ static PaintingliteDataBaseOptions *_instance = nil;
 }
 
 - (BOOL)alterTableForName:(sqlite3 *)ppDb oldName:(NSString *__nonnull)oldName newName:(NSString *__nonnull)newName completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
+    /// 旧表名称
+    if (oldName == NULL || oldName == (id)[NSNull null] || oldName.length == 0) {
+        [PaintingliteWarningHelper warningReason:@"TableName IS NULL OR TableName Len IS 0" time:[NSDate date] solve:@"Reset The TableName" args:nil];
+        return NO;
+    }
+    
+    /// 新表名称
+    if (newName == NULL || newName == (id)[NSNull null] || newName.length == 0) {
+        [PaintingliteWarningHelper warningReason:@"New TableName IS NULL OR New TableName Len IS 0" time:[NSDate date] solve:@"Reset The New TableName" args:nil];
+        return NO;
+    }
+    
     Boolean success = [self.exec sqlite3Exec:ppDb obj:@[oldName,newName] status:PaintingliteExecAlterRename createStyle:PaintingliteDataBaseOptionsDefault];
     
     if (completeHandler != nil) {
@@ -110,6 +136,17 @@ static PaintingliteDataBaseOptions *_instance = nil;
 }
 
 - (BOOL)alterTableAddColumn:(sqlite3 *)ppDb tableName:(NSString *)tableName columnName:(NSString *)columnName columnType:(NSString *)columnType completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
+    
+    if (tableName == NULL || tableName == (id)[NSNull null] || tableName.length == 0) {
+        [PaintingliteWarningHelper warningReason:@"TableName IS NULL OR TableName Len IS 0" time:[NSDate date] solve:@"Reset The TableName" args:nil];
+        return NO;
+    }
+    
+    if (columnName == NULL || columnName == (id)[NSNull null] || columnName.length == 0) {
+        [PaintingliteWarningHelper warningReason:@"ColumnName IS NULL OR ColumnName Len IS 0" time:[NSDate date] solve:@"Reset The ColumnName" args:nil];
+        return NO;
+    }
+    
     Boolean success = [self.exec sqlite3Exec:ppDb obj:@[tableName,columnName,columnType] status:PaintingliteExecAlterAddColumn createStyle:PaintingliteDataBaseOptionsDefault];
     
     if (completeHandler != nil) {
@@ -128,6 +165,11 @@ static PaintingliteDataBaseOptions *_instance = nil;
 }
 
 - (BOOL)alterTableForObj:(sqlite3 *)ppDb obj:(id)obj completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
+    if (obj == NULL || obj == (id)[NSNull null]) {
+        [PaintingliteWarningHelper warningReason:@"Object IS NULL OR Object IS [NSNull null]" time:[NSDate date] solve:@"Reset The Object" args:nil];
+        return NO;
+    }
+    
     Boolean success = [self.exec sqlite3Exec:ppDb obj:obj status:PaintingliteExecAlterObj createStyle:PaintingliteDataBaseOptionsDefault];
     
     if (completeHandler != nil) {
@@ -143,7 +185,10 @@ static PaintingliteDataBaseOptions *_instance = nil;
 }
 
 - (Boolean)dropTableForTableName:(sqlite3 *)ppDb tableName:(NSString *)tableName completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
-    NSAssert(tableName != NULL, @"Table Name IS Not Empty");
+    if (tableName == NULL || tableName == (id)[NSNull null] || tableName.length == 0) {
+        [PaintingliteWarningHelper warningReason:@"TableName IS NULL OR TableName Len IS 0" time:[NSDate date] solve:@"Reset The TableName" args:nil];
+        return NO;
+    }
 
     Boolean success = [self.exec sqlite3Exec:ppDb tableName:tableName];
     
@@ -160,6 +205,11 @@ static PaintingliteDataBaseOptions *_instance = nil;
 }
 
 - (Boolean)dropTableForObj:(sqlite3 *)ppDb obj:(id)obj completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
+    if (obj == NULL || obj == (id)[NSNull null]) {
+        [PaintingliteWarningHelper warningReason:@"Object IS NULL OR Object IS [NSNull null]" time:[NSDate date] solve:@"Reset The Object" args:nil];
+        return NO;
+    }
+    
     Boolean success = [self.exec sqlite3Exec:ppDb obj:obj status:PaintingliteExecDrop createStyle:PaintingliteDataBaseOptionsDefault];
 
     if (completeHandler != nil) {

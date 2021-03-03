@@ -14,7 +14,8 @@
 #define STRONG_SELF __strong typeof(weakSelf) self = weakSelf;
  
 @interface PaintingliteCache()<UIApplicationDelegate>
-
+@property (nonatomic,assign)NSTimeInterval lauchTime; /// 启动时间
+@property (nonatomic,strong)CADisplayLink *displayLink;
 @end
 
 @implementation PaintingliteCache
@@ -35,17 +36,41 @@ static PaintingliteCache *_instance = nil;
     if (self) {
         //注册通知写日志
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pushCacheToLogFile) name:@"PaintingliteWriteTableLogNotification" object:self];
-#if SD_UIKIT
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveMemoryWarning) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
-#endif
+//#if SD_UIKIT
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidFinishLaunching:) name:UIApplicationDidFinishLaunchingNotification object:nil];
+//        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
+//        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
+        /**
+            v1.3.3 开启退出写入缓存
+         */
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
+//        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidReceiveMemoryWarning:) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
+//#endif
     }
     return self;
 }
 
+#pragma mark - Life Cricle
+- (void)applicationDidFinishLaunching:(NSNotification *)notification {
+    /// 记录登陆时间
+    self.lauchTime = [[NSDate date] timeIntervalSince1970];
+}
+
+- (void)applicationWillResignActive:(NSNotification *)notification {
+    /// 程序退出写入缓存
+    __weak typeof(self) weakself = self;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [weakself pushCacheToLogFile];
+    });
+}
+
 #pragma mark - 添加表名称缓存
 - (void)addSnapTableNameCache:(NSString *__nonnull)tableName{
+    
+    if (tableName == NULL || tableName == (id)[NSNull null] || tableName.length == 0) {
+        return ;
+    }
+    
     NSUInteger tableCount = self.tableCount;
     
     [self setObject:tableName forKey:[NSString stringWithFormat:@"snap_tableName_%zd",tableCount]];
@@ -53,7 +78,6 @@ static PaintingliteCache *_instance = nil;
     tableCount++;
     self.tableCount = tableCount;
 }
-
 #pragma mark - 添加表结构缓存
 - (void)addSnapTableInfoNameCache:(NSArray *)infoArray tableName:(NSString *)tableName{
     [self setObject:infoArray forKey:[NSString stringWithFormat:@"snap_%@_info",tableName]];
@@ -72,10 +96,29 @@ static int count = 0;
 
     [self setObject:optStr forKey:[NSString stringWithFormat:@"database_opt_%d",count]];
     
+    /**
+        v1.3.3 添加程序运行超过10分钟写一次缓存
+     */
+    CADisplayLink *displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(sendTimeByPushCache)];
+    [displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
+    self.displayLink = displayLink;
+    
+    
     if(count >= self.baseReleaseLine){
         /* 发送通知,写入缓存文件 */
         [[NSNotificationCenter defaultCenter] postNotificationName:@"PaintingliteWriteTableLogNotification" object:self];
         count = 0;
+    }
+}
+
+- (void)sendTimeByPushCache {
+     /// 获得当前时间
+    long long int currentTime = (long long int)[[NSDate date] timeIntervalSince1970];
+    
+    /// 十分钟上传一次
+    if (currentTime - (long long int)self.lauchTime >= 60 * 10) {
+        /// 写入日志
+        [self pushCacheToLogFile];
     }
 }
 
@@ -90,7 +133,13 @@ static int count = 0;
                 NSArray<NSString *> *strArray = [optAndStatus componentsSeparatedByString:@" | "];
                 
                 //写入文件
-                [[PaintingliteLog sharePaintingliteLog] writeLogFileOptions:[strArray firstObject]  status:([[strArray lastObject] isEqualToString:@"success"]) ? PaintingliteLogSuccess : PaintingliteLogError completeHandler:nil];
+                @synchronized ([PaintingliteLog sharePaintingliteLog]) {
+                    if ([strArray firstObject] == NULL) {
+                        return ;
+                    }
+                    [[PaintingliteLog sharePaintingliteLog] writeLogFileOptions:[strArray firstObject] status:([[strArray lastObject] isEqualToString:@"success"]) ? PaintingliteLogSuccess : PaintingliteLogError completeHandler:nil];
+                }
+               
                 /* 清除缓存 */
                 [self removeObjectForKey:cacheKey];
             }

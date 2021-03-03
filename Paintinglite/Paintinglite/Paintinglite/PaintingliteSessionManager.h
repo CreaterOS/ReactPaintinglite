@@ -55,7 +55,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// 打开数据库
 /// @param filePath 数据库路径
 /// @param completeHandler 回调操作
-- (Boolean)openSqliteFilePath:(NSString *)filePath completeHandler:(void (^__nullable)(NSString *filePath,PaintingliteSessionError *error,Boolean success))completeHandler;
+- (Boolean)openSqliteFilePath:(NSString *)filePath completeHandler:(void (^__nullable)(NSString *filePath,Boolean success))completeHandler;
 
 
 /// 打开数据库 -- 加密
@@ -68,6 +68,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// 删除加密文件夹
 - (Boolean)delEncryptDict;
+
+/// 获得当前连接数据的Session
+- (NSString *)getCurrentSession;
 
 /// 获得数据库
 - (sqlite3 *)getSqlite3;

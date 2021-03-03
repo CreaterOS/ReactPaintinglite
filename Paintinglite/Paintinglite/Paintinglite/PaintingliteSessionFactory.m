@@ -10,6 +10,7 @@
 #import "PaintingliteCache.h"
 #import "PaintingliteSecurity.h"
 #import "PaintingliteLog.h"
+#import "PaintingliteWarningHelper.h"
 
 @interface PaintingliteSessionFactory()
 @property (nonatomic)sqlite3_stmt *stmt;
@@ -66,9 +67,11 @@ static PaintingliteSessionFactory *_instance = nil;
                 NSUInteger count = 0;
                 [PaintingliteCache sharePaintingliteCache].tableCount = 0;
                 for (NSString *databaseName in tables) {
-                    [[PaintingliteCache sharePaintingliteCache] removeObjectForKey:[NSString stringWithFormat:@"snap_tableName_%zd",count]];
-                    [[PaintingliteCache sharePaintingliteCache] addSnapTableNameCache:databaseName];
-                    count++;
+                    @autoreleasepool {
+                        [[PaintingliteCache sharePaintingliteCache] removeObjectForKey:[NSString stringWithFormat:@"snap_tableName_%zd",count]];
+                        [[PaintingliteCache sharePaintingliteCache] addSnapTableNameCache:databaseName];
+                        count++;
+                    }
                 }
             }else{
                 //表字段集合缓存
@@ -88,19 +91,39 @@ static PaintingliteSessionFactory *_instance = nil;
 
 #pragma mark - 删除日志文件
 - (void)removeLogFile:(NSString *)fileName{
+    if (fileName == NULL || fileName == (id)[NSNull null] || fileName.length == 0) {
+        [PaintingliteWarningHelper warningReason:@"FileName IS NULL OR FileName Len IS 0" time:[NSDate date] solve:@"Reset The FileName" args:nil];
+        return ;
+    }
+    
     [[PaintingliteLog sharePaintingliteLog] removeLogFile:fileName];
 }
 
 #pragma mark - 读取日志文件
 - (NSString *)readLogFile:(NSString *)fileName{
+    if (fileName == NULL || fileName == (id)[NSNull null] || fileName.length == 0) {
+        [PaintingliteWarningHelper warningReason:@"FileName IS NULL OR FileName Len IS 0" time:[NSDate date] solve:@"Reset The FileName" args:nil];
+        return [NSString string];
+    }
+    
     return [[PaintingliteLog sharePaintingliteLog] readLogFile:fileName];
 }
 
 - (NSString *)readLogFile:(NSString *)fileName dateTime:(NSDate *)dateTime{
+    if (fileName == NULL || fileName == (id)[NSNull null] || fileName.length == 0) {
+        [PaintingliteWarningHelper warningReason:@"FileName IS NULL OR FileName Len IS 0" time:[NSDate date] solve:@"Reset The FileName" args:nil];
+        return [NSString string];
+    }
+    
     return [[PaintingliteLog sharePaintingliteLog] readLogFile:fileName dateTime:dateTime];
 }
 
 - (NSString *)readLogFile:(NSString *)fileName logStatus:(PaintingliteLogStatus)logStatus{
+    if (fileName == NULL || fileName == (id)[NSNull null] || fileName.length == 0) {
+        [PaintingliteWarningHelper warningReason:@"FileName IS NULL OR FileName Len IS 0" time:[NSDate date] solve:@"Reset The FileName" args:nil];
+        return [NSString string];
+    }
+    
     return [[PaintingliteLog sharePaintingliteLog] readLogFile:fileName logStatus:logStatus]; 
 }
 

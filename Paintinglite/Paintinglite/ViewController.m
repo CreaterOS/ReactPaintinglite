@@ -12,6 +12,7 @@
 #import "PaintingliteSecurity.h"
 #import "SSZipArchive.h"
 #import "PaintinglitePressureOS.h"
+#import "Eletest.h"
 
 @interface ViewController ()
 @property (nonatomic,strong)PaintinglitePressureOS *presserOS;
@@ -30,12 +31,35 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
     PaintingliteSessionManager *manager = [PaintingliteSessionManager sharePaintingliteSessionManager];
-    
-    [manager openSqlite:@"sqlite.db" completeHandler:^(NSString * _Nonnull filePath, PaintingliteSessionError * _Nonnull error, Boolean success) {
+//    NSLog(@"%@",[manager dictExistsDatabaseList:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject]]);
+    __block NSString *path;
+    [manager openSqlite:@"" completeHandler:^(NSString * _Nonnull filePath, PaintingliteSessionError * _Nonnull error, Boolean success) {
         if (success) {
+            path = filePath;
             NSLog(@"%@",filePath);
         }
     }];
+    
+//    [manager createTableForName:@"user" content:@"name TEXT"];
+//     [manager createTableForName:@"" content:@"name TEXT"];
+//    [manager createTableForObj:[Eletest new] primaryKeyStyle:PaintingliteDataBaseOptionsDefault];
+    [manager createTableForObj:nil primaryKeyStyle:PaintingliteDataBaseOptionsDefault];
+//    NSLog(@"%@",[manager getCurrentSession]);
+//    NSLog(@"%ld",(long)[manager isExistsDatabase:path]);
+//    [manager openSqliteFilePath:@"" completeHandler:^(NSString * _Nonnull filePath, Boolean success) {
+//        if (success) {
+//            NSLog(@"%@",filePath);
+//        }
+//    }];
+    
+//    [manager getSqlite3];
+    
+    
+//    [manager openSqlite:@"sqlite.db" completeHandler:^(NSString * _Nonnull filePath, PaintingliteSessionError * _Nonnull error, Boolean success) {
+//        if (success) {
+//            NSLog(@"%@",filePath);
+//        }
+//    }];
     
     
     
@@ -128,14 +152,14 @@
 //    NSLog(@"%@",[manager execQuerySQL:@"SELECT * FROM Stu"]);
 //    [manager resume];
     
-    [manager execQuerySQL:@"select * from eletest" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<NSDictionary *> * _Nonnull resArray) {
-        if (success) {
-            ;
-        }
-    }];
-
-    NSLog(@"SELECT FINISH...");
-    
+//    [manager execQuerySQL:@"select * from eletest" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<NSDictionary *> * _Nonnull resArray) {
+//        if (success) {
+//            ;
+//        }
+//    }];
+//
+//    NSLog(@"SELECT FINISH...");
+//
 //    [manager execQuerySQLPrepareStatementSql:@"SELECT * FROM eletest WHERE name LIKE ? AND age = ?"];
 //    [manager setPrepareStatementSqlParameter:@[@"%C%",@21]];
 //

@@ -10,6 +10,7 @@
 #import "PaintingliteObjRuntimeProperty.h"
 #import "PaintingliteExec.h"
 #import "PaintingliteTransaction.h"
+#import "PaintingliteWarningHelper.h"
 
 @interface PaintingliteTableOptionsSelect()
 @property (nonatomic,strong)PaintingliteExec *exec; //执行语句
@@ -53,6 +54,11 @@ static PaintingliteTableOptionsSelect *_instance = nil;
 }
 
 - (Boolean)execQuerySQL:(sqlite3 *)ppDb sql:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull))completeHandler{
+    if (sql == NULL || sql == (id)[NSNull null] || sql.length == 0) {
+        [PaintingliteWarningHelper warningReason:@"SQL IS NULL OR SQL Len IS 0" time:[NSDate date] solve:@"Reset The SQL" args:nil];
+        return NO;
+    }
+    
     NSMutableArray *array = [self.exec sqlite3ExecQuery:ppDb sql:sql];
     
     Boolean success = (array.count != -1);

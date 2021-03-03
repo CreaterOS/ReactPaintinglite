@@ -63,6 +63,7 @@
 		68EB381C249083FD00DFC0CA /* PaintingliteUUID.m in Sources */ = {isa = PBXBuildFile; fileRef = 68EB381B249083FD00DFC0CA /* PaintingliteUUID.m */; };
 		68EDCA84248747E200031B41 /* PaintingliteIntellegenceSelect.m in Sources */ = {isa = PBXBuildFile; fileRef = 68EDCA83248747E200031B41 /* PaintingliteIntellegenceSelect.m */; };
 		68F260B224D1209700652C03 /* PaintingliteJSContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 68F260B124D1209700652C03 /* PaintingliteJSContext.m */; };
+		EEFE2E1C25EF32A1005990B9 /* PaintingliteWarningHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = EEFE2E1B25EF32A1005990B9 /* PaintingliteWarningHelper.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -200,6 +201,8 @@
 		68EDCA852487A57700031B41 /* PaintingliteExecHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaintingliteExecHeader.h; sourceTree = "<group>"; };
 		68F260B024D1209700652C03 /* PaintingliteJSContext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaintingliteJSContext.h; sourceTree = "<group>"; };
 		68F260B124D1209700652C03 /* PaintingliteJSContext.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaintingliteJSContext.m; sourceTree = "<group>"; };
+		EEFE2E1A25EF32A1005990B9 /* PaintingliteWarningHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaintingliteWarningHelper.h; sourceTree = "<group>"; };
+		EEFE2E1B25EF32A1005990B9 /* PaintingliteWarningHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaintingliteWarningHelper.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -336,6 +339,8 @@
 		68DE9956247C9B9F0078EDD5 /* Paintinglite */ = {
 			isa = PBXGroup;
 			children = (
+				EEFE2E2025EF7339005990B9 /* Cache */,
+				EEFE2E1925EF3274005990B9 /* Helper */,
 				68DCAAFE2533579400D67C86 /* aes */,
 				68DCAAF02533578900D67C86 /* minizip */,
 				68DCAAEE2533577100D67C86 /* SSZipArchive.h */,
@@ -347,8 +352,6 @@
 				68DE9958247C9C260078EDD5 /* PaintingliteSessionManager.m */,
 				6888B26A24B9BF61003345D9 /* PaintingliteFileManager.h */,
 				6888B26B24B9BF61003345D9 /* PaintingliteFileManager.m */,
-				6888B26D24B9DBFA003345D9 /* PaintingliteCache.h */,
-				6888B26E24B9DBFA003345D9 /* PaintingliteCache.m */,
 				68DE9960247CA1140078EDD5 /* PaintingliteSessionFactory.h */,
 				68DE9961247CA1140078EDD5 /* PaintingliteSessionFactory.m */,
 				68DE9963247CA2490078EDD5 /* PaintingliteConfiguration.h */,
@@ -413,6 +416,24 @@
 				68DE995B247C9C4D0078EDD5 /* libsqlite3.tbd */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		EEFE2E1925EF3274005990B9 /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				EEFE2E1A25EF32A1005990B9 /* PaintingliteWarningHelper.h */,
+				EEFE2E1B25EF32A1005990B9 /* PaintingliteWarningHelper.m */,
+			);
+			path = Helper;
+			sourceTree = "<group>";
+		};
+		EEFE2E2025EF7339005990B9 /* Cache */ = {
+			isa = PBXGroup;
+			children = (
+				6888B26D24B9DBFA003345D9 /* PaintingliteCache.h */,
+				6888B26E24B9DBFA003345D9 /* PaintingliteCache.m */,
+			);
+			path = Cache;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -569,6 +590,7 @@
 				68DE9959247C9C260078EDD5 /* PaintingliteSessionManager.m in Sources */,
 				68DCAB1A2533579400D67C86 /* pwd2key.m in Sources */,
 				6883B28A24CC2E0500BAA3C2 /* XMLReader.m in Sources */,
+				EEFE2E1C25EF32A1005990B9 /* PaintingliteWarningHelper.m in Sources */,
 				6879F980248E66F300E66ABB /* PaintingliteCascadeShowerIUD.m in Sources */,
 				6800074E2488D19000FF75DE /* PaintingliteCUDOptions.m in Sources */,
 				68DE9926247C9B6A0078EDD5 /* AppDelegate.m in Sources */,
