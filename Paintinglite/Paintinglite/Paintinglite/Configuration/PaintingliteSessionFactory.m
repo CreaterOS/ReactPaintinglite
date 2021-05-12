@@ -89,6 +89,8 @@ static PaintingliteSessionFactory *_instance = nil;
     return tables;
 }
 
+/* =====================================日志操作======================================== */
+#pragma mark - 日志操作
 #pragma mark - 删除日志文件
 - (void)removeLogFile:(NSString *)fileName{
     if (fileName == NULL || fileName == (id)[NSNull null] || fileName.length == 0) {

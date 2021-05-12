@@ -73,7 +73,7 @@
     /* 获得表名 */
     __block NSString *tableName = [self getOptTableName:ppDb sql:sql];
     
-    __block NSString *lowerSql = [self lowerToUpper:sql];
+    __block NSString *upperSql = [self lowerToUpper:sql];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         //判断是否有表,有表则不创建
         /*
@@ -81,9 +81,9 @@
          成功失败都会进行日志记录
          */
         /* 拼接缓存操作 */
-        flag = sqlite3_exec(ppDb, [lowerSql UTF8String], 0, 0, 0) == SQLITE_OK;
+        flag = sqlite3_exec(ppDb, [upperSql UTF8String], 0, 0, 0) == SQLITE_OK;
 
-        NSString *optAndStatusStr = [lowerSql stringByAppendingString:@" | "];
+        NSString *optAndStatusStr = [upperSql stringByAppendingString:@" | "];
         if (flag && sql_flag) {
             //增加对表的快照保存
             [[PaintingliteSnapManager sharePaintingliteSnapManager] saveSnap:ppDb];
@@ -627,12 +627,18 @@
 }
 
 #pragma mark - 判断表是否存在
-- (void)isNotExistsTable:(NSString *__nonnull)tableName{
-    if (self.isCreateTable) {
-        if (![[self getCurrentTableNameWithCache] containsObject:[tableName lowercaseString]]) {
-            [PaintingliteException PaintingliteException:@"表名不存在" reason:[NSString stringWithFormat:@"数据库中查找不到表名[%@]",tableName]];
+- (Boolean)isNotExistsTable:(NSString *__nonnull)tableName{
+//    if (self.isCreateTable) {
+        for (NSString *name in [self getCurrentTableNameWithCache]) {
+            if ([name isEqualToString:tableName]) {
+                return true;
+            }
         }
-    }
+        
+        [PaintingliteException PaintingliteException:@"表名不存在" reason:[NSString stringWithFormat:@"数据库中查找不到表名[%@]",tableName]];
+//    }
+    
+    return false;
 }
 
 #pragma mark - dealloc

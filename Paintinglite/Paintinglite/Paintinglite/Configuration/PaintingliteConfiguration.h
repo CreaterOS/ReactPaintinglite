@@ -60,6 +60,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param fileName 数据库名称
 - (NSString *)configurationFileName:(NSString *__nonnull)fileName;
 
+/* =====================================数据库模式操作======================================== */
 /// Synchronous模式
 /// @param ppDb ppDb
 /// @param mode 模式

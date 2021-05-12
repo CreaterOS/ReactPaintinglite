@@ -61,7 +61,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSArray *)getCurrentTableNameWithCache;
 
 /* 判断表名是否存在 */
-- (void)isNotExistsTable:(NSString *__nonnull)tableName;
+- (Boolean)isNotExistsTable:(NSString *__nonnull)tableName;
 
 @end
 

@@ -85,6 +85,8 @@ static PaintingliteSessionManager *_instance = nil;
     return self;
 }
 
+/* =====================================数据库打开/关闭======================================== */
+#pragma mark - 数据库打开/关闭
 #pragma mark - 连接数据库
 /// v1.3.3优化策略
 - (NSString *__nonnull)createDefineDataBaseName:(NSString *)str type:(PaintingliteOpenType)type {
@@ -113,7 +115,6 @@ static PaintingliteSessionManager *_instance = nil;
 }
 
 - (Boolean)openSqlite:(NSString *)fileName completeHandler:(void (^)(NSString * _Nonnull, PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
-//    NSAssert(fileName != NULL, @"Please set the Sqlite DataBase Name");
     fileName = [self createDefineDataBaseName:fileName type:PaintingliteOpenByFileName];
     
     //创建信号量
@@ -130,7 +131,6 @@ static PaintingliteSessionManager *_instance = nil;
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         STRONGSELF(weakself);
-//        if([[PaintingliteFileManager defaultManager] fileExistsAtPath:filePath]){
         if ([self isExistsDatabase:filePath]){
             success = (sqlite3_open_v2([filePath UTF8String], &(self->_ppDb), SQLITE_OPEN_READWRITE|SQLITE_OPEN_FULLMUTEX, NULL) == SQLITE_OK);
         }else{
@@ -267,7 +267,6 @@ static PaintingliteSessionManager *_instance = nil;
     return success;
 }
 
-
 /// 加密数据库
 - (Boolean)resume{
     //1.删除数据库ZIP
@@ -285,6 +284,43 @@ static PaintingliteSessionManager *_instance = nil;
     return ([self getSqlite3] == NULL) ? [NSString string] : self.session;
 }
 
+#pragma mark - 释放数据库
+- (Boolean)releaseSqlite{
+    __block Boolean flag = false;
+
+    [self releaseSqliteCompleteHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
+        if (success) {
+            flag = success;
+        }
+    }];
+    
+    return flag;
+}
+
+- (Boolean)releaseSqliteCompleteHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
+    /* 释放数据库,先判断是否打开数据库,只有打开数据库才可以释放 */
+    Boolean success = false;
+    
+    if (self.isOpen) {
+        @synchronized (self) {
+            if (!self.closeFlag) {
+                success = (sqlite3_close(_ppDb) == SQLITE_OK);
+                self.closeFlag = success;
+                
+                if (completeHandler != nil) {
+                    completeHandler([PaintingliteSessionError sharePaintingliteSessionError],success);
+                }
+            }
+        }
+    }else{
+        [self warningOpenDatabase];
+    }
+
+    return success;
+}
+
+/* =====================================数据库基本信息======================================== */
+#pragma mark - 数据库基本信息
 #pragma mark - 获得数据库
 - (sqlite3 *)getSqlite3{
     if (self.ppDb == NULL || self.ppDb == CFBridgingRetain([NSNull null])) {
@@ -345,6 +381,7 @@ static PaintingliteSessionManager *_instance = nil;
     return fileSize/1024.0/1024.0;
 }
 
+/* =====================================数据库操作======================================== */
 #pragma mark - SQL操作
 - (void)warningOpenDatabase {
     /// 显示当前含有的数据库
@@ -461,41 +498,7 @@ static PaintingliteSessionManager *_instance = nil;
     return [[PaintingliteDataBaseOptions sharePaintingliteDataBaseOptions] dropTableForObj:self.ppDb obj:obj completeHandler:completeHandler];
 }
 
-#pragma mark - 释放数据库
-- (Boolean)releaseSqlite{
-    __block Boolean flag = false;
-
-    [self releaseSqliteCompleteHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
-        if (success) {
-            flag = success;
-        }
-    }];
-    
-    return flag;
-}
-
-- (Boolean)releaseSqliteCompleteHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
-    /* 释放数据库,先判断是否打开数据库,只有打开数据库才可以释放 */
-    Boolean success = false;
-    
-    if (self.isOpen) {
-        @synchronized (self) {
-            if (!self.closeFlag) {
-                success = (sqlite3_close(_ppDb) == SQLITE_OK);
-                self.closeFlag = success;
-                
-                if (completeHandler != nil) {
-                    completeHandler([PaintingliteSessionError sharePaintingliteSessionError],success);
-                }
-            }
-        }
-    }else{
-        [self warningOpenDatabase];
-    }
-
-    return success;
-}
-
+/* =====================================数据库日志操作======================================== */
 #pragma mark - 日志文件操作
 #pragma mark - 删除日志文件
 - (void)removeLogFileWithDatabaseName:(NSString *)fileName{
@@ -515,6 +518,7 @@ static PaintingliteSessionManager *_instance = nil;
     NSLog(@"%@",[[[PaintingliteSessionFactory sharePaintingliteSessionFactory] readLogFile:fileName logStatus:logStatus] length] != 0 ? [[PaintingliteSessionFactory sharePaintingliteSessionFactory] readLogFile:fileName logStatus:logStatus] : @"无对应日志");
 }
 
+/* =====================================表的操作SQL======================================== */
 #pragma mark - 系统查询方式
 - (NSMutableArray<NSMutableDictionary<NSString *,NSString *> *> *)systemExec:(NSString *)sql{
     return [self.exec systemExec:self.ppDb sql:sql];
@@ -679,6 +683,7 @@ static PaintingliteSessionManager *_instance = nil;
     return [[PaintingliteTableOptions sharePaintingliteTableOptions] execOrderByQuerySQL:self.ppDb orderbyContext:orderbyContext orderStyle:orderStyle obj:obj completeHandler:completeHandler];
 }
 
+/* =====================================表的操作PQL======================================== */
 #pragma mark - PQL查询
 - (NSArray<id> *)execPrepareStatementPQL{
     return [[PaintingliteTableOptions sharePaintingliteTableOptions] execPrepareStatementPQL:self.ppDb];
@@ -717,6 +722,7 @@ static PaintingliteSessionManager *_instance = nil;
     return [[PaintingliteTableOptions sharePaintingliteTableOptions] execPQL:self.ppDb pql:pql completeHandler:completeHandler];
 }
 
+/* =====================================表的操作CUD======================================== */
 #pragma mark - CUD
 #pragma mark - 增加数据
 - (Boolean)insert:(NSString *)sql{

@@ -34,6 +34,8 @@ static PaintingliteConfiguration *_instance = nil;
     return _instance;
 }
 
+/* =====================================数据库模式操作======================================== */
+#pragma mark - 数据库模式操作w
 #pragma mark - 修改Synchronous模式
 + (Boolean)setSynchronous:(sqlite3 *)ppDb mode:(PaintingliteSynchronousMode)mode{
     NSString *synchronousSQL = NULL;
@@ -261,7 +263,7 @@ static PaintingliteConfiguration *_instance = nil;
     //获得文件后缀
     if(fileName.length == 0) return [NSString string];
     
-    NSString *extension =  fileName.pathExtension;
+    NSString *extension = fileName.pathExtension;
     if (![extension isEqualToString:@"db"]) {
         if (![fileName containsString:@"."]) {
             fileName = [fileName stringByAppendingString:@".db"];

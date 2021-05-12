@@ -94,10 +94,19 @@ static PaintingliteCUDOptions *_instance = nil;
 
         //获得增加数据sql中的表名称
         //INSERT INTO user(...) VALUES()
-        NSString *tableName = [[PaintingliteObjRuntimeProperty getObjName:obj] lowercaseString];
-
+//        NSString *tableName = [[PaintingliteObjRuntimeProperty getObjName:obj] lowercaseString];
+        NSString *tableName = [PaintingliteObjRuntimeProperty getObjName:obj];
         //判断表是否存在，判断表的字段
-        [self.exec isNotExistsTable:tableName];
+        if (![self.exec isNotExistsTable:[tableName lowercaseString]]) {
+            /// 驼峰字符串处理
+            NSString *firstCharacter = [[tableName substringWithRange:NSMakeRange(0, 1)] lowercaseString];
+            NSString *lastStr = [tableName substringWithRange:NSMakeRange(1, tableName.length-1)];
+            tableName = [firstCharacter stringByAppendingString:lastStr];
+            
+            if (![self.exec isNotExistsTable:tableName]) {
+                return false;
+            }
+        }
 
         //获取表的字段，寻找对应的对象字段
         NSMutableArray *tableInfoArray = [self.exec getTableInfo:ppDb tableName:tableName];
@@ -174,10 +183,18 @@ static PaintingliteCUDOptions *_instance = nil;
     
         //获得增加数据sql中的表名称
         //UPDATE user SET name = '...' WHERE age = '...'
-        NSString *tableName = [[PaintingliteObjRuntimeProperty getObjName:obj] lowercaseString];
-        
+        NSString *tableName = [PaintingliteObjRuntimeProperty getObjName:obj];
         //判断表是否存在，判断表的字段
-        [self.exec isNotExistsTable:tableName];
+        if (![self.exec isNotExistsTable:[tableName lowercaseString]]) {
+            /// 驼峰字符串处理
+            NSString *firstCharacter = [[tableName substringWithRange:NSMakeRange(0, 1)] lowercaseString];
+            NSString *lastStr = [tableName substringWithRange:NSMakeRange(1, tableName.length-1)];
+            tableName = [firstCharacter stringByAppendingString:lastStr];
+            
+            if (![self.exec isNotExistsTable:tableName]) {
+                return false;
+            }
+        }
         
         //先查看表中已经有的数据然后和obj传入的进行对比,然后判断是否更改
         __block NSMutableArray *tempArray = [NSMutableArray array];

@@ -31,7 +31,8 @@ NS_ASSUME_NONNULL_BEGIN
 /* 单例模式 */
 + (instancetype)sharePaintingliteSessionManager;
 
-
+/* =====================================数据库打开/关闭======================================== */
+#pragma mark - 数据库打开/关闭
 /// 打开数据库
 /// @param fileName 数据库名称
 - (Boolean)openSqlite:(NSString *)fileName;
@@ -72,6 +73,16 @@ NS_ASSUME_NONNULL_BEGIN
 /// 获得当前连接数据的Session
 - (NSString *)getCurrentSession;
 
+/// 释放数据库
+- (Boolean)releaseSqlite;
+
+
+/// 释放数据库
+/// @param completeHandler 回调操作
+- (Boolean)releaseSqliteCompleteHandler:(void(^__nullable)(PaintingliteSessionError *error,Boolean success))completeHandler;
+
+/* =====================================数据库基本信息======================================== */
+#pragma mark - 数据库基本信息
 /// 获得数据库
 - (sqlite3 *)getSqlite3;
 
@@ -91,14 +102,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param filePath 文件路径
 - (NSDictionary<NSFileAttributeKey,id> *)databaseInfoDict:(NSString *__nonnull)filePath;
 
-/// 释放数据库
-- (Boolean)releaseSqlite;
 
-
-/// 释放数据库
-/// @param completeHandler 回调操作
-- (Boolean)releaseSqliteCompleteHandler:(void(^__nullable)(PaintingliteSessionError *error,Boolean success))completeHandler;
-
+/* =====================================数据库日志操作======================================== */
+#pragma mark - 数据库日志操作
 /// 删除日志
 /// @param fileName 文件名称
 - (void)removeLogFileWithDatabaseName:(NSString *__nonnull)fileName;
@@ -132,7 +138,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (Boolean)execTableOptForSQL:(NSString *)sql completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success))completeHandler;
 
 /* =====================================数据库操作======================================== */
-
+#pragma mark - 数据库操作
 /// 创建表
 /// @param tableName 表名
 /// @param content 创建字段内容
@@ -216,7 +222,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (Boolean)dropTableForObj:(id)obj completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
 
 /* =====================================表的操作SQL======================================== */
-
+#pragma mark - 表的操作SQL
 
 /// 系统查询方式
 /// @param sql sql语句
@@ -370,7 +376,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (Boolean)execQueryOrderBySQLWithOrderbyContext:(NSString *__nonnull)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle obj:(id)obj completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray<NSDictionary *> *resArray,NSMutableArray<id>* resObjList))completeHandler;
 
 /* =====================================表的操作PQL======================================== */
-
 #pragma mark - PQL查询
 
 /// 执行PQL条件查询
@@ -406,7 +411,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (Boolean)execPQL:(NSString *__nonnull)pql completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray,NSMutableArray<id>* resObjList))completeHandler;
 
 /* =====================================表的操作CUD======================================== */
-
 #pragma mark - CUD
 
 /// 插入

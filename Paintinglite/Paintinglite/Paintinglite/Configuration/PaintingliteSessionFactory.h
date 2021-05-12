@@ -37,6 +37,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param status 工厂状态
 - (NSMutableArray *)execQuery:(sqlite3 *)ppDb tableName:(NSString *__nonnull)tableName sql:(NSString *__nonnull)sql status:(PaintingliteSessionFactoryStatus)status;
 
+/* =====================================日志操作======================================== */
 /// 删除日志
 /// @param fileName 文件名称
 - (void)removeLogFile:(NSString *)fileName;

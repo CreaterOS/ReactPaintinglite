@@ -8,11 +8,13 @@
 
 #import "ViewController.h"
 #import "Paintinglite/PaintingliteSessionManager.h"
-#import "Paintinglite/PaintingliteTransaction.h"
+#import "PaintingliteTransaction.h"
 #import "PaintingliteSecurity.h"
 #import "SSZipArchive.h"
 #import "PaintinglitePressureOS.h"
 #import "Eletest.h"
+#import "PaintingliteCache.h"
+#import "UserClass.h"
 
 @interface ViewController ()
 @property (nonatomic,strong)PaintinglitePressureOS *presserOS;
@@ -40,10 +42,36 @@
         }
     }];
     
-//    [manager createTableForName:@"user" content:@"name TEXT"];
+//    [manager createTableForName:@"userClass" content:@"name TEXT"];
+//    [manager alterTableForName:@"user" newName:@"userClass"];
+    
+    
+    UserClass *userClass = [[UserClass alloc] init];
+    userClass.name = @"YF";
+    userClass.age = [NSNumber numberWithInt:22];
+    
+    [manager insertWithObj:userClass completeHandler:nil];
+    
+    NSMutableArray<NSString *> *tableNameArray = [NSMutableArray array];
+    
+    for (NSUInteger i = 0; i < [PaintingliteCache sharePaintingliteCache].tableCount; i++) {
+        NSString *tableName = (NSString*)[[PaintingliteCache sharePaintingliteCache] objectForKey:[NSString stringWithFormat:@"snap_tableName_%zd",i]];
+        if (![tableNameArray containsObject:tableName]) {
+            [tableNameArray addObject:tableName];
+        }
+    }
+    
+    NSLog(@"%@",tableNameArray);
+    
+    [manager execQuerySQL:@"select * from userClass" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<NSDictionary *> * _Nonnull resArray) {
+        if (success) {
+            NSLog(@"%@",resArray);
+        }
+    }];
+    
 //     [manager createTableForName:@"" content:@"name TEXT"];
 //    [manager createTableForObj:[Eletest new] primaryKeyStyle:PaintingliteDataBaseOptionsDefault];
-    [manager createTableForObj:nil primaryKeyStyle:PaintingliteDataBaseOptionsDefault];
+//    [manager createTableForObj:nil primaryKeyStyle:PaintingliteDataBaseOptionsDefault];
 //    NSLog(@"%@",[manager getCurrentSession]);
 //    NSLog(@"%ld",(long)[manager isExistsDatabase:path]);
 //    [manager openSqliteFilePath:@"" completeHandler:^(NSString * _Nonnull filePath, Boolean success) {
