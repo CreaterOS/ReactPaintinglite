@@ -205,7 +205,6 @@
 		68F260B124D1209700652C03 /* PaintingliteJSContext.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaintingliteJSContext.m; sourceTree = "<group>"; };
 		EE371483264CC608005D5655 /* PaintingliteSystemUseInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaintingliteSystemUseInfo.h; sourceTree = "<group>"; };
 		EE371484264CC608005D5655 /* PaintingliteSystemUseInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaintingliteSystemUseInfo.m; sourceTree = "<group>"; };
-		EE3714CE264D0A98005D5655 /* HeaderFiles.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HeaderFiles.h; sourceTree = "<group>"; };
 		EE7A38EA264BD9AC00B98417 /* UserClass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserClass.h; sourceTree = "<group>"; };
 		EE7A38EB264BD9AC00B98417 /* UserClass.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UserClass.m; sourceTree = "<group>"; };
 		EEFE2E1A25EF32A1005990B9 /* PaintingliteWarningHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaintingliteWarningHelper.h; sourceTree = "<group>"; };
@@ -238,6 +237,50 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		68DCAAF02533578900D67C86 /* minizip */ = {
+			isa = PBXGroup;
+			children = (
+				68DCAAF12533578900D67C86 /* unzip.m */,
+				68DCAAF22533578900D67C86 /* zip.m */,
+				68DCAAF32533578900D67C86 /* ioapi.m */,
+				68DCAAF42533578900D67C86 /* mztools.m */,
+				68DCAAF52533578900D67C86 /* crypt.h */,
+				68DCAAF62533578900D67C86 /* zip.h */,
+				68DCAAF72533578900D67C86 /* unzip.h */,
+				68DCAAF82533578900D67C86 /* mztools.h */,
+				68DCAAF92533578900D67C86 /* ioapi.h */,
+			);
+			path = minizip;
+			sourceTree = "<group>";
+		};
+		68DCAAFE2533579400D67C86 /* aes */ = {
+			isa = PBXGroup;
+			children = (
+				68DCAAFF2533579400D67C86 /* aeskey.m */,
+				68DCAB002533579400D67C86 /* prng.h */,
+				68DCAB012533579400D67C86 /* hmac.m */,
+				68DCAB022533579400D67C86 /* aestab.h */,
+				68DCAB032533579400D67C86 /* pwd2key.h */,
+				68DCAB042533579400D67C86 /* aescrypt.m */,
+				68DCAB052533579400D67C86 /* fileenc.m */,
+				68DCAB062533579400D67C86 /* aesopt.h */,
+				68DCAB072533579400D67C86 /* aes_via_ace.h */,
+				68DCAB082533579400D67C86 /* sha1.m */,
+				68DCAB092533579400D67C86 /* brg_types.h */,
+				68DCAB0A2533579400D67C86 /* entropy.h */,
+				68DCAB0B2533579400D67C86 /* hmac.h */,
+				68DCAB0C2533579400D67C86 /* brg_endian.h */,
+				68DCAB0D2533579400D67C86 /* aes.h */,
+				68DCAB0E2533579400D67C86 /* prng.m */,
+				68DCAB0F2533579400D67C86 /* pwd2key.m */,
+				68DCAB102533579400D67C86 /* aestab.m */,
+				68DCAB112533579400D67C86 /* sha1.h */,
+				68DCAB122533579400D67C86 /* fileenc.h */,
+				68DCAB132533579400D67C86 /* entropy.m */,
+			);
+			path = aes;
+			sourceTree = "<group>";
+		};
 		68DE9918247C9B6A0078EDD5 = {
 			isa = PBXGroup;
 			children = (
@@ -304,6 +347,114 @@
 		68DE9956247C9B9F0078EDD5 /* Paintinglite */ = {
 			isa = PBXGroup;
 			children = (
+				EECD5200264BCB5E008E5191 /* Vender */,
+				EECD51FF264BCB2D008E5191 /* Exception */,
+				EECD51FB264BCABB008E5191 /* Opt */,
+				EECD51F4264BCAA0008E5191 /* Configuration */,
+				EEFE2E2025EF7339005990B9 /* Cache */,
+				68DCAAFE2533579400D67C86 /* aes */,
+				68DCAAF02533578900D67C86 /* minizip */,
+				68DCAAEE2533577100D67C86 /* SSZipArchive.h */,
+				68DCAAEB2533577000D67C86 /* SSZipArchive.m */,
+				68DCAAEC2533577000D67C86 /* SSZipCommon.h */,
+				68DCAAED2533577100D67C86 /* ZipArchive.h */,
+				688ED67B24F758150024A921 /* PaintingliteShortcutSQL.h */,
+				68DE9957247C9C260078EDD5 /* PaintingliteSessionManager.h */,
+				68DE9958247C9C260078EDD5 /* PaintingliteSessionManager.m */,
+				68A1F056247F9CBF0091EAFB /* PaintingliteExec.h */,
+				68A1F057247F9CBF0091EAFB /* PaintingliteExec.m */,
+				68C49C772538361E0038A2C3 /* MobileInfo.plist */,
+				6812B9BC24A59E920091C5EE /* LOGO.txt */,
+			);
+			path = Paintinglite;
+			sourceTree = "<group>";
+		};
+		68DE995A247C9C4D0078EDD5 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				68DE995D247C9E4A0078EDD5 /* libsqlite3.0.tbd */,
+				68DE995B247C9C4D0078EDD5 /* libsqlite3.tbd */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		EECD51F4264BCAA0008E5191 /* Configuration */ = {
+			isa = PBXGroup;
+			children = (
+				6888B26A24B9BF61003345D9 /* PaintingliteFileManager.h */,
+				6888B26B24B9BF61003345D9 /* PaintingliteFileManager.m */,
+				68DE9960247CA1140078EDD5 /* PaintingliteSessionFactory.h */,
+				68DE9961247CA1140078EDD5 /* PaintingliteSessionFactory.m */,
+				68DE9963247CA2490078EDD5 /* PaintingliteConfiguration.h */,
+				68DE9964247CA2490078EDD5 /* PaintingliteConfiguration.m */,
+			);
+			path = Configuration;
+			sourceTree = "<group>";
+		};
+		EECD51FB264BCABB008E5191 /* Opt */ = {
+			isa = PBXGroup;
+			children = (
+				EECD51FC264BCAD8008E5191 /* Database */,
+				EECD51FD264BCAF5008E5191 /* Table */,
+				EECD51FE264BCB05008E5191 /* Data */,
+				68CE9DBD2483505E00B96DC3 /* PaintingliteTransaction.h */,
+				68CE9DBE2483505E00B96DC3 /* PaintingliteTransaction.m */,
+			);
+			path = Opt;
+			sourceTree = "<group>";
+		};
+		EECD51FC264BCAD8008E5191 /* Database */ = {
+			isa = PBXGroup;
+			children = (
+				689E0678247EACD000D6DF95 /* PaintingliteDataBaseOptions.h */,
+				689E0679247EACD000D6DF95 /* PaintingliteDataBaseOptions.m */,
+			);
+			path = Database;
+			sourceTree = "<group>";
+		};
+		EECD51FD264BCAF5008E5191 /* Table */ = {
+			isa = PBXGroup;
+			children = (
+				680969312481007A00048369 /* PaintingliteTableOptions.h */,
+				680969322481007A00048369 /* PaintingliteTableOptions.m */,
+			);
+			path = Table;
+			sourceTree = "<group>";
+		};
+		EECD51FE264BCB05008E5191 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				68CF58A22484D36C0035F188 /* PaintingliteTableOptionsSelect.h */,
+				68CF58A32484D36C0035F188 /* PaintingliteTableOptionsSelect.m */,
+				6846BC0E2484DD5E00887A5C /* PaintingliteTableOptionsSelectPQL.h */,
+				6846BC0F2484DD5E00887A5C /* PaintingliteTableOptionsSelectPQL.m */,
+				68EDCA82248747E200031B41 /* PaintingliteIntellegenceSelect.h */,
+				68EDCA83248747E200031B41 /* PaintingliteIntellegenceSelect.m */,
+				68D6B432248DFB32008A2CD6 /* PaintingliteAggregateFunc.h */,
+				68D6B433248DFB32008A2CD6 /* PaintingliteAggregateFunc.m */,
+				6800074C2488D19000FF75DE /* PaintingliteCUDOptions.h */,
+				6800074D2488D19000FF75DE /* PaintingliteCUDOptions.m */,
+				6879F97E248E66F300E66ABB /* PaintingliteCascadeShowerIUD.h */,
+				6879F97F248E66F300E66ABB /* PaintingliteCascadeShowerIUD.m */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		EECD51FF264BCB2D008E5191 /* Exception */ = {
+			isa = PBXGroup;
+			children = (
+				68CF869B24809DC000755126 /* PaintingliteException.h */,
+				68CF869C24809DC000755126 /* PaintingliteException.m */,
+				68DE9966247CA5870078EDD5 /* PaintingliteSessionError.h */,
+				68DE9967247CA5870078EDD5 /* PaintingliteSessionError.m */,
+				EEFE2E1925EF3274005990B9 /* Helper */,
+			);
+			path = Exception;
+			sourceTree = "<group>";
+		};
+		EECD5200264BCB5E008E5191 /* Vender */ = {
+			isa = PBXGroup;
+			children = (
 				68D7BB5E247FE56500AB994A /* PaintingliteObjRuntimeProperty.h */,
 				68D7BB5F247FE56500AB994A /* PaintingliteObjRuntimeProperty.m */,
 				689E0675247EA79300D6DF95 /* PaintingliteSecurity.h */,
@@ -323,97 +474,32 @@
 				68EDCA852487A57700031B41 /* PaintingliteExecHeader.h */,
 				6883B28B24CC2F6400BAA3C2 /* PaintingliteXMLSessionManager.h */,
 				6883B28C24CC2F6400BAA3C2 /* PaintingliteXMLSessionManager.m */,
+				6883B28924CC2E0500BAA3C2 /* XMLReader.h */,
+				6883B28824CC2E0500BAA3C2 /* XMLReader.m */,
 				68F260B024D1209700652C03 /* PaintingliteJSContext.h */,
 				68F260B124D1209700652C03 /* PaintingliteJSContext.m */,
 				EE371483264CC608005D5655 /* PaintingliteSystemUseInfo.h */,
 				EE371484264CC608005D5655 /* PaintingliteSystemUseInfo.m */,
-				EEFE2E1A25EF32A1005990B9 /* PaintingliteWarningHelper.h */,
-				EEFE2E1B25EF32A1005990B9 /* PaintingliteWarningHelper.m */,
-				68CF869B24809DC000755126 /* PaintingliteException.h */,
-				68CF869C24809DC000755126 /* PaintingliteException.m */,
-				68DE9966247CA5870078EDD5 /* PaintingliteSessionError.h */,
-				68DE9967247CA5870078EDD5 /* PaintingliteSessionError.m */,
-				689E0678247EACD000D6DF95 /* PaintingliteDataBaseOptions.h */,
-				689E0679247EACD000D6DF95 /* PaintingliteDataBaseOptions.m */,
-				680969312481007A00048369 /* PaintingliteTableOptions.h */,
-				680969322481007A00048369 /* PaintingliteTableOptions.m */,
-				68CF58A22484D36C0035F188 /* PaintingliteTableOptionsSelect.h */,
-				68CF58A32484D36C0035F188 /* PaintingliteTableOptionsSelect.m */,
-				6846BC0E2484DD5E00887A5C /* PaintingliteTableOptionsSelectPQL.h */,
-				6846BC0F2484DD5E00887A5C /* PaintingliteTableOptionsSelectPQL.m */,
-				68EDCA82248747E200031B41 /* PaintingliteIntellegenceSelect.h */,
-				68EDCA83248747E200031B41 /* PaintingliteIntellegenceSelect.m */,
-				68D6B432248DFB32008A2CD6 /* PaintingliteAggregateFunc.h */,
-				68D6B433248DFB32008A2CD6 /* PaintingliteAggregateFunc.m */,
-				6800074C2488D19000FF75DE /* PaintingliteCUDOptions.h */,
-				6800074D2488D19000FF75DE /* PaintingliteCUDOptions.m */,
-				6879F97E248E66F300E66ABB /* PaintingliteCascadeShowerIUD.h */,
-				6879F97F248E66F300E66ABB /* PaintingliteCascadeShowerIUD.m */,
-				68CE9DBD2483505E00B96DC3 /* PaintingliteTransaction.h */,
-				68CE9DBE2483505E00B96DC3 /* PaintingliteTransaction.m */,
-				6888B26A24B9BF61003345D9 /* PaintingliteFileManager.h */,
-				6888B26B24B9BF61003345D9 /* PaintingliteFileManager.m */,
-				68DE9960247CA1140078EDD5 /* PaintingliteSessionFactory.h */,
-				68DE9961247CA1140078EDD5 /* PaintingliteSessionFactory.m */,
-				68DE9963247CA2490078EDD5 /* PaintingliteConfiguration.h */,
-				68DE9964247CA2490078EDD5 /* PaintingliteConfiguration.m */,
-				688ED67B24F758150024A921 /* PaintingliteShortcutSQL.h */,
-				68DE9957247C9C260078EDD5 /* PaintingliteSessionManager.h */,
-				68DE9958247C9C260078EDD5 /* PaintingliteSessionManager.m */,
-				6888B26D24B9DBFA003345D9 /* PaintingliteCache.h */,
-				6888B26E24B9DBFA003345D9 /* PaintingliteCache.m */,
-				68A1F056247F9CBF0091EAFB /* PaintingliteExec.h */,
-				68A1F057247F9CBF0091EAFB /* PaintingliteExec.m */,
-				6883B28924CC2E0500BAA3C2 /* XMLReader.h */,
-				6883B28824CC2E0500BAA3C2 /* XMLReader.m */,
-				68C49C772538361E0038A2C3 /* MobileInfo.plist */,
-				6812B9BC24A59E920091C5EE /* LOGO.txt */,
-				68DCAAEE2533577100D67C86 /* SSZipArchive.h */,
-				68DCAAEB2533577000D67C86 /* SSZipArchive.m */,
-				68DCAAFF2533579400D67C86 /* aeskey.m */,
-				68DCAB002533579400D67C86 /* prng.h */,
-				68DCAB012533579400D67C86 /* hmac.m */,
-				68DCAB022533579400D67C86 /* aestab.h */,
-				68DCAB032533579400D67C86 /* pwd2key.h */,
-				68DCAB042533579400D67C86 /* aescrypt.m */,
-				68DCAB052533579400D67C86 /* fileenc.m */,
-				68DCAB062533579400D67C86 /* aesopt.h */,
-				68DCAB072533579400D67C86 /* aes_via_ace.h */,
-				68DCAB082533579400D67C86 /* sha1.m */,
-				68DCAB092533579400D67C86 /* brg_types.h */,
-				68DCAB0A2533579400D67C86 /* entropy.h */,
-				68DCAB0B2533579400D67C86 /* hmac.h */,
-				68DCAB0C2533579400D67C86 /* brg_endian.h */,
-				68DCAB0D2533579400D67C86 /* aes.h */,
-				68DCAB0E2533579400D67C86 /* prng.m */,
-				68DCAB0F2533579400D67C86 /* pwd2key.m */,
-				68DCAB102533579400D67C86 /* aestab.m */,
-				68DCAB112533579400D67C86 /* sha1.h */,
-				68DCAB122533579400D67C86 /* fileenc.h */,
-				68DCAB132533579400D67C86 /* entropy.m */,
-				68DCAAEC2533577000D67C86 /* SSZipCommon.h */,
-				68DCAAED2533577100D67C86 /* ZipArchive.h */,
-				68DCAAF12533578900D67C86 /* unzip.m */,
-				68DCAAF22533578900D67C86 /* zip.m */,
-				68DCAAF32533578900D67C86 /* ioapi.m */,
-				68DCAAF42533578900D67C86 /* mztools.m */,
-				68DCAAF52533578900D67C86 /* crypt.h */,
-				68DCAAF62533578900D67C86 /* zip.h */,
-				68DCAAF72533578900D67C86 /* unzip.h */,
-				68DCAAF82533578900D67C86 /* mztools.h */,
-				68DCAAF92533578900D67C86 /* ioapi.h */,
-				EE3714CE264D0A98005D5655 /* HeaderFiles.h */,
 			);
-			path = Paintinglite;
+			path = Vender;
 			sourceTree = "<group>";
 		};
-		68DE995A247C9C4D0078EDD5 /* Frameworks */ = {
+		EEFE2E1925EF3274005990B9 /* Helper */ = {
 			isa = PBXGroup;
 			children = (
-				68DE995D247C9E4A0078EDD5 /* libsqlite3.0.tbd */,
-				68DE995B247C9C4D0078EDD5 /* libsqlite3.tbd */,
+				EEFE2E1A25EF32A1005990B9 /* PaintingliteWarningHelper.h */,
+				EEFE2E1B25EF32A1005990B9 /* PaintingliteWarningHelper.m */,
 			);
-			name = Frameworks;
+			path = Helper;
+			sourceTree = "<group>";
+		};
+		EEFE2E2025EF7339005990B9 /* Cache */ = {
+			isa = PBXGroup;
+			children = (
+				6888B26D24B9DBFA003345D9 /* PaintingliteCache.h */,
+				6888B26E24B9DBFA003345D9 /* PaintingliteCache.m */,
+			);
+			path = Cache;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
