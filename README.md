@@ -1,239 +1,23 @@
 # Paintinglite
 
-### v2.0版本,全新设计模式,全新管理数据库
-PaintingliteXMLSessionManager提供了集中操作SQL语句的平台,开发者通过定义XML文件就可以简单方便的定义管理整个项目的SQL操作语句。整个项目！！！
-
- #### XML文件配置规则:
- 1. XML映射文件严格遵守DTD规则,其中提供了<mapper></mapper>,<sql></sql>,<include></include>,<resultMap></resultMap>,<select></select>,<insert></insert>,<update></update>,<delete></delete>等基本标签;
- 2. XML映射文件需对应表创建的类进行配置(POJO映射);
- 3. XML映射文件格式具有严格要求(v2.0版本对于要求严格);
-
-#### XML映射文件层级关系
-(1) 在进行配置XML映射文件,最外层标签为<mapper></mapper>,mapper标签提供了命名空间namespace;
-```objective-c
-<mapper namespace="...">
-</mapper>
-```
-> namespace: 表示当前SQL语句操作对象针对的表名称(这里不强制要求namespace内容,建议同操作表名称相同)
-
-(2) <mapper></mapper>内部就可以进行数据库SQL操作的配置;
-#### select: 查询标签
-```objective-c
-<select id="getEleByObj" resultType="NSDictionary" parameterType="Eletest">
-    SELECT * FROM eletest WHERE name = ?
-</select>
-```
-> id: select绑定的ID
-> resultType: 结果返回类型,目前支持NSDictionary&&NSMutableDictionary | NSArray && NSMutableArray
-> parameterType: 传入类型(可变参数不需要配置,凡包含obj方法都必须配置parameterType)
-> select标签内部可以写入查询SQL语句
-> ?: 需要替代部分采用?即可
-
-#### select: 省略查询
-```objective-c
-<select id="getEleById" resultType="Eletest" >
-?
-</select>
-```
-> 当需要使用select * from tableName查询,可以省略SQL语句,通过一个?代替需要写入的SQL语句即可
-
-#### insert: 插入标签
-```objective-c
-#import <Foundation/Foundation.h>
-
-NS_ASSUME_NONNULL_BEGIN
-
-@interface Eletest : NSObject
-@property (nonatomic,strong)NSNumber *age;
-@property (nonatomic,copy)NSString *desc;
-@property (nonatomic,copy)NSString *name;
-@property (nonatomic,strong)NSNumber *tage;
-@property (nonatomic,copy)NSString *teacher;
-@end
-
-NS_ASSUME_NONNULL_END
-```
-```objective-c
-<insert id="getInsertEletest" parameterType="Eletest">
-INSERT INTO eletest(name,age,desc,tage,teacher) VALUES (#name,#age,#desc,#tage,#teacher);
-</insert>
-
-<insert id="getInsertEletestAuto" parameterType="Eletest">
-?
-</insert>
-```
-> id: insert标签绑定ID
-> parameterType: 传入参数,这里必须配置,为POJO对象的类名称(注意大小写)
-> #name,#age,#desc,#tage,#teacher: 将插入的值利用“#+类属性名称”构成的组合体进行替代
-> insert支持省略插入语句,只需要给需要传入的对象设置对应属性值即可
-> useGeneratedKeys="true" keyProperty="ID": 返回插入的主键值
-
-```objective-c
-<insert id="getInsertUserReturnPrimaryKey" parameterType="Eletest" useGeneratedKeys="true" keyProperty="ID">
-<selectKey keyProperty="ID" order="AFTER" >
-SELECT LAST_INSERT_ID();
-</selectKey>
-?
-</insert>
-```
-<selectKey></selectKey>也可以配置插入返回值
->   keyProperty="ID" : 主键值(对应属性值)
-> order="AFTER": 调用时机,可以配置AFTER&&BEFORE
-
-#### update标签
-```objective-c
-<update id="getUpdateEle" parameterType="Eletest">
-UPDATE eletest SET name = #name and tage = #tage WHERE teacher = #teacher and age = #age;
-</update>
-```
-> id: update标签绑定ID
-> parameterType: 传入参数,这里必须配置,为POJO对象的类名称(注意大小写)
-> #name,#age,#tage,#teacher: 将插入的值利用“#+类属性名称”构成的组合体进行替代
-> update支持省略插入语句,只需要给需要传入的对象设置对应属性值即可
-
-#### delete标签
-```objective-c
-<delete id="getDeleteUser" parameterType="Eletest">
-DELETE FROM eletest WHERE name = #name and teacher = #teacher and tage = #tage;
-</delete>
-
-<delete id="getDeleteEleAuto" parameterType="Eletest">
-?
-</delete>
-```
-> id: delete标签绑定ID
-> parameterType: 传入参数,这里必须配置,为POJO对象的类名称(注意大小写)
-> #name,#teacher,#tage: 将插入的值利用“#+类属性名称”构成的组合体进行替代
-> delete支持省略插入语句,只需要给需要传入的对象设置对应属性值即可
-
-#### XML映射文件高级使用
-##### <sql></sql>&&<include></include>使用
- ```objective-c
- <sql id="eletestSql">id,name,age,teacher,tage,desc</sql>
- <select id="getEleByObj" resultType="NSDictionary" parameterType="Eletest" resultMap="eletestResult">
- SELECT <include refid="eletestSql"></include> FROM eletest
- </select>
- ```
-通常操作SQL语句会书写select id,name,age,teacher,tage,desc From eletest字段进行查询,在一个XML映射文件中会用到多次字段名称,可以通过<sql></sql>将字段名称包裹,在结合<include></include>应用。
-
-> 注意: 使用<include></include>标签中配置refid传入值必须和<sql></sql>配置id相同
-
-#### 动态SQL操作标签
-##### <if></if>标签
-if标签提供了动态判断传入字段值是否为空,条件成立则添加语句,否则不添加语句。
- ```objective-c
-<select id="getEleByObj" resultType="NSDictionary" parameterType="Eletest" resultMap="eletestResult">
-SELECT <include refid="eletestSql"></include> FROM eletest WHERE 1 = 1 AND tage = ? <if test="name != null and name !=''">AND name = ?</if> <if test="desc != null and desc != ''">AND desc = ?</if> <if test="teacher != null and teacher != ''">AND teacher = ?</if>
-</select>
- ```
-```objective-c
-<if test="desc != null and desc != ''"></if>
-```
-> test: 判断条件,目前只支持!=操作
-
-> 配置<if></if>标签必须将所有需要判断字段放到最后统一判断书写,为了保证SQL语句正确性,在WHERE后面追加 1 = 1
-> 每一个<if></if>结构体内需要添加大些的AND
-> <if test="desc != null and desc != ''">AND desc = ?</if>
-
-##### <where></where>标签
-where标签消除了if标签必须在WHERE后面添加 1 = 1的限制。同时，省略每一个if结构体内AND
- ```objective-c
-<select id="getEleByObjWhere" resultType="NSDictionary" parameterType="Eletest" resultMap="eletestResult">
-SELECT <include refid="eletestSql"></include> FROM eletest <where><if test="name != null and name !=''">name = ?</if> <if test="desc != null and desc != ''">desc = ?</if> <if test="teacher != null and teacher != ''">teacher = ?</if></where>
-</select>
-```
-
-#### PaintingliteXMLSessionManager 常用方法
- ```objective-c
- /**
- * 建立SessionManager
- * xmlFileName: 每个类对应一个XML文件,传入XML文件名称
- */
- + (instancetype)buildSesssionManger:(NSString *__nonnull)xmlFileName;
- 
- /**
- * 查询一个
- * methodID: XML绑定的Select ID
- * condition: 查询条件
- */
- - (NSDictionary *)selectOne:(NSString *__nonnull)methodID condition:(id)condition,... NS_REQUIRES_NIL_TERMINATION;
- 
- /* 查询多个 */
- - (NSArray<id> *)select:(NSString *__nonnull)methodID condition:(id)condition,... NS_REQUIRES_NIL_TERMINATION;
- 
- - (NSArray<id> *)select:(NSString *)methodID obj:(id)obj;
- 
- /**
- * 插入
- * methodID: XML绑定的INSERT ID
- * obj: 插入的对象
- */
- - (Boolean)insert:(NSString *)methodID obj:(id)obj;
- 
- /**
- * 插入返回主键ID
- * methodID: XML绑定的INSERT ID
- * obj: 插入的对象
- */
- - (sqlite3_int64)insertReturnPrimaryKeyID:(NSString *)methodID obj:(id)obj;
- 
- /**
- * 更新
- * methodID: XML绑定的INSERT ID
- * obj: 插入的对象
- */
- - (Boolean)update:(NSString *)methodID obj:(id)obj;
- 
- /**
- * 删除
- * methodID: XML绑定的INSERT ID
- * obj: 插入的对象
- */
- - (Boolean)del:(NSString *)methodID obj:(id)obj;
-```
-#### 实例调用
- ```objective-c
- PaintingliteXMLSessionManager *xmlSessionM = [PaintingliteXMLSessionManager buildSesssionManger:[[NSBundle mainBundle] pathForResource:@"user" ofType:@"xml"]];
- [xmlSessionM openSqlite:@"sqlite"];
-
-//查询
-NSLog(@"%@",[xmlSessionM selectOne:@"eletest.getEleById" condition:[NSNumber numberWithInt:1],[NSNumber numberWithInt:21],nil]);
- NSLog(@"%@",[xmlSessionM select:@"eletest.getEleById" condition:[NSNumber numberWithInt:1],[NSNumber numberWithInt:21], nil]);
- 
- Eletest *eletest = [[Eletest alloc] init];
- eletest.name = @"CreaterOS";
- eletest.age = [NSNumber numberWithInteger:21];
- eletest.desc = @"CreaterOS";
- eletest.teacher = @"CreaterOS";
- eletest.tage = [NSNumber numberWithInteger:21];
- 
- NSLog(@"%zd",[[xmlSessionM select:@"eletest.getEleByObj" obj:eletest] count]);
- NSLog(@"%zd",[[xmlSessionM select:@"eletest.getEleByObjWhere" obj:eletest] count]);
- 
- //插入
- [xmlSessionM insert:@"eletest.getInsertEletest" obj:eletest];
- 
- NSLog(@"%lu",(unsigned long)[xmlSessionM insertReturnPrimaryKeyID:@"eletest.getInsertUserReturnPrimaryKey" obj:eletest]);
- 
- //删除
- [xmlSessionM del:@"eletest.getDeleteUser" obj:eletest];
- [xmlSessionM del:@"eletest.getDeleteEleAuto" obj:eletest];
- 
- //更新
- [xmlSessionM update:@"eletest.getUpdateEle" obj:eletest];
-```
+### v2.1.0版本,全新设计模式,全新管理数据库
 
 ## 版本迭代
 
 | Paintinglite版本更新 |      |
 | ------------------- | ---- |
-| v1.1版本更新概要 | 优化打开数据库操作和增加了查看数据库文件存在,大小等重要信息 |
-| v1.2版本更新概要 | 重新修订了压力测试策略,极大程度上缩减框架大小(<10MB)，增加一级缓存和日志写入策略 |
-| v1.3版本更新概要 | 修复了一级缓存导致的对象封装操作漏洞,完善了一集缓存,优化了对表的CREATE,ALTER,DROP操作,增加了线程优化策略 |
-| v1.3.1版本更新概要 | 优化查询线程安全,修复了封装紊乱BUG,优化聚合函数 |
-| v1.3.2版本更新概要 | 优化查询线程安全,修复了数据库备份,简化了框架结构 |
-| v2.0 版本更新概要 | 引进了全新的设计模式,集中式管理SQL语句 |
+| v1.1.0 版本更新概要 | 优化打开数据库操作和增加了查看数据库文件存在,大小等重要信息 |
+| v1.2.0 版本更新概要 | 重新修订了压力测试策略,极大程度上缩减框架大小(<10MB)，增加一级缓存和日志写入策略 |
+| v1.3.0 版本更新概要 | 修复了一级缓存导致的对象封装操作漏洞,完善了一集缓存,优化了对表的CREATE,ALTER,DROP操作,增加了线程优化策略 |
+| v1.3.1 版本更新概要 | 优化查询线程安全,修复了封装紊乱BUG,优化聚合函数 |
+| v1.3.2 版本更新概要 | 优化查询线程安全,修复了数据库备份,简化了框架结构 |
+| v2.0.0 版本更新概要 | 引进了全新的设计模式,集中式管理SQL语句 |
+| v2.1.0 版本更新概要 | 优化查询策略，修正BUG，引入Pod项目管理方式 |
 
+## Pod安装
+```
+ pod 'Paintinglite', :git => 'https://github.com/CreaterOS/Paintinglite.git'#, :tag => '2.1.0'
+```
 ## 简介
 
 Paintinglite是一款优秀,快速的Sqlite3数据库框架,Paintinglite对数据具有良好的封装性,快速的插入数据特点,对于庞大的数据量仍能够表现出良好的资源利用率。
@@ -950,6 +734,226 @@ PaintinglitePressureOS系统是一个压力测试系统,它对于数据库读写
 Paintinglite可以根据不同设备进行不同的测算内存消耗状态，让开发者更清楚在不同iPhone上设计更为合理的数据库表结构。
 ```objective-c
 - (Boolean)paintingliteSqlitePressure;
+```
+
+ #### XML文件配置规则:
+ 1. XML映射文件严格遵守DTD规则,其中提供了<mapper></mapper>,<sql></sql>,<include></include>,<resultMap></resultMap>,<select></select>,<insert></insert>,<update></update>,<delete></delete>等基本标签;
+ 2. XML映射文件需对应表创建的类进行配置(POJO映射);
+ 3. XML映射文件格式具有严格要求(v2.0版本对于要求严格);
+
+#### XML映射文件层级关系
+(1) 在进行配置XML映射文件,最外层标签为<mapper></mapper>,mapper标签提供了命名空间namespace;
+```objective-c
+<mapper namespace="...">
+</mapper>
+```
+> namespace: 表示当前SQL语句操作对象针对的表名称(这里不强制要求namespace内容,建议同操作表名称相同)
+
+(2) <mapper></mapper>内部就可以进行数据库SQL操作的配置;
+#### select: 查询标签
+```objective-c
+<select id="getEleByObj" resultType="NSDictionary" parameterType="Eletest">
+    SELECT * FROM eletest WHERE name = ?
+</select>
+```
+> id: select绑定的ID
+> resultType: 结果返回类型,目前支持NSDictionary&&NSMutableDictionary | NSArray && NSMutableArray
+> parameterType: 传入类型(可变参数不需要配置,凡包含obj方法都必须配置parameterType)
+> select标签内部可以写入查询SQL语句
+> ?: 需要替代部分采用?即可
+
+#### select: 省略查询
+```objective-c
+<select id="getEleById" resultType="Eletest" >
+?
+</select>
+```
+> 当需要使用select * from tableName查询,可以省略SQL语句,通过一个?代替需要写入的SQL语句即可
+
+#### insert: 插入标签
+```objective-c
+#import <Foundation/Foundation.h>
+
+NS_ASSUME_NONNULL_BEGIN
+
+@interface Eletest : NSObject
+@property (nonatomic,strong)NSNumber *age;
+@property (nonatomic,copy)NSString *desc;
+@property (nonatomic,copy)NSString *name;
+@property (nonatomic,strong)NSNumber *tage;
+@property (nonatomic,copy)NSString *teacher;
+@end
+
+NS_ASSUME_NONNULL_END
+```
+```objective-c
+<insert id="getInsertEletest" parameterType="Eletest">
+INSERT INTO eletest(name,age,desc,tage,teacher) VALUES (#name,#age,#desc,#tage,#teacher);
+</insert>
+
+<insert id="getInsertEletestAuto" parameterType="Eletest">
+?
+</insert>
+```
+> id: insert标签绑定ID
+> parameterType: 传入参数,这里必须配置,为POJO对象的类名称(注意大小写)
+> #name,#age,#desc,#tage,#teacher: 将插入的值利用“#+类属性名称”构成的组合体进行替代
+> insert支持省略插入语句,只需要给需要传入的对象设置对应属性值即可
+> useGeneratedKeys="true" keyProperty="ID": 返回插入的主键值
+
+```objective-c
+<insert id="getInsertUserReturnPrimaryKey" parameterType="Eletest" useGeneratedKeys="true" keyProperty="ID">
+<selectKey keyProperty="ID" order="AFTER" >
+SELECT LAST_INSERT_ID();
+</selectKey>
+?
+</insert>
+```
+<selectKey></selectKey>也可以配置插入返回值
+>   keyProperty="ID" : 主键值(对应属性值)
+> order="AFTER": 调用时机,可以配置AFTER&&BEFORE
+
+#### update标签
+```objective-c
+<update id="getUpdateEle" parameterType="Eletest">
+UPDATE eletest SET name = #name and tage = #tage WHERE teacher = #teacher and age = #age;
+</update>
+```
+> id: update标签绑定ID
+> parameterType: 传入参数,这里必须配置,为POJO对象的类名称(注意大小写)
+> #name,#age,#tage,#teacher: 将插入的值利用“#+类属性名称”构成的组合体进行替代
+> update支持省略插入语句,只需要给需要传入的对象设置对应属性值即可
+
+#### delete标签
+```objective-c
+<delete id="getDeleteUser" parameterType="Eletest">
+DELETE FROM eletest WHERE name = #name and teacher = #teacher and tage = #tage;
+</delete>
+
+<delete id="getDeleteEleAuto" parameterType="Eletest">
+?
+</delete>
+```
+> id: delete标签绑定ID
+> parameterType: 传入参数,这里必须配置,为POJO对象的类名称(注意大小写)
+> #name,#teacher,#tage: 将插入的值利用“#+类属性名称”构成的组合体进行替代
+> delete支持省略插入语句,只需要给需要传入的对象设置对应属性值即可
+
+#### XML映射文件高级使用
+##### <sql></sql>&&<include></include>使用
+ ```objective-c
+ <sql id="eletestSql">id,name,age,teacher,tage,desc</sql>
+ <select id="getEleByObj" resultType="NSDictionary" parameterType="Eletest" resultMap="eletestResult">
+ SELECT <include refid="eletestSql"></include> FROM eletest
+ </select>
+ ```
+通常操作SQL语句会书写select id,name,age,teacher,tage,desc From eletest字段进行查询,在一个XML映射文件中会用到多次字段名称,可以通过<sql></sql>将字段名称包裹,在结合<include></include>应用。
+
+> 注意: 使用<include></include>标签中配置refid传入值必须和<sql></sql>配置id相同
+
+#### 动态SQL操作标签
+##### <if></if>标签
+if标签提供了动态判断传入字段值是否为空,条件成立则添加语句,否则不添加语句。
+ ```objective-c
+<select id="getEleByObj" resultType="NSDictionary" parameterType="Eletest" resultMap="eletestResult">
+SELECT <include refid="eletestSql"></include> FROM eletest WHERE 1 = 1 AND tage = ? <if test="name != null and name !=''">AND name = ?</if> <if test="desc != null and desc != ''">AND desc = ?</if> <if test="teacher != null and teacher != ''">AND teacher = ?</if>
+</select>
+ ```
+```objective-c
+<if test="desc != null and desc != ''"></if>
+```
+> test: 判断条件,目前只支持!=操作
+
+> 配置<if></if>标签必须将所有需要判断字段放到最后统一判断书写,为了保证SQL语句正确性,在WHERE后面追加 1 = 1
+> 每一个<if></if>结构体内需要添加大些的AND
+> <if test="desc != null and desc != ''">AND desc = ?</if>
+
+##### <where></where>标签
+where标签消除了if标签必须在WHERE后面添加 1 = 1的限制。同时，省略每一个if结构体内AND
+ ```objective-c
+<select id="getEleByObjWhere" resultType="NSDictionary" parameterType="Eletest" resultMap="eletestResult">
+SELECT <include refid="eletestSql"></include> FROM eletest <where><if test="name != null and name !=''">name = ?</if> <if test="desc != null and desc != ''">desc = ?</if> <if test="teacher != null and teacher != ''">teacher = ?</if></where>
+</select>
+```
+
+#### PaintingliteXMLSessionManager 常用方法
+ ```objective-c
+ /**
+ * 建立SessionManager
+ * xmlFileName: 每个类对应一个XML文件,传入XML文件名称
+ */
+ + (instancetype)buildSesssionManger:(NSString *__nonnull)xmlFileName;
+ 
+ /**
+ * 查询一个
+ * methodID: XML绑定的Select ID
+ * condition: 查询条件
+ */
+ - (NSDictionary *)selectOne:(NSString *__nonnull)methodID condition:(id)condition,... NS_REQUIRES_NIL_TERMINATION;
+ 
+ /* 查询多个 */
+ - (NSArray<id> *)select:(NSString *__nonnull)methodID condition:(id)condition,... NS_REQUIRES_NIL_TERMINATION;
+ 
+ - (NSArray<id> *)select:(NSString *)methodID obj:(id)obj;
+ 
+ /**
+ * 插入
+ * methodID: XML绑定的INSERT ID
+ * obj: 插入的对象
+ */
+ - (Boolean)insert:(NSString *)methodID obj:(id)obj;
+ 
+ /**
+ * 插入返回主键ID
+ * methodID: XML绑定的INSERT ID
+ * obj: 插入的对象
+ */
+ - (sqlite3_int64)insertReturnPrimaryKeyID:(NSString *)methodID obj:(id)obj;
+ 
+ /**
+ * 更新
+ * methodID: XML绑定的INSERT ID
+ * obj: 插入的对象
+ */
+ - (Boolean)update:(NSString *)methodID obj:(id)obj;
+ 
+ /**
+ * 删除
+ * methodID: XML绑定的INSERT ID
+ * obj: 插入的对象
+ */
+ - (Boolean)del:(NSString *)methodID obj:(id)obj;
+```
+#### 实例调用
+ ```objective-c
+ PaintingliteXMLSessionManager *xmlSessionM = [PaintingliteXMLSessionManager buildSesssionManger:[[NSBundle mainBundle] pathForResource:@"user" ofType:@"xml"]];
+ [xmlSessionM openSqlite:@"sqlite"];
+
+//查询
+NSLog(@"%@",[xmlSessionM selectOne:@"eletest.getEleById" condition:[NSNumber numberWithInt:1],[NSNumber numberWithInt:21],nil]);
+ NSLog(@"%@",[xmlSessionM select:@"eletest.getEleById" condition:[NSNumber numberWithInt:1],[NSNumber numberWithInt:21], nil]);
+ 
+ Eletest *eletest = [[Eletest alloc] init];
+ eletest.name = @"CreaterOS";
+ eletest.age = [NSNumber numberWithInteger:21];
+ eletest.desc = @"CreaterOS";
+ eletest.teacher = @"CreaterOS";
+ eletest.tage = [NSNumber numberWithInteger:21];
+ 
+ NSLog(@"%zd",[[xmlSessionM select:@"eletest.getEleByObj" obj:eletest] count]);
+ NSLog(@"%zd",[[xmlSessionM select:@"eletest.getEleByObjWhere" obj:eletest] count]);
+ 
+ //插入
+ [xmlSessionM insert:@"eletest.getInsertEletest" obj:eletest];
+ 
+ NSLog(@"%lu",(unsigned long)[xmlSessionM insertReturnPrimaryKeyID:@"eletest.getInsertUserReturnPrimaryKey" obj:eletest]);
+ 
+ //删除
+ [xmlSessionM del:@"eletest.getDeleteUser" obj:eletest];
+ [xmlSessionM del:@"eletest.getDeleteEleAuto" obj:eletest];
+ 
+ //更新
+ [xmlSessionM update:@"eletest.getUpdateEle" obj:eletest];
 ```
 
 # 约束
