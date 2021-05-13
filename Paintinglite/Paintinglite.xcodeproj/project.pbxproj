@@ -205,6 +205,7 @@
 		68F260B124D1209700652C03 /* PaintingliteJSContext.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaintingliteJSContext.m; sourceTree = "<group>"; };
 		EE371483264CC608005D5655 /* PaintingliteSystemUseInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaintingliteSystemUseInfo.h; sourceTree = "<group>"; };
 		EE371484264CC608005D5655 /* PaintingliteSystemUseInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaintingliteSystemUseInfo.m; sourceTree = "<group>"; };
+		EE3714CE264D0A98005D5655 /* HeaderFiles.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HeaderFiles.h; sourceTree = "<group>"; };
 		EE7A38EA264BD9AC00B98417 /* UserClass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserClass.h; sourceTree = "<group>"; };
 		EE7A38EB264BD9AC00B98417 /* UserClass.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UserClass.m; sourceTree = "<group>"; };
 		EEFE2E1A25EF32A1005990B9 /* PaintingliteWarningHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaintingliteWarningHelper.h; sourceTree = "<group>"; };
@@ -401,6 +402,7 @@
 				68DCAAF72533578900D67C86 /* unzip.h */,
 				68DCAAF82533578900D67C86 /* mztools.h */,
 				68DCAAF92533578900D67C86 /* ioapi.h */,
+				EE3714CE264D0A98005D5655 /* HeaderFiles.h */,
 			);
 			path = Paintinglite;
 			sourceTree = "<group>";
