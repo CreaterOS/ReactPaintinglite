@@ -9,4 +9,5 @@ Pod::Spec.new do |spec|
   spec.platform     = :ios, "9.0"
 
   spec.public_header_files = 'Paintinglite/Paintinglite/Paintinglite/HeaderFiles.h'
+  spec.source_files = 'Paintinglite/Paintinglite/Paintinglite/HeaderFiles.h'
 end
