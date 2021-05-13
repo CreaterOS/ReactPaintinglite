@@ -7,4 +7,6 @@ Pod::Spec.new do |spec|
   spec.homepage    = "https://github.com/CreaterOS/Paintinglite.git"
   spec.author       = {"CreaterOS" => "863713745@qq.com"}
   spec.platform     = :ios, "9.0"
+
+  spec.public_header_files = 'Paintinglite/Paintinglite/Paintinglite/HeaderFiles.h'
 end
