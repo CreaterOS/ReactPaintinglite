@@ -9,6 +9,7 @@
 #import "PaintingliteCache.h"
 #import "PaintingliteLog.h"
 #import <os/lock.h>
+#import "PaintingliteSystemUseInfo.h"
 
 #define WEAK_SELF __weak typeof(self) weakSelf = self;
 #define STRONG_SELF __strong typeof(weakSelf) self = weakSelf;
@@ -36,16 +37,11 @@ static PaintingliteCache *_instance = nil;
     if (self) {
         //注册通知写日志
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pushCacheToLogFile) name:@"PaintingliteWriteTableLogNotification" object:self];
-//#if SD_UIKIT
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidFinishLaunching:) name:UIApplicationDidFinishLaunchingNotification object:nil];
-//        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
-//        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
         /**
             v1.3.3 开启退出写入缓存
          */
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
-//        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidReceiveMemoryWarning:) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
-//#endif
     }
     return self;
 }
@@ -91,8 +87,25 @@ static int count = 0;
     self.optCount = count;
     
     /* 缓存池上限 */
-    (self.limitedCacheCount < 30) ? self.limitedCacheCount = 30 : self.limitedCacheCount;
-    (self.baseReleaseLine <= 0 || self.baseReleaseLine >= self.limitedCacheCount) ? self.baseReleaseLine = 10 : self.baseReleaseLine;
+    
+    /// CPU使用情况 / 内存使用情况
+    PaintingliteSystemUseInfo *systemUseInfo = [PaintingliteSystemUseInfo sharePaintingliteSystemUseInfo];
+    double usedMemory = [systemUseInfo applicationMemory];
+    CGFloat usedCPU = [systemUseInfo applicationCPU];
+    
+    NSInteger maxCacheCount = 30;
+    NSInteger maxReleaseCount = 10;
+    
+    if (usedMemory >= 50.0 || usedCPU >= 50.0) {
+        maxCacheCount = 40;
+        maxReleaseCount = 20;
+    } else if (usedMemory >= 100.0 || usedCPU >= 70.0) {
+        maxCacheCount = 50;
+        maxReleaseCount = 30;
+    }
+
+    (self.limitedCacheCount < maxCacheCount) ? self.limitedCacheCount = maxCacheCount : self.limitedCacheCount;
+    (self.baseReleaseLine <= 0 || self.baseReleaseLine >= self.limitedCacheCount) ? self.baseReleaseLine = maxReleaseCount : self.baseReleaseLine;
 
     [self setObject:optStr forKey:[NSString stringWithFormat:@"database_opt_%d",count]];
     

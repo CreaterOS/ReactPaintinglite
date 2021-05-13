@@ -14,6 +14,7 @@
 #import "PaintingliteException.h"
 #import "PaintingliteSnapManager.h"
 #import "PaintingliteCache.h"
+#import "PaintingliteSystemUseInfo.h"
 #import <objc/runtime.h>
 
 #define WEAKSELF(SELF) __weak typeof(SELF) weakself = SELF
@@ -81,8 +82,16 @@
          成功失败都会进行日志记录
          */
         /* 拼接缓存操作 */
+        
+        PaintingliteSystemUseInfo *systemUseInfo = [PaintingliteSystemUseInfo sharePaintingliteSystemUseInfo];
+        double usedCPU = [systemUseInfo applicationCPU];
+        /// 限定CPU占有率为55%
+        if (usedCPU >= 35.0) {
+            /// 暂停exec操作
+            [NSThread sleepForTimeInterval:0.03];
+        }
         flag = sqlite3_exec(ppDb, [upperSql UTF8String], 0, 0, 0) == SQLITE_OK;
-
+    
         NSString *optAndStatusStr = [upperSql stringByAppendingString:@" | "];
         if (flag && sql_flag) {
             //增加对表的快照保存
