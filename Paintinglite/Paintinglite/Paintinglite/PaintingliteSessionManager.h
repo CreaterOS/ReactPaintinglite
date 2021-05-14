@@ -8,7 +8,7 @@
 
 /*!
  @header PaintingliteSessionManager
- @abstract PaintingliteSessionManager提供SDK框架中所有的基本操作，开发这可以通过SessionManager获得数据库管理者，提供了大量的数据库操作方式
+ @abstract PaintingliteSessionManager 提供SDK框架中所有的基本操作，开发这可以通过SessionManager获得数据库管理者，提供了大量的数据库操作方式
  @author CreaterOS
  @version 1.00 2020/5/26 Creation (此文档的版本信息)
  */
@@ -23,7 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /*!
  @class PaintingliteSessionManager
- @abstract PaintingliteSessionManager提供SDK框架中所有的基本操作，开发这可以通过SessionManager获得数据库管理者，提供了大量的数据库操作方式
+ @abstract PaintingliteSessionManager 提供SDK框架中所有的基本操作，开发这可以通过SessionManager获得数据库管理者，提供了大量的数据库操作方式
  */
 @interface PaintingliteSessionManager : NSObject
 /*!

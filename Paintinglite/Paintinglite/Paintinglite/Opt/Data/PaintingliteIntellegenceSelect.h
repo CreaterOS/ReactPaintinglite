@@ -6,28 +6,41 @@
 //  Copyright © 2020 Bryant Reyn. All rights reserved.
 //
 
-/**
- * 智能查询操作
- * 针对多对象的查询分配操作
- * 支持操作
- * 1.基本查询 2.分页查询 3.排序查询 4.万能查询
+/*!
+ @header PaintingliteIntellegenceSelect
+ @abstract PaintingliteIntellegenceSelect 提供SDK框架中智能查询操作,针对多对象的查询分配操作[1.基本查询 2.分页查询 3.排序查询 4.万能查询]
+ @author CreaterOS
+ @version 1.00 2020/5/26 Creation (此文档的版本信息)
  */
 
 #import "PaintingliteTableOptions.h"
 
 NS_ASSUME_NONNULL_BEGIN
-
+/*!
+ @class PaintingliteIntellegenceSelect
+ @abstract PaintingliteIntellegenceSelect 提供SDK框架中智能查询操作,针对多对象的查询分配操作[1.基本查询 2.分页查询 3.排序查询 4.万能查询]
+ */
 @interface PaintingliteIntellegenceSelect : PaintingliteTableOptions
 
-/// 单例模式
+/*!
+ @method sharePaintingliteIntellegenceSelect
+ @abstract 单例模式生成PaintingliteIntellegenceSelect对象
+ @discussion 生成PaintingliteIntellegenceSelect在项目工程全局中只生成一个实例对象
+ @result PaintingliteIntellegenceSelect
+ */
 + (instancetype)sharePaintingliteIntellegenceSelect;
 
 #pragma mark - 智能查询操作
 
-/// 基本查询
-/// @param ppDb ppDb
-/// @param completeHandler 回调操作
-/// @param objects 可变参数,传入多个查询对象类型
+/*!
+ @method load: completeHandler: objects:
+ @abstract 基本查询
+ @discussion 基本查询,支持回调操作
+ @param ppDb Sqlite3 ppDb
+ @param objects 可变参数,传入多个查询对象类型
+ @param completeHandler 回调操作
+ @result Boolean
+ */
 - (Boolean)load:(sqlite3 *)ppDb completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success,NSMutableArray *loadArray))completeHandler objects:(id)objects,... NS_REQUIRES_NIL_TERMINATION;
 
 /* 分页查询 */
