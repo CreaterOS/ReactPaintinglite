@@ -6,6 +6,20 @@
 	objectVersion = 50;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		EEF01212264D3474004CA8D2 /* PaintingliteAggregate */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = EEF01215264D3474004CA8D2 /* Build configuration list for PBXAggregateTarget "PaintingliteAggregate" */;
+			buildPhases = (
+				EEF0121A264D34A5004CA8D2 /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = PaintingliteAggregate;
+			productName = PaintingliteAggregate;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		6800074E2488D19000FF75DE /* PaintingliteCUDOptions.m in Sources */ = {isa = PBXBuildFile; fileRef = 6800074D2488D19000FF75DE /* PaintingliteCUDOptions.m */; };
 		680969332481007A00048369 /* PaintingliteTableOptions.m in Sources */ = {isa = PBXBuildFile; fileRef = 680969322481007A00048369 /* PaintingliteTableOptions.m */; };
@@ -579,6 +593,9 @@
 						CreatedOnToolsVersion = 10.1;
 						TestTargetID = 68DE9920247C9B6A0078EDD5;
 					};
+					EEF01212264D3474004CA8D2 = {
+						CreatedOnToolsVersion = 12.4;
+					};
 				};
 			};
 			buildConfigurationList = 68DE991C247C9B6A0078EDD5 /* Build configuration list for PBXProject "Paintinglite" */;
@@ -597,6 +614,7 @@
 				68DE9920247C9B6A0078EDD5 /* Paintinglite */,
 				68DE9938247C9B6C0078EDD5 /* PaintingliteTests */,
 				68DE9943247C9B6C0078EDD5 /* PaintingliteUITests */,
+				EEF01212264D3474004CA8D2 /* PaintingliteAggregate */,
 			);
 		};
 /* End PBXProject section */
@@ -630,6 +648,26 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		EEF0121A264D34A5004CA8D2 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n# shell script goes here\nmkdir -p headerDoc\nfind ./Paintinglite/Paintinglite/ -name \\*.h -print | xargs headerdoc2html -o headerDoc\ngatherheaderdoc headerDoc\nexit 0\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		68DE991D247C9B6A0078EDD5 /* Sources */ = {
@@ -958,6 +996,24 @@
 			};
 			name = Release;
 		};
+		EEF01213264D3474004CA8D2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = Z4ZKC7258G;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		EEF01214264D3474004CA8D2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = Z4ZKC7258G;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -993,6 +1049,15 @@
 			buildConfigurations = (
 				68DE9954247C9B6C0078EDD5 /* Debug */,
 				68DE9955247C9B6C0078EDD5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EEF01215264D3474004CA8D2 /* Build configuration list for PBXAggregateTarget "PaintingliteAggregate" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EEF01213264D3474004CA8D2 /* Debug */,
+				EEF01214264D3474004CA8D2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

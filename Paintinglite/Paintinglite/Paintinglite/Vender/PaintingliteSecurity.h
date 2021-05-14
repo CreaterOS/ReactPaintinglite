@@ -29,6 +29,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// 解密数据库
 - (Boolean)encodeDatabase;
 
+- (NSString *__nonnull)securitySqlCommand:(NSString *__nonnull)sql;
+- (NSObject *__nonnull)securityObj:(NSObject *__nonnull)obj;
+
 @end
 
 NS_ASSUME_NONNULL_END

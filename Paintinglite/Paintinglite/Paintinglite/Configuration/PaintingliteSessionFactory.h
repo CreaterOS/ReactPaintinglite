@@ -6,9 +6,11 @@
 //  Copyright © 2020 Bryant Reyn. All rights reserved.
 //
 
-/**
- * PaintingliteSessionFactory
- * Session工厂类
+/*!
+ @header PaintingliteSessionFactory
+ @abstract PaintingliteSessionFactory 提供SDK框架中生成Session工厂类
+ @author CreaterOS
+ @version 1.00 2020/5/26 Creation (此文档的版本信息)
  */
 #import <Foundation/Foundation.h>
 #import "PaintingliteLog.h"
@@ -17,45 +19,76 @@
 #define PaintingliteSessionFactoryLite sqlite3
 #define PaintingliteSessionFactory_Sqlite_Queque dispatch_queue_create("PaintingliteSessionFactory_Sqlite_Queque", NULL)
 
+/*!
+ @abstract PaintingliteSessionFactoryStatus 工厂类型缓存状态
+ @constant PaintingliteSessionFactoryTableCache 表缓存
+ @constant PaintingliteSessionFactoryTableINFOCache 表信息缓存
+ @discussion 标识缓存状态
+*/
 typedef NS_ENUM(NSUInteger, PaintingliteSessionFactoryStatus) {
     PaintingliteSessionFactoryTableCache,
     PaintingliteSessionFactoryTableINFOCache
 };
 
 NS_ASSUME_NONNULL_BEGIN
-
+/*!
+ @class PaintingliteSessionFactory
+ @abstract PaintingliteSessionFactory 提供SDK框架中生成Session工厂类
+ */
 @interface PaintingliteSessionFactory : NSObject
 
-
-/// 单例模式
+/*!
+ @method sharePaintingliteSessionFactory
+ @abstract 单例模式生成PaintingliteSessionFactory对象
+ @discussion 生成PaintingliteSessionFactory在项目工程全局中只生成一个实例对象
+ @result PaintingliteSessionFactory
+ */
 + (instancetype)sharePaintingliteSessionFactory;
 
-/// 执行查询
-/// @param ppDb ppDb
-/// @param tableName 表名
-/// @param sql sql语句
-/// @param status 工厂状态
+/*!
+ @method execQuery: tableName: sql: status:
+ @abstract 执行查询
+ @discussion 执行查询
+ @param ppDb ppDb
+ @param tableName 表名称
+ @param sql sql语句
+ @param status 工厂缓存状态
+ @result NSMutableArray
+ */
 - (NSMutableArray *)execQuery:(sqlite3 *)ppDb tableName:(NSString *__nonnull)tableName sql:(NSString *__nonnull)sql status:(PaintingliteSessionFactoryStatus)status;
 
-/* =====================================日志操作======================================== */
-/// 删除日志
-/// @param fileName 文件名称
+/*!
+ @method removeLogFileWithDatabaseName:
+ @abstract 删除Sqlite3数据库操作日志
+ @discussion 删除Sqlite3数据库操作日志
+ @param fileName Sqlite3数据库名称
+ */
 - (void)removeLogFile:(NSString *)fileName;
 
-/// 读取日志文件
-/// @param fileName 日志文件名称
+/*!
+ @method readLogFileWithDatabaseName:
+ @abstract 读取Sqlite3数据库操作日志
+ @discussion 读取Sqlite3数据库操作日志
+ @param fileName Sqlite3数据库名称
+ */
 - (NSString *)readLogFile:(NSString *__nonnull)fileName;
 
-
-/// 读取日志文件
-/// @param fileName 日志文件名称
-/// @param dateTime 日志操作日期
+/*!
+ @method readLogFileWithDatabaseName: dateTime:
+ @abstract 读取Sqlite3数据库操作日志
+ @discussion 读取Sqlite3数据库操作日志,根据指定时间读取操作日志
+ @param fileName Sqlite3数据库名称
+ @param dateTime 日志指定时间
+ */
 - (NSString *)readLogFile:(NSString *)fileName dateTime:(NSDate *__nonnull)dateTime;
 
-
-/// 读取日志文件
-/// @param fileName 日志文件名称
-/// @param logStatus 日志操作状态
+/*!
+ @method readLogFileWithDatabaseName: logStatus:
+ @abstract 读取Sqlite3数据库操作日志
+ @discussion 读取Sqlite3数据库操作日志,根据操作日志状态读取操作日志
+ @param fileName Sqlite3数据库名称
+ @param logStatus 操作日志状态
+ */
 - (NSString *)readLogFile:(NSString *)fileName logStatus:(PaintingliteLogStatus)logStatus;
 
 @end
