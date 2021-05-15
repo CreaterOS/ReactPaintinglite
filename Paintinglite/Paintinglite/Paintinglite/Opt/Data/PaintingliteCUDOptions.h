@@ -6,28 +6,40 @@
 //  Copyright © 2020 Bryant Reyn. All rights reserved.
 //
 
-/**
- * PaintingliteCUDOptions
- * 表的增删改
- * 增加: 基本SQL执行增加 对象封装增加
- * 删除: 基本SQL执行删除 对象封装删除
- * 更新: 基本SQL执行更新 对象封装更新
+/*!
+ @header PaintingliteCUDOptions
+ @abstract PaintingliteCUDOptions 提供SDK框架中表的增删改
+ @author CreaterOS
+ @version 1.00 2020/6/4 Creation (此文档的版本信息)
  */
 
 #import "PaintingliteTableOptions.h"
 
 NS_ASSUME_NONNULL_BEGIN
-
+/*!
+ @class PaintingliteCUDOptions
+ @abstract PaintingliteCUDOptions 提供SDK框架中表的增删改
+ */
 @interface PaintingliteCUDOptions : PaintingliteTableOptions
 
-/// 单例模式
+/*!
+ @method sharePaintingliteCUDOptions
+ @abstract 单例模式生成PaintingliteCUDOptions对象
+ @discussion 生成PaintingliteCUDOptions在项目工程全局中只生成一个实例对象
+ @result PaintingliteCUDOptions
+ */
 + (instancetype)sharePaintingliteCUDOptions;
 
-/// CUD操作
-/// @param ppDb ppDb
-/// @param sql CUD sql语句
-/// @param CUDHandler CUD回调操作
-/// @param completeHandler 回调操作
+/*!
+ @method baseCUD: sql: CUDHandler:  completeHandler:
+ @abstract 增改删[CUD]操作
+ @discussion 增改删[CUD]操作,支持回调操作
+ @param ppDb Sqlite3 ppDb
+ @param sql 增改删[CUD] sql语句
+ @param CUDHandler 增改删[CUD] 回调操作
+ @param completeHandler 回调操作
+ @result Boolean
+ */
 - (Boolean)baseCUD:(sqlite3 *)ppDb sql:(NSString *)sql CUDHandler:(NSString *(^)(void))CUDHandler completeHandler:(void (^)(PaintingliteSessionError *sessionerror, Boolean success))completeHandler;
 
 @end

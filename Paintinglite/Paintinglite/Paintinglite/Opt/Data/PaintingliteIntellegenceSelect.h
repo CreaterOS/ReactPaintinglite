@@ -43,44 +43,67 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (Boolean)load:(sqlite3 *)ppDb completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success,NSMutableArray *loadArray))completeHandler objects:(id)objects,... NS_REQUIRES_NIL_TERMINATION;
 
-/* 分页查询 */
-
-/// 分页查询
-/// @param ppDb ppDb
-/// @param start 开始位置,所有查询对象的起始位置数组
-/// @param end 结束位置,所有查询对象的结束位置数组
-/// @param completeHandler 回调操作
-/// @param objects 可变参数,传入多个查询对象类型
+/*!
+ @method limit: start: end: completeHandler: objects:
+ @abstract 分页查询
+ @discussion 分页查询,支持回调操作
+ @param ppDb Sqlite3 ppDb
+ @param start 开始位置,所有查询对象的起始位置数组
+ @param end 结束位置,所有查询对象的结束位置数组
+ @param objects 可变参数,传入多个查询对象类型
+ @param completeHandler 回调操作
+ @result Boolean
+ */
 - (Boolean)limit:(sqlite3 *)ppDb start:(NSUInteger)start end:(NSUInteger)end completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success,NSMutableArray *limitArray))completeHandler objects:(id)objects,... NS_REQUIRES_NIL_TERMINATION;
 
-/// 分页查询高级方法
-/// @param ppDb ppDb
-/// @param startAndEnd 每个对象的开始和结束组成一个数组,二维数组
-/// @param completeHandler 回调操作
-/// @param objects 可变参数,传入多个查询对象类型
+/*!
+ @method limit: startAndEnd: completeHandler: objects:
+ @abstract 分页查询高级方法
+ @discussion 分页查询高级方法,支持回调操作
+ @param ppDb Sqlite3 ppDb
+ @param startAndEnd 每个对象的开始和结束组成一个数组[二维数组]
+ @param objects 可变参数,传入多个查询对象类型
+ @param completeHandler 回调操作
+ @result Boolean
+ */
 - (Boolean)limit:(sqlite3 *)ppDb startAndEnd:(NSArray<NSArray<NSNumber *> *> *)startAndEnd completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success,NSMutableArray *limitArray))completeHandler objects:(id)objects,... NS_REQUIRES_NIL_TERMINATION;
 
-/// 排序查询
-/// @param ppDb ppDb
-/// @param orderStyle 排序方式
-/// @param condation 每个对象排序字段数组
-/// @param completeHandler 回调完成
-/// @param objects 可变参数,传入多个查询对象类型
+/*!
+ @method orderBy: orderStyle: condation: completeHandler: objects:
+ @abstract 排序查询
+ @discussion 排序查询
+ @param ppDb Sqlite3 ppDb
+ @param orderStyle 排序方式
+ @param condation 每个对象排序字段数组
+ @param objects 可变参数,传入多个查询对象类型
+ @param completeHandler 回调操作
+ @result Boolean
+ */
 - (Boolean)orderBy:(sqlite3 *)ppDb orderStyle:(PaintingliteOrderByStyle)orderStyle condation:(NSArray<NSString *> *)condation completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success,NSMutableArray *orderArray))completeHandler objects:(id)objects,... NS_REQUIRES_NIL_TERMINATION;
 
-/// 排序查询高级
-/// @param ppDb ppDb
-/// @param orderStyleArray 每个对象排序方式组成的排序数组
-/// @param condation 每个对象的排序字段数组
-/// @param completeHandler 回调操作
-/// @param objects objects 可变参数,传入多个查询对象类型
+/*!
+ @method orderBy: orderStyleArray: condation: completeHandler: objects:
+ @abstract 排序查询高级
+ @discussion 排序查询高级
+ @param ppDb Sqlite3 ppDb
+ @param orderStyleArray 每个对象排序方式组成的排序数组
+ @param condation 每个对象排序字段数组
+ @param objects 可变参数,传入多个查询对象类型
+ @param completeHandler 回调操作
+ @result Boolean
+ */
 - (Boolean)orderBy:(sqlite3 *)ppDb orderStyleArray:(NSArray<NSString *> *)orderStyleArray condation:(NSArray<NSString *> *)condation completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success,NSMutableArray *orderArray))completeHandler objects:(id)objects,... NS_REQUIRES_NIL_TERMINATION;
 
-/// 万能查询
-/// @param ppDb ppDb
-/// @param sql sql语句数组
-/// @param completeHandler 回调操作
-/// @param objects objects 可变参数,传入多个查询对象类型
+/*!
+ @method query: sql: completeHandler: objects:
+ @abstract 万能查询
+ @discussion 万能查询
+ @param ppDb Sqlite3 ppDb
+ @param sql sql语句[数组]
+ @param objects 可变参数,传入多个查询对象类型
+ @param completeHandler 回调操作
+ @result Boolean
+ */
 - (Boolean)query:(sqlite3 *)ppDb sql:(NSArray<NSString *> *__nonnull)sql completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success,NSMutableArray *orderArray))completeHandler objects:(id)objects,... NS_REQUIRES_NIL_TERMINATION;
 
 @end
