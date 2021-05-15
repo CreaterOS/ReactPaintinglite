@@ -2,7 +2,7 @@
 
 ### v2.1.1 Paintinglite API v1.0
 http://htmlpreview.github.io/?https://github.com/CreaterOS/Paintinglite/blob/master/Paintinglite/headerDoc/masterTOC.html
-
+详细API文档包含在Paintinglite/headerDoc目录下的masterTOC.html中
 ## 版本迭代
 
 | Paintinglite版本更新 |      |
