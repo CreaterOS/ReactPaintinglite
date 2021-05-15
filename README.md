@@ -1,7 +1,7 @@
 # Paintinglite
 
-### v2.2.1版本预告,增加详细API文档
-### v2.1.0版本,全新设计模式,全新管理数据库
+### v2.1.1 Paintinglite API v1.0
+http://htmlpreview.github.io/?https://github.com/CreaterOS/Paintinglite/blob/master/Paintinglite/headerDoc/masterTOC.html
 
 ## 版本迭代
 
