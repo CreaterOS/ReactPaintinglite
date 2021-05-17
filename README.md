@@ -17,7 +17,7 @@ The detailed API documentation is contained in masterTOC.html in the Paintinglit
 
 ## Pod installation
 ```
-pod'Paintinglite', :git =>'https://github.com/CreaterOS/Paintinglite.git'#, :tag => '2.1.0'
+pod'Paintinglite', :git =>'https://github.com/CreaterOS/Paintinglite.git'#, :tag => '2.1.1'
 ```
 ## Introduction
 
