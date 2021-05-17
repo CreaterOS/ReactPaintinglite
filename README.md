@@ -1,8 +1,8 @@
 # Paintinglite
 
 ### v2.1.1 Paintinglite API v1.0
-http://htmlpreview.github.io/?https://github.com/CreaterOS/Paintinglite/blob/master/Paintinglite/headerDoc/masterTOC.html
-The detailed API documentation is contained in masterTOC.html in the Paintinglite/headerDoc directory
+http://htmlpreview.github.io/?https://github.com/CreaterOS/Paintinglite/blob/master/Paintinglite/PaintingliteWeb/index.html
+The detailed API documentation is contained in masterTOC.html in the Paintinglite/PaintingliteWeb directory
 ## Version iteration
 
 | Paintinglite version update | |
