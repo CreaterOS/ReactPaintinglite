@@ -41,6 +41,11 @@ NS_ASSUME_NONNULL_BEGIN
  @abstract 记录Sqlite3数据库文件大小(MB)
  */
 @property (nonatomic,assign)double totalSize;
+/*!
+ @property openSecurityMode
+ @abstract 开启数据库安全模式
+ */
+@property (nonatomic)Boolean openSecurityMode;
 
 /*!
  @method sharePaintingliteSessionManager

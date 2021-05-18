@@ -24,6 +24,7 @@
 - (PaintingliteExec *)exec{
     if (!_exec) {
         _exec = [[PaintingliteExec alloc] init];
+        _exec.openSecurityMode = [PaintingliteTableOptions sharePaintingliteTableOptions].openSecurityMode;
     }
     
     return _exec;
@@ -58,7 +59,7 @@ static PaintingliteTableOptionsSelect *_instance = nil;
         [PaintingliteWarningHelper warningReason:@"SQL IS NULL OR SQL Len IS 0" time:[NSDate date] solve:@"Reset The SQL" args:nil];
         return NO;
     }
-    
+
     NSMutableArray *array = [self.exec sqlite3ExecQuery:ppDb sql:sql];
     
     Boolean success = (array.count != -1);

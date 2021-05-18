@@ -25,6 +25,7 @@
 - (PaintingliteExec *)exec{
     if (!_exec) {
         _exec = [[PaintingliteExec alloc] init];
+        _exec.openSecurityMode = [PaintingliteTableOptions sharePaintingliteTableOptions].openSecurityMode;
     }
     
     return _exec;

@@ -35,6 +35,12 @@ NS_ASSUME_NONNULL_BEGIN
 @interface PaintingliteTableOptions : NSObject
 
 /*!
+ @property openSecurityMode
+ @abstract 开启数据库安全模式
+ */
+@property (nonatomic)Boolean openSecurityMode;
+
+/*!
  @method sharePaintingliteTableOptions
  @abstract 单例模式生成PaintingliteTableOptions对象
  @discussion 生成PaintingliteTableOptions在项目工程全局中只生成一个实例对象

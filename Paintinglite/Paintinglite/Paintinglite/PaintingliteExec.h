@@ -46,6 +46,11 @@ NS_ASSUME_NONNULL_BEGIN
  @abstract PaintingliteExec 提供SDK框架中所有的基本操作,通过Exec执行对Sqlite3数据库和表的操作
  */
 @interface PaintingliteExec : NSObject
+/*!
+ @property openSecurityMode
+ @abstract 开启数据库安全模式
+ */
+@property (nonatomic)Boolean openSecurityMode;
 
 /*!
  @method systemExec: sql:

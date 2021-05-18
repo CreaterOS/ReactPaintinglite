@@ -619,7 +619,12 @@
             break;
         case SQLITE3_TEXT:{
             char *text = (char *)sqlite3_column_text(_stmt, i);
-            value = text != nil ? [NSString stringWithUTF8String:text] : @"(null)";
+            if (self.openSecurityMode) {
+                value = text != nil ? [PaintingliteSecurity StringWithDecodeSecurityBase64:[NSString stringWithUTF8String:text]] : @"(null)";
+            } else {
+                value = text != nil ? [NSString stringWithUTF8String:text] : @"(null)";
+            }
+            
             break;
         }
         case SQLITE_BLOB:

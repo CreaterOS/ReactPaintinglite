@@ -734,6 +734,11 @@ static PaintingliteSessionManager *_instance = nil;
         [self warningOpenDatabase];
         return false;
     }
+    
+    if (self.openSecurityMode) {
+        sql = [[[PaintingliteSecurity alloc] init] securitySqlCommand:sql type:PaintingliteSecurityInsert];
+    }
+    
     return [[PaintingliteTableOptions sharePaintingliteTableOptions] insert:self.ppDb sql:sql completeHandler:completeHandler];
 }
 
@@ -743,6 +748,10 @@ static PaintingliteSessionManager *_instance = nil;
         return false;
     }
 
+    if (self.openSecurityMode) {
+        obj = [[[PaintingliteSecurity alloc] init] securityObj:obj];
+    }
+    
     return [[PaintingliteTableOptions sharePaintingliteTableOptions] insert:self.ppDb obj:obj completeHandler:completeHandler];
 }
 
@@ -752,6 +761,10 @@ static PaintingliteSessionManager *_instance = nil;
 }
 
 - (Boolean)update:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
+    if (self.openSecurityMode) {
+        sql = [[[PaintingliteSecurity alloc] init] securitySqlCommand:sql type:PaintingliteSecurityUpdate];
+    }
+    
     return [[PaintingliteTableOptions sharePaintingliteTableOptions] update:self.ppDb sql:sql completeHandler:completeHandler];
 }
 
@@ -760,6 +773,11 @@ static PaintingliteSessionManager *_instance = nil;
         [self warningOpenDatabase];
         return false;
     }
+    
+    if (self.openSecurityMode) {
+        obj = [[[PaintingliteSecurity alloc] init] securityObj:obj];
+    }
+    
     return [[PaintingliteTableOptions sharePaintingliteTableOptions] update:self.ppDb obj:obj condition:condition completeHandler:completeHandler];
 }
 
@@ -779,6 +797,11 @@ static PaintingliteSessionManager *_instance = nil;
 #pragma mark - 表结构查询
 - (NSMutableArray<NSDictionary *> *)tableInfoWithTableName:(NSString *)tableName{
     return [self.exec execQueryTableInfo:_ppDb tableName:tableName];
+}
+
+- (void)setOpenSecurityMode:(Boolean)openSecurityMode {
+    [PaintingliteTableOptions sharePaintingliteTableOptions].openSecurityMode = openSecurityMode;
+    _openSecurityMode = openSecurityMode;
 }
 
 @end

@@ -7,6 +7,16 @@
 //
 
 #import <Foundation/Foundation.h>
+/*!
+ @abstract PaintingliteSecurityMode 安全模式
+ @constant PaintingliteSecurityInsert 插入模式
+ @constant PaintingliteSecurityUpdate 更新模式
+ @discussion 标识Sqlite3安全操作模式
+*/
+typedef NS_ENUM(NSUInteger, PaintingliteSecurityMode) {
+    PaintingliteSecurityInsert,
+    PaintingliteSecurityUpdate
+};
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -29,7 +39,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// 解密数据库
 - (Boolean)encodeDatabase;
 
-- (NSString *__nonnull)securitySqlCommand:(NSString *__nonnull)sql;
+- (NSString *__nonnull)securitySqlCommand:(NSString *__nonnull)sql type:(PaintingliteSecurityMode)type;
 - (NSObject *__nonnull)securityObj:(NSObject *__nonnull)obj;
 
 @end
