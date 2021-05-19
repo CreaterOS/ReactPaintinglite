@@ -24,7 +24,7 @@
 */
 typedef NS_ENUM(NSUInteger, PaintingliteOrderByStyle) {
     PaintingliteOrderByASC,
-    PaintingliteOrderByDESC,
+    PaintingliteOrderByDESC
 };
 
 NS_ASSUME_NONNULL_BEGIN
