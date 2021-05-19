@@ -1,6 +1,6 @@
 # Paintinglite
 
-### v2.1.1 Paintinglite API v1.0
+## v2.1.1 Paintinglite API v1.0
 http://htmlpreview.github.io/?https://github.com/CreaterOS/Paintinglite/blob/master/Paintinglite/PaintingliteWeb/index.html
 The detailed API documentation is contained in masterTOC.html in the Paintinglite/PaintingliteWeb directory
 ## Version iteration
@@ -16,7 +16,7 @@ The detailed API documentation is contained in masterTOC.html in the Paintinglit
 | Summary of v2.1.0 version update | Optimize big data CPU resource consumption problem, fix BUG |
 
 ## Pod installation
-```
+``` objective-c
 pod'Paintinglite', :git =>'https://github.com/CreaterOS/Paintinglite.git'#, :tag => '2.1.1'
 ```
 ## Introduction
@@ -52,9 +52,9 @@ Paintinglite supports object mapping and has carried out a very lightweight obje
 -PaintinglitePressureOS: pressure test
 
 ---
-# Database operation (PaintingliteSessionManager)
-## 1. Build a library
-###### Create PaintingliteSessionManager, create a database through the manager.
+## Database operation (PaintingliteSessionManager)
+### 1. Build a library
+#### Create PaintingliteSessionManager, create a database through the manager.
 
 ```objective-c
 -(Boolean)openSqlite:(NSString *)fileName;
@@ -100,7 +100,7 @@ Paintinglite supports object mapping and has carried out a very lightweight obje
 -(Boolean)createTableForObj:(id)obj createStyle:(PaintingliteDataBaseOptionsCreateStyle)createStyle completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success))completeHandler;
 ```
 Three ways to create a table:
-1. SQL creation
+ 1. SQL creation
 
 ```objective-c
 [self.sessionM execTableOptForSQL:@"CREATE TABLE IF NOT EXISTS cart(UUID VARCHAR(20) NOT NULL PRIMARY KEY,shoppingName TEXT,shoppingID INT(11))" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
@@ -110,14 +110,13 @@ Three ways to create a table:
 }];
 ```
 
-2. Table name creation
+ 2. Table name creation
 
 ```objective-c
 [self.sessionM createTableForName:@"student" content:@"name TEXT,age INTEGER"];
 ```
 
-3. Object creation
-
+ 3. Object creation
 
 ```objective-c
 User *user = [[User alloc] init];
@@ -130,7 +129,6 @@ Object creation can automatically generate primary keys:
 | ---- | ------ |
 | UUID | String |
 | ID | Value |
-
 
 ## 4. Update table
 
@@ -145,16 +143,16 @@ Object creation can automatically generate primary keys:
 -(BOOL)alterTableForObj:(id)obj completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success))completeHandler;
 ```
 Three ways to update the table:
-1. SQL Update
+ 1. SQL Update
 
-2. Table name update [table name | table field]
+ 2. Table name update
 
 ```objective-c
 [self.sessionM alterTableForName:@"cart" newName:@"carts"];
 [self.sessionM alterTableAddColumnWithTableName:@"carts" columnName:@"newColumn" columnType:@"TEXT"];
 ```
-3. Object update
-Update User table operation
+ 3. Object update
+ Update User table operation
 
 ```objective-c
 #import <Foundation/Foundation.h>
@@ -188,8 +186,8 @@ User *user = [[User alloc] init];
 -(Boolean)dropTableForObj:(id)obj completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
 ```
 Three ways to delete a table:
-1. SQL operations
-2. Table name deletion
+ 1. SQL operations
+ 2. Table name deletion
 
 ```objective-c
 [self.sessionM execTableOptForSQL:@"DROP TABLE carts" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
@@ -199,18 +197,18 @@ Three ways to delete a table:
 }];
 ```
 
-3. Object deletion
+ 3. Object deletion
 
 ```objective-c
 User *user = [[User alloc] init];
 [self.sessionM dropTableForObj:user];
 ```
-# Table operation
+## Table operation
 
 ### 1. Query
 **Query can provide the feature of query results encapsulated in array or directly encapsulated by object. **
-1. General inquiry
--General enquiries
+ 1. General inquiry
+ -General enquiries
 
 ```objective-c
 -(NSMutableArray *)execQuerySQL:(NSString *__nonnull)sql;
@@ -239,7 +237,7 @@ User *user = [[User alloc] init];
 > name = CreaterOS;
 >}
 
--Package query
+ -Package query
 
   Encapsulated query can encapsulate query results into objects corresponding to table fields.
 
@@ -262,7 +260,7 @@ Student *stu = [[Student alloc] init];
 > 2020-06-27 15:39:27.306961+0800 Paintinglite[5892:302879] stu.name = Painting and stu.age = 19
 > 2020-06-27 15:39:27.307110+0800 Paintinglite[5892:302879] stu.name = CreaterOS and stu.age = 21
 
-2. Conditional query
+ 2. Conditional query
 
 > Conditional query syntax rules:
 >-Subscripts start from 0
@@ -293,7 +291,7 @@ NSLog(@"%@",[self.sessionM execPrepareStatementSql]);
 >}
 >)
 
-3. Fuzzy query
+ 3. Fuzzy query
 
 ```objective-c
 -(NSMutableArray<NSDictionary *> *)execLikeQuerySQLWithTableName:(NSString *__nonnull)tableName field:(NSString *__nonnull)field like:(NSString *__nonnull)like;
@@ -334,7 +332,7 @@ Student *stu = [[Student alloc] init];
 > name = CreaterOS;
 >}
 
-4. Paging query
+ 4. Paging query
 
 ```objective-c
 -(NSMutableArray<NSDictionary *> *)execLimitQuerySQLWithTableName:(NSString *__nonnull)tableName limitStart:(NSUInteger)start limitEnd:(NSUInteger)end;
@@ -364,7 +362,7 @@ Student *stu = [[Student alloc] init];
 ```
 > 2020-06-27 15:51:13.026776+0800 Paintinglite[6117:323796] stu.name = CreaterOS and stu.age = 21
 
-5. Sort query
+ 5. Sort query
 
 ```objective-c
 -(NSMutableArray<NSDictionary *> *)execOrderByQuerySQLWithTableName:(NSString *__nonnull)tableName orderbyContext:(NSString *__nonnull)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle;
@@ -395,11 +393,11 @@ Student *student = [[Student alloc] init];
 -(Boolean)insert:(NSString *__nonnull)sql completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success))completeHandler;
 -(Boolean)insertWithObj:(id)obj completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success))completeHandler;
 ```
-1. SQL Insert
+ 1. SQL Insert
 ```objective-c
 [self.sessionM insert:@"INSERT INTO student(name,age) VALUES('CreaterOS',21),('Painting',19)"];
 ```
-2. Object Insertion
+ 2. Object Insertion
 
 ```objective-c
 #import <Foundation/Foundation.h>
@@ -430,13 +428,13 @@ stu.age = [NSNumber numberWithInteger:21];
 -(Boolean)update:(NSString *__nonnull)sql completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
 -(Boolean)updateWithObj:(id)obj condition:(NSString *__nonnull)condition completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
 ```
-1. SQL update data
+ 1. SQL update data
    
 ```objective-c
 [self.sessionM update:@"UPDATE student SET name ='Painting' WHERE name ='ReynBryant'"];
 ```
 
-2. Object update
+ 2. Object update
 
    ```objective-c
    Student *stu = [[Student alloc] init];
