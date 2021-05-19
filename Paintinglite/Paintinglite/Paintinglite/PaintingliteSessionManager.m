@@ -160,18 +160,6 @@ static PaintingliteSessionManager *_instance = nil;
     return success;
 }
 
-//#FIXME: EncryptSqlite may be err
-- (Boolean)openEncryptSqlite:(NSString *)fileName completeHandler:(void (^)(NSString * _Nonnull, PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
-//    NSAssert(fileName != NULL, @"Please set the Sqlite DataBase Name");
-    fileName = [self createDefineDataBaseName:fileName type:PaintingliteOpenByFileName];
-    
-    //数据库名称名称
-    NSString *filePath = [[PaintingliteConfiguration sharePaintingliteConfiguration] configurationFileName:fileName];
-    NSLog(@"filePath:%@",filePath);
-    
-    return [self openEncryptSqliteFilePath:filePath completeHandler:completeHandler];
-}
-
 - (Boolean)openSqliteWithFilePath:(NSString *)filePath{
     return [self openSqliteFilePath:filePath completeHandler:nil];
 }
@@ -211,72 +199,6 @@ static PaintingliteSessionManager *_instance = nil;
     completeHandler(filePath,success);
     
     return success;
-}
-
-//#FIXME: EncryptSqliteFilePath may be err
-- (Boolean)openEncryptSqliteFilePath:(NSString *)filePath completeHandler:(void (^)(NSString * _Nonnull, PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
-//    NSAssert(filePath != NULL, @"Please set the Sqlite DataBase FilePath");
-    filePath = [self createDefineDataBaseName:filePath type:PaintingliteOpenByFilePath];
-    
-    self.ppDb = nil;
-    //获得文件名称
-    NSString *databaseName = [[filePath componentsSeparatedByString:@"/"] lastObject];
-    self.databaseName = databaseName;
-    //创建信号量
-    dispatch_semaphore_t signal = dispatch_semaphore_create(0);
-    __block Boolean success = false;
-    WEAKSELF(self);
-    
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        STRONGSELF(weakself);
-        NSString *encryptPath = [[ROOT_FILE_PATH stringByAppendingPathComponent:ZIP_NAME] stringByAppendingPathComponent:databaseName];
-
-        //获得压缩包路径
-        if([[[PaintingliteSecurity alloc] init] encodeDatabase]){
-            //文件存在 -- 解密
-            success = (sqlite3_open_v2([filePath UTF8String], &(self->_ppDb), SQLITE_OPEN_READWRITE|SQLITE_OPEN_FULLMUTEX, NULL) == SQLITE_OK);
-        }else{
-            //第一次创建 -- 加密
-            if ([[PaintingliteFileManager defaultManager] createFileAtPath:filePath contents:nil attributes:nil]){
-                if ([[[PaintingliteSecurity alloc] init] encryptDatabase:filePath]){
-                    if([[PaintingliteFileManager defaultManager] removeItemAtPath:filePath error:nil]){
-                        if ([[[PaintingliteSecurity alloc] init] encodeDatabase] && [[PaintingliteFileManager defaultManager] moveItemAtPath:encryptPath toPath:filePath error:nil]){
-                             success = (sqlite3_open([filePath UTF8String], &(self->_ppDb)) == SQLITE_OK);
-                        }
-                    }
-                }
-            }
-        }
-
-        /* 数据库打开成功 */
-        self.isOpen = success;
-        /* 数据库文件路径 */
-        self.databasePath = encryptPath;
-
-        //保存表快照到一级缓存 -- 当数据库中含有的表的时候保存到快照
-        //查看打开的数据库，进行快照区保存
-        [[PaintingliteSnapManager sharePaintingliteSnapManager] saveSnap:self.ppDb];
-        
-        //信号量+1
-        dispatch_semaphore_signal(signal);
-    });
-    
-    //信号量等待
-    dispatch_semaphore_wait(signal, DISPATCH_TIME_FOREVER);
-    
-    return success;
-}
-
-/// 加密数据库
-- (Boolean)resume{
-    //1.删除数据库ZIP
-    //2.重新压缩数据库ZIP
-    return [[PaintingliteFileManager defaultManager] removeItemAtPath:[ROOT_FILE_PATH stringByAppendingPathComponent:@"Encrypt.zip"] error:nil] && [[[PaintingliteSecurity alloc] init] encryptDatabase:[ROOT_FILE_PATH stringByAppendingPathComponent:self.databaseName]] && [[PaintingliteFileManager defaultManager] removeItemAtPath:[ROOT_FILE_PATH stringByAppendingPathComponent:ZIP_NAME] error:nil];
-}
-
-/// 删除加密文件夹
-- (Boolean)delEncryptDict{
-    return [[PaintingliteFileManager defaultManager] removeItemAtPath:[ROOT_FILE_PATH stringByAppendingPathComponent:self.databaseName] error:nil];
 }
 
 #pragma mark - 获得当前Session

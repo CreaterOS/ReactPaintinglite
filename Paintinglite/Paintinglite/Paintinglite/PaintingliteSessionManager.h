@@ -97,13 +97,6 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (Boolean)openSqliteFilePath:(NSString *)filePath completeHandler:(void (^__nullable)(NSString *filePath,Boolean success))completeHandler;
 
-
-- (Boolean)openEncryptSqliteFilePath:(NSString *)filePath completeHandler:(void (^ __nullable)(NSString * _Nonnull, PaintingliteSessionError * _Nonnull, Boolean))completeHandler;
-
-- (Boolean)resume;
-
-- (Boolean)delEncryptDict;
-
 /*!
  @method getCurrentSession
  @abstract Sqlite3数据库会语信息

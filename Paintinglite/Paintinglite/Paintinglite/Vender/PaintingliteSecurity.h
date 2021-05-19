@@ -6,6 +6,12 @@
 //  Copyright © 2020 Bryant Reyn. All rights reserved.
 //
 
+/*!
+ @header PaintingliteSecurity
+ @abstract PaintingliteSecurity 提供SDK框架中数据安全保护机制
+ @author CreaterOS
+ @version 1.00 2020/5/27 Creation (此文档的版本信息)
+ */
 #import <Foundation/Foundation.h>
 /*!
  @abstract PaintingliteSecurityMode 安全模式
@@ -19,27 +25,65 @@ typedef NS_ENUM(NSUInteger, PaintingliteSecurityMode) {
 };
 
 NS_ASSUME_NONNULL_BEGIN
-
+/*!
+ @class PaintingliteSecurity
+ @abstract PaintingliteSecurity 提供SDK框架中数据安全保护机制
+ */
 @interface PaintingliteSecurity : NSObject
 
-/* 加密 */
+/*!
+ @method SecurityBase64:
+ @abstract 加密
+ @discussion base64加密算法加密二进制数据
+ @param data 二进制数据
+ @result NSData
+ */
 + (NSData *)SecurityBase64:(NSData *)data;
+
+/*!
+ @method StringWithSecurityBase64:
+ @abstract 加密
+ @discussion base64加密算法加密字符串数据
+ @param str 字符串
+ @result NSString
+ */
 + (NSString *)StringWithSecurityBase64:(NSString *)str;
 
-/* 解密 */
+/*!
+ @method SecurityDecodeBase64:
+ @abstract 解密
+ @discussion base64解密算法解密二进制数据
+ @param data 二进制数据
+ @result NSData
+ */
 + (NSData *)SecurityDecodeBase64:(NSData *)data;
+
+/*!
+ @method StringWithDecodeSecurityBase64:
+ @abstract 解密
+ @discussion base64解密算法解密字符串数据
+ @param baseStr 字符串
+ @result NSString
+ */
 + (NSString *)StringWithDecodeSecurityBase64:(NSString *)baseStr;
 
-
-/// 加密数据库
-/// @param databasePath 数据库路径
-/// 自动产生加密KEY
-- (Boolean)encryptDatabase:(NSString *__nonnull)databasePath;
-
-/// 解密数据库
-- (Boolean)encodeDatabase;
-
+/*!
+ @method securitySqlCommand: type:
+ @abstract 加密
+ @discussion base64加密算法加密sql语句
+ @param sql sql语句
+ @param type 安全模式
+ @result NSString
+ */
 - (NSString *__nonnull)securitySqlCommand:(NSString *__nonnull)sql type:(PaintingliteSecurityMode)type;
+
+/*!
+ @method securityObj:
+ @abstract 加密
+ @discussion base64加密算法加密obj对象
+ @param obj 对象
+ @result NSObject
+ */
 - (NSObject *__nonnull)securityObj:(NSObject *__nonnull)obj;
 
 @end
