@@ -2,7 +2,7 @@
 
 source "https://rubygems.org"
 
-git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
+git_source(:github) {| Paintinglite| "https://github.com/CreaterOS/Paintinglite.git" }
 
 group :test do   # you can make groups for test, development, production..
   gem "coveralls", require: false
