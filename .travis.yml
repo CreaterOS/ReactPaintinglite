@@ -1,4 +1,5 @@
 language: objective-c
+travis encrypt COVERALLS_TOKEN=JexhQvM9oc29fq4ZYXqMcyUf70bkd1YxU
 before_install:
     - brew update
     - brew install xctool
