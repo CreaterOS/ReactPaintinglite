@@ -65,60 +65,26 @@
     /* 目标字典 */
     __block NSDictionary *orderDict = [NSDictionary dictionary];
     NSString *sqlText = [self analysisXMLDTDMapperStruct:^id(NSDictionary *dict,NSString *idStr) {
-        /* 取出可能是一个SELECT字典数组 */
-        orderDict = [self orderDictByType:dict methodID:methodID idStr:idStr type:SELECT];
-        
-        /* 根据XML字典进行分析进行查询 */
-        NSString *sqlText = [self analysisXMLDTDMapperTEXT:orderDict];;
-        
-        if ([sqlText containsString:@"?"]) {
-            NSRange range = [sqlText rangeOfString:@"?"];
-            sqlText = [sqlText stringByReplacingCharactersInRange:range withString:[NSString stringWithFormat:@"%@",condition]];
-        }
-        
-        return sqlText;
+        /**
+         取出可能是一个SELECT字典数组
+         根据XML字典进行分析进行查询
+         */
+        return [self getSqlText:orderDict methodID:methodID dict:dict idStr:idStr condition:condition];
     } labelType:SELECT methodID:methodID];
 
-    if (sqlText.length != 0) {
-        /* sql语句处理#{} */
-        /* 获得可变参数列表 */
-        id str;
-        va_list list;
-        va_start(list, condition);
-        while((str = va_arg(list, id))){
-            /* 获得参数 */
-            if ([sqlText containsString:@"?"]) {
-                NSRange range = [sqlText rangeOfString:@"?"];
-                sqlText = [sqlText stringByReplacingCharactersInRange:range withString:[NSString stringWithFormat:@"%@",str]];
-            }
-        }
-        va_end(list);
-        
-        /* ResultMap */
-        sqlText = [self analysisResultMap:sqlText orderDict:orderDict];
-        
-        NSLog(@"%@",sqlText);
-        
-        /* 获得期望返回值类型 */
-        NSString *resultType = [NSString string];
-        if ([[orderDict allKeys] containsObject:RESULTTYPE]) {
-            resultType = orderDict[RESULTTYPE];
-        }
-        
-        if ([resultType isEqualToString:@"NSDictionary"] || [resultType isEqualToString:@"NSMutableDictionary"]) {
-            return [[self execQuerySQL:sqlText] firstObject];
-        }else{
-            if (resultType.length == 0 || !NSClassFromString(resultType)) {
-                /* 取出表名 */
-                resultType = [[[[[[sqlText uppercaseString] componentsSeparatedByString:@"FROM "] lastObject] componentsSeparatedByString:@" "] firstObject] lowercaseString];
-                resultType = [[[resultType substringWithRange:NSMakeRange(0, 1)] uppercaseString] stringByAppendingString:[resultType substringFromIndex:1]];
-            }
-            
-            /* 生成对象封装 */
-            return [[self execQuerySQL:sqlText obj:NSClassFromString(resultType)] firstObject];
-        }
+    NSString *resultType = [self handleSql:sqlText orderDict:orderDict condition:condition];
+
+    if ([resultType isEqualToString:@"NSDictionary"] || [resultType isEqualToString:@"NSMutableDictionary"]) {
+        return [[self execQuerySQL:sqlText] firstObject];
     }else{
-        return NULL;
+        if (resultType.length == 0 || !NSClassFromString(resultType)) {
+            /* 取出表名 */
+            resultType = [[[[[[sqlText uppercaseString] componentsSeparatedByString:@"FROM "] lastObject] componentsSeparatedByString:@" "] firstObject] lowercaseString];
+            resultType = [[[resultType substringWithRange:NSMakeRange(0, 1)] uppercaseString] stringByAppendingString:[resultType substringFromIndex:1]];
+        }
+        
+        /* 生成对象封装 */
+        return [[self execQuerySQL:sqlText obj:NSClassFromString(resultType)] firstObject];
     }
 }
 
@@ -126,61 +92,26 @@
     /* 目标字典 */
     __block NSDictionary *orderDict = [NSDictionary dictionary];
     NSString *sqlText = [self analysisXMLDTDMapperStruct:^NSString *(NSDictionary *dict,NSString *idStr){
-        /* 取出可能是一个SELECT字典数组 */
-        orderDict = [self orderDictByType:dict methodID:methodID idStr:idStr type:SELECT];
-        
-        /* 根据XML字典进行分析进行查询 */
-        NSString *sqlText = [self analysisXMLDTDMapperTEXT:orderDict];
-        
-        if ([sqlText containsString:@"?"]) {
-            NSRange range = [sqlText rangeOfString:@"?"];
-            sqlText = [sqlText stringByReplacingCharactersInRange:range withString:[NSString stringWithFormat:@"%@",condition]];
-        }
-        
-        return sqlText;
+        /**
+         取出可能是一个SELECT字典数组
+         根据XML字典进行分析进行查询
+         */
+        return [self getSqlText:orderDict methodID:methodID dict:dict idStr:idStr condition:condition];
     } labelType:SELECT methodID:methodID];
     
-    if (sqlText.length != 0) {
-        /* sql语句处理#{} */
-        /* 获得可变参数列表 */
-        id str;
-        va_list list;
-        va_start(list, condition);
-        while((str = va_arg(list, id))){
-            /* 获得参数 */
-            if ([sqlText containsString:@"?"]) {
-                NSRange range = [sqlText rangeOfString:@"?"];
-                sqlText = [sqlText stringByReplacingCharactersInRange:range withString:[NSString stringWithFormat:@"%@",str]];
-            }
-        }
-        va_end(list);
-        
-        /* ResultMap */
-        sqlText = [self analysisResultMap:sqlText orderDict:orderDict];
-        
-        NSLog(@"%@",sqlText);
-        
-        /* 获得期望返回值类型 */
-        NSString *resultType = [NSString string];
-        if ([[orderDict allKeys] containsObject:RESULTTYPE]) {
-            resultType = orderDict[RESULTTYPE];
-        }
-        
-        
-        if ([resultType isEqualToString:@"NSArray"] || [resultType isEqualToString:@"NSMutableArray"]) {
-            return [self execQuerySQL:sqlText];
-        }else{
-            if (resultType.length == 0 || !NSClassFromString(resultType)) {
-                /* 取出表名 */
-                resultType = [[[[[[sqlText uppercaseString] componentsSeparatedByString:@"FROM "] lastObject] componentsSeparatedByString:@" "] firstObject] lowercaseString];
-                resultType = [[[resultType substringWithRange:NSMakeRange(0, 1)] uppercaseString] stringByAppendingString:[resultType substringFromIndex:1]];
-            }
-            
-            /* 生成对象封装 */
-            return [[self execQuerySQL:sqlText obj:NSClassFromString(resultType)] firstObject];
-        }
+    NSString *resultType = [self handleSql:sqlText orderDict:orderDict condition:condition];
+    
+    if ([resultType isEqualToString:@"NSArray"] || [resultType isEqualToString:@"NSMutableArray"]) {
+        return [self execQuerySQL:sqlText];
     }else{
-        return NULL;
+        if (resultType.length == 0 || !NSClassFromString(resultType)) {
+            /* 取出表名 */
+            resultType = [[[[[[sqlText uppercaseString] componentsSeparatedByString:@"FROM "] lastObject] componentsSeparatedByString:@" "] firstObject] lowercaseString];
+            resultType = [[[resultType substringWithRange:NSMakeRange(0, 1)] uppercaseString] stringByAppendingString:[resultType substringFromIndex:1]];
+        }
+        
+        /* 生成对象封装 */
+        return [[self execQuerySQL:sqlText obj:NSClassFromString(resultType)] firstObject];
     }
 }
 
@@ -223,16 +154,7 @@
     
     /* 配置resultMap */
     if (sqlText.length != 0) {
-        sqlText = [self analysisResultMap:sqlText orderDict:orderDict];
-        /* 打印SQL语句 */
-        NSLog(@"%@",sqlText);
-        
-        /* 获得期望返回值类型 */
-        NSString *resultType = [NSString string];
-        
-        if ([[orderDict allKeys] containsObject:RESULTTYPE]) {
-            resultType = orderDict[RESULTTYPE];
-        }
+        NSString *resultType = [self analysis:sqlText orderDict:orderDict];
         
         if ([resultType isEqualToString:@"NSArray"] || [resultType isEqualToString:@"NSMutableArray"]) {
             return [self execQuerySQL:sqlText];
@@ -249,6 +171,55 @@
     }else{
         return NULL;
     }
+}
+
+- (NSString *)getSqlText:(NSDictionary *)orderDict methodID:(NSString *)methodID dict:(NSDictionary *)dict idStr:(NSString *)idStr condition:(id)condition, ...{
+    orderDict = [self orderDictByType:dict methodID:methodID idStr:idStr type:SELECT];
+    NSString *sqlText = [self analysisXMLDTDMapperTEXT:orderDict];;
+    
+    if ([sqlText containsString:@"?"]) {
+        NSRange range = [sqlText rangeOfString:@"?"];
+        sqlText = [sqlText stringByReplacingCharactersInRange:range withString:[NSString stringWithFormat:@"%@",condition]];
+    }
+    
+    return sqlText;
+}
+
+- (NSString *)handleSql:(NSString *__nonnull)sqlText orderDict:(NSDictionary *)orderDict condition:(id)condition, ...  {
+    if (sqlText.length != 0) {
+        /* sql语句处理#{} */
+        /* 获得可变参数列表 */
+        id str;
+        va_list list;
+        va_start(list, condition);
+        while((str = va_arg(list, id))){
+            /* 获得参数 */
+            if ([sqlText containsString:@"?"]) {
+                NSRange range = [sqlText rangeOfString:@"?"];
+                sqlText = [sqlText stringByReplacingCharactersInRange:range withString:[NSString stringWithFormat:@"%@",str]];
+            }
+        }
+        va_end(list);
+        
+        return [self analysis:sqlText orderDict:orderDict];
+    }else{
+        return NULL;
+    }
+}
+
+- (NSString *)analysis:(NSString *)sqlText orderDict:(NSDictionary *)orderDict {
+    /* ResultMap */
+    sqlText = [self analysisResultMap:sqlText orderDict:orderDict];
+    
+    NSLog(@"%@",sqlText);
+    
+    /* 获得期望返回值类型 */
+    NSString *resultType = [NSString string];
+    if ([[orderDict allKeys] containsObject:RESULTTYPE]) {
+        resultType = orderDict[RESULTTYPE];
+    }
+    
+    return resultType;
 }
 
 #pragma mark - 插入操作

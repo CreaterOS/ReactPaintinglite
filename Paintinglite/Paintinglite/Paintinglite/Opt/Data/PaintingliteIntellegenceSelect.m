@@ -181,51 +181,53 @@ static PaintingliteIntellegenceSelect *_instance = nil;
 
 #pragma mark - 排序查询
 - (Boolean)orderBy:(sqlite3 *)ppDb orderStyle:(PaintingliteOrderByStyle)orderStyle condation:(nonnull NSArray<NSString *> *)condation completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull))completeHandler objects:(id)objects, ...{
-    //获取每一个对象，从可变参数中获取
-    id obj = NULL;
+//    //获取每一个对象，从可变参数中获取
+//    id obj = NULL;
+//
+//    __block NSMutableArray *ordersArray = [NSMutableArray array];
+//    Boolean success = false;
+//
+//    //取出第一个参数
+//    obj = objects;
+//    self.objs = obj;
+//
+//    success = [self execOrderQueryPQL:ppDb pql:[NSString stringWithFormat:@"FROM %@ ORDER BY %@ %@",NSStringFromClass([obj class]),[condation firstObject],(orderStyle == PaintingliteOrderByASC) ? @"ASC" : @"DESC"] completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
+//        if(success){
+//            [ordersArray addObject:resObjList];
+//        }
+//    }];
+//
+//    va_list arg_list;
+//    va_start(arg_list, objects);
+//
+//    NSUInteger i = 1;
+//    while ((obj = va_arg(arg_list, NSObject *))) {
+//        if ([self.objs isEqual:obj]) {
+//            //报出异常
+//            [PaintingliteException PaintingliteException:@"重复对象" reason:@"传入对象重复"];
+//        }
+//
+//
+//        //获得每一个id对象
+//        //调用对象封装基本SQL查询
+//        success = [self execOrderQueryPQL:ppDb pql:[NSString stringWithFormat:@"FROM %@ ORDER BY %@ %@",NSStringFromClass([obj class]),condation[i],(orderStyle == PaintingliteOrderByASC) ? @"ASC" : @"DESC"] completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
+//            if(success){
+//                [ordersArray addObject:resObjList];
+//            }
+//        }];
+//
+//        i++;
+//    }
+//    va_end(arg_list);
+//    self.objs = nil;
+//
+//    if (completeHandler != nil) {
+//        completeHandler(self.sessionError,success,ordersArray);
+//    }
+//
+//    return success;
     
-    __block NSMutableArray *ordersArray = [NSMutableArray array];
-    Boolean success = false;
-    
-    //取出第一个参数
-    obj = objects;
-    self.objs = obj;
-    
-    success = [self execOrderQueryPQL:ppDb pql:[NSString stringWithFormat:@"FROM %@ ORDER BY %@ %@",NSStringFromClass([obj class]),[condation firstObject],(orderStyle == PaintingliteOrderByASC) ? @"ASC" : @"DESC"] completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
-        if(success){
-            [ordersArray addObject:resObjList];
-        }
-    }];
-    
-    va_list arg_list;
-    va_start(arg_list, objects);
-    
-    NSUInteger i = 1;
-    while ((obj = va_arg(arg_list, NSObject *))) {
-        if ([self.objs isEqual:obj]) {
-            //报出异常
-            [PaintingliteException PaintingliteException:@"重复对象" reason:@"传入对象重复"];
-        }
-        
-        
-        //获得每一个id对象
-        //调用对象封装基本SQL查询
-        success = [self execOrderQueryPQL:ppDb pql:[NSString stringWithFormat:@"FROM %@ ORDER BY %@ %@",NSStringFromClass([obj class]),condation[i],(orderStyle == PaintingliteOrderByASC) ? @"ASC" : @"DESC"] completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
-            if(success){
-                [ordersArray addObject:resObjList];
-            }
-        }];
-        
-        i++;
-    }
-    va_end(arg_list);
-    self.objs = nil;
-    
-    if (completeHandler != nil) {
-        completeHandler(self.sessionError,success,ordersArray);
-    }
-    
-    return success;
+    return [self orderBy:ppDb orderStyleArray:@[(orderStyle == PaintingliteOrderByASC) ? @"ASC" : @"DESC"] condation:condation completeHandler:completeHandler objects:objects, nil];
 }
 
 - (Boolean)orderBy:(sqlite3 *)ppDb orderStyleArray:(NSArray<NSString *> *)orderStyleArray condation:(NSArray<NSString *> *)condation completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull))completeHandler objects:(id)objects, ...{
