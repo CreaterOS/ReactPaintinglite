@@ -77,14 +77,7 @@
     if ([resultType isEqualToString:@"NSDictionary"] || [resultType isEqualToString:@"NSMutableDictionary"]) {
         return [[self execQuerySQL:sqlText] firstObject];
     }else{
-        if (resultType.length == 0 || !NSClassFromString(resultType)) {
-            /* 取出表名 */
-            resultType = [[[[[[sqlText uppercaseString] componentsSeparatedByString:@"FROM "] lastObject] componentsSeparatedByString:@" "] firstObject] lowercaseString];
-            resultType = [[[resultType substringWithRange:NSMakeRange(0, 1)] uppercaseString] stringByAppendingString:[resultType substringFromIndex:1]];
-        }
-        
-        /* 生成对象封装 */
-        return [[self execQuerySQL:sqlText obj:NSClassFromString(resultType)] firstObject];
+        return [self packagingObjUseType:resultType sqlText:sqlText];
     }
 }
 
@@ -104,14 +97,7 @@
     if ([resultType isEqualToString:@"NSArray"] || [resultType isEqualToString:@"NSMutableArray"]) {
         return [self execQuerySQL:sqlText];
     }else{
-        if (resultType.length == 0 || !NSClassFromString(resultType)) {
-            /* 取出表名 */
-            resultType = [[[[[[sqlText uppercaseString] componentsSeparatedByString:@"FROM "] lastObject] componentsSeparatedByString:@" "] firstObject] lowercaseString];
-            resultType = [[[resultType substringWithRange:NSMakeRange(0, 1)] uppercaseString] stringByAppendingString:[resultType substringFromIndex:1]];
-        }
-        
-        /* 生成对象封装 */
-        return [[self execQuerySQL:sqlText obj:NSClassFromString(resultType)] firstObject];
+        return [self packagingObjUseType:resultType sqlText:sqlText];
     }
 }
 
@@ -159,18 +145,22 @@
         if ([resultType isEqualToString:@"NSArray"] || [resultType isEqualToString:@"NSMutableArray"]) {
             return [self execQuerySQL:sqlText];
         }else{
-            if (resultType.length == 0 || !NSClassFromString(resultType)) {
-                /* 取出表名 */
-                resultType = [[[[[[sqlText uppercaseString] componentsSeparatedByString:@"FROM "] lastObject] componentsSeparatedByString:@" "] firstObject] lowercaseString];
-                resultType = [[[resultType substringWithRange:NSMakeRange(0, 1)] uppercaseString] stringByAppendingString:[resultType substringFromIndex:1]];
-            }
-            
-            /* 生成对象封装 */
-            return [[self execQuerySQL:sqlText obj:NSClassFromString(resultType)] firstObject];
+            return [self packagingObjUseType:resultType sqlText:sqlText];
         }
     }else{
         return NULL;
     }
+}
+
+- (id)packagingObjUseType:(NSString *)resultType sqlText:(NSString *)sqlText {
+    if (resultType.length == 0 || !NSClassFromString(resultType)) {
+        /* 取出表名 */
+        resultType = [[[[[[sqlText uppercaseString] componentsSeparatedByString:@"FROM "] lastObject] componentsSeparatedByString:@" "] firstObject] lowercaseString];
+        resultType = [[[resultType substringWithRange:NSMakeRange(0, 1)] uppercaseString] stringByAppendingString:[resultType substringFromIndex:1]];
+    }
+    
+    /* 生成对象封装 */
+    return [[self execQuerySQL:sqlText obj:NSClassFromString(resultType)] firstObject];
 }
 
 - (NSString *)getSqlText:(NSDictionary *)orderDict methodID:(NSString *)methodID dict:(NSDictionary *)dict idStr:(NSString *)idStr condition:(id)condition, ...{

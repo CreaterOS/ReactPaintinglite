@@ -95,17 +95,9 @@ static PaintingliteCUDOptions *_instance = nil;
         //获得增加数据sql中的表名称
         //INSERT INTO user(...) VALUES()
 //        NSString *tableName = [[PaintingliteObjRuntimeProperty getObjName:obj] lowercaseString];
-        NSString *tableName = [PaintingliteObjRuntimeProperty getObjName:obj];
-        //判断表是否存在，判断表的字段
-        if (![self.exec isNotExistsTable:[tableName lowercaseString]]) {
-            /// 驼峰字符串处理
-            NSString *firstCharacter = [[tableName substringWithRange:NSMakeRange(0, 1)] lowercaseString];
-            NSString *lastStr = [tableName substringWithRange:NSMakeRange(1, tableName.length-1)];
-            tableName = [firstCharacter stringByAppendingString:lastStr];
-            
-            if (![self.exec isNotExistsTable:tableName]) {
-                return false;
-            }
+        NSString *tableName = [self getTableName:obj];
+        if (tableName.length == 0) {
+            return false;
         }
 
         //获取表的字段，寻找对应的对象字段
@@ -183,17 +175,9 @@ static PaintingliteCUDOptions *_instance = nil;
     
         //获得增加数据sql中的表名称
         //UPDATE user SET name = '...' WHERE age = '...'
-        NSString *tableName = [PaintingliteObjRuntimeProperty getObjName:obj];
-        //判断表是否存在，判断表的字段
-        if (![self.exec isNotExistsTable:[tableName lowercaseString]]) {
-            /// 驼峰字符串处理
-            NSString *firstCharacter = [[tableName substringWithRange:NSMakeRange(0, 1)] lowercaseString];
-            NSString *lastStr = [tableName substringWithRange:NSMakeRange(1, tableName.length-1)];
-            tableName = [firstCharacter stringByAppendingString:lastStr];
-            
-            if (![self.exec isNotExistsTable:tableName]) {
-                return false;
-            }
+        NSString *tableName = [self getTableName:obj];
+        if (tableName.length == 0) {
+            return false;
         }
         
         //先查看表中已经有的数据然后和obj传入的进行对比,然后判断是否更改
@@ -233,6 +217,24 @@ static PaintingliteCUDOptions *_instance = nil;
         
         return success;
     }];
+}
+
+#pragma mark - 判断数据库表名称是否存在
+- (NSString *)getTableName:(id)obj {
+    NSString *tableName = [PaintingliteObjRuntimeProperty getObjName:obj];
+    //判断表是否存在，判断表的字段
+    if (![self.exec isNotExistsTable:[tableName lowercaseString]]) {
+        /// 驼峰字符串处理
+        NSString *firstCharacter = [[tableName substringWithRange:NSMakeRange(0, 1)] lowercaseString];
+        NSString *lastStr = [tableName substringWithRange:NSMakeRange(1, tableName.length-1)];
+        tableName = [firstCharacter stringByAppendingString:lastStr];
+        
+        if (![self.exec isNotExistsTable:tableName]) {
+            return [NSString string];
+        }
+    }
+    
+    return tableName;
 }
 
 #pragma mark - 删除数据

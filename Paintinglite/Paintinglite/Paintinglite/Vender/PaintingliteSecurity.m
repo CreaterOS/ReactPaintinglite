@@ -177,18 +177,8 @@
                 [dict setValue:[set componentsSeparatedByString:@" = "].lastObject forKey:[set componentsSeparatedByString:@" = "].firstObject];
             }
             
-            NSString *value = dict.allValues.firstObject;
-            
-            if ([value characterAtIndex:0] == '\'' && [value characterAtIndex:value.length-1] == '\'') {
-                value = [value substringWithRange:NSMakeRange(1, value.length-2)];
-                value = [[value dataUsingEncoding:NSUTF8StringEncoding] base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
-                value = [[@"'" stringByAppendingString:value] stringByAppendingString:@"'"];
-            } else {
-                [[value dataUsingEncoding:NSUTF8StringEncoding] base64EncodedDataWithOptions:NSDataBase64Encoding64CharacterLineLength];
-            }
-            
             /// 复原语句
-            NSString *setRes = [[dict.allKeys.firstObject stringByAppendingString:@"="] stringByAppendingString:value];
+            NSString *setRes = [[dict.allKeys.firstObject stringByAppendingString:@"="] stringByAppendingString:[self conditionValue:condition dict:dict]];
             
             if (index < sets.count-1) {
                 setResultStr = [setResultStr stringByAppendingString:[setRes stringByAppendingString:@","]];
@@ -199,30 +189,38 @@
             index++;
         }
     } else {
-        NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-        if ([condition containsString:@"="]) {
-            [dict setValue:[condition componentsSeparatedByString:@"="].lastObject forKey:[condition componentsSeparatedByString:@"="].firstObject];
-        } else if ([condition containsString:@" = "]) {
-            [dict setValue:[condition componentsSeparatedByString:@" = "].lastObject forKey:[condition componentsSeparatedByString:@" = "].firstObject];
-        }
-        
-        NSString *value = dict.allValues.firstObject;
-        
-        if ([value characterAtIndex:0] == '\'' && [value characterAtIndex:value.length-1] == '\'') {
-            value = [value substringWithRange:NSMakeRange(1, value.length-2)];
-            value = [[value dataUsingEncoding:NSUTF8StringEncoding] base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
-            value = [[@"'" stringByAppendingString:value] stringByAppendingString:@"'"];
-        } else {
-            [[value dataUsingEncoding:NSUTF8StringEncoding] base64EncodedDataWithOptions:NSDataBase64Encoding64CharacterLineLength];
-        }
-        
+        NSMutableDictionary *dict = [self conditionDict:condition];
         /// 复原语句
-        setResultStr = [[dict.allKeys.firstObject stringByAppendingString:@"="] stringByAppendingString:value];
+        setResultStr = [[dict.allKeys.firstObject stringByAppendingString:@"="] stringByAppendingString:[self conditionValue:condition dict:dict]];
     }
     
     return setResultStr;
 }
 
+- (NSMutableDictionary *)conditionDict:(NSString *)condition {
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    if ([condition containsString:@"="]) {
+        [dict setValue:[condition componentsSeparatedByString:@"="].lastObject forKey:[condition componentsSeparatedByString:@"="].firstObject];
+    } else if ([condition containsString:@" = "]) {
+        [dict setValue:[condition componentsSeparatedByString:@" = "].lastObject forKey:[condition componentsSeparatedByString:@" = "].firstObject];
+    }
+    
+    return dict;
+}
+
+- (NSString *)conditionValue:(NSString *)condition dict:(NSMutableDictionary *)dict {
+    NSString *value = dict.allValues.firstObject;
+    
+    if ([value characterAtIndex:0] == '\'' && [value characterAtIndex:value.length-1] == '\'') {
+        value = [value substringWithRange:NSMakeRange(1, value.length-2)];
+        value = [[value dataUsingEncoding:NSUTF8StringEncoding] base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
+        value = [[@"'" stringByAppendingString:value] stringByAppendingString:@"'"];
+    } else {
+        [[value dataUsingEncoding:NSUTF8StringEncoding] base64EncodedDataWithOptions:NSDataBase64Encoding64CharacterLineLength];
+    }
+    
+    return value;
+}
 
 #pragma mark - Base64加密
 + (NSData *)SecurityBase64:(NSData *)data{
