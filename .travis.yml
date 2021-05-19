@@ -1,4 +1,5 @@
-# .travis.yml
+language: objective-c #语言种类
 
-after_success:
-  - bash 
+xcode_project: Paintinglite/Paintinglite.xcodeproj # 项目文件相对于.travis.yml文件的路径
+
+xcode_scheme: Paintinglite/PaintingliteTests #你需要集成测试的scheme
