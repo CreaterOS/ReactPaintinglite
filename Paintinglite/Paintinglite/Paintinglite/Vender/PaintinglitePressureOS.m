@@ -36,7 +36,14 @@
 @implementation MobileModel
 #pragma mark - 模型字典KVO
 + (instancetype)modelWithDict:(NSDictionary *)dict{
-    MobileModel *model = [MobileModel new];
+    /**
+     MobileModel *model = [MobileModel new];
+     do not create objects with +new
+     Finds calls to +new or overrides of it, which are prohibited by the Google Objective-C style guide.
+
+     The Google Objective-C style guide forbids calling +new or overriding it in class implementations, preferring +alloc and -init methods to instantiate objects.
+     */
+    MobileModel *model = [[MobileModel alloc] init];
     [model setValuesForKeysWithDictionary:dict];
     return model;
 }
@@ -255,7 +262,7 @@ static NSUInteger groupCount = -1;
     ;
     
     /* 获得MobileModel */
-    MobileModel *model = [[Mobile new] getMobileType];
+    MobileModel *model = [[[Mobile alloc] init] getMobileType];
     /* 设备型号 */
     NSString *iphoneType = model.mobileType != NULL ? model.mobileType : @"未知设备";
     /* 设备处理器信息 */
