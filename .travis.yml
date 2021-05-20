@@ -1,4 +1,12 @@
-language: objective-c #语言种类
+language: objective-c #设置语言
 
-after_success: 
-- bash <(curl -s https://codecov.io/bash)
+cache:
+  directories:
+    - node_modules #缓存依赖
+
+# S: Build Lifecycle
+install:
+  - npm i
+
+script:
+  - npm run build
