@@ -1,5 +1,6 @@
 # Paintinglite
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/3a263edb5f124ee0a8bc2cdda9e9a334)](https://www.codacy.com/gh/CreaterOS/Paintinglite/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=CreaterOS/Paintinglite&amp;utm_campaign=Badge_Grade)
+[![standard-readme compliant](https://img.shields.io/badge/CODEBEAT-1.83GPA-brightgreen.svg?style=message&color=red)]()
 [![standard-readme compliant](https://img.shields.io/badge/Emblod-3.42-brightgreen.svg?style=message&color=yellow)]()
 [![standard-readme compliant](https://img.shields.io/badge/Paintinglite-CreaterOS-brightgreen.svg?style=CreaterOS&color=blue)](https://github.com/CreaterOS/Paintinglite)
 [![standard-readme compliant](https://img.shields.io/badge/platform-ios-brightgreen.svg?style=info&color=orange)](https://github.com/CreaterOS/Paintinglite)
