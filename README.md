@@ -739,7 +739,7 @@ Paintinglite can perform different measurement and calculation of memory consump
 -(Boolean)paintingliteSqlitePressure;
 ```
 
- #### XML file configuration rules:
+#### XML file configuration rules:
  1. The XML mapping file strictly abides by the DTD rules, which provides <mapper></mapper>,<sql></sql>,<include></include>,<resultMap></resultMap>,<select></ select>, <insert></insert>, <update></update>, <delete></delete> and other basic tags;
  2. The XML mapping file needs to be configured corresponding to the class created by the table (POJO mapping);
  3. The XML mapping file format has strict requirements (the v2.0 version has strict requirements);
