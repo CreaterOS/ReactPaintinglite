@@ -31,25 +31,6 @@ pod'Paintinglite', :git =>'https://github.com/CreaterOS/Paintinglite.git'#, :tag
 Paintinglite is an excellent and fast Sqlite3 database framework. Paintinglite has good encapsulation of data, fast data insertion characteristics, and can still show good resource utilization for huge amounts of data.
 Paintinglite supports object mapping and has carried out a very lightweight object encapsulation on sqlite3. It establishes a mapping relationship between POJOs and database tables. Paintinglite can automatically generate SQL statements and manually write SQL statements to achieve convenient development and efficient querying. All-in-one lightweight framework.
 
-| Paintinglite function table | |
-| ------------------------------------------------- -| ---- |
-| Basic library operations | |
-| Table basic operations | |
-| Package query operation | |
-| PQL feature language query operation | |
-| Advanced database configuration operations | |
-| Intelligent query operation (multi-package query) | |
-| Aggregate query operations | |
-| Cascade operation | |
-| Transaction operation | |
-| Secure encryption operation | |
-| Split large table operation | |
-| Logging operations | |
-| Snapshot save operation | |
-| Backup database operations (support MySQL, SQLServer, Sqlite3, Oracle) | |
-| Stress test operation (support report generation) | |
-| XML centralized management database operation statement operation | |
-
 ## Core Object
 -PaintingliteSessionManager: Basic operation manager (library operation | table operation)
 -PaintingliteXMLSessionManager: Centralized management of SQL statement managers (specially introduced in v2.0)
