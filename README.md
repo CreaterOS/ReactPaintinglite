@@ -4,7 +4,8 @@
 [![standard-readme compliant](https://img.shields.io/badge/Emblod-3.42-brightgreen.svg?style=message&color=yellow)]()
 [![standard-readme compliant](https://img.shields.io/badge/Paintinglite-CreaterOS-brightgreen.svg?style=CreaterOS&color=blue)](https://github.com/CreaterOS/Paintinglite)
 [![standard-readme compliant](https://img.shields.io/badge/platform-ios-brightgreen.svg?style=info&color=orange)](https://github.com/CreaterOS/Paintinglite)
-##Preview: v2.1.2 Provide a web version of the stress test report
+## Preview
+v2.1.2 Provide a web version of the stress test report
 
 ## v2.1.1 Paintinglite API v1.0
 http://htmlpreview.github.io/?https://github.com/CreaterOS/Paintinglite/blob/master/Paintinglite/PaintingliteWeb/index.html
