@@ -4,6 +4,11 @@
 [![standard-readme compliant](https://img.shields.io/badge/Emblod-3.42-brightgreen.svg?style=message&color=green)]()
 [![standard-readme compliant](https://img.shields.io/badge/Paintinglite-CreaterOS-brightgreen.svg?style=CreaterOS&color=blue)](https://github.com/CreaterOS/Paintinglite)
 [![standard-readme compliant](https://img.shields.io/badge/platform-ios-brightgreen.svg?style=info&color=orange)](https://github.com/CreaterOS/Paintinglite)
+
+## Stargazers
+[![Stargazers repo roster for @CreaterOS/Paintinglite](https://reporoster.com/stars/CreaterOS/Paintinglite)](https://github.com/CreaterOS/Paintinglite/stargazers)
+## Forkers
+[![Forkers repo roster for @CreaterOS/Paintinglite](https://reporoster.com/forks/CreaterOS/Paintinglite)](https://github.com/CreaterOS/Paintinglite/network/members)
 ## Preview
 v2.1.2 Provide a web version of the stress test report
 
