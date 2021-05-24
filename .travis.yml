@@ -1,12 +1,10 @@
-language: objective-c #设置语言
-
-cache:
-  directories:
-    - node_modules #缓存依赖
-
-# S: Build Lifecycle
-install:
-  - npm i
-
+language: objective-c
+before_install:
+  - sudo easy_install cpp-coveralls
+  - brew uninstall xctool
+  - brew update
+  - brew install xctool --HEAD  
 script:
-  - npm run build
+  - xctool test ONLY_ACTIVE_ARCH=NO GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES GCC_GENERATE_TEST_COVERAGE_FILES=YES
+after_success:
+  - ./script/coveralls.sh
