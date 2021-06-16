@@ -1,10 +1,19 @@
 language: objective-c
+osx_image: xcode11.2
+
 before_install:
-  - sudo easy_install cpp-coveralls
-  - brew uninstall xctool
-  - brew update
-  - brew install xctool --HEAD  
+  - env
+  - locale
+  - xcpretty --version
+  - xcodebuild -version
+  - xcodebuild -showsdks
+
 script:
-  - xctool test ONLY_ACTIVE_ARCH=NO GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES GCC_GENERATE_TEST_COVERAGE_FILES=YES
+  - set -o pipefail
+
+  - xcodebuild clean build -workspace MBProgressHUD.xcworkspace -scheme HudDemo -sdk iphonesimulator -configuration Debug | xcpretty -c
+  - xcodebuild clean build -workspace MBProgressHUD.xcworkspace -scheme HudDemoTV -sdk appletvsimulator -configuration Debug | xcpretty -c
+  - xcodebuild clean build test -workspace Paintinglite/Paintinglite.xcworkspace -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPad Air (3rd generation),OS=13.2.2" -configuration Debug GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES GCC_GENERATE_TEST_COVERAGE_FILES=YES | xcpretty -c
+
 after_success:
-  - ./script/coveralls.sh
+  - bash <(curl -s https://codecov.io/bash)
