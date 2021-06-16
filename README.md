@@ -14,6 +14,8 @@
 ## Preview
 v2.1.2 Provide a web version of the stress test report
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/a28fdfaa7e334a888cd93e14b5ccd8a8)](https://app.codacy.com/gh/CreaterOS/Paintinglite?utm_source=github.com&utm_medium=referral&utm_content=CreaterOS/Paintinglite&utm_campaign=Badge_Grade_Settings)
+
 ## v2.1.1 Paintinglite API v1.0
 http://htmlpreview.github.io/?https://github.com/CreaterOS/Paintinglite/blob/master/Paintinglite/PaintingliteWeb/index.html
 The detailed API documentation is contained in masterTOC.html in the Paintinglite/PaintingliteWeb directory
