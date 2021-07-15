@@ -21,22 +21,31 @@ NS_ASSUME_NONNULL_BEGIN
 @interface PaintingliteException : NSException
 
 /*!
- @method PaintingliteException: reason:
+ @method paintingliteException: reason:
  @abstract 异常处理报错
  @discussion 异常处理报错
  @param exceptionWithName 异常名称
  @param reason 异常原因
  */
-+ (void)PaintingliteException:(NSString *)exceptionWithName reason:(NSString *)reason;
++ (void)paintingliteException:(NSString *)exceptionWithName reason:(NSString *)reason;
+
 
 /*!
- @method PaintingliteXMLException: reason:
+ @method paintingliteDictException:
+ @abstract 异常处理报错
+ @discussion 异常处理报错
+ @param info 异常字典
+ */
++ (void)paintingliteDictException:(NSDictionary *)info;
+
+/*!
+ @method paintingliteXMLException: reason:
  @abstract 解析XML异常处理报错
  @discussion 解析XML报错异常处理报错
  @param exceptionWithName 异常名称
  @param reason 异常原因
  */
-+ (void)PaintingliteXMLException:(NSString *)exceptionWithName reason:(NSString *)reason;
++ (void)paintingliteXMLException:(NSString *)exceptionWithName reason:(NSString *)reason;
 
 @end
 

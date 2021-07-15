@@ -110,7 +110,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param completeHandler 回调操作
  @result Boolean
  */
-- (Boolean)createTableForObj:(sqlite3 *)ppDb obj:(id)obj createStyle:(PaintingliteDataBaseOptionsPrimaryKeyStyle)createStyle completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success))completeHandler;
+- (Boolean)createTableForObj:(sqlite3 *)ppDb obj:(id)obj createStyle:(PaintingliteDataBaseOptionsPrimaryKeyStyle)createStyle completeHandler:(void(^ __nullable)(NSString *tableName,PaintingliteSessionError *error,Boolean success))completeHandler;
 
 /*!
  @method alterTableForName: oldName: newName:

@@ -67,7 +67,7 @@ static PaintingliteAggregateFunc *_instance = nil;
     //判断表是否存在
     if (![[self.exec getCurrentTableNameWithCache] containsObject:[tableName lowercaseString]]) {
         //抛出异常
-        [PaintingliteException PaintingliteException:@"表名不存在" reason:@"数据库中找不到表名,无法查询"];
+        [PaintingliteException paintingliteException:@"表名不存在" reason:@"数据库中找不到表名,无法查询"];
     }
 
     

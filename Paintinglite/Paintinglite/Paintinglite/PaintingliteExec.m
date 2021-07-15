@@ -140,7 +140,7 @@
         
         if (self.isCreateTable && ![firstSQLWords isEqualToString:Paintinglite_Sqlite3_INSERT]) {
             if ([[self getCurrentTableNameWithCache] containsObject:[tableName lowercaseString]]) {
-                [PaintingliteException PaintingliteException:@"表名存在" reason:@"数据库中已经存在表名，无法建立新表"];
+                [PaintingliteException paintingliteException:@"表名存在" reason:@"数据库中已经存在表名，无法建立新表"];
             }
         }else{
             self.isCreateTable = YES;
@@ -159,7 +159,7 @@
         for (NSString *info in [self getTableInfo:ppDb tableName:tableName]) {
             if ([info isEqualToString:column]) {
                 //相同的时候，则不更新
-                [PaintingliteException PaintingliteException:@"列表存在" reason:[NSString stringWithFormat:@"列表存在无法修改[%@]",column]];
+                [PaintingliteException paintingliteException:@"列表存在" reason:[NSString stringWithFormat:@"列表存在无法修改[%@]",column]];
             }
         }
         [self isNotExistsTable:tableName];
@@ -167,7 +167,7 @@
         tableName = [[sql componentsSeparatedByString:Paintinglite_Sqlite3_SPACE]lastObject];
 
         if (![[self getCurrentTableNameWithCache] containsObject:[tableName lowercaseString]]) {
-            [PaintingliteException PaintingliteException:@"表名不存在" reason:[NSString stringWithFormat:@"数据库中查找不到表名[%@]",tableName]];
+            [PaintingliteException paintingliteException:@"表名不存在" reason:[NSString stringWithFormat:@"数据库中查找不到表名[%@]",tableName]];
         }
     }else if ([firstSQLWords isEqualToString:Paintinglite_Sqlite3_DELETE]){
         if ([[sql uppercaseString] containsString:Paintinglite_Sqlite3_WHERE]) {
@@ -342,7 +342,7 @@
         NSString *objLowName = [objName lowercaseString];
         //判断是否有这个表存在，存在则查询，否则报错
         if (![[self getCurrentTableNameWithCache] containsObject:objLowName]) {
-            [PaintingliteException PaintingliteException:@"无法执行操作" reason:@"表名不存在"];
+            [PaintingliteException paintingliteException:@"无法执行操作" reason:@"表名不存在"];
         }
         //保存表结构快照
         resArray = [self getTableInfo:ppDb tableName:objLowName];
@@ -367,8 +367,6 @@
         if (tables.count != 0 && [tables containsObject:[tableName lowercaseString]]) {
             //包含了就不能创建了
             flag = false;
-            
-            [PaintingliteException PaintingliteException:@"表名存在" reason:@"数据库中已经存在表名，无法建立新表"];
         }else{
             //创建数据库
             if (flag) {
@@ -396,7 +394,7 @@
         //不能删除
         flag = false;
         
-        [PaintingliteException PaintingliteException:@"表名不存在" reason:@"数据库中未找到表名"];
+        [PaintingliteException paintingliteException:@"表名不存在" reason:@"数据库中未找到表名"];
     }
     
     return flag;
@@ -431,7 +429,8 @@
     
     //如果存在表则不能创建
     if ([[self getCurrentTableNameWithCache] containsObject:[[PaintingliteObjRuntimeProperty getObjName:obj] lowercaseString]]) {
-        [PaintingliteException PaintingliteException:@"表名存在" reason:@"数据库中已经存在表名，无法建立新表"];
+//        [PaintingliteException PaintingliteException:@"表名存在" reason:@"数据库中已经存在表名，无法建立新表"];
+
     }
     
     //默认选择UUID作为主键
@@ -462,7 +461,7 @@
     if ([[self getCurrentTableNameWithCache] containsObject:(NSString *)obj[0]]) {
         [self sqlite3Exec:ppDb sql:Paintinglite_Sqlite3_ALTER_RENAME_SQL(obj[0],obj[1])];
     }else{
-        [PaintingliteException PaintingliteException:@"表名不存在" reason:@"数据库中未找到表名"];
+        [PaintingliteException paintingliteException:@"表名不存在" reason:@"数据库中未找到表名"];
     }
 }
 
@@ -471,7 +470,7 @@
     if ([[self getCurrentTableNameWithCache] containsObject:[(NSString *)obj[0] lowercaseString]]){
         [self sqlite3Exec:ppDb sql:Paintinglite_Sqlite3_ALTER_ADD_COLUMN_SQL(obj[0],obj[1],obj[2])];
     }else{
-        [PaintingliteException PaintingliteException:@"表名不存在" reason:@"数据库中未找到表名"];
+        [PaintingliteException paintingliteException:@"表名不存在" reason:@"数据库中未找到表名"];
     }
 }
 
@@ -495,7 +494,7 @@
                 }
             }
         }else{
-            [PaintingliteException PaintingliteException:@"表名不存在" reason:@"数据库中未找到表名"];
+            [PaintingliteException paintingliteException:@"表名不存在" reason:@"数据库中未找到表名"];
         }
 }
 
@@ -649,7 +648,7 @@
             }
         }
         
-        [PaintingliteException PaintingliteException:@"表名不存在" reason:[NSString stringWithFormat:@"数据库中查找不到表名[%@]",tableName]];
+        [PaintingliteException paintingliteException:@"表名不存在" reason:[NSString stringWithFormat:@"数据库中查找不到表名[%@]",tableName]];
 //    }
     
     return false;

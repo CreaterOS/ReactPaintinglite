@@ -341,7 +341,7 @@ static PaintingliteSessionManager *_instance = nil;
     return [self createTableForObj:obj primaryKeyStyle:primaryKeyStyle completeHandler:nil];
 }
 
-- (Boolean)createTableForObj:(id)obj primaryKeyStyle:(PaintingliteDataBaseOptionsPrimaryKeyStyle)primaryKeyStyle completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
+- (Boolean)createTableForObj:(id)obj primaryKeyStyle:(PaintingliteDataBaseOptionsPrimaryKeyStyle)primaryKeyStyle completeHandler:(void (^)(NSString *_Nonnull,PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
     if (!self.isOpen) {
         [self warningOpenDatabase];
         return false;

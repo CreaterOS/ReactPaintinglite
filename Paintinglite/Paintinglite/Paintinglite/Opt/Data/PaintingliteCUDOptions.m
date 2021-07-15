@@ -59,7 +59,7 @@ static PaintingliteCUDOptions *_instance = nil;
    
     //判断表是否存在，判断表的字段
     if (![[self.exec getCurrentTableNameWithCache] containsObject:tableName]){
-        [PaintingliteException PaintingliteException:@"表名不存在" reason:@"数据库找不到表名,无法执行操作"];
+        [PaintingliteException paintingliteException:@"表名不存在" reason:@"数据库找不到表名,无法执行操作"];
     }
 
     //执行语句
@@ -207,7 +207,26 @@ static PaintingliteCUDOptions *_instance = nil;
         
         sql = ([sql componentsSeparatedByString:@","][1].length == 0) ? [sql substringWithRange:NSMakeRange(0, sql.length-1)] : sql;
         
-        sql = [sql stringByAppendingString:[NSString stringWithFormat:@" WHERE %@",[condition containsString:@"WHERE"] ? [[condition componentsSeparatedByString:@"WHERE "] lastObject] : condition]];
+        /// condition 是否包含‘’或者“”
+        NSString *resCondition;
+        if (![condition containsString:@"'"] || ![condition containsString:@"\""]) {
+            NSArray<NSString *> *conditions = [condition componentsSeparatedByString:@"="];
+            if (conditions.count == 0) {
+                return success;
+            }
+            NSString *newSubContent = [conditions lastObject];
+            NSString *resSubContent;
+            if ([newSubContent characterAtIndex:0] == ' ') {
+                resSubContent = [[@"'" stringByAppendingString:[newSubContent substringFromIndex:1]] stringByAppendingString:@"'"];
+                
+            } else {
+                resSubContent = [[@"'" stringByAppendingString:newSubContent] stringByAppendingString:@"'"];
+            }
+            
+            resCondition = [[conditions.firstObject stringByAppendingString:@"="] stringByAppendingString:resSubContent];
+        }
+        
+        sql = [sql stringByAppendingString:[NSString stringWithFormat:@" WHERE %@",[resCondition containsString:@"WHERE"] ? [[resCondition componentsSeparatedByString:@"WHERE "] lastObject] : resCondition]];
         
         //增加数据
         success = [self.exec sqlite3Exec:ppDb sql:sql];

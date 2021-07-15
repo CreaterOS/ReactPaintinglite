@@ -113,7 +113,7 @@
         
         if (![orderKeysArray containsObject:PARAMETERTYPE]) {
             /* 没有配置传入参数 */
-            [PaintingliteException PaintingliteXMLException:[NSString stringWithFormat:@"XML映射文件<select id=\"%@\"></select>配置%@参数",methodID,PARAMETERTYPE] reason:[NSString stringWithFormat:@"调用%s方法必须配置%@参数",__func__,PARAMETERTYPE]];
+            [PaintingliteException paintingliteXMLException:[NSString stringWithFormat:@"XML映射文件<select id=\"%@\"></select>配置%@参数",methodID,PARAMETERTYPE] reason:[NSString stringWithFormat:@"调用%s方法必须配置%@参数",__func__,PARAMETERTYPE]];
             return [NSString string];
         }
         
@@ -127,7 +127,7 @@
             sqlText = [sqlText stringByAppendingString:[self analysisXMLDTDMapperIFTEXT:orderDict objPropertyDict:objPropertyDict]];
         }else{
             /* 配置文件和传入参数类型不一致 */
-            [PaintingliteException PaintingliteXMLException:@"修改配置文件传入的类型" reason:[NSString stringWithFormat:@"配置文件[%@]和传入参数[%@]类型不一致",orderDict[PARAMETERTYPE],[obj class]]];
+            [PaintingliteException paintingliteXMLException:@"修改配置文件传入的类型" reason:[NSString stringWithFormat:@"配置文件[%@]和传入参数[%@]类型不一致",orderDict[PARAMETERTYPE],[obj class]]];
         }
         
         if (![sqlText containsString:@"FROM"]) {
@@ -269,7 +269,7 @@
                 }
             }else{
                 /* 配置文件和传入参数类型不一致 */
-                [PaintingliteException PaintingliteXMLException:@"修改配置文件传入的类型" reason:[NSString stringWithFormat:@"配置文件[%@]和传入参数[%@]类型不一致",parameterType,[obj class]]];
+                [PaintingliteException paintingliteXMLException:@"修改配置文件传入的类型" reason:[NSString stringWithFormat:@"配置文件[%@]和传入参数[%@]类型不一致",parameterType,[obj class]]];
                 return [NSString string];
             }
         }
@@ -463,7 +463,7 @@
            }
        }else{
            /* 配置文件和传入参数类型不一致 */
-           [PaintingliteException PaintingliteXMLException:@"修改配置文件传入的类型" reason:[NSString stringWithFormat:@"配置文件[%@]和传入参数[%@]类型不一致",parameterType,[obj class]]];
+           [PaintingliteException paintingliteXMLException:@"修改配置文件传入的类型" reason:[NSString stringWithFormat:@"配置文件[%@]和传入参数[%@]类型不一致",parameterType,[obj class]]];
            return [NSString string];
        }
        
@@ -637,7 +637,7 @@
                     }
                 }
             }else{
-                [PaintingliteException PaintingliteXMLException:[NSString stringWithFormat:@"请在项目中创建[%@]类",resultMapType] reason:[NSString stringWithFormat:@"XML配置文件type类型[%@]未在项目中声明",resultMapType]];
+                [PaintingliteException paintingliteXMLException:[NSString stringWithFormat:@"请在项目中创建[%@]类",resultMapType] reason:[NSString stringWithFormat:@"XML配置文件type类型[%@]未在项目中声明",resultMapType]];
             }
 
             /* 替换原有字符串 */
@@ -696,7 +696,7 @@
                 idStr = [[methodID componentsSeparatedByString:@"."] lastObject];
             }else{
                 /* 命名空间错误 */
-                [PaintingliteException PaintingliteXMLException:@"提供的的ID限定与XML Mapper namespace不相符" reason:@"XML Mapper namespace error"];
+                [PaintingliteException paintingliteXMLException:@"提供的的ID限定与XML Mapper namespace不相符" reason:@"XML Mapper namespace error"];
             }
         } else{
             idStr = methodID;
@@ -739,7 +739,7 @@
                 idStr = [[methodID componentsSeparatedByString:@"."] lastObject];
             }else{
                 /* 命名空间错误 */
-                [PaintingliteException PaintingliteXMLException:@"提供的的ID限定与XML Mapper namespace不相符" reason:@"XML Mapper namespace error"];
+                [PaintingliteException paintingliteXMLException:@"提供的的ID限定与XML Mapper namespace不相符" reason:@"XML Mapper namespace error"];
             }
         } else{
             idStr = methodID;
@@ -750,7 +750,7 @@
             return mapperBlock(dict,idStr);
         }
     }else{
-        [PaintingliteException PaintingliteXMLException:[NSString stringWithFormat:@"请检查XML配置文件是否配置%@标签",labelType] reason:[NSString stringWithFormat:@"无法找到%@标签",labelType]];
+        [PaintingliteException paintingliteXMLException:[NSString stringWithFormat:@"请检查XML配置文件是否配置%@标签",labelType] reason:[NSString stringWithFormat:@"无法找到%@标签",labelType]];
     }
     
     return [NSString string];

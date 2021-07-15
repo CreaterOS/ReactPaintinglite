@@ -63,7 +63,7 @@ static PaintingliteIntellegenceSelect *_instance = nil;
     while ((obj = va_arg(arg_list, NSObject *))) {
         if ([self.objs isEqual:obj]) {
             //报出异常
-            [PaintingliteException PaintingliteException:@"重复对象" reason:@"传入对象重复"];
+            [PaintingliteException paintingliteException:@"重复对象" reason:@"传入对象重复"];
         }
         
         //获得每一个id对象
@@ -108,7 +108,7 @@ static PaintingliteIntellegenceSelect *_instance = nil;
     while ((obj = va_arg(arg_list, NSObject *))) {
         if ([self.objs isEqual:obj]) {
             //报出异常
-            [PaintingliteException PaintingliteException:@"重复对象" reason:@"传入对象重复"];
+            [PaintingliteException paintingliteException:@"重复对象" reason:@"传入对象重复"];
         }
         
         
@@ -155,7 +155,7 @@ static PaintingliteIntellegenceSelect *_instance = nil;
     while ((obj = va_arg(arg_list, NSObject *))) {
         if ([self.objs isEqual:obj]) {
             //报出异常
-            [PaintingliteException PaintingliteException:@"重复对象" reason:@"传入对象重复"];
+            [PaintingliteException paintingliteException:@"重复对象" reason:@"传入对象重复"];
         }
         
         
@@ -254,7 +254,7 @@ static PaintingliteIntellegenceSelect *_instance = nil;
     while ((obj = va_arg(arg_list, NSObject *))) {
         if ([self.objs isEqual:obj]) {
             //报出异常
-            [PaintingliteException PaintingliteException:@"重复对象" reason:@"传入对象重复"];
+            [PaintingliteException paintingliteException:@"重复对象" reason:@"传入对象重复"];
         }
         
         //获得每一个id对象
@@ -302,7 +302,7 @@ static PaintingliteIntellegenceSelect *_instance = nil;
     while ((obj = va_arg(arg_list, NSObject *))) {
         if ([self.objs isEqual:obj]) {
             //报出异常
-            [PaintingliteException PaintingliteException:@"重复对象" reason:@"传入对象重复"];
+            [PaintingliteException paintingliteException:@"重复对象" reason:@"传入对象重复"];
         }
         
         
