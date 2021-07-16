@@ -11,6 +11,7 @@
 #import "PaintingliteSecurity.h"
 #import "PaintingliteLog.h"
 #import "PaintingliteWarningHelper.h"
+#import "PaintingliteThreadManager.h"
 
 @interface PaintingliteSessionFactory()
 @property (nonatomic)sqlite3_stmt *stmt;
@@ -36,7 +37,7 @@ static PaintingliteSessionFactory *_instance = nil;
     
     dispatch_semaphore_t signal = dispatch_semaphore_create(0);
     
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    runAsynchronouslyOnExecQueue(^{
         if (sqlite3_prepare_v2(ppDb, [sql UTF8String], -1, &(self->_stmt), nil) == SQLITE_OK){
             //查询成功
             while (sqlite3_step(self->_stmt) == SQLITE_ROW) {

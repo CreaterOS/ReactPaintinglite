@@ -9,6 +9,7 @@
 #import "PaintingliteAggregateFunc.h"
 #import "PaintingliteException.h"
 #import "PaintingliteExec.h"
+#import "PaintingliteThreadManager.h"
 
 @interface PaintingliteAggregateFunc()
 @property (nonatomic,strong)PaintingliteExec *exec; //执行语句
@@ -44,7 +45,8 @@ static PaintingliteAggregateFunc *_instance = nil;
     __block double number = 0;
     
     dispatch_semaphore_t signal = dispatch_semaphore_create(0);
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    
+    runAsynchronouslyOnExecQueue(^{
         if (sqlite3_prepare_v2(ppDb, [sql UTF8String], -1, &(self->_stmt), nil) == SQLITE_OK){
             //查询成功
             while (sqlite3_step(self->_stmt) == SQLITE_ROW) {

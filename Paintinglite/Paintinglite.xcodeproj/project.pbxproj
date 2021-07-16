@@ -65,6 +65,7 @@
 		68F260B224D1209700652C03 /* PaintingliteJSContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 68F260B124D1209700652C03 /* PaintingliteJSContext.m */; };
 		EE371485264CC608005D5655 /* PaintingliteSystemUseInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = EE371484264CC608005D5655 /* PaintingliteSystemUseInfo.m */; };
 		EE7A38EC264BD9AC00B98417 /* UserClass.m in Sources */ = {isa = PBXBuildFile; fileRef = EE7A38EB264BD9AC00B98417 /* UserClass.m */; };
+		EE7B24C426A15A9C00A3C4FA /* PaintingliteThreadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = EE7B24C326A15A9C00A3C4FA /* PaintingliteThreadManager.m */; };
 		EEFE2E1C25EF32A1005990B9 /* PaintingliteWarningHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = EEFE2E1B25EF32A1005990B9 /* PaintingliteWarningHelper.m */; };
 /* End PBXBuildFile section */
 
@@ -173,6 +174,9 @@
 		EE371484264CC608005D5655 /* PaintingliteSystemUseInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaintingliteSystemUseInfo.m; sourceTree = "<group>"; };
 		EE7A38EA264BD9AC00B98417 /* UserClass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserClass.h; sourceTree = "<group>"; };
 		EE7A38EB264BD9AC00B98417 /* UserClass.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UserClass.m; sourceTree = "<group>"; };
+		EE7B24C226A15A9C00A3C4FA /* PaintingliteThreadManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaintingliteThreadManager.h; sourceTree = "<group>"; };
+		EE7B24C326A15A9C00A3C4FA /* PaintingliteThreadManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaintingliteThreadManager.m; sourceTree = "<group>"; };
+		EE7B24C526A16BD600A3C4FA /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		EEFE2E1A25EF32A1005990B9 /* PaintingliteWarningHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaintingliteWarningHelper.h; sourceTree = "<group>"; };
 		EEFE2E1B25EF32A1005990B9 /* PaintingliteWarningHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaintingliteWarningHelper.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -279,6 +283,8 @@
 				68DE9958247C9C260078EDD5 /* PaintingliteSessionManager.m */,
 				68A1F056247F9CBF0091EAFB /* PaintingliteExec.h */,
 				68A1F057247F9CBF0091EAFB /* PaintingliteExec.m */,
+				EE7B24C226A15A9C00A3C4FA /* PaintingliteThreadManager.h */,
+				EE7B24C326A15A9C00A3C4FA /* PaintingliteThreadManager.m */,
 				68C49C772538361E0038A2C3 /* MobileInfo.plist */,
 				6812B9BC24A59E920091C5EE /* LOGO.txt */,
 			);
@@ -288,6 +294,7 @@
 		68DE995A247C9C4D0078EDD5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				EE7B24C526A16BD600A3C4FA /* libc++.tbd */,
 				68DE995D247C9E4A0078EDD5 /* libsqlite3.0.tbd */,
 				68DE995B247C9C4D0078EDD5 /* libsqlite3.tbd */,
 			);
@@ -605,6 +612,7 @@
 				689E0677247EA79300D6DF95 /* PaintingliteSecurity.m in Sources */,
 				EE371485264CC608005D5655 /* PaintingliteSystemUseInfo.m in Sources */,
 				6888B26C24B9BF61003345D9 /* PaintingliteFileManager.m in Sources */,
+				EE7B24C426A15A9C00A3C4FA /* PaintingliteThreadManager.m in Sources */,
 				68A1F058247F9CBF0091EAFB /* PaintingliteExec.m in Sources */,
 				6888B26F24B9DBFA003345D9 /* PaintingliteCache.m in Sources */,
 				68F260B224D1209700652C03 /* PaintingliteJSContext.m in Sources */,
@@ -783,6 +791,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = Z4ZKC7258G;
 				INFOPLIST_FILE = Paintinglite/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12;

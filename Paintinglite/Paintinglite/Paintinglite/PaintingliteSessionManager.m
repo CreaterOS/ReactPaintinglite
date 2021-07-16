@@ -15,6 +15,7 @@
 #import "PaintingliteExec.h"
 #import "PaintingliteCache.h"
 #import "PaintingliteWarningHelper.h"
+#import "PaintingliteThreadManager.h"
 
 #define WEAKSELF(SELF) __weak typeof(SELF) weakself = SELF
 #define STRONGSELF(WEAKSELF) __strong typeof(WEAKSELF) self = WEAKSELF
@@ -128,8 +129,7 @@ static PaintingliteSessionManager *_instance = nil;
     NSString *filePath = [[PaintingliteConfiguration sharePaintingliteConfiguration] configurationFileName:fileName];
     
     WEAKSELF(self);
-    
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    runAsynchronouslyOnExecQueue(^{
         STRONGSELF(weakself);
         if ([self isExistsDatabase:filePath]){
             success = (sqlite3_open_v2([filePath UTF8String], &(self->_ppDb), SQLITE_OPEN_READWRITE|SQLITE_OPEN_FULLMUTEX, NULL) == SQLITE_OK);
@@ -172,8 +172,7 @@ static PaintingliteSessionManager *_instance = nil;
     dispatch_semaphore_t signal = dispatch_semaphore_create(0);
     __block Boolean success = false;
     WEAKSELF(self);
-    
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    runAsynchronouslyOnExecQueue(^{
         STRONGSELF(weakself);
         if([[PaintingliteFileManager defaultManager] fileExistsAtPath:filePath]){
             success = (sqlite3_open_v2([filePath UTF8String], &(self->_ppDb), SQLITE_OPEN_READWRITE|SQLITE_OPEN_FULLMUTEX, NULL) == SQLITE_OK);
@@ -221,19 +220,19 @@ static PaintingliteSessionManager *_instance = nil;
 
 - (Boolean)releaseSqliteCompleteHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
     /* 释放数据库,先判断是否打开数据库,只有打开数据库才可以释放 */
-    Boolean success = false;
+    __block Boolean success = false;
     
     if (self.isOpen) {
-        @synchronized (self) {
+        runSynchronouslyOnExecQueue(self, ^{
             if (!self.closeFlag) {
-                success = (sqlite3_close(_ppDb) == SQLITE_OK);
+                success = (sqlite3_close(self->_ppDb) == SQLITE_OK);
                 self.closeFlag = success;
                 
                 if (completeHandler != nil) {
                     completeHandler([PaintingliteSessionError sharePaintingliteSessionError],success);
                 }
             }
-        }
+        });
     }else{
         [self warningOpenDatabase];
     }

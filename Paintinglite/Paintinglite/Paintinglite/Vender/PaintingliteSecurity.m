@@ -10,6 +10,7 @@
 #import "PaintingliteFileManager.h"
 #import "PaintingliteUUID.h"
 #import "PaintingliteObjRuntimeProperty.h"
+#import "PaintingliteThreadManager.h"
 
 #define ROOT_FILE_PATH [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)lastObject]
 #define ZIP_NAME @"Encrypt"
@@ -43,7 +44,8 @@
         tempSql = elements.lastObject;
         
         dispatch_semaphore_t signal = dispatch_semaphore_create(0);
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        
+        runAsynchronouslyOnExecQueue(^{
             if ([tempSql containsString:@"),"]) {
                 NSArray<NSString *> *sqlSubs = [tempSql componentsSeparatedByString:@"),"];
                 
@@ -73,7 +75,7 @@
             }
             dispatch_semaphore_signal(signal);
         });
-        
+
         dispatch_semaphore_wait(signal, DISPATCH_TIME_FOREVER);
         
         
@@ -89,12 +91,13 @@
         __block NSString *whereSql = [tempSql substringFromIndex:whereRange.location+whereRange.length];
         
         dispatch_semaphore_t signal = dispatch_semaphore_create(0);
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        
+        runAsynchronouslyOnExecQueue(^{
             setSql = [self securityCondition:setSql];
             whereSql = [self securityCondition:whereSql];
             dispatch_semaphore_signal(signal);
         });
-        
+
         dispatch_semaphore_wait(signal, DISPATCH_TIME_FOREVER);
         
         /// 拼接

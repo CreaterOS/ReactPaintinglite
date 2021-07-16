@@ -8,8 +8,9 @@
 
 #import "PaintingliteCache.h"
 #import "PaintingliteLog.h"
-#import <os/lock.h>
 #import "PaintingliteSystemUseInfo.h"
+#import "PaintingliteThreadManager.h"
+#import <os/lock.h>
 
 #define WEAK_SELF __weak typeof(self) weakSelf = self;
 #define STRONG_SELF __strong typeof(weakSelf) self = weakSelf;
@@ -55,8 +56,9 @@ static PaintingliteCache *_instance = nil;
 - (void)applicationWillResignActive:(NSNotification *)notification {
     /// 程序退出写入缓存
     __weak typeof(self) weakself = self;
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [weakself pushCacheToLogFile];
+    runAsynchronouslyOnExecQueue(^{
+        __strong typeof(weakself) self = weakself;
+        [self pushCacheToLogFile];
     });
 }
 
@@ -146,12 +148,12 @@ static int count = 0;
                 NSArray<NSString *> *strArray = [optAndStatus componentsSeparatedByString:@" | "];
                 
                 //写入文件
-                @synchronized ([PaintingliteLog sharePaintingliteLog]) {
+                runSynchronouslyOnExecQueue([PaintingliteLog sharePaintingliteLog], ^{
                     if ([strArray firstObject] == NULL) {
                         return ;
                     }
                     [[PaintingliteLog sharePaintingliteLog] writeLogFileOptions:[strArray firstObject] status:([[strArray lastObject] isEqualToString:@"success"]) ? PaintingliteLogSuccess : PaintingliteLogError completeHandler:nil];
-                }
+                });
                
                 /* 清除缓存 */
                 [self removeObjectForKey:cacheKey];

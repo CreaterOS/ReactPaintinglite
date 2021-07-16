@@ -15,6 +15,7 @@
 #import "PaintingliteSnapManager.h"
 #import "PaintingliteCache.h"
 #import "PaintingliteSystemUseInfo.h"
+#import "PaintingliteThreadManager.h"
 #import <objc/runtime.h>
 
 #define WEAKSELF(SELF) __weak typeof(SELF) weakself = SELF
@@ -75,7 +76,7 @@
     __block NSString *tableName = [self getOptTableName:ppDb sql:sql];
     
     __block NSString *upperSql = [self lowerToUpper:sql];
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    runAsynchronouslyOnExecQueue(^{
         //判断是否有表,有表则不创建
         /*
          执行sqlite3_exec(),成功在保存快照
@@ -183,25 +184,26 @@
 #pragma mark - 系统查询方法
 - (NSMutableArray<NSMutableDictionary<NSString *,NSString *> *> *)systemExec:(sqlite3 *)ppDb sql:(NSString *__nonnull)sql{
     NSMutableArray<NSMutableDictionary<NSString *,NSString *> *> *resArray = [NSMutableArray array];
-    NSString *optAndStatusStr = [sql stringByAppendingString:@" | "];
-    @synchronized (self) {
-        if (sqlite3_prepare_v2(ppDb, [sql UTF8String], -1, &_stmt, nil) == SQLITE_OK){
+    __block NSString *optAndStatusStr = [sql stringByAppendingString:@" | "];
+   
+    runSynchronouslyOnExecQueue(self, ^{
+        if (sqlite3_prepare_v2(ppDb, [sql UTF8String], -1, &self->_stmt, nil) == SQLITE_OK){
             //查询成功
-            while (sqlite3_step(_stmt) == SQLITE_ROW) {
+            while (sqlite3_step(self->_stmt) == SQLITE_ROW) {
                 /* 获得字段个数 */
-                unsigned int count = sqlite3_column_count(_stmt);
+                unsigned int count = sqlite3_column_count(self->_stmt);
                 NSMutableDictionary<NSString *,NSString *> *dict = [NSMutableDictionary dictionary];
                 
                 for (unsigned i = 0; i < count; i++) {
                     @autoreleasepool {
                         /* 取出字段 */
                         /* 根据tableName,name组合唯一的字段名 */
-                        char *name = (char *)sqlite3_column_name(_stmt, i);
-                        char *tableName = (char *)sqlite3_column_table_name(_stmt, i);
+                        char *name = (char *)sqlite3_column_name(self->_stmt, i);
+                        char *tableName = (char *)sqlite3_column_table_name(self->_stmt, i);
                         
                         NSString *filedsName = [[NSString stringWithUTF8String:tableName] stringByAppendingString:[NSString stringWithFormat:@".%@",[NSString stringWithUTF8String:name]]];
                         /* 内容 */
-                        char *text = (char *)sqlite3_column_text(_stmt, i);
+                        char *text = (char *)sqlite3_column_text(self->_stmt, i);
                         NSString *textStr = text != nil ? [NSString stringWithUTF8String:text] : @"(null)";
                         [dict setObject:textStr forKey:filedsName];
                         
@@ -215,7 +217,7 @@
             //执行失败
             optAndStatusStr = [optAndStatusStr stringByAppendingString:@"error"];
         }
-    }
+    });
     
     //写入缓存
     [[PaintingliteCache sharePaintingliteCache] addDatabaseOptionsCache:optAndStatusStr];
@@ -240,7 +242,7 @@
 
     dispatch_semaphore_t signal = dispatch_semaphore_create(0);
     
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    runAsynchronouslyOnExecQueue(^{
         NSString *optAndStatusStr = [sql stringByAppendingString:@" | "];
  
         if (sqlite3_prepare_v2(ppDb, [sql UTF8String], -1, &(self->_stmt), nil) == SQLITE_OK){
@@ -272,7 +274,7 @@
         
         dispatch_semaphore_signal(signal);
     });
-    
+
     dispatch_semaphore_wait(signal,DISPATCH_TIME_FOREVER);
     
     sqlite3_finalize(_stmt);
@@ -288,8 +290,7 @@
     
     dispatch_semaphore_t signal = dispatch_semaphore_create(0);
 
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        
+    runAsynchronouslyOnExecQueue(^{
         if ([tempSql containsString:@"*"]) {
             if ([tempSql containsString:Paintinglite_Sqlite3_WHERE]) {
                 tableName = [[[sql componentsSeparatedByString:[NSString stringWithFormat:@" %@",Paintinglite_Sqlite3_WHERE]][0] componentsSeparatedByString:Paintinglite_Sqlite3_SPACE]lastObject];
@@ -338,7 +339,7 @@
     
     dispatch_semaphore_t signal = dispatch_semaphore_create(0);
     
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    runAsynchronouslyOnExecQueue(^{
         NSString *objLowName = [objName lowercaseString];
         //判断是否有这个表存在，存在则查询，否则报错
         if (![[self getCurrentTableNameWithCache] containsObject:objLowName]) {
@@ -360,9 +361,9 @@
     
     //根据表名来创建表语句
     //判断JSON文件中是否与这个表
-    Boolean flag = true;
+    __block Boolean flag = true;
     
-    @synchronized (self) {
+    runSynchronouslyOnExecQueue(self, ^{
         NSArray *tables = [self getCurrentTableNameWithCache];
         if (tables.count != 0 && [tables containsObject:[tableName lowercaseString]]) {
             //包含了就不能创建了
@@ -373,7 +374,7 @@
                 [self sqlite3Exec:ppDb sql:Paintinglite_Sqlite3_CREATE_SQL(tableName, content)];
             }
         }
-    }
+    });
     
     return flag;
 }
@@ -404,7 +405,7 @@
 - (Boolean)sqlite3Exec:(sqlite3 *)ppDb obj:(id)obj status:(PaintingliteExecStatus)status createStyle:(PaintingliteDataBaseOptionsPrimaryKeyStyle)createStyle{
     Boolean flag = true;
     
-    @synchronized (self) {
+    runSynchronouslyOnExecQueue(self, ^{
         //获得obj的名称作为表的名称
         NSString *objName = [PaintingliteObjRuntimeProperty getObjName:obj];
 
@@ -419,7 +420,7 @@
         }else if (status == PaintingliteExecAlterObj){
             [self getPaintingliteExecAlterObj:ppDb objName:objName obj:obj];
         }
-    }
+    });
     
     return flag;
 }
@@ -524,7 +525,7 @@
     
     dispatch_semaphore_t signal = dispatch_semaphore_create(0);
     
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    runAsynchronouslyOnExecQueue(^{
         if (sqlite3_prepare_v2(ppDb, [SHOW_TABLES UTF8String], -1, &(self->_stmt), nil) == SQLITE_OK){
             //查询成功
             while (sqlite3_step(self->_stmt) == SQLITE_ROW) {
@@ -549,7 +550,8 @@
     __block NSString *tableInfoSql = TABLE_INFO(tableName);
     
     dispatch_semaphore_t signal = dispatch_semaphore_create(0);
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    
+    runAsynchronouslyOnExecQueue(^{
         if (sqlite3_prepare_v2(ppDb, [tableInfoSql UTF8String], -1, &(self->_stmt), nil) == SQLITE_OK){
             //查询成功
             while (sqlite3_step(self->_stmt) == SQLITE_ROW) {

@@ -25,55 +25,59 @@
                 NSLog(@"%@",filePath);
             }
     }];
-    if (flag) {
-        UserClass *user = [UserClass new];
-        flag = [manager createTableForObj:user primaryKeyStyle:(PaintingliteDataBaseOptionsDefault) completeHandler:^(NSString *tableName,PaintingliteSessionError * _Nonnull error, Boolean success) {
-                    if (success) {
-                        NSLog(@"创建表[%@]成功",tableName);
-                    }
-        }];
-        
+    
+    for (NSUInteger i = 0; i < 10000; i++) {
         if (flag) {
-            user.name = @"CreaterOS";
-            user.age = [NSNumber numberWithInt:22];
-            [manager insertWithObj:user completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
-                if (success) {
-                    [manager execQuerySQL:@"select * from userClass" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<NSDictionary *> * _Nonnull resArray) {
+            UserClass *user = [UserClass new];
+            flag = [manager createTableForObj:user primaryKeyStyle:(PaintingliteDataBaseOptionsDefault) completeHandler:^(NSString *tableName,PaintingliteSessionError * _Nonnull error, Boolean success) {
                         if (success) {
-                            for (NSDictionary *dict in resArray) {
-                                NSLog(@"%@",dict);
-                            }
+                            NSLog(@"创建表[%@]成功",tableName);
                         }
-                    }];
-                }
             }];
             
-            user.age = [NSNumber numberWithInt:22];
-            [manager updateWithObj:user condition:@"name=CreaterOS" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
-                if (success) {
-                    [manager execQuerySQL:@"select * from userClass" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<NSDictionary *> * _Nonnull resArray) {
-                        if (success) {
-                            for (NSDictionary *dict in resArray) {
-                                NSLog(@"%@",dict);
+            if (flag) {
+                user.name = @"CreaterOS";
+                user.age = [NSNumber numberWithInt:22];
+                [manager insertWithObj:user completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
+                    if (success) {
+                        [manager execQuerySQL:@"select * from userClass" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<NSDictionary *> * _Nonnull resArray) {
+                            if (success) {
+                                for (NSDictionary *dict in resArray) {
+                                    NSLog(@"%@",dict);
+                                }
                             }
-                        }
-                    }];
-                }
-            }];
-            
-            [manager del:@"DELETE FROM userclass WHERE name = 'CreaterOS'" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
-                if (success) {
-                    [manager execQuerySQL:@"select * from userClass" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<NSDictionary *> * _Nonnull resArray) {
-                        if (success) {
-                            for (NSDictionary *dict in resArray) {
-                                NSLog(@"%@",dict);
+                        }];
+                    }
+                }];
+                
+                user.age = [NSNumber numberWithInt:22];
+                [manager updateWithObj:user condition:@"name=CreaterOS" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
+                    if (success) {
+                        [manager execQuerySQL:@"select * from userClass" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<NSDictionary *> * _Nonnull resArray) {
+                            if (success) {
+                                for (NSDictionary *dict in resArray) {
+                                    NSLog(@"%@",dict);
+                                }
                             }
-                        }
-                    }];
-                }
-            }];
+                        }];
+                    }
+                }];
+                
+                [manager del:@"DELETE FROM userclass WHERE name = 'CreaterOS'" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
+                    if (success) {
+                        [manager execQuerySQL:@"select * from userClass" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<NSDictionary *> * _Nonnull resArray) {
+                            if (success) {
+                                for (NSDictionary *dict in resArray) {
+                                    NSLog(@"%@",dict);
+                                }
+                            }
+                        }];
+                    }
+                }];
+            }
         }
     }
+    
 }
 
 @end

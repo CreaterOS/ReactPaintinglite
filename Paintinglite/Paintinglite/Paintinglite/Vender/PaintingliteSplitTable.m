@@ -9,6 +9,7 @@
 #import "PaintingliteSplitTable.h"
 #import "PaintingliteAggregateFunc.h"
 #import "PaintingliteTransaction.h"
+#import "PaintingliteThreadManager.h"
 
 /* 最小表记录 */
 #define MINTABLECOUNT 100000
@@ -116,20 +117,21 @@ static PaintingliteSplitTable *_instance = nil;
     
     //将查询的所有数据的数组利用多线程分别写入不同文件
     for (NSUInteger threads = 0; threads < count; threads++) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-            [NSThread sleepForTimeInterval:0.01];
-            
-            //写入文件
-            NSString *filePath = [ROOTPATH stringByAppendingPathComponent:[NSString stringWithFormat:@"%@_Info_Splite_%zd.txt",[tableName uppercaseString],threads]];
-            
-            if ([self.fileM fileExistsAtPath:filePath]) {
-                NSError *error = nil;
-                [self.fileM removeItemAtPath:filePath error:&error];
-            }
-            
-            success = [totalArray[threads] writeToFile:filePath atomically:YES];
-
-        });
+        @autoreleasepool {
+            runAsynchronouslyOnExecQueue(^{
+                [NSThread sleepForTimeInterval:0.01];
+                
+                //写入文件
+                NSString *filePath = [ROOTPATH stringByAppendingPathComponent:[NSString stringWithFormat:@"%@_Info_Splite_%zd.txt",[tableName uppercaseString],threads]];
+                
+                if ([self.fileM fileExistsAtPath:filePath]) {
+                    NSError *error = nil;
+                    [self.fileM removeItemAtPath:filePath error:&error];
+                }
+                
+                success = [totalArray[threads] writeToFile:filePath atomically:YES];
+            });
+        }
     }
 
     return success;
