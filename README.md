@@ -6,23 +6,10 @@
 [![standard-readme compliant](https://img.shields.io/badge/Paintinglite-CreaterOS-brightgreen.svg?style=CreaterOS&color=blue)](https://github.com/CreaterOS/Paintinglite)
 [![standard-readme compliant](https://img.shields.io/badge/platform-ios-brightgreen.svg?style=info&color=orange)](https://github.com/CreaterOS/Paintinglite)
 
-## Preview
-v2.1.2 Provide a web version of the stress test report
+## Paintinglite API v1.0
 
-## v2.1.1 Paintinglite API v1.0
 http://htmlpreview.github.io/?https://github.com/CreaterOS/Paintinglite/blob/master/Paintinglite/PaintingliteWeb/index.html
 The detailed API documentation is contained in masterTOC.html in the Paintinglite/PaintingliteWeb directory
-## Version iteration
-
-| Paintinglite version update | |
-| ------------------- | ---- |
-| Summary of the v1.1.0 version update | Optimized the operation of opening the database and added important information such as viewing the existence and size of the database file |
-| Summary of v1.2.0 version update | Re-revised the stress test strategy, greatly reducing the frame size (<10MB), increasing the first level cache and log writing strategy |
-| v1.3.0 version update summary | Fixed the object packaging operation vulnerability caused by the first-level cache, improved a set of caches, optimized the CREATE, ALTER, and DROP operations on the table, and added the thread optimization strategy |
-| Summary of v1.3.1 version update | Optimize query thread safety, fix package disorder BUG, ​​optimize aggregation function |
-| Summary of v1.3.2 version update | Optimize query thread safety, fix database backup, simplify framework structure |
-| Summary of v2.0.0 version update | Introduced a new design mode, centralized management of SQL statements |
-| Summary of v2.1.0 version update | Optimize big data CPU resource consumption problem, fix BUG |
 
 ## Pod installation
 ``` objective-c
@@ -32,14 +19,6 @@ pod'Paintinglite', :git =>'https://github.com/CreaterOS/Paintinglite.git'#, :tag
 
 Paintinglite is an excellent and fast Sqlite3 database framework. Paintinglite has good encapsulation of data, fast data insertion characteristics, and can still show good resource utilization for huge amounts of data.
 Paintinglite supports object mapping and has carried out a very lightweight object encapsulation on sqlite3. It establishes a mapping relationship between POJOs and database tables. Paintinglite can automatically generate SQL statements and manually write SQL statements to achieve convenient development and efficient querying. All-in-one lightweight framework.
-
-## Core Object
--PaintingliteSessionManager: Basic operation manager (library operation | table operation)
--PaintingliteXMLSessionManager: Centralized management of SQL statement managers (specially introduced in v2.0)
--PaintingliteExec: Perform operation
--PaintingliteBackUpManager: Database backup manager
--PaintingliteSplitTable: Split operation
--PaintinglitePressureOS: pressure test
 
 ---
 ## Database operation (PaintingliteSessionManager)
@@ -246,15 +225,12 @@ Student *stu = [[Student alloc] init];
   }
 }];
 ```
-> 2020-06-27 15:39:27.306786+0800 Paintinglite[5892:302879] stu.name = CreaterOS and stu.age = 21
-> 2020-06-27 15:39:27.306961+0800 Paintinglite[5892:302879] stu.name = Painting and stu.age = 19
-> 2020-06-27 15:39:27.307110+0800 Paintinglite[5892:302879] stu.name = CreaterOS and stu.age = 21
-
  2. Conditional query
 
 > Conditional query syntax rules:
->-Subscripts start from 0
->-Use? As a placeholder for conditional parameters
+>
+> - Subscripts start from 0
+>   - Use? As a placeholder for conditional parameters
 
 ```sqlite
 SELECT * FROM user WHERE name =? And age =?
@@ -270,17 +246,6 @@ SELECT * FROM user WHERE name =? And age =?
 [self.sessionM setPrepareStatementPQLParameter:0 paramter:@"CreaterOS"];
 NSLog(@"%@",[self.sessionM execPrepareStatementSql]);
 ```
-> 2020-06-27 15:44:06.664951+0800 Paintinglite[5984:310580] (
-> {
-> age = 21;
-> name = CreaterOS;
-> },
-> {
-> age = 21;
-> name = CreaterOS;
->}
->)
-
  3. Fuzzy query
 
 ```objective-c
@@ -309,19 +274,6 @@ Student *stu = [[Student alloc] init];
   }
 }];
 ```
-> 2020-06-27 15:46:31.310495+0800 Paintinglite[6030:314851] {
-> age = 21;
-> name = CreaterOS;
->}
-> 2020-06-27 15:46:31.310701+0800 Paintinglite[6030:314851] {
-> age = 19;
-> name = Painting;
->}
-> 2020-06-27 15:46:31.310868+0800 Paintinglite[6030:314851] {
-> age = 21;
-> name = CreaterOS;
->}
-
  4. Paging query
 
 ```objective-c
@@ -350,8 +302,6 @@ Student *stu = [[Student alloc] init];
   }
 }];
 ```
-> 2020-06-27 15:51:13.026776+0800 Paintinglite[6117:323796] stu.name = CreaterOS and stu.age = 21
-
  5. Sort query
 
 ```objective-c
@@ -371,10 +321,6 @@ Student *student = [[Student alloc] init];
   }
 }];
 ```
-
-> 2020-06-27 15:55:06.714604+0800 Paintinglite[6196:331097] stu.name = Painting and stu.age = 19
-> 2020-06-27 15:55:06.714801+0800 Paintinglite[6196:331097] stu.name = CreaterOS and stu.age = 21
-> 2020-06-27 15:55:06.714962+0800 Paintinglite[6196:331097] stu.name = CreaterOS and stu.age = 21
 
 ### 2. Increase data
 
@@ -409,8 +355,6 @@ stu.age = [NSNumber numberWithInteger:21];
 [self.sessionM insertWithObj:stu completeHandler:nil];
 ```
 
-> For the huge amount of data, Paintinglit can still show good efficiency. It only takes 6ms-7ms to read 16 million pieces of data at a time.
-
 ### 3. Update data
 
 ```objective-c
@@ -419,7 +363,7 @@ stu.age = [NSNumber numberWithInteger:21];
 -(Boolean)updateWithObj:(id)obj condition:(NSString *__nonnull)condition completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
 ```
  1. SQL update data
-   
+
 ```objective-c
 [self.sessionM update:@"UPDATE student SET name ='Painting' WHERE name ='ReynBryant'"];
 ```
@@ -431,12 +375,6 @@ stu.age = [NSNumber numberWithInteger:21];
    stu.name = @"CreaterOS";
    [self.sessionM updateWithObj:stu condition:@"age = 21" completeHandler:nil];
    ```
-
-> Added update operation, which can be updated by object transfer method
-> For example:
-> User *user = [[User alloc] init];
-> user.name = @"CreaterOS";
-> user.age = 21;
 
 ### 4. Delete data
 
@@ -470,9 +408,6 @@ Through the PQL statement, Paintinglite can automatically help you complete the 
         }
 }];
 ```
-> 2020-06-27 16:16:47.145774+0800 Paintinglite[6753:369828] stu.name = CreaterOS and stu.age = 21
-> 2020-06-27 16:16:47.145928+0800 Paintinglite[6753:369828] stu.name = CreaterOS and stu.age = 21
-
 ```objective-c
 [self.sessionM execPQL:@"FROM Student LIMIT 0,1" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
         if (success) {
@@ -509,11 +444,6 @@ Through the PQL statement, Paintinglite can automatically help you complete the 
 [self.sessionM setPrepareStatementPQLParameter:@[@"CreaterOS"]];
 NSLog(@"%@",[self.sessionM execPrepareStatementPQL]);
 ```
-
-> 2020-06-27 16:26:11.404815+0800 Paintinglite[7025:389268] (
-> "<Student: 0x600000565420>",
-> "<Student: 0x6000005657e0>"
->)
 
 # Aggregate function (PaintingliteAggregateFunc)
 Paintinglite encapsulates Sqlite3 aggregation functions, and automatically writes SQL statements to get the aggregation results.
@@ -572,15 +502,6 @@ Sqlite3 development defaults that an insert statement is a transaction. If there
 + (void)commit:(sqlite3 *)ppDb;
 + (void)rollback:(sqlite3 *)ppDb;
 ```
-> Daily development integration
->
-> @try {
->} @catch (NSException *exception) {
->} @finally {
->}
->
-> Use
-
 # Cascade operation (PaintingliteCascadeShowerIUD)
 
 ```objective-c
@@ -863,7 +784,7 @@ The where tag eliminates the restriction that the if tag must add 1 = 1 after th
 <select id="getEleByObjWhere" resultType="NSDictionary" parameterType="Eletest" resultMap="eletestResult">
 SELECT <include refid="eletestSql"></include> FROM eletest <where><if test="name != null and name !=''">name = ?</if> <if test="desc != null and desc !=''">desc = ?</if> <if test="teacher != null and teacher !=''">teacher = ?</if></where>
 </select>
-```
+ ```
 
 #### PaintingliteXMLSessionManager common methods
  ```objective-c
@@ -912,7 +833,7 @@ SELECT <include refid="eletestSql"></include> FROM eletest <where><if test="name
  * obj: the inserted object
  */
  -(Boolean)del:(NSString *)methodID obj:(id)obj;
-```
+ ```
 #### Instance call
  ```objective-c
  PaintingliteXMLSessionManager *xmlSessionM = [PaintingliteXMLSessionManager buildSesssionManger:[[NSBundle mainBundle] pathForResource:@"user" ofType:@"xml"]];
@@ -943,7 +864,7 @@ NSLog(@"%@",[xmlSessionM selectOne:@"eletest.getEleById" condition:[NSNumber num
  
  //Update
  [xmlSessionM update:@"eletest.getUpdateEle" obj:eletest];
-```
+ ```
 
 # Constraint
 
