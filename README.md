@@ -23,10 +23,6 @@ target 'MyApp' do
     # Pods for MyApp2
 
     pod'Paintinglite', :git =>'https://github.com/CreaterOS/Paintinglite.git'#, :tag => '2.1.1'
-    # pod 'FMDB/FTS'   # FMDB with FTS
-    # pod 'FMDB/standalone'   # FMDB with latest SQLite amalgamation source
-    # pod 'FMDB/standalone/FTS'   # FMDB with latest SQLite amalgamation source and FTS
-    # pod 'FMDB/SQLCipher'   # FMDB with SQLCipher
 end
 ```
 Then install the pods:
