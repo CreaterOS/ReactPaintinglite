@@ -6,14 +6,32 @@
 [![standard-readme compliant](https://img.shields.io/badge/Paintinglite-CreaterOS-brightgreen.svg?style=CreaterOS&color=blue)](https://github.com/CreaterOS/Paintinglite)
 [![standard-readme compliant](https://img.shields.io/badge/platform-ios-brightgreen.svg?style=info&color=orange)](https://github.com/CreaterOS/Paintinglite)
 
-## Paintinglite API v1.0
+## What's New in Paintinglite API v1.0
 
 http://htmlpreview.github.io/?https://github.com/CreaterOS/Paintinglite/blob/master/Paintinglite/PaintingliteWeb/index.html
 The detailed API documentation is contained in masterTOC.html in the Paintinglite/PaintingliteWeb directory
 
 ## Pod installation
 ``` objective-c
-pod'Paintinglite', :git =>'https://github.com/CreaterOS/Paintinglite.git'#, :tag => '2.1.1'
+# Uncomment the next line to define a global platform for your project
+# platform :ios, '9.0'
+
+target 'MyApp' do
+    # Comment the next line if you're not using Swift and don't want to use dynamic frameworks
+    use_frameworks!
+
+    # Pods for MyApp2
+
+    pod'Paintinglite', :git =>'https://github.com/CreaterOS/Paintinglite.git'#, :tag => '2.1.1'
+    # pod 'FMDB/FTS'   # FMDB with FTS
+    # pod 'FMDB/standalone'   # FMDB with latest SQLite amalgamation source
+    # pod 'FMDB/standalone/FTS'   # FMDB with latest SQLite amalgamation source and FTS
+    # pod 'FMDB/SQLCipher'   # FMDB with SQLCipher
+end
+```
+Then install the pods:
+```
+$ pod install
 ```
 ## Introduction
 
