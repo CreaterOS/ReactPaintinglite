@@ -6,7 +6,16 @@
 [![standard-readme compliant](https://img.shields.io/badge/Paintinglite-CreaterOS-brightgreen.svg?style=CreaterOS&color=blue)](https://github.com/CreaterOS/Paintinglite)
 [![standard-readme compliant](https://img.shields.io/badge/platform-ios-brightgreen.svg?style=info&color=orange)](https://github.com/CreaterOS/Paintinglite)
 
-## What's New in Paintinglite API v1.0
+## What's New in Paintinglite
+
+1. Support for ORM operation
+2. Customize the PQL syntax for quick queries
+3. Support dynamic query
+4. Secure thread protection mechanism
+5. Support native operation
+6. Support for XML configuration operations
+7. Support compression, backup, porting MySQL, SQL Server operation
+8. Support transaction operations
 
 http://htmlpreview.github.io/?https://github.com/CreaterOS/Paintinglite/blob/master/Paintinglite/PaintingliteWeb/index.html
 The detailed API documentation is contained in masterTOC.html in the Paintinglite/PaintingliteWeb directory
