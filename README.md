@@ -680,8 +680,3 @@ If you have a feature request or bug report, please feel free to send [863713745
 ### Security Disclosure
 
 If you have found the Paintinglite security vulnerabilities and vulnerabilities that need to be modified, you should email them to [863713745@qq.com](mailto:863713745@qq.com) as soon as possible. thank you for your support.
-
-## Stargazers
-[![Stargazers repo roster for @CreaterOS/Paintinglite](https://reporoster.com/stars/CreaterOS/Paintinglite)](https://github.com/CreaterOS/Paintinglite/stargazers)
-## Forkers
-[![Forkers repo roster for @CreaterOS/Paintinglite](https://reporoster.com/forks/CreaterOS/Paintinglite)](https://github.com/CreaterOS/Paintinglite/network/members)
