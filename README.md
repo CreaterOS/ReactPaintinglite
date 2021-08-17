@@ -6,6 +6,11 @@
 [![standard-readme compliant](https://img.shields.io/badge/Paintinglite-CreaterOS-brightgreen.svg?style=CreaterOS&color=blue)](https://github.com/CreaterOS/Paintinglite)
 [![standard-readme compliant](https://img.shields.io/badge/platform-ios-brightgreen.svg?style=info&color=orange)](https://github.com/CreaterOS/Paintinglite)
 
+## Introduction
+
+Paintinglite is an excellent and fast Sqlite3 database framework. Paintinglite has good encapsulation of data, fast data insertion characteristics, and can still show good resource utilization for huge amounts of data.
+Paintinglite supports object mapping and has carried out a very lightweight object encapsulation on sqlite3. It establishes a mapping relationship between POJOs and database tables. Paintinglite can automatically generate SQL statements and manually write SQL statements to achieve convenient development and efficient querying. All-in-one lightweight framework.
+
 ## What's New in Paintinglite
 
 1. Support for ORM operation
@@ -38,11 +43,6 @@ Then install the pods:
 ```
 $ pod install
 ```
-## Introduction
-
-Paintinglite is an excellent and fast Sqlite3 database framework. Paintinglite has good encapsulation of data, fast data insertion characteristics, and can still show good resource utilization for huge amounts of data.
-Paintinglite supports object mapping and has carried out a very lightweight object encapsulation on sqlite3. It establishes a mapping relationship between POJOs and database tables. Paintinglite can automatically generate SQL statements and manually write SQL statements to achieve convenient development and efficient querying. All-in-one lightweight framework.
-
 ---
 ## Database operation (PaintingliteSessionManager)
 ### 1. Build a library
