@@ -9,6 +9,7 @@
 #import "ViewController.h"
 #import "Paintinglite/PaintingliteSessionManager.h"
 #import "UserClass.h"
+#import "PaintingliteWarningHelper.h"
 
 @interface ViewController ()
 
@@ -19,6 +20,9 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
 
+}
+
+- (void)test {
     PaintingliteSessionManager *manager = [PaintingliteSessionManager sharePaintingliteSessionManager];
     Boolean flag = [manager openSqlite:@"test.db" completeHandler:^(NSString * _Nonnull filePath, PaintingliteSessionError * _Nonnull error, Boolean success) {
             if (success) {
@@ -77,7 +81,6 @@
             }
         }
     }
-    
 }
 
 @end

@@ -32,14 +32,6 @@
     return _exec;
 }
 
-- (PaintingliteCUDOptions *)cudOpt{
-    if (!_cudOpt) {
-        _cudOpt = [PaintingliteCUDOptions sharePaintingliteCUDOptions];
-    }
-    
-    return _cudOpt;
-}
-
 #pragma mark - 单例模式
 static PaintingliteTableOptions *_instance = nil;
 + (instancetype)sharePaintingliteTableOptions{
