@@ -16,6 +16,9 @@
 #import "PaintingliteCache.h"
 #import "PaintingliteWarningHelper.h"
 #import "PaintingliteThreadManager.h"
+#import "PaintingliteCreateManager.h"
+#import "PaintingliteAlterManager.h"
+#import "PaintingliteDropManager.h"
 
 #define WEAKSELF(SELF) __weak typeof(SELF) weakself = SELF
 #define STRONGSELF(WEAKSELF) __strong typeof(WEAKSELF) self = WEAKSELF
@@ -36,6 +39,10 @@ typedef NS_ENUM(NSUInteger, PaintingliteOpenType) {
 
 @property (nonatomic,copy)NSString *basePath; /// 基本路径
 @property (nonatomic,copy)NSString *session; /// 会话Session
+
+@property (nonatomic, strong) PaintingliteCreateManager *createManager; /// 创建表管理者
+@property (nonatomic, strong) PaintingliteAlterManager *alterManager; /// 修改表管理者
+@property (nonatomic, strong) PaintingliteDropManager *dropManager; /// 删除表管理者
 @end
 
 @implementation PaintingliteSessionManager
@@ -82,6 +89,10 @@ static PaintingliteSessionManager *_instance = nil;
     if (self) {
         //加载缓存
         [PaintingliteCache sharePaintingliteCache];
+        PaintingliteDataBaseOptions *databaseOpt = [PaintingliteDataBaseOptions sharePaintingliteDataBaseOptions];
+        self.createManager = databaseOpt.crateManager;
+        self.alterManager = databaseOpt.alterManager;
+        self.dropManager = databaseOpt.dropManager;
     }
     return self;
 }
@@ -333,7 +344,7 @@ static PaintingliteSessionManager *_instance = nil;
         return false;
     }
     
-    return [[PaintingliteDataBaseOptions sharePaintingliteDataBaseOptions] createTableForName:self.ppDb tableName:tableName content:content completeHandler:completeHandler];
+    return [_createManager createTableForName:self.ppDb tableName:tableName content:content completeHandler:completeHandler];
 }
 
 - (Boolean)createTableForObj:(id)obj primaryKeyStyle:(PaintingliteDataBaseOptionsPrimaryKeyStyle)primaryKeyStyle{
@@ -346,7 +357,7 @@ static PaintingliteSessionManager *_instance = nil;
         return false;
     }
         
-    return [[PaintingliteDataBaseOptions sharePaintingliteDataBaseOptions] createTableForObj:self.ppDb obj:obj createStyle:primaryKeyStyle completeHandler:completeHandler];
+    return [_createManager createTableForObj:self.ppDb obj:obj createStyle:primaryKeyStyle completeHandler:completeHandler];
 }
 
 #pragma mark - 更新表
@@ -360,7 +371,7 @@ static PaintingliteSessionManager *_instance = nil;
         return false;
     }
     
-    return [[PaintingliteDataBaseOptions sharePaintingliteDataBaseOptions] alterTableForName:self.ppDb oldName:oldName newName:newName completeHandler:completeHandler];
+    return [_alterManager alterTableForName:self.ppDb oldName:oldName newName:newName completeHandler:completeHandler];
 }
 
 - (BOOL)alterTableAddColumnWithTableName:(NSString *)tableName columnName:(NSString *)columnName columnType:(NSString *)columnType{
@@ -373,7 +384,7 @@ static PaintingliteSessionManager *_instance = nil;
         return false;
     }
     
-    return [[PaintingliteDataBaseOptions sharePaintingliteDataBaseOptions] alterTableAddColumn:self.ppDb tableName:tableName columnName:columnName columnType:columnType completeHandler:completeHandler];
+    return [_alterManager alterTableAddColumn:self.ppDb tableName:tableName columnName:columnName columnType:columnType completeHandler:completeHandler];
 }
 
 - (BOOL)alterTableForObj:(id)obj{
@@ -386,7 +397,7 @@ static PaintingliteSessionManager *_instance = nil;
         return false;
     }
         
-    return [[PaintingliteDataBaseOptions sharePaintingliteDataBaseOptions] alterTableForObj:self.ppDb obj:obj completeHandler:completeHandler];
+    return [_alterManager alterTableForObj:self.ppDb obj:obj completeHandler:completeHandler];
 }
 
 #pragma mark - 删除表
@@ -401,7 +412,7 @@ static PaintingliteSessionManager *_instance = nil;
         [self warningOpenDatabase];
     }
     
-    return [[PaintingliteDataBaseOptions sharePaintingliteDataBaseOptions] dropTableForTableName:self.ppDb tableName:tableName completeHandler:completeHandler];
+    return [_dropManager dropTableForTableName:self.ppDb tableName:tableName completeHandler:completeHandler];
 }
 
 - (Boolean)dropTableForObj:(id)obj{
@@ -416,7 +427,7 @@ static PaintingliteSessionManager *_instance = nil;
         return false;
     }
     
-    return [[PaintingliteDataBaseOptions sharePaintingliteDataBaseOptions] dropTableForObj:self.ppDb obj:obj completeHandler:completeHandler];
+    return [_dropManager dropTableForObj:self.ppDb obj:obj completeHandler:completeHandler];
 }
 
 /* =====================================数据库日志操作======================================== */

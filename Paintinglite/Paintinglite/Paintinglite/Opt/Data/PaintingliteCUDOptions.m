@@ -16,6 +16,7 @@
 #import "PaintingliteSnapManager.h"
 #import "PaintingliteAggregateFunc.h"
 #import "PaintingliteUUID.h"
+#import "PaintingliteTableOptionsSelect.h"
 
 @interface PaintingliteCUDOptions()
 @property (nonatomic,strong)PaintingliteExec *exec; //执行语句
@@ -73,11 +74,6 @@ static PaintingliteCUDOptions *_instance = nil;
     self.exec = nil;
     
     return success;
-}
-
-- (void)dealloc
-{
-    self.exec = nil;
 }
 
 - (Boolean)insert:(sqlite3 *)ppDb sql:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
@@ -271,6 +267,11 @@ static PaintingliteCUDOptions *_instance = nil;
             return [[[[sql uppercaseString] componentsSeparatedByString:@"FROM "]lastObject] lowercaseString];
         }
     } completeHandler:completeHandler];
+}
+
+- (void)dealloc
+{
+    self.exec = nil;
 }
 
 @end

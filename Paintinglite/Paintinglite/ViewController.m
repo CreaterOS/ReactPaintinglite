@@ -20,6 +20,23 @@
 - (void)viewDidLoad{
     [super viewDidLoad];
 
+    PaintingliteSessionManager *manager = [PaintingliteSessionManager sharePaintingliteSessionManager];
+    Boolean flag = [manager openSqlite:@"test.db" completeHandler:^(NSString * _Nonnull filePath, PaintingliteSessionError * _Nonnull error, Boolean success) {
+            if (success) {
+                NSLog(@"%@",filePath);
+            }
+    }];
+    
+    UserClass *user = [UserClass new];
+    flag = [manager createTableForObj:user primaryKeyStyle:(PaintingliteDataBaseOptionsDefault) completeHandler:^(NSString *tableName,PaintingliteSessionError * _Nonnull error, Boolean success) {
+            if (success) {
+                NSLog(@"创建表[%@]成功",tableName);
+            }
+    }];
+    
+    [manager alterTableForName:@"userclass" newName:@"user"];
+    
+    [manager dropTableForTableName:@"user"];
 }
 
 - (void)test {
