@@ -23,7 +23,7 @@
 */
 typedef NS_ENUM(NSUInteger, kPressureSaveType) {
     kPressureSaveDefault,
-    kPressureSaveTXT
+    kPressureSaveTxt
 };
 
 NS_ASSUME_NONNULL_BEGIN

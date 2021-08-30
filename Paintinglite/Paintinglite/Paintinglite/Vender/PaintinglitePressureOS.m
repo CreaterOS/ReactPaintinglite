@@ -228,7 +228,7 @@ static NSUInteger groupCount = -1;
     
     NSString *resStr = [NSString stringWithFormat:@"%@%@\n",startStr,pressureStr];
     
-    if (saveType == kPressureSaveTXT) {
+    if (saveType == kPressureSaveTxt) {
         /* 保存文本格式 */
         if ([fileM fileExistsAtPath:SAVEROOT(@"pressure_report.txt")]) {
             /* 存在 */
