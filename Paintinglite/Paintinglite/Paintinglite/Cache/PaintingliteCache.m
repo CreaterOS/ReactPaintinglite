@@ -16,12 +16,12 @@
 #define STRONG_SELF __strong typeof(weakSelf) self = weakSelf;
 #define WAIT_MIN(min) 60 * min
 
-static const NSInteger p_MaxCache_Count = 30; // 最大缓存量
-static const NSInteger p_MaxRelease_Count = 10; // 最大释放量
-static const double p_Min_Use_Memory = 50.0; // 最小内存占有
-static const double p_Min_Use_CPU = 50.0; // 最小CPU占有
-static const double p_Max_Use_Memory = 100.0; // 最小内存占有
-static const double p_Max_Use_CPU = 70.0; // 最小CPU占有
+static const NSInteger kMaxCacheCount = 30; // 最大缓存量
+static const NSInteger kMaxReleaseCount = 10; // 最大释放量
+static const double kMinUseMemory = 50.0; // 最小内存占有
+static const double kMinUseCPU = 50.0; // 最小CPU占有
+static const double kMaxUseMemory = 100.0; // 最小内存占有
+static const double kMaxUseCPU = 70.0; // 最小CPU占有
 
 @interface PaintingliteCache()<UIApplicationDelegate>
 @property (nonatomic,assign)NSTimeInterval lauchTime; /// 启动时间
@@ -104,13 +104,13 @@ static int count = 0;
     double usedMemory = [systemUseInfo applicationMemory];
     CGFloat usedCPU = [systemUseInfo applicationCPU];
     
-    NSInteger maxCacheCount = p_MaxCache_Count;
-    NSInteger maxReleaseCount = p_MaxRelease_Count;
+    NSInteger maxCacheCount = kMaxCacheCount;
+    NSInteger maxReleaseCount = kMaxReleaseCount;
     
-    if (usedMemory >= p_Min_Use_Memory || usedCPU >= p_Min_Use_CPU) {
+    if (usedMemory >= kMinUseMemory || usedCPU >= kMinUseCPU) {
         maxCacheCount = 40;
         maxReleaseCount = 20;
-    } else if (usedMemory >= p_Max_Use_Memory || usedCPU >= p_Min_Use_CPU) {
+    } else if (usedMemory >= kMaxUseMemory || usedCPU >= kMaxUseCPU) {
         maxCacheCount = 50;
         maxReleaseCount = 30;
     }

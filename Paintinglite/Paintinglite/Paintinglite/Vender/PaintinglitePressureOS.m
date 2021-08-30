@@ -174,7 +174,7 @@ static PaintinglitePressureOS *_instance = nil;
 
 #pragma mark - 保存测试数据
 static NSUInteger groupCount = -1;
-- (void)savePressure:(PaintinglitePressureOSSaveType)saveType options:(NSString *__nonnull)options countIndex:(NSUInteger)countIndex efficiency:(float)efficiency memoryUsage:(int64_t)memoryUsage cpuUsage:(float)cpuUsage{
+- (void)savePressure:(kPressureSaveType)saveType options:(NSString *__nonnull)options countIndex:(NSUInteger)countIndex efficiency:(float)efficiency memoryUsage:(int64_t)memoryUsage cpuUsage:(float)cpuUsage{
     Boolean newGroupFlag = false;
     if (groupCount != countIndex){
         groupCount = countIndex;
@@ -228,7 +228,7 @@ static NSUInteger groupCount = -1;
     
     NSString *resStr = [NSString stringWithFormat:@"%@%@\n",startStr,pressureStr];
     
-    if (saveType == PaintinglitePressureOSSaveTXT) {
+    if (saveType == kPressureSaveTXT) {
         /* 保存文本格式 */
         if ([fileM fileExistsAtPath:SAVEROOT(@"pressure_report.txt")]) {
             /* 存在 */

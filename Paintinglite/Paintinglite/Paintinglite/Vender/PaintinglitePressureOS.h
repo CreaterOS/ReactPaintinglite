@@ -17,13 +17,13 @@
 #import "PaintingliteTableOptions.h"
 
 /*!
- @abstract PaintinglitePressureOSSaveType 测试报告保存类型
- @constant PaintinglitePressureOSSaveDefault 默认方式 @constant PaintinglitePressureOSSaveTXT 文本方式
+ @abstract kPressureSaveType 测试报告保存类型
+ @constant kPressureSaveDefault 默认方式 @constant kPressureSaveTXT 文本方式
  @discussion 测试报告保存类型
 */
-typedef NS_ENUM(NSUInteger, PaintinglitePressureOSSaveType) {
-    PaintinglitePressureOSSaveDefault,
-    PaintinglitePressureOSSaveTXT
+typedef NS_ENUM(NSUInteger, kPressureSaveType) {
+    kPressureSaveDefault,
+    kPressureSaveTXT
 };
 
 NS_ASSUME_NONNULL_BEGIN
@@ -36,7 +36,7 @@ NS_ASSUME_NONNULL_BEGIN
  @property saveType
  @abstract 测试报告保存类型
  */
-@property (nonatomic)PaintinglitePressureOSSaveType saveType;
+@property (nonatomic)kPressureSaveType saveType;
 
 /*!
  @method sharePaintinglitePressureOS
