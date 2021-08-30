@@ -21,9 +21,9 @@
  @constant kPressureSaveDefault 默认方式 @constant kPressureSaveTXT 文本方式
  @discussion 测试报告保存类型
 */
-typedef NS_ENUM(NSUInteger, kPressureSaveType) {
-    kPressureSaveDefault,
-    kPressureSaveTxt
+typedef NS_ENUM(NSUInteger, KPressureSaveType) {
+    KPressureSaveDefault,
+    KPressureSaveTxt
 };
 
 NS_ASSUME_NONNULL_BEGIN
@@ -36,7 +36,7 @@ NS_ASSUME_NONNULL_BEGIN
  @property saveType
  @abstract 测试报告保存类型
  */
-@property (nonatomic)kPressureSaveType saveType;
+@property (nonatomic)KPressureSaveType saveType;
 
 /*!
  @method sharePaintinglitePressureOS
