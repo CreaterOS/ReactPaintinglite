@@ -137,7 +137,7 @@ static PaintingliteSessionManager *_instance = nil;
     if (self.isOpen) [self releaseSqlite];
     
     //数据库名称名称
-    NSString *filePath = [[PaintingliteConfiguration sharePaintingliteConfiguration] configurationFileName:fileName];
+    NSString *filePath = [[PaintingliteConfiguration share] configurationFileName:fileName];
     
     WEAKSELF(self);
     runAsynchronouslyOnExecQueue(^{
@@ -668,7 +668,9 @@ static PaintingliteSessionManager *_instance = nil;
     }
     
     if (self.openSecurityMode) {
-        sql = [[[PaintingliteSecurity alloc] init] securitySqlCommand:sql type:PaintingliteSecurityInsert];
+        PaintingliteSecurityCodeTool *securityCode = [[PaintingliteSecurity alloc] init].securityCode;
+        securityCode = [[PaintingliteSecurityCodeTool alloc] init];
+        sql = [securityCode securitySqlCommand:sql type:PaintingliteSecurityInsert];
     }
     
     return [[PaintingliteTableOptions sharePaintingliteTableOptions] insert:self.ppDb sql:sql completeHandler:completeHandler];
@@ -681,7 +683,9 @@ static PaintingliteSessionManager *_instance = nil;
     }
 
     if (self.openSecurityMode) {
-        obj = [[[PaintingliteSecurity alloc] init] securityObj:obj];
+        PaintingliteSecurityCodeTool *securityCode = [[PaintingliteSecurity alloc] init].securityCode;
+        securityCode = [[PaintingliteSecurityCodeTool alloc] init];
+        obj = [securityCode securityObj:obj];
     }
     
     return [[PaintingliteTableOptions sharePaintingliteTableOptions] insert:self.ppDb obj:obj completeHandler:completeHandler];
@@ -694,7 +698,9 @@ static PaintingliteSessionManager *_instance = nil;
 
 - (Boolean)update:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
     if (self.openSecurityMode) {
-        sql = [[[PaintingliteSecurity alloc] init] securitySqlCommand:sql type:PaintingliteSecurityUpdate];
+        PaintingliteSecurityCodeTool *securityCode = [[PaintingliteSecurity alloc] init].securityCode;
+        securityCode = [[PaintingliteSecurityCodeTool alloc] init];
+        sql = [securityCode securitySqlCommand:sql type:PaintingliteSecurityUpdate];
     }
     
     return [[PaintingliteTableOptions sharePaintingliteTableOptions] update:self.ppDb sql:sql completeHandler:completeHandler];
@@ -707,7 +713,9 @@ static PaintingliteSessionManager *_instance = nil;
     }
     
     if (self.openSecurityMode) {
-        obj = [[[PaintingliteSecurity alloc] init] securityObj:obj];
+        PaintingliteSecurityCodeTool *securityCode = [[PaintingliteSecurity alloc] init].securityCode;
+        securityCode = [[PaintingliteSecurityCodeTool alloc] init];
+        obj = [securityCode securityObj:obj];
     }
     
     return [[PaintingliteTableOptions sharePaintingliteTableOptions] update:self.ppDb obj:obj condition:condition completeHandler:completeHandler];

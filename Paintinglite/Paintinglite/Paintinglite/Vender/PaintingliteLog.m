@@ -55,7 +55,7 @@ static PaintingliteLog *_instance = nil;
     self.optDate = [NSDate date];
     
     //写入日志文件使用数据库名称_Log
-    NSString *logFilePath = [NSString stringWithFormat:@"%@_Log.txt",[[PaintingliteConfiguration sharePaintingliteConfiguration].fileName componentsSeparatedByString:@"."][0]];
+    NSString *logFilePath = [NSString stringWithFormat:@"%@_Log.txt",[[PaintingliteConfiguration share].fileName componentsSeparatedByString:@"."][0]];
     
     NSString *logStr = [NSString string];
     if (status == PaintingliteLogSuccess) {
@@ -65,7 +65,7 @@ static PaintingliteLog *_instance = nil;
     }
     
     NSData *logData= [NSMutableData dataWithData:[logStr dataUsingEncoding:NSUTF8StringEncoding]];
-    if ([[PaintingliteFileManager defaultManager] fileExistsAtPath:logFilePath]){
+    if ([[PaintingliteFileManager defaultManager] fileExistsAtPath:logFilePath]){ /// 存在，追加
         NSFileHandle *fileHandle = [NSFileHandle fileHandleForWritingAtPath:logFilePath];
         [fileHandle seekToEndOfFile];
         [fileHandle writeData:logData];

@@ -588,25 +588,7 @@
 - (NSMutableArray *)getObjName:(NSString *__nonnull)sql ppDb:(sqlite3 *)ppDb{
     sql = [sql uppercaseString];
     
-    return [self sqlite3Exec:ppDb objName:[[[[[sql componentsSeparatedByString:@"FROM "] lastObject] componentsSeparatedByString:@" "] firstObject] lowercaseString]];    
-    
-//    if (![sql containsString:Paintinglite_Sqlite3_WHERE]) {
-//        //没有WHERE条件
-//        if ([sql containsString:Paintinglite_Sqlite3_LIMIT]) {
-//            //有Limit
-//            return [self sqlite3Exec:ppDb objName:[[[sql componentsSeparatedByString:Paintinglite_Sqlite3_FROM][1] componentsSeparatedByString:[NSString stringWithFormat:@" %@",Paintinglite_Sqlite3_LIMIT]][0] lowercaseString]];
-//        }else if ([sql containsString:Paintinglite_Sqlite3_ORDER]){
-//            //有ORDER
-//            return [self sqlite3Exec:ppDb objName:[[[sql componentsSeparatedByString:Paintinglite_Sqlite3_FROM][1] componentsSeparatedByString:[NSString stringWithFormat:@" %@",Paintinglite_Sqlite3_ORDER]][0] lowercaseString]];
-//        }else{
-//            //没有Limit
-//            return [self sqlite3Exec:ppDb objName:[[sql componentsSeparatedByString:Paintinglite_Sqlite3_FROM][1] lowercaseString]];
-//        }
-//    }else{
-//        //用WHREE条件
-//        //取出FROM 和 WHERE之间的表名
-//        return [self sqlite3Exec:ppDb objName:[[[sql componentsSeparatedByString:Paintinglite_Sqlite3_FROM][1] componentsSeparatedByString:[NSString stringWithFormat:@" %@",Paintinglite_Sqlite3_WHERE]][0] lowercaseString]];
-//    }
+    return [self sqlite3Exec:ppDb objName:[[[[[sql componentsSeparatedByString:@"FROM "] lastObject] componentsSeparatedByString:@" "] firstObject] lowercaseString]];
 }
 
 #pragma mark - 类型转换
@@ -621,7 +603,7 @@
         case SQLITE3_TEXT:{
             char *text = (char *)sqlite3_column_text(_stmt, i);
             if (self.openSecurityMode) {
-                value = text != nil ? [PaintingliteSecurity StringWithDecodeSecurityBase64:[NSString stringWithUTF8String:text]] : @"(null)";
+                value = text != nil ? [PaintingliteSecurityDecodeTool StringWithDecodeSecurityBase64:[NSString stringWithUTF8String:text]] : @"(null)";
             } else {
                 value = text != nil ? [NSString stringWithUTF8String:text] : @"(null)";
             }

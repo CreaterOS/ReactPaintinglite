@@ -16,7 +16,6 @@
 #import "PaintingliteSnapManager.h"
 #import "PaintingliteAggregateFunc.h"
 #import "PaintingliteUUID.h"
-#import "PaintingliteTableOptionsSelect.h"
 
 @interface PaintingliteCUDOptions()
 @property (nonatomic,strong)PaintingliteExec *exec; //执行语句

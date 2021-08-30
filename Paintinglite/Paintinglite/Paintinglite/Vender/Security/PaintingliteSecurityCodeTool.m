@@ -1,34 +1,18 @@
 //
-//  PaintingliteSecurity.m
+//  PaintingliteSecurityCodeTool.m
 //  Paintinglite
 //
-//  Created by Bryant Reyn on 2020/5/27.
-//  Copyright © 2020 Bryant Reyn. All rights reserved.
+//  Created by 纽扣软件 on 2021/8/30.
+//  Copyright © 2021 Bryant Reyn. All rights reserved.
 //
 
-#import "PaintingliteSecurity.h"
+#import "PaintingliteSecurityCodeTool.h"
 #import "PaintingliteFileManager.h"
 #import "PaintingliteUUID.h"
 #import "PaintingliteObjRuntimeProperty.h"
 #import "PaintingliteThreadManager.h"
 
-#define ROOT_FILE_PATH [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)lastObject]
-#define ZIP_NAME @"Encrypt"
-
-@interface PaintingliteSecurity()
-@property (nonatomic,strong)PaintingliteFileManager *fileManager; //文件管理者
-@end
-
-@implementation PaintingliteSecurity
-
-#pragma mark - 懒加载
-- (PaintingliteFileManager *)fileManager{
-    if (!_fileManager) {
-        _fileManager = [PaintingliteFileManager defaultManager];
-    }
-    
-    return _fileManager;
-}
+@implementation PaintingliteSecurityCodeTool
 
 #pragma mark - Sql数据加密
 - (NSString *)securitySqlCommand:(NSString *)sql type:(PaintingliteSecurityMode)type{
@@ -232,15 +216,6 @@
 
 + (NSString *)StringWithSecurityBase64:(NSString *)str{
     return [[str dataUsingEncoding:NSUTF8StringEncoding] base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
-}
-
-#pragma mark - Base64解密
-+ (NSData *)SecurityDecodeBase64:(NSData *)data{
-    return [[NSData alloc] initWithBase64EncodedData:data options:NSDataBase64DecodingIgnoreUnknownCharacters];
-}
-
-+ (NSString *)StringWithDecodeSecurityBase64:(NSString *)baseStr{
-    return [[NSString alloc] initWithData:[[NSData alloc] initWithBase64EncodedString:baseStr options:NSDataBase64DecodingIgnoreUnknownCharacters] encoding:NSUTF8StringEncoding];
 }
 
 @end

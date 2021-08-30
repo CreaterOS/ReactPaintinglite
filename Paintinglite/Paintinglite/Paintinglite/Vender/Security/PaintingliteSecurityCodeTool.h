@@ -1,18 +1,13 @@
 //
-//  PaintingliteSecurity.h
+//  PaintingliteSecurityCodeTool.h
 //  Paintinglite
 //
-//  Created by Bryant Reyn on 2020/5/27.
-//  Copyright © 2020 Bryant Reyn. All rights reserved.
+//  Created by 纽扣软件 on 2021/8/30.
+//  Copyright © 2021 Bryant Reyn. All rights reserved.
 //
 
-/*!
- @header PaintingliteSecurity
- @abstract PaintingliteSecurity 提供SDK框架中数据安全保护机制
- @author CreaterOS
- @version 1.00 2020/5/27 Creation (此文档的版本信息)
- */
 #import <Foundation/Foundation.h>
+
 /*!
  @abstract PaintingliteSecurityMode 安全模式
  @constant PaintingliteSecurityInsert 插入模式
@@ -24,12 +19,10 @@ typedef NS_ENUM(NSUInteger, PaintingliteSecurityMode) {
     PaintingliteSecurityUpdate
 };
 
+
 NS_ASSUME_NONNULL_BEGIN
-/*!
- @class PaintingliteSecurity
- @abstract PaintingliteSecurity 提供SDK框架中数据安全保护机制
- */
-@interface PaintingliteSecurity : NSObject
+
+@interface PaintingliteSecurityCodeTool : NSObject
 
 /*!
  @method SecurityBase64:
@@ -48,24 +41,6 @@ NS_ASSUME_NONNULL_BEGIN
  @result NSString
  */
 + (NSString *)StringWithSecurityBase64:(NSString *)str;
-
-/*!
- @method SecurityDecodeBase64:
- @abstract 解密
- @discussion base64解密算法解密二进制数据
- @param data 二进制数据
- @result NSData
- */
-+ (NSData *)SecurityDecodeBase64:(NSData *)data;
-
-/*!
- @method StringWithDecodeSecurityBase64:
- @abstract 解密
- @discussion base64解密算法解密字符串数据
- @param baseStr 字符串
- @result NSString
- */
-+ (NSString *)StringWithDecodeSecurityBase64:(NSString *)baseStr;
 
 /*!
  @method securitySqlCommand: type:

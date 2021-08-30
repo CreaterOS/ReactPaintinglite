@@ -25,7 +25,7 @@
 
 #pragma mark - 单例模式
 static PaintingliteConfiguration *_instance = nil;
-+ (instancetype)sharePaintingliteConfiguration{
++ (instancetype)share{
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         _instance = [[self alloc] init];

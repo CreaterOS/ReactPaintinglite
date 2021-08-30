@@ -64,6 +64,8 @@
 		68EDCA84248747E200031B41 /* PaintingliteIntellegenceSelect.m in Sources */ = {isa = PBXBuildFile; fileRef = 68EDCA83248747E200031B41 /* PaintingliteIntellegenceSelect.m */; };
 		68F260B224D1209700652C03 /* PaintingliteJSContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 68F260B124D1209700652C03 /* PaintingliteJSContext.m */; };
 		EE15267A26D8E6C60079809F /* PaintingliteCreateManager.m in Sources */ = {isa = PBXBuildFile; fileRef = EE15267926D8E6C60079809F /* PaintingliteCreateManager.m */; };
+		EE2DEDF226DC8FAA00152409 /* PaintingliteSecurityCodeTool.m in Sources */ = {isa = PBXBuildFile; fileRef = EE2DEDF126DC8FAA00152409 /* PaintingliteSecurityCodeTool.m */; };
+		EE2DEDF526DC917500152409 /* PaintingliteSecurityDecodeTool.m in Sources */ = {isa = PBXBuildFile; fileRef = EE2DEDF426DC917500152409 /* PaintingliteSecurityDecodeTool.m */; };
 		EE371485264CC608005D5655 /* PaintingliteSystemUseInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = EE371484264CC608005D5655 /* PaintingliteSystemUseInfo.m */; };
 		EE7A38EC264BD9AC00B98417 /* UserClass.m in Sources */ = {isa = PBXBuildFile; fileRef = EE7A38EB264BD9AC00B98417 /* UserClass.m */; };
 		EE7B24C426A15A9C00A3C4FA /* PaintingliteThreadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = EE7B24C326A15A9C00A3C4FA /* PaintingliteThreadManager.m */; };
@@ -175,6 +177,10 @@
 		68F260B124D1209700652C03 /* PaintingliteJSContext.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaintingliteJSContext.m; sourceTree = "<group>"; };
 		EE15267826D8E6C60079809F /* PaintingliteCreateManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaintingliteCreateManager.h; sourceTree = "<group>"; };
 		EE15267926D8E6C60079809F /* PaintingliteCreateManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaintingliteCreateManager.m; sourceTree = "<group>"; };
+		EE2DEDF026DC8FAA00152409 /* PaintingliteSecurityCodeTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaintingliteSecurityCodeTool.h; sourceTree = "<group>"; };
+		EE2DEDF126DC8FAA00152409 /* PaintingliteSecurityCodeTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaintingliteSecurityCodeTool.m; sourceTree = "<group>"; };
+		EE2DEDF326DC917500152409 /* PaintingliteSecurityDecodeTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaintingliteSecurityDecodeTool.h; sourceTree = "<group>"; };
+		EE2DEDF426DC917500152409 /* PaintingliteSecurityDecodeTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaintingliteSecurityDecodeTool.m; sourceTree = "<group>"; };
 		EE371483264CC608005D5655 /* PaintingliteSystemUseInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaintingliteSystemUseInfo.h; sourceTree = "<group>"; };
 		EE371484264CC608005D5655 /* PaintingliteSystemUseInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaintingliteSystemUseInfo.m; sourceTree = "<group>"; };
 		EE7A38EA264BD9AC00B98417 /* UserClass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserClass.h; sourceTree = "<group>"; };
@@ -310,6 +316,19 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		EE2DEDEF26DC8F6C00152409 /* Security */ = {
+			isa = PBXGroup;
+			children = (
+				689E0675247EA79300D6DF95 /* PaintingliteSecurity.h */,
+				689E0676247EA79300D6DF95 /* PaintingliteSecurity.m */,
+				EE2DEDF026DC8FAA00152409 /* PaintingliteSecurityCodeTool.h */,
+				EE2DEDF126DC8FAA00152409 /* PaintingliteSecurityCodeTool.m */,
+				EE2DEDF326DC917500152409 /* PaintingliteSecurityDecodeTool.h */,
+				EE2DEDF426DC917500152409 /* PaintingliteSecurityDecodeTool.m */,
+			);
+			path = Security;
+			sourceTree = "<group>";
+		};
 		EECD51F4264BCAA0008E5191 /* Configuration */ = {
 			isa = PBXGroup;
 			children = (
@@ -393,10 +412,9 @@
 		EECD5200264BCB5E008E5191 /* Vender */ = {
 			isa = PBXGroup;
 			children = (
+				EE2DEDEF26DC8F6C00152409 /* Security */,
 				68D7BB5E247FE56500AB994A /* PaintingliteObjRuntimeProperty.h */,
 				68D7BB5F247FE56500AB994A /* PaintingliteObjRuntimeProperty.m */,
-				689E0675247EA79300D6DF95 /* PaintingliteSecurity.h */,
-				689E0676247EA79300D6DF95 /* PaintingliteSecurity.m */,
 				68275F082489392F008DE2A9 /* PaintingliteSnapManager.h */,
 				68275F092489392F008DE2A9 /* PaintingliteSnapManager.m */,
 				68D5030524A1E9E0004EC32D /* PaintinglitePressureOS.h */,
@@ -602,6 +620,7 @@
 				EE15267A26D8E6C60079809F /* PaintingliteCreateManager.m in Sources */,
 				68DE9929247C9B6A0078EDD5 /* ViewController.m in Sources */,
 				68EDCA84248747E200031B41 /* PaintingliteIntellegenceSelect.m in Sources */,
+				EE2DEDF226DC8FAA00152409 /* PaintingliteSecurityCodeTool.m in Sources */,
 				68275F0A2489392F008DE2A9 /* PaintingliteSnapManager.m in Sources */,
 				68DE9934247C9B6C0078EDD5 /* main.m in Sources */,
 				68D7BB60247FE56500AB994A /* PaintingliteObjRuntimeProperty.m in Sources */,
@@ -621,6 +640,7 @@
 				EE83A04426DC742500B28910 /* PaintingliteDropManager.m in Sources */,
 				68DE996B247D0B680078EDD5 /* PaintingliteLog.m in Sources */,
 				689E067A247EACD000D6DF95 /* PaintingliteDataBaseOptions.m in Sources */,
+				EE2DEDF526DC917500152409 /* PaintingliteSecurityDecodeTool.m in Sources */,
 				68D5030724A1E9E0004EC32D /* PaintinglitePressureOS.m in Sources */,
 				68DE9962247CA1140078EDD5 /* PaintingliteSessionFactory.m in Sources */,
 				68EB381C249083FD00DFC0CA /* PaintingliteUUID.m in Sources */,

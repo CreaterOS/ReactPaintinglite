@@ -102,7 +102,7 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion 生成PaintingliteConfiguration在项目工程全局中只生成一个实例对象
  @result PaintingliteConfiguration
  */
-+ (instancetype)sharePaintingliteConfiguration;
++ (instancetype)share;
 
 /*!
  @method configurationFileName:
