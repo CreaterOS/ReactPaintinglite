@@ -11,12 +11,16 @@
 @implementation PaintingliteException
 
 #pragma mark - 抛出异常
-+ (void)PaintingliteException:(NSString *)exceptionWithName reason:(NSString *)reason{
-    NSLog(@"exceptionWithName: %@ reason: %@",exceptionWithName,reason);
++ (void)paintingliteException:(NSString *)exceptionWithName reason:(NSString *)reason{
+    NSLog(@"Exception: %@ Reason: %@",exceptionWithName,reason);
 }
 
-+ (void)PaintingliteXMLException:(NSString *)exceptionWithName reason:(NSString *)reason{
-     NSLog(@"exceptionWithName: %@ reason: %@",exceptionWithName,reason);
++ (void)paintingliteDictException:(NSDictionary *)info{
+    NSLog(@"%@",info);
+}
+
++ (void)paintingliteXMLException:(NSString *)exceptionWithName reason:(NSString *)reason{
+     NSLog(@"Exception: %@ Reason: %@",exceptionWithName,reason);
 }
 
 @end

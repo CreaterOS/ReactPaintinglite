@@ -15,6 +15,10 @@
 #import "PaintingliteExec.h"
 #import "PaintingliteCache.h"
 #import "PaintingliteWarningHelper.h"
+#import "PaintingliteThreadManager.h"
+#import "PaintingliteCreateManager.h"
+#import "PaintingliteAlterManager.h"
+#import "PaintingliteDropManager.h"
 
 #define WEAKSELF(SELF) __weak typeof(SELF) weakself = SELF
 #define STRONGSELF(WEAKSELF) __strong typeof(WEAKSELF) self = WEAKSELF
@@ -35,6 +39,10 @@ typedef NS_ENUM(NSUInteger, PaintingliteOpenType) {
 
 @property (nonatomic,copy)NSString *basePath; /// 基本路径
 @property (nonatomic,copy)NSString *session; /// 会话Session
+
+@property (nonatomic, strong) PaintingliteCreateManager *createManager; /// 创建表管理者
+@property (nonatomic, strong) PaintingliteAlterManager *alterManager; /// 修改表管理者
+@property (nonatomic, strong) PaintingliteDropManager *dropManager; /// 删除表管理者
 @end
 
 @implementation PaintingliteSessionManager
@@ -81,6 +89,10 @@ static PaintingliteSessionManager *_instance = nil;
     if (self) {
         //加载缓存
         [PaintingliteCache sharePaintingliteCache];
+        PaintingliteDataBaseOptions *databaseOpt = [PaintingliteDataBaseOptions sharePaintingliteDataBaseOptions];
+        self.createManager = databaseOpt.crateManager;
+        self.alterManager = databaseOpt.alterManager;
+        self.dropManager = databaseOpt.dropManager;
     }
     return self;
 }
@@ -125,11 +137,10 @@ static PaintingliteSessionManager *_instance = nil;
     if (self.isOpen) [self releaseSqlite];
     
     //数据库名称名称
-    NSString *filePath = [[PaintingliteConfiguration sharePaintingliteConfiguration] configurationFileName:fileName];
+    NSString *filePath = [[PaintingliteConfiguration share] configurationFileName:fileName];
     
     WEAKSELF(self);
-    
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    runAsynchronouslyOnExecQueue(^{
         STRONGSELF(weakself);
         if ([self isExistsDatabase:filePath]){
             success = (sqlite3_open_v2([filePath UTF8String], &(self->_ppDb), SQLITE_OPEN_READWRITE|SQLITE_OPEN_FULLMUTEX, NULL) == SQLITE_OK);
@@ -160,18 +171,6 @@ static PaintingliteSessionManager *_instance = nil;
     return success;
 }
 
-//#FIXME: EncryptSqlite may be err
-- (Boolean)openEncryptSqlite:(NSString *)fileName completeHandler:(void (^)(NSString * _Nonnull, PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
-//    NSAssert(fileName != NULL, @"Please set the Sqlite DataBase Name");
-    fileName = [self createDefineDataBaseName:fileName type:PaintingliteOpenByFileName];
-    
-    //数据库名称名称
-    NSString *filePath = [[PaintingliteConfiguration sharePaintingliteConfiguration] configurationFileName:fileName];
-    NSLog(@"filePath:%@",filePath);
-    
-    return [self openEncryptSqliteFilePath:filePath completeHandler:completeHandler];
-}
-
 - (Boolean)openSqliteWithFilePath:(NSString *)filePath{
     return [self openSqliteFilePath:filePath completeHandler:nil];
 }
@@ -184,8 +183,7 @@ static PaintingliteSessionManager *_instance = nil;
     dispatch_semaphore_t signal = dispatch_semaphore_create(0);
     __block Boolean success = false;
     WEAKSELF(self);
-    
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    runAsynchronouslyOnExecQueue(^{
         STRONGSELF(weakself);
         if([[PaintingliteFileManager defaultManager] fileExistsAtPath:filePath]){
             success = (sqlite3_open_v2([filePath UTF8String], &(self->_ppDb), SQLITE_OPEN_READWRITE|SQLITE_OPEN_FULLMUTEX, NULL) == SQLITE_OK);
@@ -213,72 +211,6 @@ static PaintingliteSessionManager *_instance = nil;
     return success;
 }
 
-//#FIXME: EncryptSqliteFilePath may be err
-- (Boolean)openEncryptSqliteFilePath:(NSString *)filePath completeHandler:(void (^)(NSString * _Nonnull, PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
-//    NSAssert(filePath != NULL, @"Please set the Sqlite DataBase FilePath");
-    filePath = [self createDefineDataBaseName:filePath type:PaintingliteOpenByFilePath];
-    
-    self.ppDb = nil;
-    //获得文件名称
-    NSString *databaseName = [[filePath componentsSeparatedByString:@"/"] lastObject];
-    self.databaseName = databaseName;
-    //创建信号量
-    dispatch_semaphore_t signal = dispatch_semaphore_create(0);
-    __block Boolean success = false;
-    WEAKSELF(self);
-    
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        STRONGSELF(weakself);
-        NSString *encryptPath = [[ROOT_FILE_PATH stringByAppendingPathComponent:ZIP_NAME] stringByAppendingPathComponent:databaseName];
-
-        //获得压缩包路径
-        if([[[PaintingliteSecurity alloc] init] encodeDatabase]){
-            //文件存在 -- 解密
-            success = (sqlite3_open_v2([filePath UTF8String], &(self->_ppDb), SQLITE_OPEN_READWRITE|SQLITE_OPEN_FULLMUTEX, NULL) == SQLITE_OK);
-        }else{
-            //第一次创建 -- 加密
-            if ([[PaintingliteFileManager defaultManager] createFileAtPath:filePath contents:nil attributes:nil]){
-                if ([[[PaintingliteSecurity alloc] init] encryptDatabase:filePath]){
-                    if([[PaintingliteFileManager defaultManager] removeItemAtPath:filePath error:nil]){
-                        if ([[[PaintingliteSecurity alloc] init] encodeDatabase] && [[PaintingliteFileManager defaultManager] moveItemAtPath:encryptPath toPath:filePath error:nil]){
-                             success = (sqlite3_open([filePath UTF8String], &(self->_ppDb)) == SQLITE_OK);
-                        }
-                    }
-                }
-            }
-        }
-
-        /* 数据库打开成功 */
-        self.isOpen = success;
-        /* 数据库文件路径 */
-        self.databasePath = encryptPath;
-
-        //保存表快照到一级缓存 -- 当数据库中含有的表的时候保存到快照
-        //查看打开的数据库，进行快照区保存
-        [[PaintingliteSnapManager sharePaintingliteSnapManager] saveSnap:self.ppDb];
-        
-        //信号量+1
-        dispatch_semaphore_signal(signal);
-    });
-    
-    //信号量等待
-    dispatch_semaphore_wait(signal, DISPATCH_TIME_FOREVER);
-    
-    return success;
-}
-
-/// 加密数据库
-- (Boolean)resume{
-    //1.删除数据库ZIP
-    //2.重新压缩数据库ZIP
-    return [[PaintingliteFileManager defaultManager] removeItemAtPath:[ROOT_FILE_PATH stringByAppendingPathComponent:@"Encrypt.zip"] error:nil] && [[[PaintingliteSecurity alloc] init] encryptDatabase:[ROOT_FILE_PATH stringByAppendingPathComponent:self.databaseName]] && [[PaintingliteFileManager defaultManager] removeItemAtPath:[ROOT_FILE_PATH stringByAppendingPathComponent:ZIP_NAME] error:nil];
-}
-
-/// 删除加密文件夹
-- (Boolean)delEncryptDict{
-    return [[PaintingliteFileManager defaultManager] removeItemAtPath:[ROOT_FILE_PATH stringByAppendingPathComponent:self.databaseName] error:nil];
-}
-
 #pragma mark - 获得当前Session
 - (NSString *)getCurrentSession {
     return ([self getSqlite3] == NULL) ? [NSString string] : self.session;
@@ -299,19 +231,19 @@ static PaintingliteSessionManager *_instance = nil;
 
 - (Boolean)releaseSqliteCompleteHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
     /* 释放数据库,先判断是否打开数据库,只有打开数据库才可以释放 */
-    Boolean success = false;
+    __block Boolean success = false;
     
     if (self.isOpen) {
-        @synchronized (self) {
+        runSynchronouslyOnExecQueue(self, ^{
             if (!self.closeFlag) {
-                success = (sqlite3_close(_ppDb) == SQLITE_OK);
+                success = (sqlite3_close(self->_ppDb) == SQLITE_OK);
                 self.closeFlag = success;
                 
                 if (completeHandler != nil) {
                     completeHandler([PaintingliteSessionError sharePaintingliteSessionError],success);
                 }
             }
-        }
+        });
     }else{
         [self warningOpenDatabase];
     }
@@ -412,20 +344,20 @@ static PaintingliteSessionManager *_instance = nil;
         return false;
     }
     
-    return [[PaintingliteDataBaseOptions sharePaintingliteDataBaseOptions] createTableForName:self.ppDb tableName:tableName content:content completeHandler:completeHandler];
+    return [_createManager createTableForName:self.ppDb tableName:tableName content:content completeHandler:completeHandler];
 }
 
 - (Boolean)createTableForObj:(id)obj primaryKeyStyle:(PaintingliteDataBaseOptionsPrimaryKeyStyle)primaryKeyStyle{
     return [self createTableForObj:obj primaryKeyStyle:primaryKeyStyle completeHandler:nil];
 }
 
-- (Boolean)createTableForObj:(id)obj primaryKeyStyle:(PaintingliteDataBaseOptionsPrimaryKeyStyle)primaryKeyStyle completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
+- (Boolean)createTableForObj:(id)obj primaryKeyStyle:(PaintingliteDataBaseOptionsPrimaryKeyStyle)primaryKeyStyle completeHandler:(void (^)(NSString *_Nonnull,PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
     if (!self.isOpen) {
         [self warningOpenDatabase];
         return false;
     }
         
-    return [[PaintingliteDataBaseOptions sharePaintingliteDataBaseOptions] createTableForObj:self.ppDb obj:obj createStyle:primaryKeyStyle completeHandler:completeHandler];
+    return [_createManager createTableForObj:self.ppDb obj:obj createStyle:primaryKeyStyle completeHandler:completeHandler];
 }
 
 #pragma mark - 更新表
@@ -439,7 +371,7 @@ static PaintingliteSessionManager *_instance = nil;
         return false;
     }
     
-    return [[PaintingliteDataBaseOptions sharePaintingliteDataBaseOptions] alterTableForName:self.ppDb oldName:oldName newName:newName completeHandler:completeHandler];
+    return [_alterManager alterTableForName:self.ppDb oldName:oldName newName:newName completeHandler:completeHandler];
 }
 
 - (BOOL)alterTableAddColumnWithTableName:(NSString *)tableName columnName:(NSString *)columnName columnType:(NSString *)columnType{
@@ -452,7 +384,7 @@ static PaintingliteSessionManager *_instance = nil;
         return false;
     }
     
-    return [[PaintingliteDataBaseOptions sharePaintingliteDataBaseOptions] alterTableAddColumn:self.ppDb tableName:tableName columnName:columnName columnType:columnType completeHandler:completeHandler];
+    return [_alterManager alterTableAddColumn:self.ppDb tableName:tableName columnName:columnName columnType:columnType completeHandler:completeHandler];
 }
 
 - (BOOL)alterTableForObj:(id)obj{
@@ -465,7 +397,7 @@ static PaintingliteSessionManager *_instance = nil;
         return false;
     }
         
-    return [[PaintingliteDataBaseOptions sharePaintingliteDataBaseOptions] alterTableForObj:self.ppDb obj:obj completeHandler:completeHandler];
+    return [_alterManager alterTableForObj:self.ppDb obj:obj completeHandler:completeHandler];
 }
 
 #pragma mark - 删除表
@@ -480,7 +412,7 @@ static PaintingliteSessionManager *_instance = nil;
         [self warningOpenDatabase];
     }
     
-    return [[PaintingliteDataBaseOptions sharePaintingliteDataBaseOptions] dropTableForTableName:self.ppDb tableName:tableName completeHandler:completeHandler];
+    return [_dropManager dropTableForTableName:self.ppDb tableName:tableName completeHandler:completeHandler];
 }
 
 - (Boolean)dropTableForObj:(id)obj{
@@ -495,7 +427,7 @@ static PaintingliteSessionManager *_instance = nil;
         return false;
     }
     
-    return [[PaintingliteDataBaseOptions sharePaintingliteDataBaseOptions] dropTableForObj:self.ppDb obj:obj completeHandler:completeHandler];
+    return [_dropManager dropTableForObj:self.ppDb obj:obj completeHandler:completeHandler];
 }
 
 /* =====================================数据库日志操作======================================== */
@@ -734,6 +666,13 @@ static PaintingliteSessionManager *_instance = nil;
         [self warningOpenDatabase];
         return false;
     }
+    
+    if (self.openSecurityMode) {
+        PaintingliteSecurityCodeTool *securityCode = [[PaintingliteSecurity alloc] init].securityCode;
+        securityCode = [[PaintingliteSecurityCodeTool alloc] init];
+        sql = [securityCode securitySqlCommand:sql type:PaintingliteSecurityInsert];
+    }
+    
     return [[PaintingliteTableOptions sharePaintingliteTableOptions] insert:self.ppDb sql:sql completeHandler:completeHandler];
 }
 
@@ -743,6 +682,12 @@ static PaintingliteSessionManager *_instance = nil;
         return false;
     }
 
+    if (self.openSecurityMode) {
+        PaintingliteSecurityCodeTool *securityCode = [[PaintingliteSecurity alloc] init].securityCode;
+        securityCode = [[PaintingliteSecurityCodeTool alloc] init];
+        obj = [securityCode securityObj:obj];
+    }
+    
     return [[PaintingliteTableOptions sharePaintingliteTableOptions] insert:self.ppDb obj:obj completeHandler:completeHandler];
 }
 
@@ -752,6 +697,12 @@ static PaintingliteSessionManager *_instance = nil;
 }
 
 - (Boolean)update:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
+    if (self.openSecurityMode) {
+        PaintingliteSecurityCodeTool *securityCode = [[PaintingliteSecurity alloc] init].securityCode;
+        securityCode = [[PaintingliteSecurityCodeTool alloc] init];
+        sql = [securityCode securitySqlCommand:sql type:PaintingliteSecurityUpdate];
+    }
+    
     return [[PaintingliteTableOptions sharePaintingliteTableOptions] update:self.ppDb sql:sql completeHandler:completeHandler];
 }
 
@@ -760,6 +711,13 @@ static PaintingliteSessionManager *_instance = nil;
         [self warningOpenDatabase];
         return false;
     }
+    
+    if (self.openSecurityMode) {
+        PaintingliteSecurityCodeTool *securityCode = [[PaintingliteSecurity alloc] init].securityCode;
+        securityCode = [[PaintingliteSecurityCodeTool alloc] init];
+        obj = [securityCode securityObj:obj];
+    }
+    
     return [[PaintingliteTableOptions sharePaintingliteTableOptions] update:self.ppDb obj:obj condition:condition completeHandler:completeHandler];
 }
 
@@ -779,6 +737,11 @@ static PaintingliteSessionManager *_instance = nil;
 #pragma mark - 表结构查询
 - (NSMutableArray<NSDictionary *> *)tableInfoWithTableName:(NSString *)tableName{
     return [self.exec execQueryTableInfo:_ppDb tableName:tableName];
+}
+
+- (void)setOpenSecurityMode:(Boolean)openSecurityMode {
+    [PaintingliteTableOptions sharePaintingliteTableOptions].openSecurityMode = openSecurityMode;
+    _openSecurityMode = openSecurityMode;
 }
 
 @end

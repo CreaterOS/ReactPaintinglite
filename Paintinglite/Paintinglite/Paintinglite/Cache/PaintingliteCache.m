@@ -8,12 +8,21 @@
 
 #import "PaintingliteCache.h"
 #import "PaintingliteLog.h"
-#import <os/lock.h>
 #import "PaintingliteSystemUseInfo.h"
+#import "PaintingliteThreadManager.h"
+#import <os/lock.h>
 
 #define WEAK_SELF __weak typeof(self) weakSelf = self;
 #define STRONG_SELF __strong typeof(weakSelf) self = weakSelf;
- 
+#define WAIT_MIN(min) 60 * min
+
+static const NSInteger kMaxCacheCount = 30; // 最大缓存量
+static const NSInteger kMaxReleaseCount = 10; // 最大释放量
+static const double kMinUseMemory = 50.0; // 最小内存占有
+static const double kMinUseCPU = 50.0; // 最小CPU占有
+static const double kMaxUseMemory = 100.0; // 最小内存占有
+static const double kMaxUseCPU = 70.0; // 最小CPU占有
+
 @interface PaintingliteCache()<UIApplicationDelegate>
 @property (nonatomic,assign)NSTimeInterval lauchTime; /// 启动时间
 @property (nonatomic,strong)CADisplayLink *displayLink;
@@ -55,8 +64,9 @@ static PaintingliteCache *_instance = nil;
 - (void)applicationWillResignActive:(NSNotification *)notification {
     /// 程序退出写入缓存
     __weak typeof(self) weakself = self;
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [weakself pushCacheToLogFile];
+    runAsynchronouslyOnExecQueue(^{
+        __strong typeof(weakself) self = weakself;
+        [self pushCacheToLogFile];
     });
 }
 
@@ -74,6 +84,7 @@ static PaintingliteCache *_instance = nil;
     tableCount++;
     self.tableCount = tableCount;
 }
+
 #pragma mark - 添加表结构缓存
 - (void)addSnapTableInfoNameCache:(NSArray *)infoArray tableName:(NSString *)tableName{
     [self setObject:infoArray forKey:[NSString stringWithFormat:@"snap_%@_info",tableName]];
@@ -93,13 +104,13 @@ static int count = 0;
     double usedMemory = [systemUseInfo applicationMemory];
     CGFloat usedCPU = [systemUseInfo applicationCPU];
     
-    NSInteger maxCacheCount = 30;
-    NSInteger maxReleaseCount = 10;
+    NSInteger maxCacheCount = kMaxCacheCount;
+    NSInteger maxReleaseCount = kMaxReleaseCount;
     
-    if (usedMemory >= 50.0 || usedCPU >= 50.0) {
+    if (usedMemory >= kMinUseMemory || usedCPU >= kMinUseCPU) {
         maxCacheCount = 40;
         maxReleaseCount = 20;
-    } else if (usedMemory >= 100.0 || usedCPU >= 70.0) {
+    } else if (usedMemory >= kMaxUseMemory || usedCPU >= kMaxUseCPU) {
         maxCacheCount = 50;
         maxReleaseCount = 30;
     }
@@ -129,7 +140,7 @@ static int count = 0;
     long long int currentTime = (long long int)[[NSDate date] timeIntervalSince1970];
     
     /// 十分钟上传一次
-    if (currentTime - (long long int)self.lauchTime >= 60 * 10) {
+    if (currentTime - (long long int)self.lauchTime >= WAIT_MIN(10)) {
         /// 写入日志
         [self pushCacheToLogFile];
     }
@@ -146,12 +157,12 @@ static int count = 0;
                 NSArray<NSString *> *strArray = [optAndStatus componentsSeparatedByString:@" | "];
                 
                 //写入文件
-                @synchronized ([PaintingliteLog sharePaintingliteLog]) {
+                runSynchronouslyOnExecQueue([PaintingliteLog sharePaintingliteLog], ^{
                     if ([strArray firstObject] == NULL) {
                         return ;
                     }
                     [[PaintingliteLog sharePaintingliteLog] writeLogFileOptions:[strArray firstObject] status:([[strArray lastObject] isEqualToString:@"success"]) ? PaintingliteLogSuccess : PaintingliteLogError completeHandler:nil];
-                }
+                });
                
                 /* 清除缓存 */
                 [self removeObjectForKey:cacheKey];

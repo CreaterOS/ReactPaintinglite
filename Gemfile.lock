@@ -1,0 +1,18 @@
+GIT
+  remote: https://github.com/CreaterOS/Paintinglite.git
+  revision: f8136fbb091c79331009c84c3d228e36bf636d0a
+  specs:
+    Paintinglite (v2.1.1)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  Paintinglite (= v2.1.1)!
+
+BUNDLED WITH
+   2.1.4

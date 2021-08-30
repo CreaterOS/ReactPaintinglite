@@ -6,52 +6,133 @@
 //  Copyright © 2020 Bryant Reyn. All rights reserved.
 //
 
-/**
- * 用于写入日志文件
- * 操作
- * 日期
- * 状态
+/*!
+ @header PaintingliteLog
+ @abstract PaintingliteLog 提供SDK框架中操作日志写入,针对操作进行日期和状态写入
+ @author CreaterOS
+ @version 1.00 2020/5/26 Creation (此文档的版本信息)
  */
+
 #import <Foundation/Foundation.h>
 
+/*!
+ @abstract PaintingliteLogStatus 日志保存状态
+ @constant PaintingliteLogSuccess 日志保存成功 @constant PaintingliteLogError 日志保存失败
+ @discussion 测试报告保存类型
+*/
 typedef NS_ENUM(NSInteger, PaintingliteLogStatus){
     PaintingliteLogSuccess, //成功
     PaintingliteLogError //错误
 };
 
 NS_ASSUME_NONNULL_BEGIN
-
+/*!
+ @class PaintingliteLog
+ @abstract PaintingliteLog 提供SDK框架中操作日志写入,针对操作进行日期和状态写入
+ */
 @interface PaintingliteLog : NSObject
-@property (nonatomic,copy)NSString *options; //操作
-@property (nonatomic,strong)NSDate *optDate;  //操作日期
-@property (nonatomic)PaintingliteLogStatus status; //操作状态
-
-/* 目录下所有的日志文件路径 */
+/*!
+ @property options
+ @abstract 操作语句
+ */
+@property (nonatomic,copy)NSString *options;
+/*!
+ @property optDate
+ @abstract 操作日期
+ */
+@property (nonatomic,strong)NSDate *optDate;
+/*!
+ @property status
+ @abstract 日志保存状态
+ */
+@property (nonatomic)PaintingliteLogStatus status;
+/*!
+ @property logsPath
+ @abstract 目录下所有的日志文件绝对路径
+ */
 @property (nonatomic,strong)NSDictionary<NSString *,NSString *> *logsPath;
 
-/* 单例模式 */
+/*!
+ @method PaintingliteLog
+ @abstract 单例模式生成PaintingliteLog对象
+ @discussion 生成PaintingliteLog在项目工程全局中只生成一个实例对象
+ @result PaintingliteLog
+ */
 + (instancetype)sharePaintingliteLog;
 
-/* 写入日志文件 */
+/*!
+ @method writeLogFileOptions: status: completeHandler:
+ @abstract 写入日志文件
+ @discussion 写入日志文件
+ @param options 操作语句
+ @param status 日志保存状态
+ @param completeHandler 回调操作
+ */
 - (void)writeLogFileOptions:(NSString *__nonnull)options status:(PaintingliteLogStatus)status completeHandler:(void(^ __nullable)(NSString *logFilePath))completeHandler;
 
-/* 删除日志文件 */
+/*!
+ @method removeLogFile:
+ @abstract 删除日志文件
+ @discussion 删除日志文件
+ @param fileName 日志名称
+ @result Boolean
+ */
 - (Boolean)removeLogFile:(NSString *)fileName;
 
-/* 读取日志文件 */
+/*!
+ @method readLogFile:
+ @abstract 读取日志文件
+ @discussion 读取日志文件
+ @param fileName 日志名称
+ @result NSString
+ */
 - (NSString *)readLogFile:(NSString *__nonnull)fileName;
 
+/*!
+ @method readLogFile:
+ @abstract 读取日志文件
+ @discussion 读取日志文件
+ @param fileName 日志名称
+ @param dateTime 时间节点
+ @result NSString
+ */
 - (NSString *)readLogFile:(NSString *)fileName dateTime:(NSDate *__nonnull)dateTime;
 
+/*!
+ @method readLogFile: logStatus:
+ @abstract 读取日志文件
+ @discussion 读取日志文件
+ @param fileName 日志名称
+ @param logStatus 日志保存状态
+ @result NSString
+ */
 - (NSString *)readLogFile:(NSString *)fileName logStatus:(PaintingliteLogStatus)logStatus;
 
-/* 查看日志文件最终修改时间 */
+/*!
+ @method logFileModificationTime:
+ @abstract 查看日志文件最终修改时间
+ @discussion 查看日志文件最终修改时间
+ @param logFilePath 日志文件路径
+ @result NSDate
+ */
 - (NSDate *)logFileModificationTime:(NSString *__nonnull)logFilePath;
 
-/* 查看日志文件大小 */
+/*!
+ @method logFileSize:
+ @abstract 查看日志文件大小
+ @discussion 查看日志文件大小
+ @param logFilePath 日志文件路径
+ @result double
+ */
 - (double)logFileSize:(NSString *__nonnull)logFilePath;
 
-/* 查看日志文件条数 */
+/*!
+ @method logfileLineWithDatabaseName:
+ @abstract 查看日志文件条数
+ @discussion 查看日志文件条数
+ @param logfileName 日志名称
+ @result NSUInteger
+ */
 - (NSUInteger)logfileLineWithDatabaseName:(NSString *__nonnull)logfileName;
 
 @end

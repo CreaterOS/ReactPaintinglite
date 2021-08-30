@@ -10,6 +10,7 @@
 #import "PaintingliteSessionManager.h"
 #import "PaintingliteFileManager.h"
 #import "PaintingliteExec.h"
+#import "PaintingliteThreadManager.h"
 
 #define Paintinglite_MAX_TEXT @"1012"
 #define ROOTPATH [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject]
@@ -76,12 +77,14 @@ static PaintingliteBackUpManager *_instance = nil;
     __block NSMutableArray *tableInfoArray = [self.exec execQueryTableInfo:ppDb tableName:tableName];
     
     dispatch_semaphore_t signal = dispatch_semaphore_create(0);
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    
+    runAsynchronouslyOnExecQueue(^{
         for (NSUInteger i = 0; i < tableInfoArray.count; i++) {
             [fieldArray addObject:tableInfoArray[i][TABLEINFO_NAME]];
         }
         dispatch_semaphore_signal(signal);
     });
+
     dispatch_semaphore_wait(signal, DISPATCH_TIME_FOREVER);
     
     return [contentStr stringByAppendingString:[NSString stringWithFormat:@"(%@) VALUES ",[fieldArray componentsJoinedByString:@","]]];
@@ -95,7 +98,8 @@ static PaintingliteBackUpManager *_instance = nil;
     
     __block NSMutableArray<NSString *> *tableRowStrArray = [NSMutableArray array];
     dispatch_semaphore_t signal = dispatch_semaphore_create(0);
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    
+    runAsynchronouslyOnExecQueue(^{
         NSUInteger totalCount = queryArray.count;
         for (NSUInteger i = 0; i < totalCount; i++) {
             @autoreleasepool {
@@ -157,7 +161,8 @@ static PaintingliteBackUpManager *_instance = nil;
     
     //根据表名进行查询
     dispatch_semaphore_t signal = dispatch_semaphore_create(0);
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    
+    runAsynchronouslyOnExecQueue(^{
         for (NSString *tableName in tableNameArray) {
             @autoreleasepool {
                 //保存表结构字典数组
@@ -248,7 +253,7 @@ static PaintingliteBackUpManager *_instance = nil;
     
     dispatch_semaphore_t signal = dispatch_semaphore_create(0);
     
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    runAsynchronouslyOnExecQueue(^{
         if (type != PaintingliteBackUpORCALE) {
             NSString *savePath = [ROOTPATH stringByAppendingPathComponent:[NSString stringWithFormat:@"%@_BACKUP.sql",[sqliteName uppercaseString]]];
             

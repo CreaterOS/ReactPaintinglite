@@ -1,52 +1,67 @@
 # Paintinglite
 
-### Installation
+## v2.1.1 Paintinglite API v1.0
+http://htmlpreview.github.io/?https://github.com/CreaterOS/Paintinglite/blob/master/Paintinglite/PaintingliteWeb/index.html
+The detailed API documentation is contained in masterTOC.html in the Paintinglite/PaintingliteWeb directory
+## Version iteration
 
-**Download directly to the local through GitHub, drag Paintinglite to the project, you can experience Paintinglite. (Need to add libsqlite3.tbd or libsqlite3.0.tbd supported by Sqlite3 in the project)**
+| Paintinglite version update | |
+| ------------------- | ---- |
+| Summary of the v1.1.0 version update | Optimized the operation of opening the database and added important information such as viewing the existence and size of the database file |
+| Summary of v1.2.0 version update | Re-revised the stress test strategy, greatly reducing the frame size (<10MB), increasing the first level cache and log writing strategy |
+| v1.3.0 version update summary | Fixed the object packaging operation vulnerability caused by the first-level cache, improved a set of caches, optimized the CREATE, ALTER, and DROP operations on the table, and added the thread optimization strategy |
+| Summary of v1.3.1 version update | Optimize query thread safety, fix package disorder BUG, ​​optimize aggregation function |
+| Summary of v1.3.2 version update | Optimize query thread safety, fix database backup, simplify framework structure |
+| Summary of v2.0.0 version update | Introduced a new design mode, centralized management of SQL statements |
+| Summary of v2.1.0 version update | Optimize big data CPU resource consumption problem, fix BUG |
 
+## Pod installation
+``` objective-c
+pod'Paintinglite', :git =>'https://github.com/CreaterOS/Paintinglite.git'#, :tag => '2.1.1'
+```
 ## Introduction
 
-Paintinglite is an excellent and fast Sqlite3 database framework. Paintinglite has good encapsulation of data and fast data insertion characteristics. It can still show good resource utilization for huge data volume. Paintinglite supports object mapping and implements a very lightweight object encapsulation for sqlite3. It establishes a mapping relationship between POJO and database tables. Paintinglite can not only automatically generate SQL statements, but also manually write SQL statements to achieve convenient and efficient development. One-piece lightweight frame.
+Paintinglite is an excellent and fast Sqlite3 database framework. Paintinglite has good encapsulation of data, fast data insertion characteristics, and can still show good resource utilization for huge amounts of data.
+Paintinglite supports object mapping and has carried out a very lightweight object encapsulation on sqlite3. It establishes a mapping relationship between POJOs and database tables. Paintinglite can automatically generate SQL statements and manually write SQL statements to achieve convenient development and efficient querying. All-in-one lightweight framework.
 
-|                  Paintinglite Function Menu                  |      |
-| :----------------------------------------------------------: | :--: |
-|                   Database Basic Operation                   |      |
-|                    Table Basic Operation                     |      |
-|                   Package Query Operation                    |      |
-|            PQL Feature Language Query Operations             |      |
-|          Advanced Database Configuration Operations          |      |
-|      Intelligent Query Operation (Multi-Package Query)       |      |
-|                  Aggregate Query Operation                   |      |
-|                      Cascade Operation                       |      |
-|                    Transaction Operation                     |      |
-|                  Safe Encryption Operation                   |      |
-|                 Split Large Table Operation                  |      |
-|                      Logging Operations                      |      |
-|                   Snapshot Save Operation                    |      |
-| Backup Database Operation (Support MySQL, SQLServer, Sqlite3, Oracle) |      |
-|      Stress Test Operation (Support Report Generation)       |      |
+| Paintinglite function table | |
+| ------------------------------------------------- -| ---- |
+| Basic library operations | |
+| Table basic operations | |
+| Package query operation | |
+| PQL feature language query operation | |
+| Advanced database configuration operations | |
+| Intelligent query operation (multi-package query) | |
+| Aggregate query operations | |
+| Cascade operation | |
+| Transaction operation | |
+| Secure encryption operation | |
+| Split large table operation | |
+| Logging operations | |
+| Snapshot save operation | |
+| Backup database operations (support MySQL, SQLServer, Sqlite3, Oracle) | |
+| Stress test operation (support report generation) | |
+| XML centralized management database operation statement operation | |
 
-## Core API
+## Core Object
+-PaintingliteSessionManager: Basic operation manager (library operation | table operation)
+-PaintingliteXMLSessionManager: Centralized management of SQL statement managers (specially introduced in v2.0)
+-PaintingliteExec: Perform operation
+-PaintingliteBackUpManager: Database backup manager
+-PaintingliteSplitTable: Split operation
+-PaintinglitePressureOS: pressure test
 
-- PaintingliteSessionManager ： Basic Operations Manager (DataBase Operations | Table Operations)
-- PaintingliteExec ： Perform Operation
-- PaintingliteBackUpManager ： Database Backup Manager
-- PaintingliteSplitTable ： Split Operation
-- PaintinglitePressureOS ： Pressure Test
-
-# Database Operations(PaintingliteSessionManager)
-
-## 1.Build a DataBase
-
-Create PaintingliteSessionManager, create a database through the manager.
+---
+## Database operation (PaintingliteSessionManager)
+### 1. Build a library
+#### Create PaintingliteSessionManager, create a database through the manager.
 
 ```objective-c
-- (Boolean)openSqlite:(NSString *)fileName;
+-(Boolean)openSqlite:(NSString *)fileName;
 
-- (Boolean)openSqlite:(NSString *)fileName completeHandler:(void(^ __nullable)(NSString *filePath,PaintingliteSessionError *error,Boolean success))completeHandler;
+-(Boolean)openSqlite:(NSString *)fileName completeHandler:(void(^ __nullable)(NSString *filePath,PaintingliteSessionError *error,Boolean success))completeHandler;
 ```
-
-**Paintinglite has a good processing mechanism to create a database by passing in the database name. Even if the database suffix is not standardized, it can still create a database with a .db suffix.**
+**Paintinglite has a good processing mechanism. It creates a database by passing in the database name. Even if the database suffix is ​​not standardized, it can still create a database with a .db suffix. **
 
 ```objective-c
 [self.sessionM openSqlite:@"sqlite"];
@@ -56,7 +71,7 @@ Create PaintingliteSessionManager, create a database through the manager.
 [self.sessionM openSqlite:@"sqlite05.."];
 ```
 
-**Obtain the absolute path to create the database.**
+**Get the absolute path of the created database. **
 
 ```objective-c
 [self.sessionM openSqlite:@"sqlite" completeHandler:^(NSString * _Nonnull filePath, PaintingliteSessionError * _Nonnull error, Boolean success) {
@@ -66,30 +81,28 @@ Create PaintingliteSessionManager, create a database through the manager.
  }];
 ```
 
-## 2.Close Database
+## 2. Close the library
 
-```
-- (Boolean)releaseSqlite;
+```objective-c
+-(Boolean)releaseSqlite;
 
-- (Boolean)releaseSqliteCompleteHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
-```
-
-## 3.Create Table
-
-```
-- (Boolean)execTableOptForSQL:(NSString *)sql;
-- (Boolean)execTableOptForSQL:(NSString *)sql completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success))completeHandler;
-- (Boolean)createTableForName:(NSString *)tableName content:(NSString *)content;
-- (Boolean)createTableForName:(NSString *)tableName content:(NSString *)content completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success))completeHandler;
-- (Boolean)createTableForObj:(id)obj createStyle:(PaintingliteDataBaseOptionsCreateStyle)createStyle;
-- (Boolean)createTableForObj:(id)obj createStyle:(PaintingliteDataBaseOptionsCreateStyle)createStyle completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success))completeHandler;
+-(Boolean)releaseSqliteCompleteHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
 ```
 
+## 3. Create a table
+
+```objective-c
+-(Boolean)execTableOptForSQL:(NSString *)sql;
+-(Boolean)execTableOptForSQL:(NSString *)sql completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success))completeHandler;
+-(Boolean)createTableForName:(NSString *)tableName content:(NSString *)content;
+-(Boolean)createTableForName:(NSString *)tableName content:(NSString *)content completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success))completeHandler;
+-(Boolean)createTableForObj:(id)obj createStyle:(PaintingliteDataBaseOptionsCreateStyle)createStyle;
+-(Boolean)createTableForObj:(id)obj createStyle:(PaintingliteDataBaseOptionsCreateStyle)createStyle completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success))completeHandler;
+```
 Three ways to create a table:
+ 1. SQL creation
 
-1. SQL creation
-
-```
+```objective-c
 [self.sessionM execTableOptForSQL:@"CREATE TABLE IF NOT EXISTS cart(UUID VARCHAR(20) NOT NULL PRIMARY KEY,shoppingName TEXT,shoppingID INT(11))" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
         if (success) {
             NSLog(@"===CREATE TABLE SUCCESS===");
@@ -97,57 +110,56 @@ Three ways to create a table:
 }];
 ```
 
-2. Table name creation
+ 2. Table name creation
 
-```
+```objective-c
 [self.sessionM createTableForName:@"student" content:@"name TEXT,age INTEGER"];
 ```
 
-3. Object creation
+ 3. Object creation
 
-```
+```objective-c
 User *user = [[User alloc] init];
 [self.sessionM createTableForObj:user createStyle:PaintingliteDataBaseOptionsUUID];
 ```
 
-Object creation can automatically generate a primary key:
+Object creation can automatically generate primary keys:
 
-| PrimaryKey | Type    |
-| ---------- | ------- |
-| UUID       | 字符串  |
-| ID         | INTEGER |
+| Primary key | Type |
+| ---- | ------ |
+| UUID | String |
+| ID | Value |
 
-## 4.Update Datebase
+## 4. Update table
 
+```objective-c
+-(Boolean)execTableOptForSQL:(NSString *)sql;
+-(Boolean)execTableOptForSQL:(NSString *)sql completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success))completeHandler;
+-(BOOL)alterTableForName:(NSString *__nonnull)oldName newName:(NSString *__nonnull)newName;
+-(BOOL)alterTableForName:(NSString *__nonnull)oldName newName:(NSString *__nonnull)newName completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success))completeHandler;
+-(BOOL)alterTableAddColumnWithTableName:(NSString *)tableName columnName:(NSString *__nonnull)columnName columnType:(NSString *__nonnull)columnType;
+-(BOOL)alterTableAddColumnWithTableName:(NSString *)tableName columnName:(NSString *__nonnull)columnName columnType:(NSString *__nonnull)columnType completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success))completeHandler;
+-(BOOL)alterTableForObj:(id)obj;
+-(BOOL)alterTableForObj:(id)obj completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success))completeHandler;
 ```
-- (Boolean)execTableOptForSQL:(NSString *)sql;
-- (Boolean)execTableOptForSQL:(NSString *)sql completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success))completeHandler;
-- (BOOL)alterTableForName:(NSString *__nonnull)oldName newName:(NSString *__nonnull)newName;
-- (BOOL)alterTableForName:(NSString *__nonnull)oldName newName:(NSString *__nonnull)newName completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success))completeHandler;
-- (BOOL)alterTableAddColumnWithTableName:(NSString *)tableName columnName:(NSString *__nonnull)columnName columnType:(NSString *__nonnull)columnType;
-- (BOOL)alterTableAddColumnWithTableName:(NSString *)tableName columnName:(NSString *__nonnull)columnName columnType:(NSString *__nonnull)columnType completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success))completeHandler;
-- (BOOL)alterTableForObj:(id)obj;
-- (BOOL)alterTableForObj:(id)obj completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success))completeHandler;
-```
-
 Three ways to update the table:
+ 1. SQL Update
 
-1. SQL update
-2. Table name update [table name | table field]
+ 2. Table name update
 
 ```objective-c
 [self.sessionM alterTableForName:@"cart" newName:@"carts"];
 [self.sessionM alterTableAddColumnWithTableName:@"carts" columnName:@"newColumn" columnType:@"TEXT"];
 ```
-
-3. Object update Update User table operation
+ 3. Object update
+ Update User table operation
 
 ```objective-c
 #import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface User : NSObject
+@interface User: NSObject
 
 @property (nonatomic,strong)NSString *name;
 @property (nonatomic,strong)NSNumber *age;
@@ -157,31 +169,27 @@ NS_ASSUME_NONNULL_BEGIN
 
 NS_ASSUME_NONNULL_END
 ```
-
-According to the mapping relationship between the table and the object, the table field is automatically updated according to the object.
-
-```
+According to the mapping relationship between the table and the object, the table fields are automatically updated according to the object.
+```objective-c
 User *user = [[User alloc] init];
 [self.sessionM alterTableForObj:user];
 ```
 
-### 5.Drop Table
+### 5. Delete operation
 
+```objective-c
+-(Boolean)execTableOptForSQL:(NSString *)sql;
+-(Boolean)execTableOptForSQL:(NSString *)sql completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success))completeHandler;
+-(Boolean)dropTableForTableName:(NSString *)tableName;
+-(Boolean)dropTableForTableName:(NSString *)tableName completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
+-(Boolean)dropTableForObj:(id)obj;
+-(Boolean)dropTableForObj:(id)obj completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
 ```
-- (Boolean)execTableOptForSQL:(NSString *)sql;
-- (Boolean)execTableOptForSQL:(NSString *)sql completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success))completeHandler;
-- (Boolean)dropTableForTableName:(NSString *)tableName;
-- (Boolean)dropTableForTableName:(NSString *)tableName completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
-- (Boolean)dropTableForObj:(id)obj;
-- (Boolean)dropTableForObj:(id)obj completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
-```
+Three ways to delete a table:
+ 1. SQL operations
+ 2. Table name deletion
 
-Three ways to drop the table:
-
-1. SQL drop
-2. Tablename drop
-
-```
+```objective-c
 [self.sessionM execTableOptForSQL:@"DROP TABLE carts" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success) {
         if (success) {
             NSLog(@"===DROP TABLE SUCCESS===");
@@ -189,26 +197,25 @@ Three ways to drop the table:
 }];
 ```
 
-3. Object drop
+ 3. Object deletion
 
-```
+```objective-c
 User *user = [[User alloc] init];
 [self.sessionM dropTableForObj:user];
 ```
+## Table operation
 
-# Table operation
+### 1. Query
+**Query can provide the feature of query results encapsulated in array or directly encapsulated by object. **
+ 1. General inquiry
+ -General enquiries
 
-### 1.Select
-
-**Query can provide the feature that the query result is encapsulated by array or directly encapsulated by object. **
-
-1. General query
-
-- General query
-
+```objective-c
+-(NSMutableArray *)execQuerySQL:(NSString *__nonnull)sql;
+-(Boolean)execQuerySQL:(NSString *__nonnull)sql completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success,NSMutableArray<NSDictionary *> *resArray))completeHandler;
 ```
-- (NSMutableArray *)execQuerySQL:(NSString *__nonnull)sql;
-- (Boolean)execQuerySQL:(NSString *__nonnull)sql completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success,NSMutableArray<NSDictionary *> *resArray))completeHandler;
+
+```objective-c
 [self.sessionM execQuerySQL:@"SELECT * FROM student" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<NSDictionary *> * _Nonnull resArray) {
         if (success) {
             for (NSDictionary *dict in resArray) {
@@ -217,16 +224,29 @@ User *user = [[User alloc] init];
         }
 }];
 ```
+> 2020-06-27 15:35:45.967569+0800 Paintinglite[5805:295051] {
+> age = 21;
+> name = CreaterOS;
+>}
+> 2020-06-27 15:35:45.967760+0800 Paintinglite[5805:295051] {
+> age = 19;
+> name = Painting;
+>}
+> 2020-06-27 15:35:45.967879+0800 Paintinglite[5805:295051] {
+> age = 21;
+> name = CreaterOS;
+>}
 
-> 2020-06-27 15:35:45.967569+0800 Paintinglite[5805:295051] { age = 21; name = CreaterOS; } 2020-06-27 15:35:45.967760+0800 Paintinglite[5805:295051] { age = 19; name = Painting; } 2020-06-27 15:35:45.967879+0800 Paintinglite[5805:295051] { age = 21; name = CreaterOS; }
+ -Package query
 
-- Package query
+  Encapsulated query can encapsulate query results into objects corresponding to table fields.
 
-  Encapsulated queries can encapsulate the query results into objects corresponding to table fields.
-
+```objective-c
+-(id)execQuerySQL:(NSString *__nonnull)sql obj:(id)obj;
+-(Boolean)execQuerySQL:(NSString *__nonnull)sql obj:(id)obj completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray,NSMutableArray<id> *resObjList))completeHandler;
 ```
-- (id)execQuerySQL:(NSString *__nonnull)sql obj:(id)obj;
-- (Boolean)execQuerySQL:(NSString *__nonnull)sql obj:(id)obj completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray,NSMutableArray<id> *resObjList))completeHandler;
+
+```objective-c
 Student *stu = [[Student alloc] init];
 [self.sessionM execQuerySQL:@"SELECT * FROM student" obj:stu completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<NSDictionary *> * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
   if (success) {
@@ -236,35 +256,52 @@ Student *stu = [[Student alloc] init];
   }
 }];
 ```
+> 2020-06-27 15:39:27.306786+0800 Paintinglite[5892:302879] stu.name = CreaterOS and stu.age = 21
+> 2020-06-27 15:39:27.306961+0800 Paintinglite[5892:302879] stu.name = Painting and stu.age = 19
+> 2020-06-27 15:39:27.307110+0800 Paintinglite[5892:302879] stu.name = CreaterOS and stu.age = 21
 
-> 2020-06-27 15:39:27.306786+0800 Paintinglite[5892:302879] stu.name = CreaterOS and stu.age = 21 2020-06-27 15:39:27.306961+0800 Paintinglite[5892:302879] stu.name = Painting and stu.age = 19 2020-06-27 15:39:27.307110+0800 Paintinglite[5892:302879] stu.name = CreaterOS and stu.age = 21
-
-2. Conditional query
+ 2. Conditional query
 
 > Conditional query syntax rules:
->
-> - Conditional query syntax rules:
-> - Use conditional parameters as ? placeholders
+>-Subscripts start from 0
+>-Use? As a placeholder for conditional parameters
 
+```sqlite
+SELECT * FROM user WHERE name =? And age =?
 ```
-SELECT * FROM user WHERE name = ? and age = ?
-- (NSMutableArray<NSDictionary *> *)execPrepareStatementSql;
-- (Boolean)execPrepareStatementSqlCompleteHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray))completeHandler;
+
+```objective-c
+-(NSMutableArray<NSDictionary *> *)execPrepareStatementSql;
+-(Boolean)execPrepareStatementSqlCompleteHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray))completeHandler;
+```
+
+```objective-c
 [self.sessionM execQuerySQLPrepareStatementSql:@"SELECT * FROM student WHERE name = ?"];
 [self.sessionM setPrepareStatementPQLParameter:0 paramter:@"CreaterOS"];
 NSLog(@"%@",[self.sessionM execPrepareStatementSql]);
 ```
+> 2020-06-27 15:44:06.664951+0800 Paintinglite[5984:310580] (
+> {
+> age = 21;
+> name = CreaterOS;
+> },
+> {
+> age = 21;
+> name = CreaterOS;
+>}
+>)
 
-> 2020-06-27 15:44:06.664951+0800 Paintinglite[5984:310580] ( { age = 21; name = CreaterOS; }, { age = 21; name = CreaterOS; } )
+ 3. Fuzzy query
 
-3. Fuzzy query
+```objective-c
+-(NSMutableArray<NSDictionary *> *)execLikeQuerySQLWithTableName:(NSString *__nonnull)tableName field:(NSString *__nonnull)field like:(NSString *__nonnull)like;
+-(Boolean)execLikeQuerySQLWithTableName:(NSString *__nonnull)tableName field:(NSString *__nonnull)field like:(NSString *__nonnull)like completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray))completeHandler;
 
+-(id)execLikeQuerySQLWithField:(NSString *__nonnull)field like:(NSString *__nonnull)like obj:(id)obj;
+-(Boolean)execLikeQuerySQLWithField:(NSString *__nonnull)field like:(NSString *__nonnull)like obj:(id)obj completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray,NSMutableArray<id>* resObjList))completeHandler;
 ```
-- (NSMutableArray<NSDictionary *> *)execLikeQuerySQLWithTableName:(NSString *__nonnull)tableName field:(NSString *__nonnull)field like:(NSString *__nonnull)like;
-- (Boolean)execLikeQuerySQLWithTableName:(NSString *__nonnull)tableName field:(NSString *__nonnull)field like:(NSString *__nonnull)like completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray))completeHandler;
 
-- (id)execLikeQuerySQLWithField:(NSString *__nonnull)field like:(NSString *__nonnull)like obj:(id)obj;
-- (Boolean)execLikeQuerySQLWithField:(NSString *__nonnull)field like:(NSString *__nonnull)like obj:(id)obj completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray,NSMutableArray<id>* resObjList))completeHandler;
+```objective-c
 [self.sessionM execLikeQuerySQLWithTableName:@"student" field:@"name" like:@"%t%" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<NSDictionary *> * _Nonnull resArray) {
         if (success) {
             for (NSDictionary *dict in resArray) {
@@ -282,17 +319,30 @@ Student *stu = [[Student alloc] init];
   }
 }];
 ```
+> 2020-06-27 15:46:31.310495+0800 Paintinglite[6030:314851] {
+> age = 21;
+> name = CreaterOS;
+>}
+> 2020-06-27 15:46:31.310701+0800 Paintinglite[6030:314851] {
+> age = 19;
+> name = Painting;
+>}
+> 2020-06-27 15:46:31.310868+0800 Paintinglite[6030:314851] {
+> age = 21;
+> name = CreaterOS;
+>}
 
-> 2020-06-27 15:46:31.310495+0800 Paintinglite[6030:314851] { age = 21; name = CreaterOS; } 2020-06-27 15:46:31.310701+0800 Paintinglite[6030:314851] { age = 19; name = Painting; } 2020-06-27 15:46:31.310868+0800 Paintinglite[6030:314851] { age = 21; name = CreaterOS; }
+ 4. Paging query
 
-4. Paging query
+```objective-c
+-(NSMutableArray<NSDictionary *> *)execLimitQuerySQLWithTableName:(NSString *__nonnull)tableName limitStart:(NSUInteger)start limitEnd:(NSUInteger)end;
+-(Boolean)execLimitQuerySQLWithTableName:(NSString *__nonnull)tableName limitStart:(NSUInteger)start limitEnd:(NSUInteger)end completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray))completeHandler;
 
+-(id)execLimitQuerySQLWithLimitStart:(NSUInteger)start limitEnd:(NSUInteger)end obj:(id)obj;
+-(Boolean)execLimitQuerySQLWithLimitStart:(NSUInteger)start limitEnd:(NSUInteger)end obj:(id)obj completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray,NSMutableArray<id>* resObjList))completeHandler ;
 ```
-- (NSMutableArray<NSDictionary *> *)execLimitQuerySQLWithTableName:(NSString *__nonnull)tableName limitStart:(NSUInteger)start limitEnd:(NSUInteger)end;
-- (Boolean)execLimitQuerySQLWithTableName:(NSString *__nonnull)tableName limitStart:(NSUInteger)start limitEnd:(NSUInteger)end completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray))completeHandler;
 
-- (id)execLimitQuerySQLWithLimitStart:(NSUInteger)start limitEnd:(NSUInteger)end obj:(id)obj;
-- (Boolean)execLimitQuerySQLWithLimitStart:(NSUInteger)start limitEnd:(NSUInteger)end obj:(id)obj completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray,NSMutableArray<id>* resObjList))completeHandler;
+```objective-c
 [self.sessionM execLimitQuerySQLWithTableName:@"student" limitStart:0 limitEnd:1 completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<NSDictionary *> * _Nonnull resArray) {
         if (success) {
             for (NSDictionary *dict in resArray) {
@@ -310,19 +360,20 @@ Student *stu = [[Student alloc] init];
   }
 }];
 ```
-
 > 2020-06-27 15:51:13.026776+0800 Paintinglite[6117:323796] stu.name = CreaterOS and stu.age = 21
 
-5. Sort query
+ 5. Sort query
 
+```objective-c
+-(NSMutableArray<NSDictionary *> *)execOrderByQuerySQLWithTableName:(NSString *__nonnull)tableName orderbyContext:(NSString *__nonnull)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle;
+-(Boolean)execOrderByQuerySQLWithTableName:(NSString *__nonnull)tableName orderbyContext:(NSString *__nonnull)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray))completeHandler;
+
+-(id)execOrderByQuerySQLWithOrderbyContext:(NSString *__nonnull)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle obj:(id)obj;
+-(Boolean)execOrderByQuerySQLWithOrderbyContext:(NSString *__nonnull)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle obj:(id)obj completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray,NSMutableArray<id>* resObjList) )completeHandler;
 ```
-- (NSMutableArray<NSDictionary *> *)execOrderByQuerySQLWithTableName:(NSString *__nonnull)tableName orderbyContext:(NSString *__nonnull)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle;
-- (Boolean)execOrderByQuerySQLWithTableName:(NSString *__nonnull)tableName orderbyContext:(NSString *__nonnull)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray))completeHandler;
-
-- (id)execOrderByQuerySQLWithOrderbyContext:(NSString *__nonnull)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle obj:(id)obj;
-- (Boolean)execOrderByQuerySQLWithOrderbyContext:(NSString *__nonnull)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle obj:(id)obj completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray,NSMutableArray<id>* resObjList))completeHandler;
+```objective-c
 Student *student = [[Student alloc] init];
-[self.sessionM execOrderByQuerySQLWithOrderbyContext:@"name" orderStyle:PaintingliteOrderByDESC obj:student completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<NSDictionary *> * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
+[self.sessionM execOrderByQuerySQLWithOrderbyContext:@"name" orderStyle:PaintingliteOrderByDESC obj:student completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray<NSDictionary *> * _Nonnull resArray, NSMutableArray<id> * _Nonnull resOb
   if (success) {
     for (Student *stu in resObjList) {
       NSLog(@"stu.name = %@ and stu.age = %@",stu.name,stu.age);
@@ -331,91 +382,97 @@ Student *student = [[Student alloc] init];
 }];
 ```
 
-> 2020-06-27 15:55:06.714604+0800 Paintinglite[6196:331097] stu.name = Painting and stu.age = 19 2020-06-27 15:55:06.714801+0800 Paintinglite[6196:331097] stu.name = CreaterOS and stu.age = 21 2020-06-27 15:55:06.714962+0800 Paintinglite[6196:331097] stu.name = CreaterOS and stu.age = 21
+> 2020-06-27 15:55:06.714604+0800 Paintinglite[6196:331097] stu.name = Painting and stu.age = 19
+> 2020-06-27 15:55:06.714801+0800 Paintinglite[6196:331097] stu.name = CreaterOS and stu.age = 21
+> 2020-06-27 15:55:06.714962+0800 Paintinglite[6196:331097] stu.name = CreaterOS and stu.age = 21
 
-### 2.Insert
+### 2. Increase data
 
+```objective-c
+-(Boolean)insert:(NSString *__nonnull)sql;
+-(Boolean)insert:(NSString *__nonnull)sql completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success))completeHandler;
+-(Boolean)insertWithObj:(id)obj completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success))completeHandler;
 ```
-- (Boolean)insert:(NSString *__nonnull)sql;
-- (Boolean)insert:(NSString *__nonnull)sql completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success))completeHandler;
-- (Boolean)insertWithObj:(id)obj completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success))completeHandler;
-```
-
-1. SQL insert
-
-```
+ 1. SQL Insert
+```objective-c
 [self.sessionM insert:@"INSERT INTO student(name,age) VALUES('CreaterOS',21),('Painting',19)"];
 ```
+ 2. Object Insertion
 
-2. Object insert
-
-```
+```objective-c
 #import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface Student : NSObject
+@interface Student: NSObject
 @property (nonatomic,strong)NSString *name;
 @property (nonatomic,strong)NSNumber *age;
 @end
 
 NS_ASSUME_NONNULL_END
+```
+
+```objective-c
 Student *stu = [[Student alloc] init];
 stu.name = @"ReynBryant";
 stu.age = [NSNumber numberWithInteger:21];
 [self.sessionM insertWithObj:stu completeHandler:nil];
 ```
 
-> For large amounts of data, Paintinglit can still show good efficiency. It only takes 6ms-7ms to read 16 million pieces of data at a time.
+> For the huge amount of data, Paintinglit can still show good efficiency. It only takes 6ms-7ms to read 16 million pieces of data at a time.
 
-### 3.Update
+### 3. Update data
 
+```objective-c
+-(Boolean)update:(NSString *__nonnull)sql;
+-(Boolean)update:(NSString *__nonnull)sql completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
+-(Boolean)updateWithObj:(id)obj condition:(NSString *__nonnull)condition completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
 ```
-- (Boolean)update:(NSString *__nonnull)sql;
-- (Boolean)update:(NSString *__nonnull)sql completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
-- (Boolean)updateWithObj:(id)obj condition:(NSString *__nonnull)condition completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
-```
-
-1. SQL update
-
-```
-[self.sessionM update:@"UPDATE student SET name = 'Painting' WHERE name = 'ReynBryant'"];
-```
-
-2. Object update
-
-```
-Student *stu = [[Student alloc] init];
-stu.name = @"CreaterOS";
-[self.sessionM updateWithObj:stu condition:@"age = 21" completeHandler:nil];
+ 1. SQL update data
+   
+```objective-c
+[self.sessionM update:@"UPDATE student SET name ='Painting' WHERE name ='ReynBryant'"];
 ```
 
-> Increase the update operation, you can update the object by value, for example： User *user = [[User alloc] init]; user.name = @"CreaterOS"; user.age = 21;
+ 2. Object update
 
-### 4.Delete
+   ```objective-c
+   Student *stu = [[Student alloc] init];
+   stu.name = @"CreaterOS";
+   [self.sessionM updateWithObj:stu condition:@"age = 21" completeHandler:nil];
+   ```
 
+> Added update operation, which can be updated by object transfer method
+> For example:
+> User *user = [[User alloc] init];
+> user.name = @"CreaterOS";
+> user.age = 21;
+
+### 4. Delete data
+
+```objective-c
+-(Boolean)del:(NSString *__nonnull)sql;
+-(Boolean)del:(NSString *__nonnull)sql completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
 ```
-- (Boolean)del:(NSString *__nonnull)sql;
-- (Boolean)del:(NSString *__nonnull)sql completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success))completeHandler;
+# PQL Syntax (PaintingliteSessionManager)
+Through the PQL statement, Paintinglite can automatically help you complete the writing of the SQL statement.
+> PQL grammar rules (uppercase | the class name must be associated with the table)
+> FROM + class name + [condition]
+
+```objective-c
+-(id)execPrepareStatementPQL;
+-(Boolean)execPrepareStatementPQLWithCompleteHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray,NSMutableArray<id>* resObjList))completeHandler;
+
+-(void)execQueryPQLPrepareStatementPQL:(NSString *__nonnull)prepareStatementPQL;
+-(void)setPrepareStatementPQLParameter:(NSUInteger)index paramter:(NSString *__nonnull)paramter;
+-(void)setPrepareStatementPQLParameter:(NSArray *__nonnull)paramter;
+
+-(id)execPQL:(NSString *__nonnull)pql;
+-(Boolean)execPQL:(NSString *__nonnull)pql completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray,NSMutableArray<id>* resObjList))completeHandler;
 ```
 
-# PQL Grammar(PaintingliteSessionManager)
-
-Through PQL statements, Paintinglite can automatically help you write SQL statements.
-
-> PQL syntax rules (upper case | class name must be associated with the table) FROM + class name + [condition]
-
-```
-- (id)execPrepareStatementPQL;
-- (Boolean)execPrepareStatementPQLWithCompleteHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray,NSMutableArray<id>* resObjList))completeHandler;
-
-- (void)execQueryPQLPrepareStatementPQL:(NSString *__nonnull)prepareStatementPQL;
-- (void)setPrepareStatementPQLParameter:(NSUInteger)index paramter:(NSString *__nonnull)paramter;
-- (void)setPrepareStatementPQLParameter:(NSArray *__nonnull)paramter;
-
-- (id)execPQL:(NSString *__nonnull)pql;
-- (Boolean)execPQL:(NSString *__nonnull)pql completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray,NSMutableArray<id>* resObjList))completeHandler;
-[self.sessionM execPQL:@"FROM Student WHERE name = 'CreaterOS'" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
+```objective-c
+[self.sessionM execPQL:@"FROM Student WHERE name ='CreaterOS'" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
         if (success) {
             for (Student *stu in resObjList) {
                 NSLog(@"stu.name = %@ and stu.age = %@",stu.name,stu.age);
@@ -423,10 +480,10 @@ Through PQL statements, Paintinglite can automatically help you write SQL statem
         }
 }];
 ```
+> 2020-06-27 16:16:47.145774+0800 Paintinglite[6753:369828] stu.name = CreaterOS and stu.age = 21
+> 2020-06-27 16:16:47.145928+0800 Paintinglite[6753:369828] stu.name = CreaterOS and stu.age = 21
 
-> 2020-06-27 16:16:47.145774+0800 Paintinglite[6753:369828] stu.name = CreaterOS and stu.age = 21 2020-06-27 16:16:47.145928+0800 Paintinglite[6753:369828] stu.name = CreaterOS and stu.age = 21
-
-```
+```objective-c
 [self.sessionM execPQL:@"FROM Student LIMIT 0,1" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
         if (success) {
             for (Student *stu in resObjList) {
@@ -434,13 +491,19 @@ Through PQL statements, Paintinglite can automatically help you write SQL statem
             }
         }
 }];
-[self.sessionM execPQL:@"FROM Student WHERE name LIKE '%t%'" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
+```
+
+```objective-c
+[self.sessionM execPQL:@"FROM Student WHERE name LIKE'%t%'" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
         if (success) {
             for (Student *stu in resObjList) {
                 NSLog(@"stu.name = %@ and stu.age = %@",stu.name,stu.age);
             }
         }
 }];
+```
+
+```objective-c
 [self.sessionM execPQL:@"FROM Student ORDER BY name ASC" completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
         if (success) {
             for (Student *stu in resObjList) {
@@ -448,30 +511,33 @@ Through PQL statements, Paintinglite can automatically help you write SQL statem
             }
         }
 }];
+
+```
+
+```objective-c
 [self.sessionM execQueryPQLPrepareStatementPQL:@"FROM Student WHERE name = ?"];
 [self.sessionM setPrepareStatementPQLParameter:@[@"CreaterOS"]];
 NSLog(@"%@",[self.sessionM execPrepareStatementPQL]);
 ```
 
-> 2020-06-27 16:26:11.404815+0800 Paintinglite[7025:389268] ( "<Student: 0x600000565420>", "<Student: 0x6000005657e0>" )
+> 2020-06-27 16:26:11.404815+0800 Paintinglite[7025:389268] (
+> "<Student: 0x600000565420>",
+> "<Student: 0x6000005657e0>"
+>)
 
-# Aggregate Function(PaintingliteAggregateFunc)
-
-Paintinglite encapsulates the Sqlite3 aggregation function, and automatically writes SQL statements to get the aggregation result.
-
+# Aggregate function (PaintingliteAggregateFunc)
+Paintinglite encapsulates Sqlite3 aggregation functions, and automatically writes SQL statements to get the aggregation results.
 1. Count
-
-```
+```objective-c
 [self.aggreageteF count:[self.sessionM getSqlite3] tableName:@"eletest" completeHandler:^(PaintingliteSessionError * _Nonnull sessionerror, Boolean success, NSUInteger count) {
         if (success) {
             NSLog(@"%zd",count);
         }
  }];
 ```
-
 2. Max
 
-```
+```objective-c
 [self.aggreageteF max:[self.sessionM getSqlite3] field:@"age" tableName:@"eletest" completeHandler:^(PaintingliteSessionError * _Nonnull sessionerror, Boolean success, double max) {
         if (success) {
             NSLog(@"%.2f",max);
@@ -481,67 +547,67 @@ Paintinglite encapsulates the Sqlite3 aggregation function, and automatically wr
 
 3. Min
 
-```
+```objective-c
 [self.aggreageteF min:[self.sessionM getSqlite3] field:@"age" tableName:@"eletest" completeHandler:^(PaintingliteSessionError * _Nonnull sessionerror, Boolean success, double min) {
         if (success) {
             NSLog(@"%.2f",min);
         }
 }];
 ```
-
 4. Sum
 
-```
+```objective-c
 [self.aggreageteF sum:[self.sessionM getSqlite3] field:@"age" tableName:@"eletest" completeHandler:^(PaintingliteSessionError * _Nonnull sessionerror, Boolean success, double sum) {
         if (success) {
             NSLog(@"%.2f",sum);
         }
 }];
 ```
-
 5. Avg
 
-```
+```objective-c
 [self.aggreageteF avg:[self.sessionM getSqlite3] field:@"age" tableName:@"eletest" completeHandler:^(PaintingliteSessionError * _Nonnull sessionerror, Boolean success, double avg) {
         if (success) {
             NSLog(@"%.2f",avg);
         }
 }];
+
 ```
 
 # Transaction (PaintingliteTransaction)
+Sqlite3 development defaults that an insert statement is a transaction. If there are multiple insert statements, the transaction will be repeated. This consumes a lot of resources. Paintinglite provides an operation to start a transaction (display transaction).
 
-Sqlite3 development defaults that an insert statement is a transaction. Assuming that there are multiple insert statements, the transaction will be started repeatedly. This is huge for resource consumption. Paintinglite provides the operation to start a transaction (display transaction).
-
-```
+```objective-c
 + (void)begainPaintingliteTransaction:(sqlite3 *)ppDb;
 + (void)commit:(sqlite3 *)ppDb;
 + (void)rollback:(sqlite3 *)ppDb;
 ```
-
-> Daily development integration Use
+> Daily development integration
 >
-> @try { } @catch (NSException *exception) { } @finally { }
+> @try {
+>} @catch (NSException *exception) {
+>} @finally {
+>}
+>
+> Use
 
-# Cascade Operation(PaintingliteCascadeShowerIUD)
+# Cascade operation (PaintingliteCascadeShowerIUD)
 
+```objective-c
+-(Boolean)cascadeInsert:(sqlite3 *)ppDb obj:(id)obj completeHandler:(void (^ __nullable)(PaintingliteSessionError *sessionError,Boolean success,NSMutableArray *resArray))completeHandler;
+
+-(Boolean)cascadeUpdate:(sqlite3 *)ppDb obj:(id)obj condatation:(NSArray<NSString *> * __nonnull)condatation completeHandler:(void (^__nullable)(PaintingliteSessionError *sessionError,Boolean success,NSMutableArray *resArray)) completeHandler;
+
+-(Boolean)cascadeDelete:(sqlite3 *)ppDb obj:(id)obj condatation:(NSArray<NSString *> * __nonnull)condatation completeHandler:(void (^__nullable)(PaintingliteSessionError *sessionError,Boolean success,NSMutableArray *resArray)) completeHandler;
 ```
-- (Boolean)cascadeInsert:(sqlite3 *)ppDb obj:(id)obj completeHandler:(void (^ __nullable)(PaintingliteSessionError *sessionError,Boolean success,NSMutableArray *resArray))completeHandler;
-
-- (Boolean)cascadeUpdate:(sqlite3 *)ppDb obj:(id)obj condatation:(NSArray<NSString *> * __nonnull)condatation completeHandler:(void (^__nullable)(PaintingliteSessionError *sessionError,Boolean success,NSMutableArray *resArray))completeHandler;
-
-- (Boolean)cascadeDelete:(sqlite3 *)ppDb obj:(id)obj condatation:(NSArray<NSString *> * __nonnull)condatation completeHandler:(void (^__nullable)(PaintingliteSessionError *sessionError,Boolean success,NSMutableArray *resArray))completeHandler;
-```
-
 The cascade is divided into three parts:
-
 1. Insert
+> For cascading insert operations, we need to connect two related tables through a variable array, for example:
+> The user table and the student table are linked,
+> A user can contain multiple students
 
-> For cascading insert operations, we need to connect two related tables through a variable array, for example: user table and student table are connected, a user can contain multiple students
-
-Then, you can set variable data in the user to save multiple students, and then hand over the user object to Paintinglite to write data in multiple tables at once.
-
-```
+Then, you can set variable data in the user to save multiple students, and then hand the user object to Paintinglite to write data in multiple tables at once.
+```objective-c
 User *user = [[User alloc] init];
 user.name = @"Jay";
 user.age = [NSNumber numberWithInteger:40];
@@ -564,15 +630,15 @@ student1.age = [NSNumber numberWithInteger:41];
     }
 }];
 ```
+2. Update
+    The function is the same as cascading insertion. Pass in the user object, including the collection of student tables, and pass in the modification conditions as an array. Paintinglite can automatically update multiple tables. (Different conditions of multiple tables corresponding to the condition array)
 
-2. Update function is the same as cascading insert. Pass in the user object, which contains the collection of student tables, and pass the modification conditions in an array. Paintinglite can automatically update multiple tables. (Different conditions of multiple tables corresponding to the condition array)
+  > name ='CreaterOS' corresponds to the user table
+  >
+  > name ='OS...' corresponds to the student table
 
-> name = 'CreaterOS' 对应user表
->
-> name = 'OS...' 对应student表
-
-```
-[self.cascade cascadeUpdate:[self.sessionM getSqlite3] obj:user condatation:@[@"WHERE name = 'CreaterOS'",@"WHERE name = 'OS...'"] completeHandler:^(PaintingliteSessionError * _Nonnull sessionError, Boolean success, NSMutableArray * _Nonnull resArray) {
+```objective-c
+[self.cascade cascadeUpdate:[self.sessionM getSqlite3] obj:user condatation:@[@"WHERE name ='CreaterOS'",@"WHERE name ='OS...'"] completeHandler:^(PaintingliteSessionError * _Nonnull sessionError , Boolean success, NSMutableArray * _Nonnull resArray) {
      if (success) {
             NSLog(@"%@",resArray);
      }
@@ -582,133 +648,321 @@ student1.age = [NSNumber numberWithInteger:41];
 
 3. Delete
 
-```
-[self.cascade cascadeDelete:[self.sessionM getSqlite3] obj:user condatation:@[@"name = 'WHY'",@"name = 'YHD...'"] completeHandler:^(PaintingliteSessionError * _Nonnull sessionError, Boolean success, NSMutableArray * _Nonnull resArray) {
+```objective-c
+[self.cascade cascadeDelete:[self.sessionM getSqlite3] obj:user condatation:@[@"name ='WHY'",@"name ='YHD...'"] completeHandler:^(PaintingliteSessionError * _Nonnull sessionError, Boolean success, NSMutableArray * _Nonnull resArray) {
        if (success) {
            NSLog(@"%@",resArray);
        }
 }];
-```
-
-# Log Mode(PaintingliteLog)
-
-Paintinglite provides a logging function for developers, which can record key operations on sqlite3 data during development, and is marked with a time stamp.Developers can easily read the log through the database name, or according to the required time node or the state of successful failure Selectively read logs. It is convenient for debugging after the software goes online.
 
 ```
-- (void)readLogFile:(NSString *__nonnull)fileName;
 
-- (void)readLogFile:(NSString *)fileName dateTime:(NSDate *__nonnull)dateTime;
+# Log Mode (PaintingliteLog)
 
-- (void)readLogFile:(NSString *)fileName logStatus:(PaintingliteLogStatus)logStatus;
+Paintinglite provides developers with a logging function, which can record key operations on sqlite3 data during development, and is marked with a timestamp. Developers can easily read the log through the database name, or according to the required time node or the status of success and failure Selectively read the log. It facilitates the debugging after the software is online.
+```objective-c
+-(void)readLogFile:(NSString *__nonnull)fileName;
 
-- (void)removeLogFile:(NSString *)fileName;
+-(void)readLogFile:(NSString *)fileName dateTime:(NSDate *__nonnull)dateTime;
+
+-(void)readLogFile:(NSString *)fileName logStatus:(PaintingliteLogStatus)logStatus;
+
+-(void)removeLogFile:(NSString *)fileName;
+
 ```
 
-# Database Backup(PaintingliteBackUpManager)
-
-Database migration is a problem that developers often care about. It has always been a headache for SQLite3 to migrate clients SQL Server MySQL and Orcale. Paintinglite is very friendly to provide developers with four kinds of database backup files, including from building a library to inserting data. Paintinglite writes backup files for developers. Developers only need to upload these sql files and run them to get and mobile devices. The exact same data.
-
+## Log module update
+To write log files in batches through the first-level cache, it is recommended that the developer instantiate the PaintingliteCache in AppDelegate, and manually call the log write method in applicationDidEnterBackground:(UIApplication *)application and applicationWillTerminate:(UIApplication *)application, then the cache can not be reached The log of the base point is written to the log file in time.
+```objective-c
+[self.cache pushCacheToLogFile];
 ```
+
+# Database backup (PaintingliteBackUpManager)
+Database migration is a problem that developers often care about. It has always been a headache for sqlite3 to port the client SQL Server MySQL and Orcale. Paintinglite is very friendly to provide developers with four database backup files, including from building a database to inserting data. Paintinglite writes backup files for developers. Developers only need to upload these sql files and run them to get and move the device. Exactly the same data.
+```objective-c
 PaintingliteBackUpSqlite3,
 PaintingliteBackUpMySql,
 PaintingliteBackUpSqlServer,
 PaintingliteBackUpORCALE
-- (Boolean)backupDataBaseWithName:(sqlite3 *)ppDb sqliteName:(NSString *)sqliteName type:(PaintingliteBackUpManagerDBType)type completeHandler:(void(^ __nullable)(NSString *saveFilePath))completeHandler;
+```
+
+```objective-c
+-(Boolean)backupDataBaseWithName:(sqlite3 *)ppDb sqliteName:(NSString *)sqliteName type:(PaintingliteBackUpManagerDBType)type completeHandler:(void(^ __nullable)(NSString *saveFilePath))completeHandler;
 ```
 
 ![image-20200627211330562](/Users/bryantreyn/Library/Application Support/typora-user-images/image-20200627211330562.png)
 
-# Split Table(PaintingliteSplitTable)
+# Split table (PaintingliteSplitTable)
+The time-consuming operation of table query with too large amount of data is huge. The Paintinglite test phase provides the operation of splitting the table, splitting the large table into multiple small tables, and the amount of splitting is determined by the developer.
+Paintinglite provides split table operation for the first time, and the module is still being tested. Later version iterations will focus on optimizing this part of resource consumption and CPU usage.
 
-The time-consuming operation of table query for excessive data volume is huge. The Paintinglite test stage provides the operation of splitting the table. The large table is split into multiple small tables. The amount of the split is determined by the developer. Paintinglite provides split table operation for the first time, the module is still being tested, and later version iterations will focus on optimizing this part of the resource consumption and CPU utilization issues.
-
-```
+```objective-c
 /**
-  * tableName: 数据库名称 
-  * basePoint: 拆分个数 
+  * tableName: database name
+  * basePoint: the number of splits
   */
-- (Boolean)splitTable:(sqlite3 *)ppDb tabelName:(NSString *__nonnull)tableName basePoint:(NSUInteger)basePoint;
+-(Boolean)splitTable:(sqlite3 *)ppDb tabelName:(NSString *__nonnull)tableName basePoint:(NSUInteger)basePoint;
 ```
-
 1. Query operation
 
+```objective-c
+-(NSMutableArray *)selectWithSpliteFile:(sqlite3 *)ppDb tableName:(NSString *__nonnull)tableName basePoint:(NSUInteger)basePoint;
 ```
-- (NSMutableArray *)selectWithSpliteFile:(sqlite3 *)ppDb tableName:(NSString *__nonnull)tableName basePoint:(NSUInteger)basePoint;
-```
-
 2. Insert operation
 
-```
-- (Boolean)insertWithSpliteFile:(sqlite3 *)ppDb tableName:(NSString *)tableName basePoint:(NSUInteger)basePoint insertSQL:(NSString *)insertSQL;
+```objective-c
+-(Boolean)insertWithSpliteFile:(sqlite3 *)ppDb tableName:(NSString *)tableName basePoint:(NSUInteger)basePoint insertSQL:(NSString *)insertSQL;
 ```
 
 3. Update operation
 
-```
-- (Boolean)updateWithSpliteFile:(sqlite3 *)ppDb tableName:(NSString *)tableName basePoint:(NSUInteger)basePoint updateSQL:(NSString *)updateSQL;
+```objective-c
+-(Boolean)updateWithSpliteFile:(sqlite3 *)ppDb tableName:(NSString *)tableName basePoint:(NSUInteger)basePoint updateSQL:(NSString *)updateSQL;
 ```
 
 4. Delete operation
 
-```
-- (Boolean)deleteWithSpliteFile:(sqlite3 *)ppDb tableName:(NSString *)tableName basePoint:(NSUInteger)basePoint deleteSQL:(NSString *)deleteSQL;
-```
-
-# Pressure Test(PaintinglitePressureOS)
-
-The PaintinglitePressureOS system is a stress testing system, which makes a reasonable assessment of the database read and write time consumption, resource consumption and memory usage, and supports the generation of stress test reports. (Reports are not generated by default)
-
-Paintinglite can calculate the memory consumption status differently according to different devices, so that developers can more clearly design a more reasonable database table structure on different iPhones.
+```objective-c
+-(Boolean)deleteWithSpliteFile:(sqlite3 *)ppDb tableName:(NSString *)tableName basePoint:(NSUInteger)basePoint deleteSQL:(NSString *)deleteSQL;
 
 ```
-- (Boolean)paintingliteSqlitePressure;
+
+# Stress test (PaintinglitePressureOS)
+The PaintinglitePressureOS system is a stress testing system. It evaluates the reasonableness of database read and write consumption time, resource consumption and memory usage, and supports the generation of stress test reports. (No report is generated by default)
+
+Paintinglite can perform different measurement and calculation of memory consumption status according to different devices, allowing developers to more clearly design a more reasonable database table structure on different iPhones.
+```objective-c
+-(Boolean)paintingliteSqlitePressure;
+```
+
+ #### XML file configuration rules:
+ 1. The XML mapping file strictly abides by the DTD rules, which provides <mapper></mapper>,<sql></sql>,<include></include>,<resultMap></resultMap>,<select></ select>, <insert></insert>, <update></update>, <delete></delete> and other basic tags;
+ 2. The XML mapping file needs to be configured corresponding to the class created by the table (POJO mapping);
+ 3. The XML mapping file format has strict requirements (the v2.0 version has strict requirements);
+
+#### XML mapping file hierarchy
+(1) When configuring the XML mapping file, the outermost tag is <mapper></mapper>, and the mapper tag provides the namespace namespace;
+```objective-c
+<mapper namespace="...">
+</mapper>
+```
+> namespace: Indicates the name of the table targeted by the current SQL statement operation object (the namespace content is not mandatory here, and it is recommended to be the same as the operation table name)
+
+(2) <mapper></mapper> can configure database SQL operations inside;
+#### select: Query label
+```objective-c
+<select id="getEleByObj" resultType="NSDictionary" parameterType="Eletest">
+    SELECT * FROM eletest WHERE name =?
+</select>
+```
+> id: select the bound ID
+> resultType: result return type, currently supports NSDictionary&&NSMutableDictionary | NSArray && NSMutableArray
+> parameterType: Incoming type (variable parameters do not need to be configured, parameterType must be configured for all obj methods)
+> The query SQL statement can be written inside the select tag
+> ?: Need to replace part of the adoption?
+
+#### select: omit query
+```objective-c
+<select id="getEleById" resultType="Eletest">
+?
+</select>
+```
+> When you need to use select * from tableName to query, you can omit the SQL statement and replace the SQL statement that needs to be written with a?
+
+#### insert: insert tag
+```objective-c
+#import <Foundation/Foundation.h>
+
+NS_ASSUME_NONNULL_BEGIN
+
+@interface Eletest: NSObject
+@property (nonatomic,strong)NSNumber *age;
+@property (nonatomic,copy)NSString *desc;
+@property (nonatomic,copy)NSString *name;
+@property (nonatomic,strong)NSNumber *tage;
+@property (nonatomic,copy)NSString *teacher;
+@end
+
+NS_ASSUME_NONNULL_END
+```
+```objective-c
+<insert id="getInsertEletest" parameterType="Eletest">
+INSERT INTO eletest(name,age,desc,tage,teacher) VALUES (#name,#age,#desc,#tage,#teacher);
+</insert>
+
+<insert id="getInsertEletestAuto" parameterType="Eletest">
+?
+</insert>
+```
+> id: insert tag binding ID
+> parameterType: Incoming parameter, which must be configured here, is the class name of the POJO object (note the case)
+> #name,#age,#desc,#tage,#teacher: replace the inserted value with a combination of "#+class attribute name"
+> insert supports the omission of insert statements, and only needs to set the corresponding attribute values ​​for the objects that need to be passed in
+> useGeneratedKeys="true" keyProperty="ID": Return the inserted primary key value
+
+```objective-c
+<insert id="getInsertUserReturnPrimaryKey" parameterType="Eletest" useGeneratedKeys="true" keyProperty="ID">
+<selectKey keyProperty="ID" order="AFTER">
+SELECT LAST_INSERT_ID();
+</selectKey>
+?
+</insert>
+```
+<selectKey></selectKey> can also be configured to insert the return value
+> keyProperty="ID": Primary key value (corresponding property value)
+> order="AFTER": Call timing, AFTER&&BEFORE can be configured
+
+#### update tag
+```objective-c
+<update id="getUpdateEle" parameterType="Eletest">
+UPDATE eletest SET name = #name and tage = #tage WHERE teacher = #teacher and age = #age;
+</update>
+```
+> id: update tag binding ID
+> parameterType: Incoming parameter, which must be configured here, is the class name of the POJO object (note the case)
+> #name,#age,#tage,#teacher: replace the inserted value with a combination of "#+class attribute name"
+> update supports omitting the insert statement, just set the corresponding attribute value for the object that needs to be passed in
+
+#### delete tag
+```objective-c
+<delete id="getDeleteUser" parameterType="Eletest">
+DELETE FROM eletest WHERE name = #name and teacher = #teacher and tage = #tage;
+</delete>
+
+<delete id="getDeleteEleAuto" parameterType="Eletest">
+?
+</delete>
+```
+> id: delete tag binding ID
+> parameterType: Incoming parameter, which must be configured here, is the class name of the POJO object (note the case)
+> #name,#teacher,#tage: replace the inserted value with a combination of "#+class attribute name"
+> delete supports omitting the insert statement, just set the corresponding attribute value for the object that needs to be passed in
+
+#### Advanced use of XML mapping file
+##### <sql></sql>&&<include></include>Use
+ ```objective-c
+ <sql id="eletestSql">id,name,age,teacher,tage,desc</sql>
+ <select id="getEleByObj" resultType="NSDictionary" parameterType="Eletest" resultMap="eletestResult">
+ SELECT <include refid="eletestSql"></include> FROM eletest
+ </select>
+ ```
+Normally operating SQL statements will write select id, name, age, teacher, tag, desc From eletest fields for query, and multiple field names will be used in an XML mapping file. You can use <sql></sql> to change the field name Package, in combination with <include></include> application.
+
+> Note: Use the <include></include> tag to configure the refid to pass in the value must be the same as the <sql></sql> configuration id
+
+#### Dynamic SQL operation tags
+##### <if></if> tag
+The if tag provides a dynamic judgment of whether the value of the incoming field is empty, and the statement is added if the condition is true, otherwise no statement is added.
+ ```objective-c
+<select id="getEleByObj" resultType="NSDictionary" parameterType="Eletest" resultMap="eletestResult">
+SELECT <include refid="eletestSql"></include> FROM eletest WHERE 1 = 1 AND tage =? <if test="name != null and name !=''">AND name = ?</if> <if test="desc != null and desc !=''">AND desc = ?</if> <if test="teacher != null and teacher !=''">AND teacher = ?</if>
+</select>
+ ```
+```objective-c
+<if test="desc != null and desc !=''"></if>
+```
+> test: Judgment condition, currently only supports! = operation
+
+> Configure the <if></if> tag to put all the fields that need to be judged at the end of the unified judgment writing. In order to ensure the correctness of the SQL statement, add 1 = 1 after the WHERE
+> Every <if></if> structure needs to be added with a larger AND
+> <if test="desc != null and desc !=''">AND desc = ?</if>
+
+##### <where></where> tag
+The where tag eliminates the restriction that the if tag must add 1 = 1 after the WHERE. At the same time, omit AND in each if structure
+ ```objective-c
+<select id="getEleByObjWhere" resultType="NSDictionary" parameterType="Eletest" resultMap="eletestResult">
+SELECT <include refid="eletestSql"></include> FROM eletest <where><if test="name != null and name !=''">name = ?</if> <if test="desc != null and desc !=''">desc = ?</if> <if test="teacher != null and teacher !=''">teacher = ?</if></where>
+</select>
+```
+
+#### PaintingliteXMLSessionManager common methods
+ ```objective-c
+ /**
+ * Create SessionManager
+ * xmlFileName: Each class corresponds to an XML file, and the name of the XML file is passed in
+ */
+ + (instancetype)buildSesssionManger:(NSString *__nonnull)xmlFileName;
+ 
+ /**
+ * Query one
+ * methodID: Select ID of XML binding
+ * condition: query condition
+ */
+ -(NSDictionary *)selectOne:(NSString *__nonnull)methodID condition:(id)condition,... NS_REQUIRES_NIL_TERMINATION;
+ 
+ /* Query multiple */
+ -(NSArray<id> *)select:(NSString *__nonnull)methodID condition:(id)condition,... NS_REQUIRES_NIL_TERMINATION;
+ 
+ -(NSArray<id> *)select:(NSString *)methodID obj:(id)obj;
+ 
+ /**
+ * Insert
+ * methodID: INSERT ID bound to XML
+ * obj: the inserted object
+ */
+ -(Boolean)insert:(NSString *)methodID obj:(id)obj;
+ 
+ /**
+ * Insert return primary key ID
+ * methodID: INSERT ID bound to XML
+ * obj: the inserted object
+ */
+ -(sqlite3_int64)insertReturnPrimaryKeyID:(NSString *)methodID obj:(id)obj;
+ 
+ /**
+ * Update
+ * methodID: INSERT ID bound to XML
+ * obj: the inserted object
+ */
+ -(Boolean)update:(NSString *)methodID obj:(id)obj;
+ 
+ /**
+ * Delete
+ * methodID: INSERT ID bound to XML
+ * obj: the inserted object
+ */
+ -(Boolean)del:(NSString *)methodID obj:(id)obj;
+```
+#### Instance call
+ ```objective-c
+ PaintingliteXMLSessionManager *xmlSessionM = [PaintingliteXMLSessionManager buildSesssionManger:[[NSBundle mainBundle] pathForResource:@"user" ofType:@"xml"]];
+ [xmlSessionM openSqlite:@"sqlite"];
+
+//Inquire
+NSLog(@"%@",[xmlSessionM selectOne:@"eletest.getEleById" condition:[NSNumber numberWithInt:1],[NSNumber numberWithInt:21],nil]);
+ NSLog(@"%@",[xmlSessionM select:@"eletest.getEleById" condition:[NSNumber numberWithInt:1],[NSNumber numberWithInt:21], nil]);
+ 
+ Eletest *eletest = [[Eletest alloc] init];
+ eletest.name = @"CreaterOS";
+ eletest.age = [NSNumber numberWithInteger:21];
+ eletest.desc = @"CreaterOS";
+ eletest.teacher = @"CreaterOS";
+ eletest.tage = [NSNumber numberWithInteger:21];
+ 
+ NSLog(@"%zd",[[xmlSessionM select:@"eletest.getEleByObj" obj:eletest] count]);
+ NSLog(@"%zd",[[xmlSessionM select:@"eletest.getEleByObjWhere" obj:eletest] count]);
+ 
+ //insert
+ [xmlSessionM insert:@"eletest.getInsertEletest" obj:eletest];
+ 
+ NSLog(@"%lu",(unsigned long)[xmlSessionM insertReturnPrimaryKeyID:@"eletest.getInsertUserReturnPrimaryKey" obj:eletest]);
+ 
+ //delete
+ [xmlSessionM del:@"eletest.getDeleteUser" obj:eletest];
+ [xmlSessionM del:@"eletest.getDeleteEleAuto" obj:eletest];
+ 
+ //Update
+ [xmlSessionM update:@"eletest.getUpdateEle" obj:eletest];
 ```
 
 # Constraint
 
-In order to achieve better operation, in line with the database specifications, all table names are lowercase.
+In order to achieve better operation and comply with database specifications, table names are all lowercase.
 
-### Contribute To This Project
+### Contribute to this project
 
-If you have a feature request or error report, please feel free to send Facebook to upload the problem, we will provide you with revision and help as soon as possible. Thank you very much for your support.
-
-| Paintinglite Version |      |
-| ------------------- | ---- |
-| v1.1 | Compared with v1.0, it optimizes the operation of opening the database and adds important information such as the existence and size of the database file. |
-| v1.2 | The stress test strategy has been revised, the frame size has been greatly reduced (<10MB), and a first-level cache and log write strategy have been added. |
-
+If you have a feature request or bug report, please feel free to send [863713745@qq.com](mailto:863713745@qq.com) to upload the problem, and we will provide you with revisions and help as soon as possible. Thank you very much for your support.
 
 ### Security Disclosure
 
-If you have found the Paintlitelite security vulnerability and the one that needs to be modified, you should email it to Facebook as soon as possible. thank you for your support.
-
-<details class="details-reset details-overlay details-overlay-dark " style="box-sizing: border-box; display: block;"><summary class="float-right" role="button" style="box-sizing: border-box; display: list-item; cursor: pointer; float: right !important; list-style: none;"><div class="link-gray-dark pt-1 pl-2" style="box-sizing: border-box; color: rgb(36, 41, 46) !important; padding-top: 4px !important; padding-left: 8px !important;"><svg height="16" class="octicon octicon-gear float-right" aria-label="Edit repository metadata" float="right" viewBox="0 0 16 16" version="1.1" width="16" role="img"><path fill-rule="evenodd" d="M7.429 1.525a6.593 6.593 0 011.142 0c.036.003.108.036.137.146l.289 1.105c.147.56.55.967.997 1.189.174.086.341.183.501.29.417.278.97.423 1.53.27l1.102-.303c.11-.03.175.016.195.046.219.31.41.641.573.989.014.031.022.11-.059.19l-.815.806c-.411.406-.562.957-.53 1.456a4.588 4.588 0 010 .582c-.032.499.119 1.05.53 1.456l.815.806c.08.08.073.159.059.19a6.494 6.494 0 01-.573.99c-.02.029-.086.074-.195.045l-1.103-.303c-.559-.153-1.112-.008-1.529.27-.16.107-.327.204-.5.29-.449.222-.851.628-.998 1.189l-.289 1.105c-.029.11-.101.143-.137.146a6.613 6.613 0 01-1.142 0c-.036-.003-.108-.037-.137-.146l-.289-1.105c-.147-.56-.55-.967-.997-1.189a4.502 4.502 0 01-.501-.29c-.417-.278-.97-.423-1.53-.27l-1.102.303c-.11.03-.175-.016-.195-.046a6.492 6.492 0 01-.573-.989c-.014-.031-.022-.11.059-.19l.815-.806c.411-.406.562-.957.53-1.456a4.587 4.587 0 010-.582c.032-.499-.119-1.05-.53-1.456l-.815-.806c-.08-.08-.073-.159-.059-.19a6.44 6.44 0 01.573-.99c.02-.029.086-.075.195-.045l1.103.303c.559.153 1.112.008 1.529-.27.16-.107.327-.204.5-.29.449-.222.851-.628.998-1.189l.289-1.105c.029-.11.101-.143.137-.146zM8 0c-.236 0-.47.01-.701.03-.743.065-1.29.615-1.458 1.261l-.29 1.106c-.017.066-.078.158-.211.224a5.994 5.994 0 00-.668.386c-.123.082-.233.09-.3.071L3.27 2.776c-.644-.177-1.392.02-1.82.63a7.977 7.977 0 00-.704 1.217c-.315.675-.111 1.422.363 1.891l.815.806c.05.048.098.147.088.294a6.084 6.084 0 000 .772c.01.147-.038.246-.088.294l-.815.806c-.474.469-.678 1.216-.363 1.891.2.428.436.835.704 1.218.428.609 1.176.806 1.82.63l1.103-.303c.066-.019.176-.011.299.071.213.143.436.272.668.386.133.066.194.158.212.224l.289 1.106c.169.646.715 1.196 1.458 1.26a8.094 8.094 0 001.402 0c.743-.064 1.29-.614 1.458-1.26l.29-1.106c.017-.066.078-.158.211-.224a5.98 5.98 0 00.668-.386c.123-.082.233-.09.3-.071l1.102.302c.644.177 1.392-.02 1.82-.63.268-.382.505-.789.704-1.217.315-.675.111-1.422-.364-1.891l-.814-.806c-.05-.048-.098-.147-.088-.294a6.1 6.1 0 000-.772c-.01-.147.039-.246.088-.294l.814-.806c.475-.469.679-1.216.364-1.891a7.992 7.992 0 00-.704-1.218c-.428-.609-1.176-.806-1.82-.63l-1.103.303c-.066.019-.176.011-.299-.071a5.991 5.991 0 00-.668-.386c-.133-.066-.194-.158-.212-.224L10.16 1.29C9.99.645 9.444.095 8.701.031A8.094 8.094 0 008 0zm1.5 8a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM11 8a3 3 0 11-6 0 3 3 0 016 0z"></path></svg></div></summary></details>
-
-## About
-
-No description, website, or topics provided.
-
-### Topics
-
-### Resources
-
-[ Readme](https://github.com/CreaterOS/Paintinglite#readme)
-
-## [Releases](https://github.com/CreaterOS/Paintinglite/releases)
-
-No releases published
-
-[Create a new release](https://github.com/CreaterOS/Paintinglite/releases/new)
-
-## [Packages ](https://github.com/CreaterOS/Paintinglite/packages)
-
-No packages published 
-[Publish your first package](https://github.com/CreaterOS/Paintinglite/packages)
-
-## Languages
-
-- [Objective-C75.3%](https://github.com/CreaterOS/Paintinglite/search?l=objective-c) 
-- [C15.5%](https://github.com/CreaterOS/Paintinglite/search?l=c)
-- [MATLAB4.8%](https://github.com/CreaterOS/Paintinglite/search?l=matlab) 
-- [C++2.9%](https://github.com/CreaterOS/Paintinglite/search?l=c%2B%2B)
-- [M1.5%](https://github.com/CreaterOS/Paintinglite/search?l=m)
+If you have found the Paintinglite security vulnerabilities and vulnerabilities that need to be modified, you should email them to [863713745@qq.com](mailto:863713745@qq.com) as soon as possible. thank you for your support.

@@ -11,6 +11,7 @@
 #import "PaintingliteExec.h"
 #import "PaintingliteTransaction.h"
 #import "PaintingliteWarningHelper.h"
+#import "PaintingliteThreadManager.h"
 
 @interface PaintingliteTableOptionsSelect()
 @property (nonatomic,strong)PaintingliteExec *exec; //执行语句
@@ -24,6 +25,7 @@
 - (PaintingliteExec *)exec{
     if (!_exec) {
         _exec = [[PaintingliteExec alloc] init];
+        _exec.openSecurityMode = [PaintingliteTableOptions sharePaintingliteTableOptions].openSecurityMode;
     }
     
     return _exec;
@@ -58,7 +60,7 @@ static PaintingliteTableOptionsSelect *_instance = nil;
         [PaintingliteWarningHelper warningReason:@"SQL IS NULL OR SQL Len IS 0" time:[NSDate date] solve:@"Reset The SQL" args:nil];
         return NO;
     }
-    
+
     NSMutableArray *array = [self.exec sqlite3ExecQuery:ppDb sql:sql];
     
     Boolean success = (array.count != -1);
@@ -100,29 +102,29 @@ static PaintingliteTableOptionsSelect *_instance = nil;
         
         dispatch_semaphore_t signal = dispatch_semaphore_create(0);
         
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-           success = [self execQuerySQL:ppDb sql:sql completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray) {
-                if (success) {
-                    execQueryArray = resArray;
-                }
-            }];
-            
-            //开始封装
-            for (NSUInteger i = 0; i < execQueryArray.count; i++) {
-                @autoreleasepool {
-                    id tempObj = nil;
-                    
-                    tempObj = [PaintingliteObjRuntimeProperty setObjPropertyValue:obj value: execQueryArray[i]];
-                    
-                    [resObjList addObject:tempObj];
-                }
-            }
-            
-            if (completeHandler != nil) {
-                completeHandler([PaintingliteSessionError sharePaintingliteSessionError],success,execQueryArray,resObjList);
-            }
-            
-            dispatch_semaphore_signal(signal);
+        runAsynchronouslyOnExecQueue(^{
+            success = [self execQuerySQL:ppDb sql:sql completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray) {
+                 if (success) {
+                     execQueryArray = resArray;
+                 }
+             }];
+             
+             //开始封装
+             for (NSUInteger i = 0; i < execQueryArray.count; i++) {
+                 @autoreleasepool {
+                     id tempObj = nil;
+                     
+                     tempObj = [PaintingliteObjRuntimeProperty setObjPropertyValue:obj value: execQueryArray[i]];
+                     
+                     [resObjList addObject:tempObj];
+                 }
+             }
+             
+             if (completeHandler != nil) {
+                 completeHandler([PaintingliteSessionError sharePaintingliteSessionError],success,execQueryArray,resObjList);
+             }
+             
+             dispatch_semaphore_signal(signal);
         });
         
         dispatch_semaphore_wait(signal, DISPATCH_TIME_FOREVER);

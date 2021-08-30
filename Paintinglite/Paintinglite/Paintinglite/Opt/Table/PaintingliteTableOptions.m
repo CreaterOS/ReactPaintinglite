@@ -26,6 +26,7 @@
 - (PaintingliteExec *)exec{
     if (!_exec) {
         _exec = [[PaintingliteExec alloc] init];
+        _exec.openSecurityMode = self.openSecurityMode;
     }
     
     return _exec;
@@ -263,6 +264,10 @@ static PaintingliteTableOptions *_instance = nil;
 
 - (Boolean)del:(sqlite3 *)ppDb sql:(NSString *)sql completeHandler:(void (^ __nullable)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
     return [self.cudOpt del:ppDb sql:sql completeHandler:completeHandler];
+}
+
+- (void)setOpenSecurityMode:(Boolean)openSecurityMode {
+    _openSecurityMode = openSecurityMode;
 }
 
 @end
