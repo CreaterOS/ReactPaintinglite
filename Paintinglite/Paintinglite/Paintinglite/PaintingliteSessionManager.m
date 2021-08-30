@@ -446,7 +446,7 @@ static PaintingliteSessionManager *_instance = nil;
     NSLog(@"%@",[[[PaintingliteSessionFactory sharePaintingliteSessionFactory] readLogFile:fileName dateTime:dateTime] length] != 0 ? [[PaintingliteSessionFactory sharePaintingliteSessionFactory] readLogFile:fileName dateTime:dateTime] : @"无操作日志");
 }
 
-- (void)readLogFileWithDatabaseName:(NSString *)fileName logStatus:(PaintingliteLogStatus)logStatus{
+- (void)readLogFileWithDatabaseName:(NSString *)fileName logStatus:(kLogStatus)logStatus{
     NSLog(@"%@",[[[PaintingliteSessionFactory sharePaintingliteSessionFactory] readLogFile:fileName logStatus:logStatus] length] != 0 ? [[PaintingliteSessionFactory sharePaintingliteSessionFactory] readLogFile:fileName logStatus:logStatus] : @"无对应日志");
 }
 

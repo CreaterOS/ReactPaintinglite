@@ -121,7 +121,7 @@ static PaintingliteSessionFactory *_instance = nil;
     return [[PaintingliteLog sharePaintingliteLog] readLogFile:fileName dateTime:dateTime];
 }
 
-- (NSString *)readLogFile:(NSString *)fileName logStatus:(PaintingliteLogStatus)logStatus{
+- (NSString *)readLogFile:(NSString *)fileName logStatus:(kLogStatus)logStatus{
     if (fileName == NULL || fileName == (id)[NSNull null] || fileName.length == 0) {
         [PaintingliteWarningHelper warningReason:@"FileName IS NULL OR FileName Len IS 0" time:[NSDate date] solve:@"Reset The FileName" args:nil];
         return [NSString string];

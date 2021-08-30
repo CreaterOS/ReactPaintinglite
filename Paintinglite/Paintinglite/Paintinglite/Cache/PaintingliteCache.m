@@ -161,7 +161,7 @@ static int count = 0;
                     if ([strArray firstObject] == NULL) {
                         return ;
                     }
-                    [[PaintingliteLog sharePaintingliteLog] writeLogFileOptions:[strArray firstObject] status:([[strArray lastObject] isEqualToString:@"success"]) ? PaintingliteLogSuccess : PaintingliteLogError completeHandler:nil];
+                    [[PaintingliteLog sharePaintingliteLog] writeLogFileOptions:[strArray firstObject] status:([[strArray lastObject] isEqualToString:@"success"]) ? kLogSuccess : kLogError completeHandler:nil];
                 });
                
                 /* 清除缓存 */

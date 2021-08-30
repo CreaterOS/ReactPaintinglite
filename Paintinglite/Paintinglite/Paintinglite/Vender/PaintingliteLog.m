@@ -49,7 +49,7 @@ static PaintingliteLog *_instance = nil;
  * 专门开辟一个线程进行写入操作，但是写入操作和读取操作必须单独执行
  * 防止出现线程安全问题,因此需要使用多线程栅栏进行读写操作
  */
-- (void)writeLogFileOptions:(NSString *__nonnull)options status:(PaintingliteLogStatus)status completeHandler:(void (^)(NSString * _Nonnull))completeHandler{
+- (void)writeLogFileOptions:(NSString *__nonnull)options status:(kLogStatus)status completeHandler:(void (^)(NSString * _Nonnull))completeHandler{
     self.options = options;
     self.status = status;
     self.optDate = [NSDate date];
@@ -58,9 +58,9 @@ static PaintingliteLog *_instance = nil;
     NSString *logFilePath = [NSString stringWithFormat:@"%@_Log.txt",[[PaintingliteConfiguration share].fileName componentsSeparatedByString:@"."][0]];
     
     NSString *logStr = [NSString string];
-    if (status == PaintingliteLogSuccess) {
+    if (status == kLogSuccess) {
         logStr = [NSString stringWithFormat:@"● [%@] ---- [%@] ---- [%@]\n",self.options,[NSDateFormatter localizedStringFromDate:self.optDate dateStyle:NSDateFormatterFullStyle timeStyle:NSDateFormatterFullStyle],@"success"];
-    }else if (status == PaintingliteLogError){
+    } else if (status == kLogError){
         logStr = [NSString stringWithFormat:@"● [%@] ---- [%@] ---- [%@]\n",self.options,[NSDateFormatter localizedStringFromDate:self.optDate dateStyle:NSDateFormatterFullStyle timeStyle:NSDateFormatterFullStyle],@"error"];
     }
     
@@ -156,7 +156,7 @@ static PaintingliteLog *_instance = nil;
     return resStr;
 }
 
-- (NSString *)readLogFile:(NSString *)fileName logStatus:(PaintingliteLogStatus)logStatus{
+- (NSString *)readLogFile:(NSString *)fileName logStatus:(kLogStatus)logStatus{
     __block NSMutableString *resStr = [NSMutableString string];
     
     dispatch_semaphore_t signal = dispatch_semaphore_create(0);
@@ -165,7 +165,7 @@ static PaintingliteLog *_instance = nil;
         STRONGSELF(weakself);
         NSString *logStr = [[NSString alloc] initWithData:[self logData:fileName] encoding:NSUTF8StringEncoding];
         
-        if ([[logStr componentsSeparatedByString:@" ---- "][2] containsString:[NSString stringWithFormat:@"[%@]",logStatus == PaintingliteLogSuccess ? @"success" : @"error"]]) {
+        if ([[logStr componentsSeparatedByString:@" ---- "][2] containsString:[NSString stringWithFormat:@"[%@]",logStatus == kLogSuccess ? @"success" : @"error"]]) {
             //读取特定状态的日志
             [resStr appendFormat:@"\n%@ LOG FILE %@\n%@\n%@\n",PaintingliteLeft_Rigth_Line,PaintingliteLeft_Rigth_Line,logStr,PaintingliteLine];
         }
