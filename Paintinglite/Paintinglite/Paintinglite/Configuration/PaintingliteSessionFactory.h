@@ -89,7 +89,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param fileName Sqlite3数据库名称
  @param logStatus 操作日志状态
  */
-- (NSString *)readLogFile:(NSString *)fileName logStatus:(PaintingliteLogStatus)logStatus;
+- (NSString *)readLogFile:(NSString *)fileName logStatus:(kLogStatus)logStatus;
 
 @end
 

@@ -16,13 +16,13 @@
 #import <Foundation/Foundation.h>
 
 /*!
- @abstract PaintingliteLogStatus 日志保存状态
- @constant PaintingliteLogSuccess 日志保存成功 @constant PaintingliteLogError 日志保存失败
+ @abstract kLogStatus 日志保存状态
+ @constant kLogSuccess 日志保存成功 @constant kLogError 日志保存失败
  @discussion 测试报告保存类型
 */
-typedef NS_ENUM(NSInteger, PaintingliteLogStatus){
-    PaintingliteLogSuccess, //成功
-    PaintingliteLogError //错误
+typedef NS_ENUM(NSInteger, kLogStatus){
+    kLogSuccess, //成功
+    kLogError //错误
 };
 
 NS_ASSUME_NONNULL_BEGIN
@@ -45,7 +45,7 @@ NS_ASSUME_NONNULL_BEGIN
  @property status
  @abstract 日志保存状态
  */
-@property (nonatomic)PaintingliteLogStatus status;
+@property (nonatomic)kLogStatus status;
 /*!
  @property logsPath
  @abstract 目录下所有的日志文件绝对路径
@@ -68,7 +68,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param status 日志保存状态
  @param completeHandler 回调操作
  */
-- (void)writeLogFileOptions:(NSString *__nonnull)options status:(PaintingliteLogStatus)status completeHandler:(void(^ __nullable)(NSString *logFilePath))completeHandler;
+- (void)writeLogFileOptions:(NSString *__nonnull)options status:(kLogStatus)status completeHandler:(void(^ __nullable)(NSString *logFilePath))completeHandler;
 
 /*!
  @method removeLogFile:
@@ -106,7 +106,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param logStatus 日志保存状态
  @result NSString
  */
-- (NSString *)readLogFile:(NSString *)fileName logStatus:(PaintingliteLogStatus)logStatus;
+- (NSString *)readLogFile:(NSString *)fileName logStatus:(kLogStatus)logStatus;
 
 /*!
  @method logFileModificationTime:

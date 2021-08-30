@@ -200,7 +200,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param fileName Sqlite3数据库名称
  @param logStatus 操作日志状态
  */
-- (void)readLogFileWithDatabaseName:(NSString *__nonnull)fileName logStatus:(PaintingliteLogStatus)logStatus;
+- (void)readLogFileWithDatabaseName:(NSString *__nonnull)fileName logStatus:(kLogStatus)logStatus;
 
 #pragma mark - SQL语句执行
 
