@@ -14,7 +14,15 @@
 
 #define WEAK_SELF __weak typeof(self) weakSelf = self;
 #define STRONG_SELF __strong typeof(weakSelf) self = weakSelf;
- 
+#define WAIT_MIN(min) 60 * min
+
+static const NSInteger p_MaxCache_Count = 30; // 最大缓存量
+static const NSInteger p_MaxRelease_Count = 10; // 最大释放量
+static const double p_Min_Use_Memory = 50.0; // 最小内存占有
+static const double p_Min_Use_CPU = 50.0; // 最小CPU占有
+static const double p_Max_Use_Memory = 100.0; // 最小内存占有
+static const double p_Max_Use_CPU = 70.0; // 最小CPU占有
+
 @interface PaintingliteCache()<UIApplicationDelegate>
 @property (nonatomic,assign)NSTimeInterval lauchTime; /// 启动时间
 @property (nonatomic,strong)CADisplayLink *displayLink;
@@ -76,6 +84,7 @@ static PaintingliteCache *_instance = nil;
     tableCount++;
     self.tableCount = tableCount;
 }
+
 #pragma mark - 添加表结构缓存
 - (void)addSnapTableInfoNameCache:(NSArray *)infoArray tableName:(NSString *)tableName{
     [self setObject:infoArray forKey:[NSString stringWithFormat:@"snap_%@_info",tableName]];
@@ -95,13 +104,13 @@ static int count = 0;
     double usedMemory = [systemUseInfo applicationMemory];
     CGFloat usedCPU = [systemUseInfo applicationCPU];
     
-    NSInteger maxCacheCount = 30;
-    NSInteger maxReleaseCount = 10;
+    NSInteger maxCacheCount = p_MaxCache_Count;
+    NSInteger maxReleaseCount = p_MaxRelease_Count;
     
-    if (usedMemory >= 50.0 || usedCPU >= 50.0) {
+    if (usedMemory >= p_Min_Use_Memory || usedCPU >= p_Min_Use_CPU) {
         maxCacheCount = 40;
         maxReleaseCount = 20;
-    } else if (usedMemory >= 100.0 || usedCPU >= 70.0) {
+    } else if (usedMemory >= p_Max_Use_Memory || usedCPU >= p_Min_Use_CPU) {
         maxCacheCount = 50;
         maxReleaseCount = 30;
     }
@@ -131,7 +140,7 @@ static int count = 0;
     long long int currentTime = (long long int)[[NSDate date] timeIntervalSince1970];
     
     /// 十分钟上传一次
-    if (currentTime - (long long int)self.lauchTime >= 60 * 10) {
+    if (currentTime - (long long int)self.lauchTime >= WAIT_MIN(10)) {
         /// 写入日志
         [self pushCacheToLogFile];
     }
