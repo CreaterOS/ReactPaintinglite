@@ -18,74 +18,15 @@
 - (NSString *)securitySqlCommand:(NSString *)sql type:(PaintingliteSecurityMode)type{
     Boolean semicolonFlag = [sql containsString:@";"];
     
-    __block NSString *tempSql = sql;
+    NSString *tempSql = sql;
     if (semicolonFlag) {
         tempSql = [tempSql substringWithRange:NSMakeRange(0, tempSql.length-1)];
     }
     
-    if (type == PaintingliteSecurityInsert) {
-        NSArray<NSString *> *elements = [tempSql componentsSeparatedByString:@" "];
-        tempSql = elements.lastObject;
-        
-        dispatch_semaphore_t signal = dispatch_semaphore_create(0);
-        
-        runAsynchronouslyOnExecQueue(^{
-            if ([tempSql containsString:@"),"]) {
-                NSArray<NSString *> *sqlSubs = [tempSql componentsSeparatedByString:@"),"];
-                
-                tempSql = [NSString string];
-                for (NSUInteger i = 0; i < sqlSubs.count; i++) {
-                    @autoreleasepool {
-                        NSString *sqlSub = [NSString string];
-                        if (i < sqlSubs.count-1) {
-                            sqlSub = [sqlSubs[i] stringByAppendingString:@")"];
-                        } else {
-                            sqlSub = sqlSubs[i];
-                        }
-                       
-                        /// 处理数据
-                        sqlSub = [self securityField:sqlSub];
-                        
-                        if (i < sqlSubs.count-1) {
-                            tempSql = [tempSql stringByAppendingString:[sqlSub stringByAppendingString:@","]];
-                        } else {
-                            tempSql = [tempSql stringByAppendingString:sqlSub];
-                        }
-                    }
-                }
-            } else {
-                /// 处理数据
-                tempSql = [self securityField:tempSql];
-            }
-            dispatch_semaphore_signal(signal);
-        });
-
-        dispatch_semaphore_wait(signal, DISPATCH_TIME_FOREVER);
-        
-        
-        sql = [[[sql componentsSeparatedByString:@" ("].firstObject stringByAppendingString:@" "] stringByAppendingString:tempSql];
-    }
-    else if (type == PaintingliteSecurityUpdate){
-        /// set 位置
-        NSRange setRange = [[tempSql uppercaseString] rangeOfString:@"SET"];
-        NSRange whereRange = [[tempSql uppercaseString] rangeOfString:@"WHERE"];
-        /// set语句
-        __block NSString *setSql = [tempSql substringWithRange:NSMakeRange(setRange.location+setRange.length+1, whereRange.location-setRange.location-setRange.length-2)];
-        /// where语句
-        __block NSString *whereSql = [tempSql substringFromIndex:whereRange.location+whereRange.length];
-        
-        dispatch_semaphore_t signal = dispatch_semaphore_create(0);
-        
-        runAsynchronouslyOnExecQueue(^{
-            setSql = [self securityCondition:setSql];
-            whereSql = [self securityCondition:whereSql];
-            dispatch_semaphore_signal(signal);
-        });
-
-        dispatch_semaphore_wait(signal, DISPATCH_TIME_FOREVER);
-        
-        /// 拼接
-        sql = [[[[[sql componentsSeparatedByString:[sql substringWithRange:setRange]].firstObject stringByAppendingString:@"set "] stringByAppendingString:setSql] stringByAppendingString:@" where"] stringByAppendingString:whereSql];
+    if (type == PaintingliteSecurityInsert) { // 安全插入
+        sql = [self securityInsert:tempSql];
+    } else if (type == PaintingliteSecurityUpdate){ // 安全更新
+        sql = [self securityUpdate:tempSql sql:sql];
     }
     
     if (semicolonFlag) {
@@ -93,6 +34,74 @@
     }
 
     return sql;
+}
+
+#pragma mark - 安全插入/更新
+- (NSString *)securityInsert:(NSString *)sql {
+    NSArray<NSString *> *elements = [sql componentsSeparatedByString:@" "];
+    __block NSString *tempSql = elements.lastObject;
+    
+    dispatch_semaphore_t signal = dispatch_semaphore_create(0);
+    
+    runAsynchronouslyOnExecQueue(^{ // 异步执行
+        if ([tempSql containsString:@"),"]) {
+            NSArray<NSString *> *sqlSubs = [tempSql componentsSeparatedByString:@"),"];
+            
+            tempSql = [NSString string];
+            for (NSUInteger i = 0; i < sqlSubs.count; i++) {
+                @autoreleasepool {
+                    NSString *sqlSub = [NSString string];
+                    if (i < sqlSubs.count-1) {
+                        sqlSub = [sqlSubs[i] stringByAppendingString:@")"];
+                    } else {
+                        sqlSub = sqlSubs[i];
+                    }
+                   
+                    /// 处理数据
+                    sqlSub = [self securityField:sqlSub];
+                    
+                    if (i < sqlSubs.count-1) {
+                        tempSql = [tempSql stringByAppendingString:[sqlSub stringByAppendingString:@","]];
+                    } else {
+                        tempSql = [tempSql stringByAppendingString:sqlSub];
+                    }
+                }
+            }
+        } else {
+            /// 处理数据
+            tempSql = [self securityField:tempSql];
+        }
+        
+        dispatch_semaphore_signal(signal);
+    });
+
+    dispatch_semaphore_wait(signal, DISPATCH_TIME_FOREVER);
+    
+    
+    return [[[sql componentsSeparatedByString:@" ("].firstObject stringByAppendingString:@" "] stringByAppendingString:tempSql];
+}
+
+- (NSString *)securityUpdate:(NSString *)tempSql sql:(NSString *)sql {
+    /// set 位置
+    NSRange setRange = [[tempSql uppercaseString] rangeOfString:@"SET"];
+    NSRange whereRange = [[tempSql uppercaseString] rangeOfString:@"WHERE"];
+    /// set语句
+    __block NSString *setSql = [tempSql substringWithRange:NSMakeRange(setRange.location+setRange.length+1, whereRange.location-setRange.location-setRange.length-2)];
+    /// where语句
+    __block NSString *whereSql = [tempSql substringFromIndex:whereRange.location+whereRange.length];
+    
+    dispatch_semaphore_t signal = dispatch_semaphore_create(0);
+    
+    runAsynchronouslyOnExecQueue(^{
+        setSql = [self securityCondition:setSql];
+        whereSql = [self securityCondition:whereSql];
+        dispatch_semaphore_signal(signal);
+    });
+
+    dispatch_semaphore_wait(signal, DISPATCH_TIME_FOREVER);
+    
+    /// 拼接
+    return [[[[[sql componentsSeparatedByString:[sql substringWithRange:setRange]].firstObject stringByAppendingString:@"set "] stringByAppendingString:setSql] stringByAppendingString:@" where"] stringByAppendingString:whereSql];
 }
 
 - (NSObject *)securityObj:(NSObject *)obj {
