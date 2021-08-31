@@ -15,76 +15,76 @@
 #import <Sqlite3.h>
 
 /*!
- @abstract PaintingliteSynchronousMode Sync模式
- @constant PaintingliteSynchronousOFF OFF
- @constant PaintingliteSynchronousNORMAL NORMAL
- @constant PaintingliteSynchronousFULL FULL
+ @abstract kSynchronousMode Sync模式
+ @constant kSynchronousOff OFF
+ @constant kSynchronousNormal NORMAL
+ @constant kSynchronousFull FULL
  @discussion Sync模式
 */
-typedef NS_ENUM(NSUInteger, PaintingliteSynchronousMode) {
-    PaintingliteSynchronousOFF,
-    PaintingliteSynchronousNORMAL,
-    PaintingliteSynchronousFULL,
+typedef NS_ENUM(NSUInteger, kSynchronousMode) {
+    kSynchronousOff     = 0,
+    kSynchronousNormal  = 1 << 0,
+    kSynchronousFull    = 1 << 1,
 };
 
 /*!
- @abstract PaintingliteEncoding 编码
- @constant PaintingliteEncodingUTF8 UTF8
- @constant PaintingliteEncodingUTF16 UTF16
- @constant PaintingliteEncodingUTF16le UTF16le
- @constant PaintingliteEncodingUTF16be UTF16be
+ @abstract kEncoding 编码
+ @constant kEncodingUTF8 UTF8
+ @constant kEncodingUTF16 UTF16
+ @constant kEncodingUTF16le UTF16le
+ @constant kEncodingUTF16be UTF16be
  @discussion 编码
 */
-typedef NS_ENUM(NSUInteger, PaintingliteEncoding) {
-    PaintingliteEncodingUTF8,
-    PaintingliteEncodingUTF16,
-    PaintingliteEncodingUTF16le,
-    PaintingliteEncodingUTF16be
+typedef NS_ENUM(NSUInteger, kEncoding) {
+    kEncodingUTF8    = 0,
+    kEncodingUTF16   = 1 << 0,
+    kEncodingUTF16le = 1 << 1,
+    kEncodingUTF16be = 1 << 2
 };
 
 /*!
- @abstract PaintingliteAutoVacuumMode Auto_Vacuum
- @constant PaintingliteAutoVacuumNONE NONE
- @constant PaintingliteAutoVacuumFULL FULL
- @constant PaintingliteAutoVacuumINCREMENTAL INCREMENTAL
+ @abstract kAutoVacuumMode Auto_Vacuum
+ @constant kAutoVacuumNone NONE
+ @constant kAutoVacuumFull FULL
+ @constant kAutoVacuumIncremental INCREMENTAL
  @discussion Auto_Vacuum
 */
-typedef NS_ENUM(NSUInteger, PaintingliteAutoVacuumMode) {
-    PaintingliteAutoVacuumNONE,
-    PaintingliteAutoVacuumFULL,
-    PaintingliteAutoVacuumINCREMENTAL,
+typedef NS_ENUM(NSUInteger, kAutoVacuumMode) {
+    kAutoVacuumNone         = 0,
+    kAutoVacuumFull         = 1 << 0,
+    kAutoVacuumIncremental  = 1 << 1
 };
 
 /*!
- @abstract PaintingliteWalCheckpointMode wal_checkpoint
- @constant PaintingliteWalCheckpointPASSIVE PASSIVE
- @constant PaintingliteWalCheckpointFULL FULL
- @constant PaintingliteWalCheckpointRESTART RESTART
- @constant PaintingliteWalCheckpointTRUNCATE TRUNCATE
+ @abstract kWalCheckpointMode wal_checkpoint
+ @constant kWalCheckpointPassive PASSIVE
+ @constant kWalCheckpointFull FULL
+ @constant kWalCheckpointRestart RESTART
+ @constant kWalCheckpointTruncate TRUNCATE
  @discussion wal_checkpoint
 */
-typedef NS_ENUM(NSUInteger, PaintingliteWalCheckpointMode) {
-    PaintingliteWalCheckpointPASSIVE,
-    PaintingliteWalCheckpointFULL,
-    PaintingliteWalCheckpointRESTART,
-    PaintingliteWalCheckpointTRUNCATE
+typedef NS_ENUM(NSUInteger, kWalCheckpointMode) {
+    kWalCheckpointPassive   = 0,
+    kWalCheckpointFull      = 1 << 0,
+    kWalCheckpointRestart   = 1 << 1,
+    kWalCheckpointTruncate  = 1 << 2
 };
 
 /*!
- @abstract PaintingliteJournalMode JournalMode
- @constant PaintingliteJournalDELETE DELETE
- @constant PaintingliteJournalTRUNCATE TRUNCATE
- @constant PaintingliteJournalPERSIST PERSIST
- @constant PaintingliteJournalMEMORY MEMORY
- @constant PaintingliteJournalOFF OFF
+ @abstract kJournalMode JournalMode
+ @constant kJournalDelete DELETE
+ @constant kJournalTruncate TRUNCATE
+ @constant kJournalPersist PERSIST
+ @constant kJournalMemory MEMORY
+ @constant kJournalOff OFF
  @discussion JournalMode
 */
-typedef NS_ENUM(NSUInteger, PaintingliteJournalMode) {
-    PaintingliteJournalDELETE,
-    PaintingliteJournalTRUNCATE,
-    PaintingliteJournalPERSIST,
-    PaintingliteJournalMEMORY,
-    PaintingliteJournalOFF
+typedef NS_ENUM(NSUInteger, kJournalMode) {
+    kJournalDelete      = 0,
+    kJournalTruncate    = 1 << 0,
+    kJournalPersist     = 1 << 1,
+    kJournalMemory      = 1 << 2,
+    kJournalOff         = 1 << 3
 };
 
 NS_ASSUME_NONNULL_BEGIN
@@ -121,7 +121,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param mode 模式
  @result Boolean
  */
-+ (Boolean)setSynchronous:(sqlite3 *)ppDb mode:(PaintingliteSynchronousMode)mode;
++ (Boolean)setSynchronous:(sqlite3 *)ppDb mode:(kSynchronousMode)mode;
 
 /*!
  @method getSynchronous:
@@ -140,7 +140,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param encoding 编码
  @result Boolean
  */
-+ (Boolean)setEncoding:(sqlite3 *)ppDb encoding:(PaintingliteEncoding)encoding;
++ (Boolean)setEncoding:(sqlite3 *)ppDb encoding:(kEncoding)encoding;
 
 /// 查看数据库编码
 /// @param ppDb ppDb
@@ -154,7 +154,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param mode 模式
  @result Boolean
  */
-+ (Boolean)setAutoVacuum:(sqlite3 *)ppDb mode:(PaintingliteAutoVacuumMode)mode;
++ (Boolean)setAutoVacuum:(sqlite3 *)ppDb mode:(kAutoVacuumMode)mode;
 
 /// Auto_Vacuum模式
 /// @param ppDb ppDb
@@ -168,7 +168,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param mode 模式
  @result Boolean
  */
-+ (Boolean)setWalCheckpoint:(sqlite3 *)ppDb mode:(PaintingliteWalCheckpointMode)mode;
++ (Boolean)setWalCheckpoint:(sqlite3 *)ppDb mode:(kWalCheckpointMode)mode;
 
 /*!
  @method setCacheSize: size:
@@ -236,7 +236,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param mode 模式
  @result Boolean
  */
-+ (Boolean)setJournalMode:(sqlite3 *)ppDb mode:(PaintingliteJournalMode)mode;
++ (Boolean)setJournalMode:(sqlite3 *)ppDb mode:(kJournalMode)mode;
 
 @end
 

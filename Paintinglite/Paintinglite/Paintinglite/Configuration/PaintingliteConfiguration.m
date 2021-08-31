@@ -37,16 +37,16 @@ static PaintingliteConfiguration *_instance = nil;
 /* =====================================数据库模式操作======================================== */
 #pragma mark - 数据库模式操作w
 #pragma mark - 修改Synchronous模式
-+ (Boolean)setSynchronous:(sqlite3 *)ppDb mode:(PaintingliteSynchronousMode)mode{
++ (Boolean)setSynchronous:(sqlite3 *)ppDb mode:(kSynchronousMode)mode{
     NSString *synchronousSQL = NULL;
     switch (mode) {
-        case 0:
+        case kSynchronousOff:
             synchronousSQL = SYNCHRONOUSMODE(@"OFF");
             break;
-        case 1:
+        case kSynchronousNormal:
             synchronousSQL = SYNCHRONOUSMODE(@"NORMAL");
             break;
-        case 2:
+        case kSynchronousFull:
             synchronousSQL = SYNCHRONOUSMODE(@"FULL");
             break;
         default:
@@ -66,11 +66,11 @@ static PaintingliteConfiguration *_instance = nil;
             //获得数据库中含有的表名
             int synchronous = (int)sqlite3_column_int(stmt, 0);
             switch (synchronous) {
-                case 0:
+                case kSynchronousOff:
                     return @"OFF";
-                case 1:
+                case kSynchronousNormal:
                     return @"NORMAL";
-                case 2:
+                case kSynchronousFull:
                     return @"FULL";
             }
         }
@@ -80,20 +80,20 @@ static PaintingliteConfiguration *_instance = nil;
 }
 
 #pragma mark - 配置数据库编码格式
-+ (Boolean)setEncoding:(sqlite3 *)ppDb encoding:(PaintingliteEncoding)encoding{
++ (Boolean)setEncoding:(sqlite3 *)ppDb encoding:(kEncoding)encoding{
     NSString *encode = NULL;
     
     switch (encoding) {
-        case 0:
+        case kEncodingUTF8:
             encode = @"UTF-8";
             break;
-        case 1:
+        case kEncodingUTF16:
             encode = @"UTF-16";
             break;
-        case 2:
+        case kEncodingUTF16le:
             encode = @"UTF-16le";
             break;
-        case 3:
+        case kEncodingUTF16be:
             encode = @"UTF-16be";
             break;
         default:
@@ -120,16 +120,16 @@ static PaintingliteConfiguration *_instance = nil;
 }
 
 #pragma mark - 修改数据库Auto_Vacuum模式
-+ (Boolean)setAutoVacuum:(sqlite3 *)ppDb mode:(PaintingliteAutoVacuumMode)mode{
++ (Boolean)setAutoVacuum:(sqlite3 *)ppDb mode:(kAutoVacuumMode)mode{
     NSString *AutoVacuum = NULL;
     switch (mode) {
-        case 0:
+        case kAutoVacuumNone:
             AutoVacuum = @"NONE";
             break;
-        case 1:
+        case kAutoVacuumFull:
             AutoVacuum = @"FULL";
             break;
-        case 2:
+        case kAutoVacuumIncremental:
             AutoVacuum = @"INCREMENTAL";
             break;
         default:
@@ -176,19 +176,19 @@ static PaintingliteConfiguration *_instance = nil;
 }
 
 #pragma mark - 修改数据库wal_checkpoint模式
-+ (Boolean)setWalCheckpoint:(sqlite3 *)ppDb mode:(PaintingliteWalCheckpointMode)mode{
++ (Boolean)setWalCheckpoint:(sqlite3 *)ppDb mode:(kWalCheckpointMode)mode{
     NSString *WalCheckpoint = NULL;
     switch (mode) {
-        case 0:
+        case kWalCheckpointPassive:
             WalCheckpoint = @"PASSIVE";
             break;
-        case 1:
+        case kWalCheckpointFull:
             WalCheckpoint = @"FULL";
             break;
-        case 2:
+        case kWalCheckpointRestart:
             WalCheckpoint = @"RESTART";
             break;
-        case 3:
+        case kWalCheckpointTruncate:
             WalCheckpoint = @"TRUNCATE";
             break;
     }
@@ -232,23 +232,23 @@ static PaintingliteConfiguration *_instance = nil;
 }
 
 #pragma mark - 修改数据库journal_mode
-+ (Boolean)setJournalMode:(sqlite3 *)ppDb mode:(PaintingliteJournalMode)mode{
++ (Boolean)setJournalMode:(sqlite3 *)ppDb mode:(kJournalMode)mode{
     NSString *journalMode = NULL;
     
     switch (mode) {
-        case 0:
+        case kJournalDelete:
             journalMode = @"DELETE";
             break;
-        case 1:
+        case kJournalTruncate:
             journalMode = @"TRUNCATE";
             break;
-        case 2:
+        case kJournalPersist:
             journalMode = @"PERSIST";
             break;
-        case 3:
+        case kJournalMemory:
             journalMode = @"MEMORY";
             break;
-        case 4:
+        case kJournalOff:
             journalMode = @"OFF";
             break;
     }

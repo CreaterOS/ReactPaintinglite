@@ -21,8 +21,8 @@
  @discussion 测试报告保存类型
 */
 typedef NS_ENUM(NSInteger, kLogStatus){
-    kLogSuccess, //成功
-    kLogError //错误
+    kLogSuccess = 0, //成功
+    kLogError   = 1 << 0 //错误
 };
 
 NS_ASSUME_NONNULL_BEGIN

@@ -79,7 +79,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param completeHandler 回调操作
  @result Boolean
  */
-- (Boolean)orderBy:(sqlite3 *)ppDb orderStyle:(PaintingliteOrderByStyle)orderStyle condation:(NSArray<NSString *> *)condation completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success,NSMutableArray *orderArray))completeHandler objects:(id)objects,... NS_REQUIRES_NIL_TERMINATION;
+- (Boolean)orderBy:(sqlite3 *)ppDb orderStyle:(kOrderByStyle)orderStyle condation:(NSArray<NSString *> *)condation completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success,NSMutableArray *orderArray))completeHandler objects:(id)objects,... NS_REQUIRES_NIL_TERMINATION;
 
 /*!
  @method orderBy: orderStyleArray: condation: completeHandler: objects:

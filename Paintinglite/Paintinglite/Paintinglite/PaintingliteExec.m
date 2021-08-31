@@ -402,7 +402,7 @@
 }
 
 #pragma mark - 对象执行方法
-- (Boolean)sqlite3Exec:(sqlite3 *)ppDb obj:(id)obj status:(PaintingliteExecStatus)status createStyle:(PaintingliteDataBaseOptionsPrimaryKeyStyle)createStyle{
+- (Boolean)sqlite3Exec:(sqlite3 *)ppDb obj:(id)obj status:(PaintingliteExecStatus)status createStyle:(kPrimaryKeyStyle)createStyle{
     Boolean flag = true;
     
     runSynchronouslyOnExecQueue(self, ^{
@@ -426,7 +426,7 @@
 }
 
 #pragma mark - 基本操作
-- (void)getPaintingliteExecCreate:(sqlite3 *)ppDb objName:(NSString *__nonnull)objName obj:(id)obj createSytle:(PaintingliteDataBaseOptionsPrimaryKeyStyle)createStyle{
+- (void)getPaintingliteExecCreate:(sqlite3 *)ppDb objName:(NSString *__nonnull)objName obj:(id)obj createSytle:(kPrimaryKeyStyle)createStyle{
     
     //如果存在表则不能创建
     if ([[self getCurrentTableNameWithCache] containsObject:[[PaintingliteObjRuntimeProperty getObjName:obj] lowercaseString]]) {
@@ -441,9 +441,9 @@
     NSMutableString *content = [NSMutableString string];
     
     /* 设置主键 */
-    if (createStyle == PaintingliteDataBaseOptionsUUID) {
+    if (createStyle == kUUID) {
         content = Paintinglite_Sqlite3_PRIMARY_KEY(@"UUID");
-    }else if(createStyle == PaintingliteDataBaseOptionsID){
+    }else if(createStyle == kID){
         content = [NSMutableString stringWithFormat:@"%@ INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,",@"ID"];
     }
     
@@ -490,8 +490,8 @@
             }else{
                 //找出不一样的增加的那一个，进行更新操作
                 //先删除原来那个表，然后重新根据这个表进行创建
-                if ([self sqlite3Exec:ppDb obj:obj status:PaintingliteExecDrop createStyle:PaintingliteDataBaseOptionsDefault]) {
-                    [self sqlite3Exec:ppDb obj:obj status:PaintingliteExecCreate createStyle:PaintingliteDataBaseOptionsUUID];
+                if ([self sqlite3Exec:ppDb obj:obj status:PaintingliteExecDrop createStyle:kDefault]) {
+                    [self sqlite3Exec:ppDb obj:obj status:PaintingliteExecCreate createStyle:kUUID];
                 }
             }
         }else{
@@ -516,7 +516,7 @@
 
 /* 获得表字段 */
 - (NSMutableArray *)getTableInfo:(sqlite3 *)ppDb tableName:(NSString *__nonnull)tableName{
-    return [[PaintingliteSessionFactory sharePaintingliteSessionFactory] execQuery:ppDb tableName:tableName sql:TABLE_INFO(tableName) status:PaintingliteSessionFactoryTableINFOCache];
+    return [[PaintingliteSessionFactory sharePaintingliteSessionFactory] execQuery:ppDb tableName:tableName sql:TABLE_INFO(tableName) status:kSessionFactoryTableINFOCache];
 }
 
 #pragma mark - 获得表的名称

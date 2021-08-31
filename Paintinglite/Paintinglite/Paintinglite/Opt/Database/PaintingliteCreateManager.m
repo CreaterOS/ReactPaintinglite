@@ -82,11 +82,11 @@ static PaintingliteCreateManager *_instance = nil;
 }
 
 /* Obj创建 */
-- (Boolean)createTableForObj:(sqlite3 *)ppDb obj:(id)obj createStyle:(PaintingliteDataBaseOptionsPrimaryKeyStyle)createStyle{
+- (Boolean)createTableForObj:(sqlite3 *)ppDb obj:(id)obj createStyle:(kPrimaryKeyStyle)createStyle{
     return [self createTableForObj:ppDb obj:obj createStyle:createStyle completeHandler:nil];
 }
 
-- (Boolean)createTableForObj:(sqlite3 *)ppDb obj:(id)obj createStyle:(PaintingliteDataBaseOptionsPrimaryKeyStyle)createStyle completeHandler:(void (^)(NSString *tableName,PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
+- (Boolean)createTableForObj:(sqlite3 *)ppDb obj:(id)obj createStyle:(kPrimaryKeyStyle)createStyle completeHandler:(void (^)(NSString *tableName,PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
     /// 对象为空
     if (obj == NULL || obj == (id)[NSNull null]) {
         [PaintingliteWarningHelper warningReason:@"Object IS NULL OR Object IS [NSNull null]" time:[NSDate date] solve:@"Reset The Object" args:nil];

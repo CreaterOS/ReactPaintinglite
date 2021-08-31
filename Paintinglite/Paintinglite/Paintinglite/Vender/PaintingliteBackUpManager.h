@@ -25,11 +25,11 @@
  @constant PaintingliteBackUpORCALE ORCALE
  @discussion 备份类型
 */
-typedef NS_ENUM(NSUInteger, PaintingliteBackUpManagerDBType) {
-    PaintingliteBackUpSqlite3,
-    PaintingliteBackUpMySql,
-    PaintingliteBackUpSqlServer,
-    PaintingliteBackUpORCALE
+typedef NS_ENUM(NSUInteger, kBackUpType) {
+    kTypeSqlite3,
+    kTypeMySql,
+    kTypeSqlServer,
+    kTypeORCALE
 };
 
 NS_ASSUME_NONNULL_BEGIN
@@ -57,7 +57,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param completeHandler 返回路径
  @result Boolean
  */
-- (Boolean)backupDataBaseWithName:(sqlite3 *)ppDb sqliteName:(NSString *)sqliteName type:(PaintingliteBackUpManagerDBType)type completeHandler:(void(^ __nullable)(NSString *saveFilePath))completeHandler;
+- (Boolean)backupDataBaseWithName:(sqlite3 *)ppDb sqliteName:(NSString *)sqliteName type:(kBackUpType)type completeHandler:(void(^ __nullable)(NSString *saveFilePath))completeHandler;
 
 /*!
  @method backupTableRowWithTableName: sqliteName: type: completeHandler:

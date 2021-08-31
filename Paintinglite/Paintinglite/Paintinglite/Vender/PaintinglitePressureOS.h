@@ -22,8 +22,8 @@
  @discussion 测试报告保存类型
 */
 typedef NS_ENUM(NSUInteger, kPressureSaveType) {
-    kPressureSaveDefault,
-    kPressureSaveTxt
+    kPressureSaveDefault = 0,
+    kPressureSaveTxt = 1 << 0
 };
 
 NS_ASSUME_NONNULL_BEGIN

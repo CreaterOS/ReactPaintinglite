@@ -401,7 +401,7 @@ static PaintingliteTableOptionsSelect *_instance = nil;
  * 例: select * from user order by name ASC
  */
 #pragma mark - 排序查询
-- (NSMutableArray *)execOrderByQuerySQL:(sqlite3 *)ppDb tableName:(NSString *)tableName orderbyContext:(NSString *)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle{
+- (NSMutableArray *)execOrderByQuerySQL:(sqlite3 *)ppDb tableName:(NSString *)tableName orderbyContext:(NSString *)orderbyContext orderStyle:(kOrderByStyle)orderStyle{
     __block NSMutableArray *orderByQueryArray = [NSMutableArray array];
     
     [self execOrderByQuerySQL:ppDb tableName:tableName orderbyContext:orderbyContext orderStyle:orderStyle completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray) {
@@ -413,10 +413,10 @@ static PaintingliteTableOptionsSelect *_instance = nil;
     return orderByQueryArray;
 }
 
-- (Boolean)execOrderByQuerySQL:(sqlite3 *)ppDb tableName:(NSString *)tableName orderbyContext:(NSString *)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull))completeHandler{
+- (Boolean)execOrderByQuerySQL:(sqlite3 *)ppDb tableName:(NSString *)tableName orderbyContext:(NSString *)orderbyContext orderStyle:(kOrderByStyle)orderStyle completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull))completeHandler{
     
     
-    NSString *orderBySql = [NSString stringWithFormat:@"SELECT * FROM %@ ORDER BY %@ %@",tableName,orderbyContext,(orderStyle == PaintingliteOrderByASC) ? @"ASC" : @"DESC"];
+    NSString *orderBySql = [NSString stringWithFormat:@"SELECT * FROM %@ ORDER BY %@ %@",tableName,orderbyContext,(orderStyle == kOrderByASC) ? @"ASC" : @"DESC"];
     NSLog(@"%@",orderBySql);
     return [self execQuerySQL:ppDb sql:orderBySql completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray) {
         if (success) {
@@ -429,7 +429,7 @@ static PaintingliteTableOptionsSelect *_instance = nil;
 }
 
 #pragma mark - 排序查询封装对象查询
-- (id)execOrderByQuerySQL:(sqlite3 *)ppDb orderbyContext:(NSString *)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle obj:(id)obj{
+- (id)execOrderByQuerySQL:(sqlite3 *)ppDb orderbyContext:(NSString *)orderbyContext orderStyle:(kOrderByStyle)orderStyle obj:(id)obj{
     __block NSMutableArray<id> *orderByQuerySQLArray = [NSMutableArray array];
     
     [self execOrderByQuerySQL:ppDb orderbyContext:orderbyContext orderStyle:orderStyle obj:obj completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
@@ -439,9 +439,9 @@ static PaintingliteTableOptionsSelect *_instance = nil;
     return orderByQuerySQLArray;
 }
 
-- (Boolean)execOrderByQuerySQL:(sqlite3 *)ppDb orderbyContext:(NSString *)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle obj:(id)obj completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull, NSMutableArray<id> * _Nonnull))completeHandler{
+- (Boolean)execOrderByQuerySQL:(sqlite3 *)ppDb orderbyContext:(NSString *)orderbyContext orderStyle:(kOrderByStyle)orderStyle obj:(id)obj completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull, NSMutableArray<id> * _Nonnull))completeHandler{
     
-    NSString *orderBySql = [NSString stringWithFormat:@"SELECT * FROM %@ ORDER BY %@ %@",[[PaintingliteObjRuntimeProperty getObjName:obj] lowercaseString],orderbyContext,(orderStyle == PaintingliteOrderByASC) ? @"ASC" : @"DESC"];
+    NSString *orderBySql = [NSString stringWithFormat:@"SELECT * FROM %@ ORDER BY %@ %@",[[PaintingliteObjRuntimeProperty getObjName:obj] lowercaseString],orderbyContext,(orderStyle == kOrderByASC) ? @"ASC" : @"DESC"];
 
     return [self execQuerySQL:ppDb sql:orderBySql obj:obj completeHandler:^(PaintingliteSessionError * _Nonnull error, Boolean success, NSMutableArray * _Nonnull resArray, NSMutableArray<id> * _Nonnull resObjList) {
         completeHandler(error,success,resArray,resObjList);

@@ -26,7 +26,7 @@
 #define ZIP_NAME @"Encrypt"
 
 /// 数据库打开方式
-typedef NS_ENUM(NSUInteger, PaintingliteOpenType) {
+typedef NS_ENUM(NSUInteger, kOpenType) {
     PaintingliteOpenByFileName,
     PaintingliteOpenByFilePath
 };
@@ -101,7 +101,7 @@ static PaintingliteSessionManager *_instance = nil;
 #pragma mark - 数据库打开/关闭
 #pragma mark - 连接数据库
 /// v1.3.3优化策略
-- (NSString *__nonnull)createDefineDataBaseName:(NSString *)str type:(PaintingliteOpenType)type {
+- (NSString *__nonnull)createDefineDataBaseName:(NSString *)str type:(kOpenType)type {
     /**
         v1.3.3优化策略
         针对文件名为空,自动生成文件名称
@@ -347,11 +347,11 @@ static PaintingliteSessionManager *_instance = nil;
     return [_createManager createTableForName:self.ppDb tableName:tableName content:content completeHandler:completeHandler];
 }
 
-- (Boolean)createTableForObj:(id)obj primaryKeyStyle:(PaintingliteDataBaseOptionsPrimaryKeyStyle)primaryKeyStyle{
+- (Boolean)createTableForObj:(id)obj primaryKeyStyle:(kPrimaryKeyStyle)primaryKeyStyle{
     return [self createTableForObj:obj primaryKeyStyle:primaryKeyStyle completeHandler:nil];
 }
 
-- (Boolean)createTableForObj:(id)obj primaryKeyStyle:(PaintingliteDataBaseOptionsPrimaryKeyStyle)primaryKeyStyle completeHandler:(void (^)(NSString *_Nonnull,PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
+- (Boolean)createTableForObj:(id)obj primaryKeyStyle:(kPrimaryKeyStyle)primaryKeyStyle completeHandler:(void (^)(NSString *_Nonnull,PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
     if (!self.isOpen) {
         [self warningOpenDatabase];
         return false;
@@ -591,11 +591,11 @@ static PaintingliteSessionManager *_instance = nil;
     return [[PaintingliteTableOptions sharePaintingliteTableOptions] execLimitQuerySQL:self.ppDb limitStart:start limitEnd:end obj:obj completeHandler:completeHandler];
 }
 
-- (NSMutableArray *)execQueryOrderBySQLWithTableName:(NSString *)tableName orderbyContext:(NSString *)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle{
+- (NSMutableArray *)execQueryOrderBySQLWithTableName:(NSString *)tableName orderbyContext:(NSString *)orderbyContext orderStyle:(kOrderByStyle)orderStyle{
     return [[PaintingliteTableOptions sharePaintingliteTableOptions] execOrderByQuerySQL:self.ppDb tableName:tableName orderbyContext:orderbyContext orderStyle:orderStyle];
 }
 
-- (Boolean)execQueryOrderBySQLWithTableName:(NSString *)tableName orderbyContext:(NSString *)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<NSDictionary *> * _Nonnull))completeHandler{
+- (Boolean)execQueryOrderBySQLWithTableName:(NSString *)tableName orderbyContext:(NSString *)orderbyContext orderStyle:(kOrderByStyle)orderStyle completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<NSDictionary *> * _Nonnull))completeHandler{
     if (!self.isOpen) {
         [self warningOpenDatabase];
         return false;
@@ -603,11 +603,11 @@ static PaintingliteSessionManager *_instance = nil;
     return [[PaintingliteTableOptions sharePaintingliteTableOptions] execOrderByQuerySQL:self.ppDb tableName:tableName orderbyContext:orderbyContext orderStyle:orderStyle completeHandler:completeHandler];
 }
 
-- (NSMutableArray<id> *)execQueryOrderBySQLWithOrderbyContext:(NSString *)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle obj:(id)obj{
+- (NSMutableArray<id> *)execQueryOrderBySQLWithOrderbyContext:(NSString *)orderbyContext orderStyle:(kOrderByStyle)orderStyle obj:(id)obj{
     return [[PaintingliteTableOptions sharePaintingliteTableOptions] execOrderByQuerySQL:self.ppDb orderbyContext:orderbyContext orderStyle:orderStyle obj:obj];
 }
 
-- (Boolean)execQueryOrderBySQLWithOrderbyContext:(NSString *)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle obj:(id)obj completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<NSDictionary *> * _Nonnull, NSMutableArray<id> * _Nonnull))completeHandler{
+- (Boolean)execQueryOrderBySQLWithOrderbyContext:(NSString *)orderbyContext orderStyle:(kOrderByStyle)orderStyle obj:(id)obj completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray<NSDictionary *> * _Nonnull, NSMutableArray<id> * _Nonnull))completeHandler{
     if (!self.isOpen) {
         [self warningOpenDatabase];
         return false;

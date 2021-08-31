@@ -30,7 +30,7 @@ static PaintingliteSessionFactory *_instance = nil;
 }
 
 #pragma mark - 执行查询
-- (NSMutableArray *)execQuery:(sqlite3 *)ppDb tableName:(NSString * _Nonnull)tableName sql:(NSString * _Nonnull)sql status:(PaintingliteSessionFactoryStatus)status{
+- (NSMutableArray *)execQuery:(sqlite3 *)ppDb tableName:(NSString * _Nonnull)tableName sql:(NSString * _Nonnull)sql status:(kSessionFactoryStatus)status{
     __block NSMutableArray<NSString *> *tables = [NSMutableArray array];
 
     __block NSString *optAndStatusStr = [sql stringByAppendingString:@" | "];
@@ -42,10 +42,10 @@ static PaintingliteSessionFactory *_instance = nil;
             //查询成功
             while (sqlite3_step(self->_stmt) == SQLITE_ROW) {
                 //获得数据库中含有的表名
-                if (status == PaintingliteSessionFactoryTableCache) {
+                if (status == kSessionFactoryTableCache) {
                     char *name = (char *)sqlite3_column_text(self->_stmt, 0);
                     [tables addObject:[NSString stringWithFormat:@"%s",name]];
-                }else if (status == PaintingliteSessionFactoryTableINFOCache){
+                }else if (status == kSessionFactoryTableINFOCache){
                     //保存数据库中的字段名
                     char *name = (char *)sqlite3_column_text(self->_stmt, 1);
                     [tables addObject:[NSString stringWithFormat:@"%s",name]];
@@ -63,7 +63,7 @@ static PaintingliteSessionFactory *_instance = nil;
         [[PaintingliteCache sharePaintingliteCache] addDatabaseOptionsCache:optAndStatusStr];
         
         if (tables.count != 0) {
-            if (status == PaintingliteSessionFactoryTableCache) {
+            if (status == kSessionFactoryTableCache) {
                 //表名缓存
                 NSUInteger count = 0;
                 [PaintingliteCache sharePaintingliteCache].tableCount = 0;

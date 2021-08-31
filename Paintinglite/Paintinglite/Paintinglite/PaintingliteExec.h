@@ -113,7 +113,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param createStyle 主键类型
  @result Boolean
  */
-- (Boolean)sqlite3Exec:(sqlite3 *)ppDb obj:(id)obj status:(PaintingliteExecStatus)status createStyle:(PaintingliteDataBaseOptionsPrimaryKeyStyle)createStyle;
+- (Boolean)sqlite3Exec:(sqlite3 *)ppDb obj:(id)obj status:(PaintingliteExecStatus)status createStyle:(kPrimaryKeyStyle)createStyle;
 
 /*!
  @method sqlite3Exec: objName:

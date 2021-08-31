@@ -43,12 +43,12 @@ static PaintingliteBackUpManager *_instance = nil;
 }
 
 #pragma mark - 备份数据库
-- (Boolean)backupDataBaseWithName:(sqlite3 *)ppDb sqliteName:(NSString *)sqliteName type:(PaintingliteBackUpManagerDBType)type completeHandler:(void (^)(NSString * _Nonnull))completeHandler{
+- (Boolean)backupDataBaseWithName:(sqlite3 *)ppDb sqliteName:(NSString *)sqliteName type:(kBackUpType)type completeHandler:(void (^)(NSString * _Nonnull))completeHandler{
     Boolean success = false;
     
     //创建数据库文件完成
     if([self writeCreateDataBaseWithName:sqliteName type:type fileExists:[self isFileExists:sqliteName]]){
-        if ([self backupCreateTable:ppDb type:(PaintingliteBackUpManagerDBType)type]) {
+        if ([self backupCreateTable:ppDb type:(kBackUpType)type]) {
                 //写入数据插入数据文件
             success = true;
             }
@@ -153,7 +153,7 @@ static PaintingliteBackUpManager *_instance = nil;
 }
 
 #pragma mark - 创建表备份文件
-- (Boolean)backupCreateTable:(sqlite3 *)ppDb type:(PaintingliteBackUpManagerDBType)type{
+- (Boolean)backupCreateTable:(sqlite3 *)ppDb type:(kBackUpType)type{
     __block Boolean success = false;
     //获得每个表的名称和表的字段
     //分别写入不同的sql文件，文件命名通过表名完成
@@ -178,7 +178,7 @@ static PaintingliteBackUpManager *_instance = nil;
                         NSString *name = dict[TABLEINFO_NAME];
                         NSString *typeContent = dict[TABLEINFO_TYPE];
                         
-                        if (type == PaintingliteBackUpMySql || type == PaintingliteBackUpSqlServer || type == PaintingliteBackUpORCALE) {
+                        if (type == kTypeMySql || type == kTypeSqlServer || type == kTypeORCALE) {
                             //处理类型字段
                             if ([typeContent isEqualToString:@"INTEGER"]) {
                                 typeContent = @"INT";
@@ -242,7 +242,7 @@ static PaintingliteBackUpManager *_instance = nil;
 }
 
 #pragma mark - 写创建数据库文件
-- (Boolean)writeCreateDataBaseWithName:(NSString *__nonnull)sqliteName type:(PaintingliteBackUpManagerDBType)type fileExists:(Boolean)fileExists{
+- (Boolean)writeCreateDataBaseWithName:(NSString *__nonnull)sqliteName type:(kBackUpType)type fileExists:(Boolean)fileExists{
     //文件存在
     //先写创建数据库的文件
     __block Boolean success = false;
@@ -254,7 +254,7 @@ static PaintingliteBackUpManager *_instance = nil;
     dispatch_semaphore_t signal = dispatch_semaphore_create(0);
     
     runAsynchronouslyOnExecQueue(^{
-        if (type != PaintingliteBackUpORCALE) {
+        if (type != kTypeORCALE) {
             NSString *savePath = [ROOTPATH stringByAppendingPathComponent:[NSString stringWithFormat:@"%@_BACKUP.sql",[sqliteName uppercaseString]]];
             
             NSString *createSQLContentStr = [@"CREATE DATABASE IF NOT EXISTS " stringByAppendingString:sqliteName];

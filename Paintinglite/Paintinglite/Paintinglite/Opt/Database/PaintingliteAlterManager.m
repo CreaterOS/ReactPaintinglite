@@ -57,7 +57,7 @@ static PaintingliteAlterManager *_instance = nil;
         return NO;
     }
     
-    Boolean success = [self.exec sqlite3Exec:ppDb obj:@[oldName,newName] status:PaintingliteExecAlterRename createStyle:PaintingliteDataBaseOptionsDefault];
+    Boolean success = [self.exec sqlite3Exec:ppDb obj:@[oldName,newName] status:PaintingliteExecAlterRename createStyle:kDefault];
     
     if (completeHandler != nil) {
         completeHandler([PaintingliteSessionError sharePaintingliteSessionError],success);
@@ -82,7 +82,7 @@ static PaintingliteAlterManager *_instance = nil;
         return NO;
     }
     
-    Boolean success = [self.exec sqlite3Exec:ppDb obj:@[tableName,columnName,columnType] status:PaintingliteExecAlterAddColumn createStyle:PaintingliteDataBaseOptionsDefault];
+    Boolean success = [self.exec sqlite3Exec:ppDb obj:@[tableName,columnName,columnType] status:PaintingliteExecAlterAddColumn createStyle:kDefault];
     
     if (completeHandler != nil) {
         completeHandler([PaintingliteSessionError sharePaintingliteSessionError],success);
@@ -105,7 +105,7 @@ static PaintingliteAlterManager *_instance = nil;
         return NO;
     }
     
-    Boolean success = [self.exec sqlite3Exec:ppDb obj:obj status:PaintingliteExecAlterObj createStyle:PaintingliteDataBaseOptionsDefault];
+    Boolean success = [self.exec sqlite3Exec:ppDb obj:obj status:PaintingliteExecAlterObj createStyle:kDefault];
     
     if (completeHandler != nil) {
         completeHandler([PaintingliteSessionError sharePaintingliteSessionError],success);

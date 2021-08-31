@@ -43,12 +43,12 @@ static PaintingliteSnapManager *_instance = nil;
 
 #pragma mark - 表名称的快照
 - (void)saveSnap:(sqlite3 *)ppDb{
-    [[PaintingliteSessionFactory sharePaintingliteSessionFactory] execQuery:ppDb tableName:[NSString string] sql:HAVE_TABLE_SQL status:PaintingliteSessionFactoryTableCache];
+    [[PaintingliteSessionFactory sharePaintingliteSessionFactory] execQuery:ppDb tableName:[NSString string] sql:HAVE_TABLE_SQL status:kSessionFactoryTableCache];
 }
 
 #pragma mark - 表结构的快照
 - (void)saveTableInfoSnap:(sqlite3 *)ppDb tableName:(NSString *)tableName{
-    [[PaintingliteSessionFactory sharePaintingliteSessionFactory] execQuery:ppDb tableName:tableName sql:TABLE_INFO(tableName) status:PaintingliteSessionFactoryTableINFOCache];
+    [[PaintingliteSessionFactory sharePaintingliteSessionFactory] execQuery:ppDb tableName:tableName sql:TABLE_INFO(tableName) status:kSessionFactoryTableINFOCache];
 }
 
 @end

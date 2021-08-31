@@ -25,9 +25,9 @@
  @constant PaintingliteSessionFactoryTableINFOCache 表信息缓存
  @discussion 标识缓存状态
 */
-typedef NS_ENUM(NSUInteger, PaintingliteSessionFactoryStatus) {
-    PaintingliteSessionFactoryTableCache,
-    PaintingliteSessionFactoryTableINFOCache
+typedef NS_ENUM(NSUInteger, kSessionFactoryStatus) {
+    kSessionFactoryTableCache     = 0,
+    kSessionFactoryTableINFOCache = 1 << 0
 };
 
 NS_ASSUME_NONNULL_BEGIN
@@ -55,7 +55,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param status 工厂缓存状态
  @result NSMutableArray
  */
-- (NSMutableArray *)execQuery:(sqlite3 *)ppDb tableName:(NSString *__nonnull)tableName sql:(NSString *__nonnull)sql status:(PaintingliteSessionFactoryStatus)status;
+- (NSMutableArray *)execQuery:(sqlite3 *)ppDb tableName:(NSString *__nonnull)tableName sql:(NSString *__nonnull)sql status:(kSessionFactoryStatus)status;
 
 /*!
  @method removeLogFileWithDatabaseName:

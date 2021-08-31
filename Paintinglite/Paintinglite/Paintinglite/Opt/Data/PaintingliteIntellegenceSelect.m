@@ -180,7 +180,7 @@ static PaintingliteIntellegenceSelect *_instance = nil;
 }
 
 #pragma mark - 排序查询
-- (Boolean)orderBy:(sqlite3 *)ppDb orderStyle:(PaintingliteOrderByStyle)orderStyle condation:(nonnull NSArray<NSString *> *)condation completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull))completeHandler objects:(id)objects, ...{
+- (Boolean)orderBy:(sqlite3 *)ppDb orderStyle:(kOrderByStyle)orderStyle condation:(nonnull NSArray<NSString *> *)condation completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull))completeHandler objects:(id)objects, ...{
 //    //获取每一个对象，从可变参数中获取
 //    id obj = NULL;
 //
@@ -227,7 +227,7 @@ static PaintingliteIntellegenceSelect *_instance = nil;
 //
 //    return success;
     
-    return [self orderBy:ppDb orderStyleArray:@[(orderStyle == PaintingliteOrderByASC) ? @"ASC" : @"DESC"] condation:condation completeHandler:completeHandler objects:objects, nil];
+    return [self orderBy:ppDb orderStyleArray:@[(orderStyle == kOrderByASC) ? @"ASC" : @"DESC"] condation:condation completeHandler:completeHandler objects:objects, nil];
 }
 
 - (Boolean)orderBy:(sqlite3 *)ppDb orderStyleArray:(NSArray<NSString *> *)orderStyleArray condation:(NSArray<NSString *> *)condation completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean, NSMutableArray * _Nonnull))completeHandler objects:(id)objects, ...{

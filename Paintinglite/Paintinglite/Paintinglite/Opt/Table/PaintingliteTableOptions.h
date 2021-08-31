@@ -17,14 +17,14 @@
 #import <Sqlite3.h>
 
 /*!
- @abstract PaintingliteOrderByStyle 排序类型
- @constant PaintingliteOrderByASC 升序
- @constant PaintingliteOrderByDESC 降序
+ @abstract kOrderByStyle 排序类型
+ @constant kOrderByASC 升序
+ @constant kOrderByDESC 降序
  @discussion 排序类型
 */
-typedef NS_ENUM(NSUInteger, PaintingliteOrderByStyle) {
-    PaintingliteOrderByASC,
-    PaintingliteOrderByDESC
+typedef NS_ENUM(NSUInteger, kOrderByStyle) {
+    kOrderByASC = 0,
+    kOrderByDESC = 1 << 0
 };
 
 NS_ASSUME_NONNULL_BEGIN
@@ -268,7 +268,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param orderStyle 排序方式 [升序/降序]
  @result NSMutableArray<NSDictionary *>
  */
-- (NSMutableArray *)execOrderByQuerySQL:(sqlite3 *)ppDb tableName:(NSString *__nonnull)tableName orderbyContext:(NSString *__nonnull)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle;
+- (NSMutableArray *)execOrderByQuerySQL:(sqlite3 *)ppDb tableName:(NSString *__nonnull)tableName orderbyContext:(NSString *__nonnull)orderbyContext orderStyle:(kOrderByStyle)orderStyle;
 
 /*!
  @method execOrderByQuerySQL: tableName: orderbyContext: orderStyle: completeHandler:
@@ -281,7 +281,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param completeHandler 回调操作
  @result Boolean
  */
-- (Boolean)execOrderByQuerySQL:(sqlite3 *)ppDb tableName:(NSString *__nonnull)tableName orderbyContext:(NSString *__nonnull)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray))completeHandler;
+- (Boolean)execOrderByQuerySQL:(sqlite3 *)ppDb tableName:(NSString *__nonnull)tableName orderbyContext:(NSString *__nonnull)orderbyContext orderStyle:(kOrderByStyle)orderStyle completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray))completeHandler;
 
 /*!
  @method execOrderByQuerySQL: orderbyContext: orderStyle: obj:
@@ -293,7 +293,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param obj 对象
  @result NSMutableArray<id>
  */
-- (id)execOrderByQuerySQL:(sqlite3 *)ppDb orderbyContext:(NSString *__nonnull)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle obj:(id)obj;
+- (id)execOrderByQuerySQL:(sqlite3 *)ppDb orderbyContext:(NSString *__nonnull)orderbyContext orderStyle:(kOrderByStyle)orderStyle obj:(id)obj;
 
 /*!
  @method execOrderByQuerySQL: orderbyContext: orderStyle: obj: completeHandler:
@@ -306,7 +306,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param completeHandler 回调操作
  @result Boolean
  */
-- (Boolean)execOrderByQuerySQL:(sqlite3 *)ppDb orderbyContext:(NSString *__nonnull)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle obj:(id)obj completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray,NSMutableArray<id>* resObjList))completeHandler;
+- (Boolean)execOrderByQuerySQL:(sqlite3 *)ppDb orderbyContext:(NSString *__nonnull)orderbyContext orderStyle:(kOrderByStyle)orderStyle obj:(id)obj completeHandler:(void(^ __nullable)(PaintingliteSessionError *error,Boolean success,NSMutableArray *resArray,NSMutableArray<id>* resObjList))completeHandler;
 
 
 #pragma mark - PQL查询

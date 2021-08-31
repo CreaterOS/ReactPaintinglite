@@ -253,7 +253,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param primaryKeyStyle 主键类型
  @result Boolean
  */
-- (Boolean)createTableForObj:(id)obj primaryKeyStyle:(PaintingliteDataBaseOptionsPrimaryKeyStyle)primaryKeyStyle;
+- (Boolean)createTableForObj:(id)obj primaryKeyStyle:(kPrimaryKeyStyle)primaryKeyStyle;
 
 /*!
  @method createTableForObj: primaryKeyStyle: completeHandler:
@@ -264,7 +264,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param completeHandler 回调操作
  @result Boolean
  */
-- (Boolean)createTableForObj:(id)obj primaryKeyStyle:(PaintingliteDataBaseOptionsPrimaryKeyStyle)primaryKeyStyle completeHandler:(void(^ __nullable)(NSString *tableName,PaintingliteSessionError *error,Boolean success))completeHandler;
+- (Boolean)createTableForObj:(id)obj primaryKeyStyle:(kPrimaryKeyStyle)primaryKeyStyle completeHandler:(void(^ __nullable)(NSString *tableName,PaintingliteSessionError *error,Boolean success))completeHandler;
 
 /*!
  @method alterTableForName: newName:
@@ -579,7 +579,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param orderStyle 排序方式 [升序/降序]
  @result NSMutableArray<NSDictionary *>
  */
-- (NSMutableArray<NSDictionary *> *)execQueryOrderBySQLWithTableName:(NSString *__nonnull)tableName orderbyContext:(NSString *__nonnull)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle;
+- (NSMutableArray<NSDictionary *> *)execQueryOrderBySQLWithTableName:(NSString *__nonnull)tableName orderbyContext:(NSString *__nonnull)orderbyContext orderStyle:(kOrderByStyle)orderStyle;
 
 /*!
  @method execQueryOrderBySQLWithTableName: orderbyContext: orderStyle: completeHandler:
@@ -591,7 +591,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param completeHandler 回调操作
  @result Boolean
  */
-- (Boolean)execQueryOrderBySQLWithTableName:(NSString *__nonnull)tableName orderbyContext:(NSString *__nonnull)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray<NSDictionary *> *resArray))completeHandler;
+- (Boolean)execQueryOrderBySQLWithTableName:(NSString *__nonnull)tableName orderbyContext:(NSString *__nonnull)orderbyContext orderStyle:(kOrderByStyle)orderStyle completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray<NSDictionary *> *resArray))completeHandler;
 
 /*!
  @method execQueryOrderBySQLWithOrderbyContext: orderStyle: obj:
@@ -602,7 +602,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param obj 对象
  @result NSMutableArray<id>
  */
-- (NSMutableArray<id> *)execQueryOrderBySQLWithOrderbyContext:(NSString *__nonnull)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle obj:(id)obj;
+- (NSMutableArray<id> *)execQueryOrderBySQLWithOrderbyContext:(NSString *__nonnull)orderbyContext orderStyle:(kOrderByStyle)orderStyle obj:(id)obj;
 
 /*!
  @method execQueryOrderBySQLWithOrderbyContext: orderStyle: obj: completeHandler:
@@ -614,7 +614,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param completeHandler 回调操作
  @result Boolean
  */
-- (Boolean)execQueryOrderBySQLWithOrderbyContext:(NSString *__nonnull)orderbyContext orderStyle:(PaintingliteOrderByStyle)orderStyle obj:(id)obj completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray<NSDictionary *> *resArray,NSMutableArray<id>* resObjList))completeHandler;
+- (Boolean)execQueryOrderBySQLWithOrderbyContext:(NSString *__nonnull)orderbyContext orderStyle:(kOrderByStyle)orderStyle obj:(id)obj completeHandler:(void(^)(PaintingliteSessionError *error,Boolean success,NSMutableArray<NSDictionary *> *resArray,NSMutableArray<id>* resObjList))completeHandler;
 
 #pragma mark - PQL查询
 /*!

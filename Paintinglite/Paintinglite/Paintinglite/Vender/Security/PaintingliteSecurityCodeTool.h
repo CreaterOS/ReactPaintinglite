@@ -15,8 +15,8 @@
  @discussion 标识Sqlite3安全操作模式
 */
 typedef NS_ENUM(NSUInteger, PaintingliteSecurityMode) {
-    PaintingliteSecurityInsert,
-    PaintingliteSecurityUpdate
+    PaintingliteSecurityInsert = 0,
+    PaintingliteSecurityUpdate = 1 << 0
 };
 
 
