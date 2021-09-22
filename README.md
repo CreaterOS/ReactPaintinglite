@@ -7,7 +7,7 @@
 [![standard-readme compliant](https://img.shields.io/badge/platform-ios-brightgreen.svg?style=info&color=orange)](https://github.com/CreaterOS/Paintinglite)
 
 ## TODO
-Optimization of logic
+Update the warning logger to show the stack info.
 
 ## Introduction
 
