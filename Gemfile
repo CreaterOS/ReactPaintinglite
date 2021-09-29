@@ -2,6 +2,6 @@
 
 source "https://rubygems.org"
 
-gem 'Paintinglite','v2.1.1', git: 'https://github.com/CreaterOS/Paintinglite.git'
+gem 'Paintinglite','v2.1.2', git: 'https://github.com/CreaterOS/Paintinglite.git'
 
 # gem "rails"
