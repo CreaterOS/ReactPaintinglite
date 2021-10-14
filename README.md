@@ -5,6 +5,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/CreaterOS/Paintinglite/badge.svg?branch=master)](https://coveralls.io/github/CreaterOS/Paintinglite?branch=master)
 [![standard-readme compliant](https://img.shields.io/badge/Paintinglite-CreaterOS-brightgreen.svg?style=CreaterOS&color=blue)](https://github.com/CreaterOS/Paintinglite)
 [![standard-readme compliant](https://img.shields.io/badge/platform-ios-brightgreen.svg?style=info&color=orange)](https://github.com/CreaterOS/Paintinglite)
+[![Gitter](https://badges.gitter.im/Paintinglite/community.svg)](https://gitter.im/Paintinglite/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 ## TODO
 Update the warning logger to show the stack info.
