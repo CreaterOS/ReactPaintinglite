@@ -8,7 +8,7 @@
 [![Gitter](https://badges.gitter.im/Paintinglite/community.svg)](https://gitter.im/Paintinglite/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 ## TODO
-Update the warning logger to show the stack info.
+v2.2.0 Adjustment method name 
 
 ## Introduction
 
