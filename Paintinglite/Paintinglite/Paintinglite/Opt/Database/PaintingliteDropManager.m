@@ -69,7 +69,7 @@ static PaintingliteDropManager *_instance = nil;
         return NO;
     }
     
-    Boolean success = [self.exec sqlite3Exec:ppDb obj:obj status:PaintingliteExecDrop createStyle:PaintingliteDataBaseOptionsDefault];
+    Boolean success = [self.exec sqlite3Exec:ppDb obj:obj status:PaintingliteExecDrop createStyle:kDefault];
 
     if (completeHandler != nil) {
         completeHandler([PaintingliteSessionError sharePaintingliteSessionError],success);

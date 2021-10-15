@@ -53,7 +53,9 @@ NS_ASSUME_NONNULL_BEGIN
  @discussion 生成PaintingliteSessionManager在项目工程全局中只生成一个实例对象
  @result PaintingliteSessionManager
  */
-+ (instancetype)sharePaintingliteSessionManager;
++ (instancetype)sharePaintingliteSessionManager DEPRECATED_MSG_ATTRIBUTE("Use [PaintingliteSessionManager share]");
+
++ (instancetype)share;
 
 #pragma mark - 数据库打开/关闭
 /*!
