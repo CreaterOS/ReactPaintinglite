@@ -40,7 +40,7 @@ target 'MyApp' do
 
     # Pods for MyApp2
 
-    pod'Paintinglite', :git =>'https://github.com/CreaterOS/Paintinglite.git'#, :tag => '2.1.1'
+    pod'Paintinglite', :git =>'https://github.com/CreaterOS/Paintinglite.git'#, :tag => '2.1.3'
 end
 ```
 Then install the pods:
