@@ -6,6 +6,7 @@
 [![standard-readme compliant](https://img.shields.io/badge/Paintinglite-CreaterOS-brightgreen.svg?style=CreaterOS&color=blue)](https://github.com/CreaterOS/Paintinglite)
 [![standard-readme compliant](https://img.shields.io/badge/platform-ios-brightgreen.svg?style=info&color=orange)](https://github.com/CreaterOS/Paintinglite)
 [![Gitter](https://badges.gitter.im/Paintinglite/community.svg)](https://gitter.im/Paintinglite/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+<a href="https://www.producthunt.com/posts/paintinglite?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-paintinglite" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=295761&theme=dark" alt="Paintinglite - SQLite3 lightweight database framework | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
 
 ## TODO
 v2.2.0 Adjustment method name 
