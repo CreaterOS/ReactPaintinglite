@@ -206,7 +206,10 @@ static PaintingliteSessionManager *_instance = nil;
     
     //信号量等待
     dispatch_semaphore_wait(signal, DISPATCH_TIME_FOREVER);
-    completeHandler(filePath,success);
+    
+    if (completeHandler != nil) {
+        completeHandler(filePath,success);
+    }
     
     return success;
 }
@@ -258,7 +261,6 @@ static PaintingliteSessionManager *_instance = nil;
     if (self.ppDb == NULL || self.ppDb == CFBridgingRetain([NSNull null])) {
         /// WARNING-INFO
         [PaintingliteWarningHelper warningReason:@"Not Found The Database By This Session" time:[NSDate date] solve:@"Use [openSqlite: ] [openSqlite: completeHandler:] etc Create The Sqlite3 Database" args:nil];
-        return nil;
     }
     
     return self.ppDb;
@@ -668,8 +670,7 @@ static PaintingliteSessionManager *_instance = nil;
     }
     
     if (self.openSecurityMode) {
-        PaintingliteSecurityCodeTool *securityCode = [[PaintingliteSecurity alloc] init].securityCode;
-        securityCode = [[PaintingliteSecurityCodeTool alloc] init];
+        PaintingliteSecurityCodeTool *securityCode = [[[PaintingliteSecurity alloc] init] getSecurityCode];
         sql = [securityCode securitySqlCommand:sql type:PaintingliteSecurityInsert];
     }
     
@@ -683,8 +684,7 @@ static PaintingliteSessionManager *_instance = nil;
     }
 
     if (self.openSecurityMode) {
-        PaintingliteSecurityCodeTool *securityCode = [[PaintingliteSecurity alloc] init].securityCode;
-        securityCode = [[PaintingliteSecurityCodeTool alloc] init];
+        PaintingliteSecurityCodeTool *securityCode = [[[PaintingliteSecurity alloc] init] getSecurityCode];
         obj = [securityCode securityObj:obj];
     }
     
@@ -698,8 +698,7 @@ static PaintingliteSessionManager *_instance = nil;
 
 - (Boolean)update:(NSString *)sql completeHandler:(void (^)(PaintingliteSessionError * _Nonnull, Boolean))completeHandler{
     if (self.openSecurityMode) {
-        PaintingliteSecurityCodeTool *securityCode = [[PaintingliteSecurity alloc] init].securityCode;
-        securityCode = [[PaintingliteSecurityCodeTool alloc] init];
+        PaintingliteSecurityCodeTool *securityCode = [[[PaintingliteSecurity alloc] init] getSecurityCode];
         sql = [securityCode securitySqlCommand:sql type:PaintingliteSecurityUpdate];
     }
     
@@ -713,8 +712,7 @@ static PaintingliteSessionManager *_instance = nil;
     }
     
     if (self.openSecurityMode) {
-        PaintingliteSecurityCodeTool *securityCode = [[PaintingliteSecurity alloc] init].securityCode;
-        securityCode = [[PaintingliteSecurityCodeTool alloc] init];
+        PaintingliteSecurityCodeTool *securityCode = [[[PaintingliteSecurity alloc] init] getSecurityCode];
         obj = [securityCode securityObj:obj];
     }
     

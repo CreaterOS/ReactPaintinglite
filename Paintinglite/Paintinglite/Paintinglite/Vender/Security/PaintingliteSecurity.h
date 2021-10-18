@@ -23,9 +23,10 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @interface PaintingliteSecurity : NSObject
 
-@property (nonatomic, strong) PaintingliteSecurityCodeTool *securityCode; // 加密
+- (PaintingliteSecurityCodeTool *__nonnull)getSecurityCode; /** 加密*/
 
-@property (nonatomic, strong) PaintingliteSecurityDecodeTool *securityDecode; // 解密
+- (PaintingliteSecurityDecodeTool *__nonnull)getSecurityDecode; /** 解密*/
+
 @end
 
 NS_ASSUME_NONNULL_END

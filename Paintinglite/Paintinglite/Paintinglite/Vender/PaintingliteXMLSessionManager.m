@@ -148,7 +148,7 @@
             return [self packagingObjUseType:resultType sqlText:sqlText];
         }
     }else{
-        return NULL;
+        return [NSArray array];
     }
 }
 
@@ -242,7 +242,7 @@
                     
                     /* 处理后半部分插入语句 */
                     /* (#username,#birthday,#sex,#address) */
-                    NSArray<NSString *> *insertValueArray = [NSArray array];
+                    NSArray<NSString *> *insertValueArray;
                     
                     /* XML映射文件语句分号处理 */
                     if ([sqlText containsString:@";"]) {
@@ -394,7 +394,7 @@
            if ([sqlText isEqualToString:@"?"]) {
                /* 自动填充删除语句 */
                NSString *frontDelSqlText = [NSString stringWithFormat:@"DELETE FROM %@ WHERE ",[[PaintingliteObjRuntimeProperty getObjName:obj] lowercaseString]];
-               NSString *behindDelSqlText = [NSString string];
+               NSString *behindDelSqlText;
                
                /* obj配置了哪些值就作为删除条件 */
                behindDelSqlText = [[NSString alloc] initWithData: [NSJSONSerialization dataWithJSONObject:objPropertyValueDict options:0 error:0] encoding:NSUTF8StringEncoding];
@@ -441,7 +441,7 @@
                for (NSString *str in whiteSeparatedArray) {
                    if ([str containsString:@"#"]) {
                        /* 对占位符进行处理 */
-                       NSString *placeStr = [NSString string];
+                       NSString *placeStr;
                        if ([str containsString:@";"]) {
                            /* 分号处理 */
                            placeStr = [str substringWithRange:NSMakeRange(1, str.length-2)];
@@ -552,7 +552,7 @@
     
     NSString *conditionStr = [[dict[TEST] componentsSeparatedByString:@" "] firstObject];
     
-    NSArray<NSString *> *dictArray = [NSArray array];
+    NSArray<NSString *> *dictArray;
     Boolean flag = [self isWhereLabelExists:orderDict];
     dictArray = flag ? [dict[TEXT] componentsSeparatedByString:[NSString stringWithFormat:@" %@ ",[orderDict[PARAMETERTYPE] lowercaseString]]] : [dict[TEXT] componentsSeparatedByString:[NSString stringWithFormat:@" AND %@",conditionStr]];
     
@@ -589,7 +589,7 @@
     
     if ([flagValue toBool]) {
         /* IF标签成立 */
-        NSString *sql = [NSString string];
+        NSString *sql;
 
         NSString *lastStr = (dictArray.count > 1) ? (flag ? behindStr : [[NSString stringWithFormat:@"%@",conditionStr] stringByAppendingString:behindStr]) : @"";
         

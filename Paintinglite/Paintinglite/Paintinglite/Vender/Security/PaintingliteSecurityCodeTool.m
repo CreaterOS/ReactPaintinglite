@@ -50,7 +50,7 @@
             tempSql = [NSString string];
             for (NSUInteger i = 0; i < sqlSubs.count; i++) {
                 @autoreleasepool {
-                    NSString *sqlSub = [NSString string];
+                    NSString *sqlSub;
                     if (i < sqlSubs.count-1) {
                         sqlSub = [sqlSubs[i] stringByAppendingString:@")"];
                     } else {
@@ -132,7 +132,7 @@
             NSUInteger index = 0;
             for (NSString *field in fieldStrs) {
                 @autoreleasepool {
-                    NSString *str = [NSString string];
+                    NSString *str;
                     if ([field characterAtIndex:0] == '\'' && [field characterAtIndex:field.length-1] == '\'') {
                         str = [field substringWithRange:NSMakeRange(1, field.length-2)];
                         str = [[str dataUsingEncoding:NSUTF8StringEncoding] base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];

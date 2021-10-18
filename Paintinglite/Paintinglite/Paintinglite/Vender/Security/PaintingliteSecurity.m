@@ -18,4 +18,12 @@
 
 @implementation PaintingliteSecurity
 
+- (PaintingliteSecurityCodeTool *)getSecurityCode {
+    return [[PaintingliteSecurityCodeTool alloc] init];
+}
+
+- (PaintingliteSecurityDecodeTool *)getSecurityDecode {
+    return [[PaintingliteSecurityDecodeTool alloc] init];
+}
+
 @end
